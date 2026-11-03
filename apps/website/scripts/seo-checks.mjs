@@ -2,6 +2,7 @@
 // Для каждой индексируемой страницы (без noindex) требуются теги карточки и ссылок,
 // картинки лежат в dist и имеют заявленный размер, hreflang взаимен, RSS-ленты существуют
 // и ведут на страницы сборки, иконки из <head> лежат в сборке.
+import { createHash } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
 import { parse } from 'parse5';
@@ -184,6 +185,53 @@ async function checkIcons(ctx, where, url, doc) {
   }
 }
 
+// Markdown-версия из <head> лежит в сборке и это Markdown, а не HTML-страница 404.
+async function checkMarkdownLink(ctx, where, url, doc) {
+  for (const link of doc.links('alternate').filter((l) => attr(l, 'type') === 'text/markdown')) {
+    const target = checkAbsolute(ctx, where, url, attr(link, 'href'), 'Markdown');
+    if (!target) continue;
+    const bytes = await ctx.readPublic(target.pathname);
+    if (!bytes || !bytes.toString('utf8').startsWith('# ')) ctx.fail(where, `Markdown ${target.pathname}: файла нет или это не Markdown`);
+  }
+}
+
+// Файлы для агентов: ссылки llms.txt и каталога ARD ведут на файлы сборки, digest навыка — от его байтов.
+async function checkAgentFiles(ctx) {
+  const pathOf = (href) => {
+    const target = new URL(href, ctx.site);
+    return target.origin === ctx.site.origin ? target.pathname : undefined;
+  };
+  const exists = async (path) => Boolean(await ctx.readPublic(path.endsWith('/') ? `${path}index.html` : path));
+
+  const llms = await ctx.readPublic('/llms.txt');
+  if (llms) {
+    for (const [, href] of llms.toString('utf8').matchAll(/\]\((https?:\/\/[^)]+)\)/g)) {
+      const path = pathOf(href);
+      if (path && !(await exists(path))) ctx.fail('llms.txt', `ссылка ${href}: файла нет в dist`);
+    }
+  }
+
+  const index = await ctx.readPublic('/.well-known/agent-skills/index.json');
+  if (index) {
+    for (const skill of JSON.parse(index.toString('utf8')).skills ?? []) {
+      const path = pathOf(skill.url);
+      const bytes = path && (await ctx.readPublic(path));
+      if (!bytes) ctx.fail('agent-skills/index.json', `${skill.name}: файла ${skill.url} нет в dist`);
+      else if (skill.digest !== `sha256:${createHash('sha256').update(bytes).digest('hex')}`) {
+        ctx.fail('agent-skills/index.json', `${skill.name}: digest не совпадает с ${skill.url}`);
+      }
+    }
+  }
+
+  const catalog = await ctx.readPublic('/.well-known/ai-catalog.json');
+  if (catalog) {
+    for (const entry of JSON.parse(catalog.toString('utf8')).entries ?? []) {
+      const path = entry.url && pathOf(entry.url);
+      if (path && !(await exists(path))) ctx.fail('ai-catalog.json', `${entry.identifier}: файла ${entry.url} нет в dist`);
+    }
+  }
+}
+
 // Каждая <link> ленты — страница этой сборки по точному адресу: без слэша хостинг ответит редиректом.
 // Язык ленты — по её папке (`en/rss.xml`; без папки — ru): `<language>` и записи того же языка,
 // иначе подписчик английской ленты получит русские митапы.
@@ -251,6 +299,7 @@ export async function checkDist(dist, siteUrl) {
     await checkPage(ctx, page.where, url, page.doc);
     await checkFeedLinks(ctx, page.where, url, page.doc);
     await checkIcons(ctx, page.where, url, page.doc);
+    await checkMarkdownLink(ctx, page.where, url, page.doc);
   }
   checkHreflang(ctx, pages);
   const feeds = await Promise.all(
@@ -259,6 +308,7 @@ export async function checkDist(dist, siteUrl) {
       .map(async (f) => ({ where: relPosix(dist, f), xml: await readFile(f, 'utf8') })),
   );
   checkFeeds(ctx, feeds, pages);
+  await checkAgentFiles(ctx);
   // Пустой dist или noindex на всех страницах — тоже провал: иначе гейт зелёный, ничего не проверив.
   if (indexableCount === 0) ctx.fail(relPosix(process.cwd(), dist) || dist, 'нет ни одной индексируемой страницы');
 

@@ -36,6 +36,9 @@ const alternates = locales.map((code) => ({ locale: code, path: localizePath(cod
         label={t('search.label')}
         submitLabel={t('search.submit')}
         placeholder={t('search.placeholder')}
+        toolname="search_page"
+        tooldescription={t('search.toolDescription')}
+        toolParamDescription={t('search.toolParam')}
       />
       <SearchResults
         note={import.meta.env.DEV ? t('search.noIndex') : t('search.unavailable')}

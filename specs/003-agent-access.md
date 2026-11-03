@@ -1,0 +1,95 @@
+---
+id: "003"
+title: Агентный доступ к css.moscow на GitHub Pages
+status: approved
+created: 2026-11-03
+updated: 2026-11-03
+supersedes: []
+superseded_by: null
+tasks: null
+prd: null
+---
+
+# Агентный доступ к css.moscow
+
+## Зачем
+
+Агент (ChatGPT, Claude, Perplexity), которого спрашивают про митапы MoscowCSS, читает сайт без
+браузера. Сейчас он получает только HTML с разметкой и не знает, что у сайта есть поиск, лента и
+архив из 32 митапов. Отчёт is-agentic.com (42/100) снят со старого сайта, но и у нового нет
+Markdown-версий страниц, `llms.txt`, описания для агентов и страниц «О сообществе» и «Контакты».
+
+Хостинг — GitHub Pages, переезда не будет (решение владельца). Pages не даёт управлять заголовками
+ответа, поэтому согласование `Accept: text/markdown`, `Vary: Accept`, заголовки `Link` и
+Markdown-тело 404 недоступны.
+
+## Что делаем
+
+- У каждой публичной страницы рядом лежит её Markdown-версия: `/index.md`, `/events/31/index.md`,
+  `/en/speakers/<имя>/index.md`; HTML ссылается на неё `<link rel="alternate" type="text/markdown">`.
+- `/llms.txt` по llmstxt.org: кто такие MoscowCSS, когда агенту обращаться к сайту, ссылки на
+  Markdown-версии разделов.
+- `robots.txt` с `Content-Signal` и `Agentmap`, как у блога: поиск и ответы со ссылкой — да,
+  обучение моделей — нет.
+- Агентный skill: `/.well-known/agent-skills/index.json` (Agent Skills Discovery v0.2.0) и
+  `SKILL.md`; каталог ресурсов `/.well-known/ai-catalog.json` и `/.well-known/ard.json` (ARD).
+- Страницы `/about/` и `/contact/` на двух языках; политика персональных данных размечена
+  `rel="privacy-policy"`.
+- JSON-LD `Organization` с описанием, логотипом, `sameAs` и `contactPoint` (Telegram-канал).
+- WebMCP: в браузере сайт регистрирует инструменты поиска по сайту и получения Markdown страницы.
+
+## Планка качества
+
+- **Ограничение хостинга — не повод для подделки.** На Pages нет согласования по `Accept`;
+  мета-теги, имитирующие заголовки, и пустые файлы ради баллов сканера не делаем.
+- **Машинные файлы — точно по формату спецификации**, а не по памяти: поля, типы, `sha256` от
+  точных байтов отданного файла. Каждый формат проверен тестом и на живом сайте.
+- **Markdown-версия говорит то же, что HTML.** Её строит тот же каталог, что страницу; факты,
+  которых нет на странице, в неё не добавляются.
+- **Контакт — только публичный Telegram-канал** (решение владельца), без почты и телефонов.
+- Внешний вид страниц не меняется.
+
+## Вне охвата
+
+- **Переезд хостинга** (nginx, Cloudflare): решение владельца — остаёмся на Pages.
+- **API catalog, OAuth/OIDC, auth.md, MCP Server Card:** у сайта нет API и авторизации,
+  описывать несуществующее нельзя.
+- **DNS-AID:** это записи в DNS домена, вне репозитория.
+
+## Критерии приёмки
+
+- **AC-1.** Для каждой публичной страницы в `dist` есть `index.md` рядом с `index.html`; на
+  живом сайте `curl -sI https://css.moscow/index.md` → 200; HTML страницы ссылается на него
+  `rel="alternate" type="text/markdown"`, `check:seo` проверяет, что файл существует.
+- **AC-2.** Markdown главной содержит заголовок, текст «о митапе», ближайший (или последний)
+  митап и список прошлых со ссылками; Markdown митапа — дату, площадку, программу со ссылками на
+  доклады и спикеров. Проверка — тесты.
+- **AC-3.** `/llms.txt` — валидный по llmstxt.org (H1, цитата-резюме, секции со ссылками) и
+  содержит раздел «When to use»; все ссылки в нём ведут на файлы сборки.
+- **AC-4.** `robots.txt` содержит `Content-Signal` с `search`, `ai-input`, `ai-train` в каждой
+  группе, `Sitemap` и `Agentmap`.
+- **AC-5.** `/.well-known/agent-skills/index.json` по схеме 0.2.0, `digest` совпадает с
+  `sha256` отданного `SKILL.md`; `/.well-known/ai-catalog.json` и `ard.json` — `specVersion`,
+  `host`, `entries` с `urn:air:css.moscow:…`, ровно одним из `url`/`data` и 2–5
+  `representativeQueries`. Проверка — тесты и `curl` по живому сайту.
+- **AC-6.** `/about/`, `/contact/` и их английские версии собраны, в каждой не меньше 500
+  символов текста; в `<head>` всех страниц — `rel="privacy-policy"`.
+- **AC-7.** JSON-LD главной: `Organization` с `name`, `description`, `url`, `logo`, `sameAs`,
+  `contactPoint` (`contactType`, `url` на Telegram).
+- **AC-8.** WebMCP: при `document.modelContext` (или `navigator.modelContext`) страница
+  регистрирует `search_site` и `get_page_markdown` с `inputSchema`; без API ничего не ломается;
+  форма поиска размечена `toolname`/`tooldescription`/`toolparamdescription`.
+- **AC-9.** `pnpm lint`, `pnpm test`, `pnpm build`, `check:seo`, `build:storybook` зелёные;
+  внешний вид секций главной не изменился (`tools/visual`).
+
+## Открытые вопросы
+
+Нет.
+
+## Решения
+
+| Дата | Что | Решение | Почему | Цена ошибки |
+|---|---|---|---|---|
+| 2026-11-03 | хостинг | Остаёмся на GitHub Pages (решение владельца) | Переезда не будет | Согласование по `Accept`, `Vary`, `Link`, Markdown-404 недоступны |
+| 2026-11-03 | WebMCP | Делаем (решение владельца) | Быстро, сайту есть что дать агенту: поиск и Markdown страниц | API экспериментальный, может поменяться |
+| 2026-11-03 | `Content-Signal` | Как в блоге: обучение — нет, поиск и ответы — да | Владелец просил по образцу блога | Модели не будут учиться на текстах сайта |
