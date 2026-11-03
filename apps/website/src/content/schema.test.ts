@@ -58,7 +58,7 @@ describe('TalkSchema', () => {
 
 describe('PageSchema', () => {
   it('description короче 50 символов отклоняется', () => {
-    const page = { title: 'Moscow CSS', telegramUrl: 'https://t.me/moscowcss' };
+    const page = { title: 'Moscow CSS', telegramUrl: 'https://t.me/moscowcss', questionTag: '#вопрос' };
     expect(PageSchema.safeParse({ ...page, description: 'коротко' }).success).toBe(false);
     expect(PageSchema.safeParse({ ...page, description: 'д'.repeat(60) }).success).toBe(true);
   });

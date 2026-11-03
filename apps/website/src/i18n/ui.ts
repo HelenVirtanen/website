@@ -37,7 +37,7 @@ const ru = {
   'about.title': 'О митапе',
   'program.title': 'Программа',
   'program.hint':
-    'Задай вопрос спикеру на митапе в чате MoscowCSS, обязательно укажи тег #вопросспикеру',
+    'Задай вопрос спикеру на митапе в чате MoscowCSS, обязательно укажи тег {tag}',
   'partner.qrLabel': 'QR-код {handle}',
   'route.photoFirst': 'Фото маршрута 1',
   'route.photoSecond': 'Фото маршрута 2',
@@ -126,7 +126,7 @@ const en = {
   'about.title': 'About the meetup',
   'program.title': 'Program',
   'program.hint':
-    'Ask the speaker a question at the meetup in the MoscowCSS chat and be sure to include the tag #moscowcss_questions',
+    'Ask the speaker a question at the meetup in the MoscowCSS chat and be sure to include the tag {tag}',
   'partner.qrLabel': 'QR code {handle}',
   'route.photoFirst': 'Route photo 1',
   'route.photoSecond': 'Route photo 2',

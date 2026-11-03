@@ -59,6 +59,7 @@ const alternates = locales.map((code) => ({ locale: code, path: localizePath(cod
           talks={inLocale(catalog.talks)}
           speakers={inLocale(catalog.speakers)}
           locale={locale}
+          questionTag={page.data.questionTag}
         />
       )
     }

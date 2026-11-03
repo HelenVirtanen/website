@@ -76,6 +76,24 @@ export function partner(id: string): PartnerEntry {
   };
 }
 
+export function page(id: string, body = 'О митапе.'): PageEntry {
+  return {
+    id,
+    filePath: filePathOf('pages', id),
+    body,
+    data: {
+      title: 'Moscow CSS',
+      description: 'Описание',
+      telegramUrl: 'https://t.me/moscowcss',
+      questionTag: '#вопрос_спикеру',
+    },
+  };
+}
+
+export function faq(id: string, body: string): FaqEntry {
+  return { id, filePath: filePathOf('faq', id), body, data: { title: 'Вопросы', order: 1, draft: false } };
+}
+
 // Спикер с докладами на митапах 10 и 15 в русской и английской версиях.
 export function twoMeetupsCatalog() {
   return {

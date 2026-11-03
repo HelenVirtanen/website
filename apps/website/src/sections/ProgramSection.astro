@@ -4,6 +4,7 @@ import SpeakerAvatar from '@moscowcss/ui/components/SpeakerAvatar';
 import Prose from '@moscowcss/ui/components/Prose';
 import { render, type CollectionEntry } from 'astro:content';
 import { scheduleOf, slugOf } from '../content/catalog';
+import { fillTemplate } from '../content/format';
 import { speakerImage } from '../content/speaker-image';
 import { useTranslations, type Locale } from '../i18n';
 import {
@@ -32,10 +33,12 @@ interface Props {
   // Спикеры языка страницы
   speakers: CollectionEntry<'speakers'>[];
   locale: Locale;
+  // Тег вопросов спикерам из контента главной
+  questionTag: string;
   id?: string;
 }
 
-const { event, talks, speakers, locale, id = 'program' } = Astro.props;
+const { event, talks, speakers, locale, questionTag, id = 'program' } = Astro.props;
 const t = useTranslations(locale);
 
 const speakerBySlug = new Map(speakers.map((speaker) => [slugOf(speaker), speaker]));
@@ -61,7 +64,7 @@ const items = await Promise.all(
   <div class={inner}>
     <div class={header}>
       <BlockTitle>{t('program.title')}</BlockTitle>
-      <p class={hint}>{t('program.hint')}</p>
+      <p class={hint}>{fillTemplate(t('program.hint'), { tag: questionTag })}</p>
     </div>
 
     <ul class={list}>

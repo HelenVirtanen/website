@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { event, partner, speaker, talk, twoMeetupsCatalog } from '../test/fixtures';
+import { event, faq, page, partner, speaker, talk, twoMeetupsCatalog } from '../test/fixtures';
 import {
   CatalogError,
   checkEventDays,
@@ -167,6 +167,37 @@ describe('validateCatalog', () => {
       throw new Error('нет ошибки');
     })();
     expect(error.problems.length).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe('тег вопросов спикерам', () => {
+  const withFaq = (ruBody: string, enTag = '#вопрос_спикеру') => {
+    const catalog = twoMeetupsCatalog();
+    const en = page('en/index');
+    catalog.pages = [page('ru/index'), { ...en, data: { ...en.data, questionTag: enTag } }];
+    catalog.faq = [faq('ru/questions', ruBody), faq('en/questions', 'Ask with #вопрос_спикеру')];
+    return catalog;
+  };
+
+  it('тег в FAQ совпадает с questionTag — ошибки нет', () => {
+    expect(() => validateCatalog(withFaq('Пишите с тегом #вопрос_спикеру'))).not.toThrow();
+  });
+
+  it('старый тег в FAQ — ошибка с путём и правильным тегом', () => {
+    expect(messageOf(() => validateCatalog(withFaq('Пишите с тегом #moscowcss_questions')))).toContain(
+      'faq/ru/questions.md: в тексте тег #moscowcss_questions, а в pages/ru/index.md questionTag — #вопрос_спикеру',
+    );
+  });
+
+  it('якорь ссылки и заголовок Markdown тегом не считаются', () => {
+    const body = '## Вопросы\n\n[Регистрация](https://x.ru/event/1/#register), тег #вопрос_спикеру';
+    expect(() => validateCatalog(withFaq(body))).not.toThrow();
+  });
+
+  it('тег в переводе главной отличается — расхождение перевода', () => {
+    expect(messageOf(() => validateCatalog(withFaq('#вопрос_спикеру', '#question')))).toContain(
+      'pages/en/index.md: поле questionTag',
+    );
   });
 });
 

@@ -70,7 +70,7 @@ const INVARIANTS = {
   speakers: ['photo', 'links'],
   partners: ['url', 'handle', 'logo', 'qrUrl'],
   faq: ['order'],
-  pages: ['telegramUrl'],
+  pages: ['telegramUrl', 'questionTag'],
 } as const;
 
 // Тело обязательно там, где оно и есть содержание страницы или карточки.
@@ -229,7 +229,36 @@ export function validateCatalog(
     }
   }
 
+  checkQuestionTags(catalog, problems);
+
   if (problems.length > 0) throw new CatalogError(problems);
+}
+
+// Хештег в тексте: решётка не после буквы, `/` или `&` — иначе это якорь ссылки или сущность.
+const HASHTAG = /(?<![\p{L}\p{N}_/&#])#[\p{L}_][\p{L}\p{N}_]*/gu;
+
+/**
+ * В Markdown переменную не подставить, поэтому тег вопросов в текстах FAQ и главной сверяется с
+ * `questionTag` главной: сменили тег в одном месте — сборка покажет, где ещё старый. Доклады и
+ * митапы не проверяются: там `#fff` — цвет, а не тег.
+ */
+function checkQuestionTags(catalog: Pick<Catalog, 'pages' | 'faq'>, problems: string[]): void {
+  const tagOf = new Map(
+    catalog.pages
+      .filter((entry) => slugOf(entry) === 'index')
+      .map((entry) => [localeOf(entry), entry.data.questionTag]),
+  );
+  for (const entry of [...catalog.pages, ...catalog.faq]) {
+    const tag = tagOf.get(localeOf(entry));
+    if (tag === undefined) continue;
+    for (const [found] of (entry.body ?? '').matchAll(HASHTAG)) {
+      if (found !== tag) {
+        problems.push(
+          `${whereOf(entry)}: в тексте тег ${found}, а в pages/${localeOf(entry)}/index.md questionTag — ${tag}`,
+        );
+      }
+    }
+  }
 }
 
 // День в поясе митапа: `date` в данных — уже момент начала по Москве.

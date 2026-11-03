@@ -56,6 +56,10 @@ export const PageSchema = z.object({
   title: z.string().min(1).max(70),
   description: z.string().min(50).max(160),
   telegramUrl: url,
+  // Тег вопросов спикерам: подсказка программы берёт его отсюда, а тексты FAQ сверяются с ним.
+  questionTag: z
+    .string()
+    .regex(/^#[\p{L}\p{N}_]+$/u, "тег — решётка и буквы, цифры или _ без пробелов: #вопрос_спикеру"),
 });
 
 const ScheduleItemSchema = z.object({
