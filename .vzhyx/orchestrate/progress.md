@@ -48,3 +48,4 @@ Ruling: Hero после исправления пустой ссылки све�
 Deferred: фото спикеров обычным <img> — sharp не установлен у website; задача 10 ставит sharp (allowBuilds) — после неё можно перейти на <Image>, вне спеки.
 - 10 og-cards: done (attempt 1) — @moscowcss/og (satori+sharp, Montserrat TTF из @moscowcss/fonts), карточки 1200×630/1200×600 для всех публичных страниц ru/en, 16 og/twitter-тегов, telegramUrl из контента; маршрут pages/og/[...path].ts (`.png` внутри параметра — Astro 7.0.6 с trailingSlash: 'always' ломал [...path].png.ts); sharp — прямая зависимость website.
 - 11 pagefind-search: done (attempt 1) — pagefind после astro build, индекс ru+en, /search/ и /en/search/ (noindex, без pagefind-body); conductor проверил браузером: «Макушин» → /speakers/denis-makushin/ (+митап, доклад), en-выдача только /en/.
+- 12 check-seo: done (attempt 1) — check:seo по dist: OK 18 HTML / 16 индексируемых; без карточки → exit 1 с путём страницы; 83 теста.

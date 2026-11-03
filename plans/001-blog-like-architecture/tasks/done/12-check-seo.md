@@ -3,7 +3,7 @@ id: "12"
 title: check-seo-gate
 spec: "001"
 criteria: ["AC-16", "AC-17"]
-status: pending
+status: done
 depends_on: ["11"]
 owns: ["apps/website/scripts/check-seo.mjs", "apps/website/scripts/seo-checks.mjs", "apps/website/scripts/seo-checks.test.mjs", "apps/website/scripts/fixtures/**", "apps/website/package.json", "pnpm-lock.yaml"]
 model: sonnet
