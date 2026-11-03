@@ -7,11 +7,26 @@ const MAX_DIFF_RATIO = 0.001;
 const PIXELMATCH_THRESHOLD = 0.1;
 const DIFF_DIR = 'diff';
 
-const [baseDir, nextDir] = process.argv.slice(2);
+const args = process.argv.slice(2);
+// --exact: для рефакторингов, которые не должны менять ни пикселя; порог 0.1% на крупном снимке
+// пропускает тысячи пикселей (например, сдвиг разделителя на всю ширину).
+const exact = args.includes('--exact');
+const [baseDir, nextDir] = args.filter((arg) => arg !== '--exact');
 if (!baseDir || !nextDir) {
-  console.error('Использование: node tools/visual/compare.mjs <base-dir> <next-dir>');
+  console.error('Использование: node tools/visual/compare.mjs [--exact] <base-dir> <next-dir>');
   process.exit(2);
 }
+
+async function manifestLine(dir) {
+  try {
+    const { commit, dirty, capturedAt } = JSON.parse(await readFile(join(dir, 'manifest.json'), 'utf8'));
+    return `${commit.slice(0, 7)}${dirty ? ' (грязное дерево)' : ''}, ${capturedAt}`;
+  } catch {
+    return 'манифеста нет — не известно, с какого кода сняты снимки';
+  }
+}
+console.log(`база:     ${baseDir} — ${await manifestLine(baseDir)}`);
+console.log(`проверка: ${nextDir} — ${await manifestLine(nextDir)}\n`);
 
 async function listPngs(root, dir = root) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -66,7 +81,7 @@ for (const file of baseFiles) {
     threshold: PIXELMATCH_THRESHOLD,
   });
   const ratio = mismatched / (base.width * base.height);
-  const bad = ratio > MAX_DIFF_RATIO;
+  const bad = exact ? mismatched > 0 : ratio > MAX_DIFF_RATIO;
   if (mismatched > 0) {
     const diffPath = join(nextDir, DIFF_DIR, file);
     await mkdir(join(diffPath, '..'), { recursive: true });
@@ -76,7 +91,16 @@ for (const file of baseFiles) {
   if (bad) failed += 1;
 }
 
+// Снимки, которых нет в базе, означают, что база неполная и часть покрытия молча выпала.
+const baseSet = new Set(baseFiles);
+for (const file of await listPngs(nextDir).catch(() => [])) {
+  if (!baseSet.has(file)) {
+    rows.push([file, 'НЕТ В БАЗЕ']);
+    failed += 1;
+  }
+}
+
 const width = Math.max(...rows.map(([file]) => file.length));
 for (const [file, result] of rows) console.log(`${file.padEnd(width)}  ${result}`);
-console.log(`\nфайлов: ${rows.length}, ошибок: ${failed}, порог: ${MAX_DIFF_RATIO * 100}%`);
+console.log(`\nфайлов: ${rows.length}, ошибок: ${failed}, порог: ${exact ? '0 пикселей (--exact)' : `${MAX_DIFF_RATIO * 100}%`}`);
 process.exit(failed > 0 ? 1 : 0);

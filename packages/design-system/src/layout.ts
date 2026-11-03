@@ -1,9 +1,9 @@
 import { baseValues, layoutSpace, type LayoutStep } from './scale';
 
-// Базовые layout-значения — от темы не зависят.
 const layoutKeys = () =>
   Object.fromEntries(Object.keys(layoutSpace.inset).map((k) => [k, null])) as Record<LayoutStep, null>;
 
+// Базовые layout-значения — от темы не зависят.
 const contract = {
   display: {
     inlineFlex: null,

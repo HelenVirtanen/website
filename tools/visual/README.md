@@ -42,7 +42,13 @@ node tools/visual/capture.mjs .visual/check
 node tools/visual/compare.mjs .visual/baseline .visual/check
 ```
 
-`.visual/` is git-ignored. `capture.mjs` removes `<out-dir>` before writing.
+`.visual/` is git-ignored. `capture.mjs` removes `<out-dir>` before writing, so it only accepts a
+directory inside `.visual/`. Every capture writes `manifest.json` (commit, dirty flag, time, Chromium
+version); `compare.mjs` prints both manifests, so a baseline taken from the wrong code is visible.
+
+`compare.mjs` fails on a missing file, a size change, a PNG present only in `<next-dir>` (the baseline
+is incomplete) and a diff above 0.1% per image. Pass `--exact` for refactors that must not move a
+single pixel: 0.1% of a 1920×2800 capture is ~5,000 pixels, enough to hide a full-width divider shift.
 
 ## Environment variables
 

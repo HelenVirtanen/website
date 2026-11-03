@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { media } from './breakpoints';
-import { layoutSpace, mediaOverrides, remToPx, resolveAt, space, typeScale } from './scale';
-import { colors } from './colors';
-import { themeColors } from './theme-colors';
+import { baseValues, layoutSpace, mediaOverrides, remToPx, resolveAt, space, typeScale, type Steps } from './scale';
 
 describe('resolveAt', () => {
   it('берёт базу ниже первого порога и ступень на самом пороге', () => {
@@ -80,11 +78,29 @@ describe('значения шкалы', () => {
     for (const value of values) expect(() => remToPx(value)).not.toThrow();
   });
 
-  it('inset и gap имеют одинаковые значения (как бывшие растущие padding и spacing)', () => {
-    expect(layoutSpace.gap).toEqual(layoutSpace.inset);
-  });
-
-  it('themeColors — светлая тема без CSS-переменных', () => {
-    expect(themeColors).toBe(colors.light.color);
+  it('каскад медиазапросов из mediaOverrides даёт на каждой ширине то же, что resolveAt', () => {
+    const tables: Record<string, Readonly<Record<string, Steps>>> = {
+      typeScale,
+      inset: layoutSpace.inset,
+      gap: layoutSpace.gap,
+    };
+    for (const table of Object.values(tables)) {
+      const names = Object.fromEntries(Object.keys(table).map((key) => [key, `--${key}`]));
+      const base = baseValues(table);
+      const overrides = mediaOverrides(names, table);
+      for (const width of [375, 767, 768, 1023, 1024, 1279, 1280, 1919, 1920, 3840]) {
+        // Браузер применяет подходящие запросы в порядке вывода: поздний перебивает ранний.
+        const applied: Record<string, string> = Object.fromEntries(
+          Object.keys(table).map((key) => [names[key], base[key]]),
+        );
+        for (const [query, { vars }] of Object.entries(overrides)) {
+          const minRem = /min-width: ([\d.]+rem)/.exec(query)?.[1];
+          if (minRem !== undefined && width >= remToPx(minRem)) Object.assign(applied, vars);
+        }
+        for (const [key, steps] of Object.entries(table)) {
+          expect(applied[names[key]], `${key} @ ${width}px`).toBe(resolveAt(steps, width));
+        }
+      }
+    }
   });
 });

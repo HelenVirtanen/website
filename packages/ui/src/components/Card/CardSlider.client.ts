@@ -1,32 +1,30 @@
-import { breakpoints } from '@moscowcss/design-system';
+import { media, vars } from '@moscowcss/design-system';
 import Swiper from 'swiper';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 
 const INITIALIZED = 'data-card-slider-initialized';
 
+// Имя переменной берём из контракта, а не строкой: при переименовании токена сломается сборка, а не слайдер.
+const GAP_VAR = /^var\((--[^,)]+)/.exec(vars.layout.gap.l)?.[1];
+if (GAP_VAR === undefined) throw new Error(`CardSlider: неожиданный формат токена ${vars.layout.gap.l}`);
+
+// Значение токена в px по текущему корневому кеглю: выше 1920px корень растёт, поэтому читаем при каждом пересчёте.
 function cssVarToPx(name: string): number {
-  const raw = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const style = getComputedStyle(document.documentElement);
+  const raw = style.getPropertyValue(name).trim();
   if (!raw) return 0;
-  if (raw.endsWith('rem')) {
-    const rootFont = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    return parseFloat(raw) * rootFont;
-  }
-  if (raw.endsWith('px')) return parseFloat(raw);
+  if (raw.endsWith('rem')) return parseFloat(raw) * parseFloat(style.fontSize);
   return parseFloat(raw) || 0;
 }
 
-function remToPx(rem: string): number {
-  const rootFont = parseFloat(getComputedStyle(document.documentElement).fontSize);
-  return parseFloat(rem) * rootFont;
-}
-
-function laptopMinWidthPx(): number {
-  return Math.round(remToPx(breakpoints.laptop));
-}
-
-function desktopMinWidthPx(): number {
-  return Math.round(remToPx(breakpoints.desktop));
+// Пороги — те же строки медиазапросов, что в CSS. Пересчёт rem в px через кегль корня здесь неверен:
+// rem в @media считается от исходного кегля браузера, а корень выше 1920px растёт (ADR-002).
+// matchMedia — только внутри setupCardSlider: модуль импортируется и при серверном рендере.
+function slidesPerView(laptop: MediaQueryList, desktop: MediaQueryList): number {
+  if (desktop.matches) return 4;
+  if (laptop.matches) return 3;
+  return 1;
 }
 
 function equalizeSlideHeights(container: HTMLElement) {
@@ -55,28 +53,15 @@ export function setupCardSlider(root: HTMLElement) {
   const next = root.querySelector<HTMLButtonElement>('[data-card-slider-next]');
   if (!container || !prev || !next) return;
 
-  const spaceBetween = cssVarToPx('--layout-gap-l');
-  const laptop = laptopMinWidthPx();
-  const desktop = desktopMinWidthPx();
+  const laptopQuery = window.matchMedia(media.laptop);
+  const desktopQuery = window.matchMedia(media.desktop);
 
   const swiper = new Swiper(container, {
     modules: [Navigation],
     direction: 'horizontal',
-    slidesPerView: 1,
+    slidesPerView: slidesPerView(laptopQuery, desktopQuery),
     slidesPerGroup: 1,
-    spaceBetween,
-    breakpoints: {
-      [laptop]: {
-        slidesPerView: 3,
-        slidesPerGroup: 1,
-        spaceBetween,
-      },
-      [desktop]: {
-        slidesPerView: 4,
-        slidesPerGroup: 1,
-        spaceBetween,
-      },
-    },
+    spaceBetween: cssVarToPx(GAP_VAR),
     navigation: {
       prevEl: prev,
       nextEl: next,
@@ -95,6 +80,8 @@ export function setupCardSlider(root: HTMLElement) {
       slides.forEach((slide) => {
         slide.style.height = '';
       });
+      swiper.params.slidesPerView = slidesPerView(laptopQuery, desktopQuery);
+      swiper.params.spaceBetween = cssVarToPx(GAP_VAR);
       swiper.update();
       requestAnimationFrame(() => {
         equalizeSlideHeights(container);
@@ -103,6 +90,8 @@ export function setupCardSlider(root: HTMLElement) {
   };
 
   swiper.on('init resize slideChange transitionEnd', refresh);
+  laptopQuery.addEventListener('change', refresh);
+  desktopQuery.addEventListener('change', refresh);
   refresh();
 }
 

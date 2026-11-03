@@ -32,6 +32,15 @@ const contract = {
     programTitleColumnMin: null,
     programTitleColumnMax: null,
     programDescriptionColumnMin: null,
+    heroLogoWidth: null,
+    heroLogoHeight: null,
+    heroCtaWidth: null,
+    heroCtaHeight: null,
+    partnerQrCodeWidth: null,
+    partnerQrCodeHeight: null,
+    partnerLogoWidth: null,
+    partnerLogoHeight: null,
+    partnerLogoOffsetTop: null,
     programHintMaxWidth: null,
   },
 } as const;
@@ -62,6 +71,15 @@ const values = {
     programTitleColumnMin: '16rem', // 256px
     programTitleColumnMax: '26rem', // 416px
     programDescriptionColumnMin: '24rem', // 384px
+    heroLogoWidth: '16.375rem',
+    heroLogoHeight: '15.6875rem',
+    heroCtaWidth: '32.625rem',
+    heroCtaHeight: '8.8125rem',
+    partnerQrCodeWidth: '12.9375rem',
+    partnerQrCodeHeight: '12.75rem',
+    partnerLogoWidth: '51.1875rem',
+    partnerLogoHeight: '14.125rem',
+    partnerLogoOffsetTop: '10.146875rem',
     programHintMaxWidth: '36rem', // 576px
   },
 };

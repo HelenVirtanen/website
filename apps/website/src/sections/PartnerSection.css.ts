@@ -54,14 +54,14 @@ export const partnerHeader = style({
 export const brandLogo = style({
   display: vars.display.block,
   width: '100%',
-  maxWidth: dimensions.partnerZvukLogo.width,
+  maxWidth: vars.size.partnerLogoWidth,
   height: 'auto',
   marginInline: 'auto',
   '@media': {
     [media.desktop]: {
-      width: dimensions.partnerZvukLogo.width,
-      height: dimensions.partnerZvukLogo.height,
-      marginTop: `calc(${dimensions.partnerZvukLogo.offsetTop} - ${vars.padding['4xl']})`,
+      width: vars.size.partnerLogoWidth,
+      height: vars.size.partnerLogoHeight,
+      marginTop: `calc(${vars.size.partnerLogoOffsetTop} - ${vars.padding['4xl']})`,
     },
   },
 });
@@ -88,8 +88,8 @@ export const tagline = style({
 
 export const qr = style({
   display: vars.display.block,
-  width: dimensions.partnerQrCode.width,
-  height: dimensions.partnerQrCode.height,
+  width: vars.size.partnerQrCodeWidth,
+  height: vars.size.partnerQrCodeHeight,
   marginInline: 'auto',
 });
 

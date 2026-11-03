@@ -1,5 +1,5 @@
 import { globalStyle, style } from '@vanilla-extract/css';
-import { dimensions, vars, media } from '@moscowcss/design-system';
+import { vars, media } from '@moscowcss/design-system';
 import { inner as layoutInner, sectionPadding } from './sectionLayout.css';
 
 export const section = style([
@@ -52,8 +52,8 @@ export const star = style({
   color: vars.color.focus,
   '@media': {
     [media.desktop]: {
-      width: dimensions.heroLogo.width,
-      height: dimensions.heroLogo.height,
+      width: vars.size.heroLogoWidth,
+      height: vars.size.heroLogoHeight,
     },
   },
 });
@@ -163,8 +163,8 @@ globalStyle(`${ctaButton} span`, {
   alignItems: vars.alignItems.center,
   justifyContent: vars.justifyContent.center,
   width: '100%',
-  maxWidth: dimensions.heroCtaButton.width,
-  height: dimensions.heroCtaButton.height,
+  maxWidth: vars.size.heroCtaWidth,
+  height: vars.size.heroCtaHeight,
   paddingBlock: 0,
   paddingInline: vars.layout.inset.l,
   font: vars.font.shorthand.heroCtaLabel,
@@ -172,7 +172,7 @@ globalStyle(`${ctaButton} span`, {
   textAlign: 'center',
   '@media': {
     [media.laptop]: {
-      width: dimensions.heroCtaButton.width,
+      width: vars.size.heroCtaWidth,
     },
   },
 });

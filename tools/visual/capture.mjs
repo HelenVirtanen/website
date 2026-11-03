@@ -1,5 +1,7 @@
-import { mkdir, rm } from 'node:fs/promises';
-import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { join, relative, resolve, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 
 const SITE_URL = process.env.SITE_URL ?? 'http://localhost:4321/';
@@ -11,11 +13,23 @@ const VIEWPORT_HEIGHT = 900;
 const STORY_TIMEOUT_MS = 30_000;
 const PAGE_TIMEOUT_MS = 30_000;
 
+const REPO_ROOT = fileURLToPath(new URL('../../', import.meta.url));
+const VISUAL_ROOT = resolve(REPO_ROOT, '.visual');
+
 const outDir = process.argv[2];
 if (!outDir) {
   console.error('Использование: node tools/visual/capture.mjs <out-dir>');
   process.exit(2);
 }
+// Каталог снимков перед съёмкой стирается целиком, поэтому разрешаем только подкаталоги .visual/:
+// опечатка в аргументе (`.`, `..`) иначе снесла бы рабочее дерево.
+const outPath = resolve(outDir);
+if (!outPath.startsWith(VISUAL_ROOT + sep)) {
+  console.error(`ОШИБКА: каталог снимков должен лежать внутри ${relative(process.cwd(), VISUAL_ROOT) || '.visual'}/, получено ${outDir}`);
+  process.exit(2);
+}
+
+const git = (...args) => execFileSync('git', args, { cwd: REPO_ROOT, encoding: 'utf8' }).trim();
 
 const failures = [];
 const fail = (message) => {
@@ -140,8 +154,8 @@ async function captureStories(page) {
   return { count, stories: ids.length };
 }
 
-await rm(outDir, { recursive: true, force: true });
-await mkdir(outDir, { recursive: true });
+await rm(outPath, { recursive: true, force: true });
+await mkdir(outPath, { recursive: true });
 
 const browser = await chromium.launch({
   executablePath: CHROMIUM_PATH,
@@ -187,6 +201,22 @@ try {
 } catch (error) {
   fail(error.message);
 } finally {
+  // Манифест связывает снимки с кодом: compare показывает, с какого коммита и чистого ли дерева сняты база и проверка.
+  await writeFile(
+    join(outPath, 'manifest.json'),
+    JSON.stringify(
+      {
+        commit: git('rev-parse', 'HEAD'),
+        dirty: git('status', '--porcelain') !== '',
+        capturedAt: new Date().toISOString(),
+        chromium: browser.version(),
+        siteUrl: SITE_URL,
+        storybookUrl: STORYBOOK_URL,
+      },
+      null,
+      2,
+    ),
+  );
   await browser.close();
 }
 
