@@ -57,7 +57,6 @@ describe('new-entry', () => {
         expect(existsSync(join(DEFAULT_DIRS.templates, locale, `${kind}.md`))).toBe(true);
       }
     }
-    expect(existsSync(join(DEFAULT_DIRS.templates, 'placeholder-photo.jpg'))).toBe(true);
     expect(DEFAULT_DIRS.templates.startsWith(DEFAULT_DIRS.content)).toBe(false);
   });
 
@@ -81,10 +80,10 @@ describe('new-entry', () => {
     }
   });
 
-  it('спикер — общая фото-заглушка, на которую ссылается frontmatter', () => {
+  it('спикер — без фото: сайт нарисует аватар, заглушку не копируем', () => {
     runNewEntry(['speaker', 'some-name'], { today, dirs, ...quiet });
-    expect(existsSync(join(content, 'speakers', 'assets', 'some-name.jpg'))).toBe(true);
-    expect(read('speakers', 'ru', 'some-name.md')).toContain('photo: ../assets/some-name.jpg');
+    expect(existsSync(join(content, 'speakers', 'assets', 'some-name.jpg'))).toBe(false);
+    expect(read('speakers', 'ru', 'some-name.md')).not.toMatch(/^photo:/m);
   });
 
   it.each(['partner', 'faq'])('%s — заготовка на всех языках', (kind) => {
@@ -114,12 +113,6 @@ describe('new-entry', () => {
     expect(errors.join()).toContain('уже есть');
     expect(existsSync(join(content, 'talks', 'ru', 'x.md'))).toBe(false);
     expect(read('talks', 'en', 'x.md')).toBe('мой текст');
-  });
-
-  it('фото спикера уже есть — ничего не создаёт', () => {
-    put('фото', 'speakers', 'assets', 'x.jpg');
-    expect(runNewEntry(['speaker', 'x'], { today, dirs, ...quiet })).toBe(1);
-    expect(existsSync(join(content, 'speakers', 'ru', 'x.md'))).toBe(false);
   });
 
   it.each([

@@ -113,10 +113,14 @@ export const createSpeakerSchema = (image: ImageFunction) =>
   z.object({
     name: z.string().min(1),
     role: z.string().min(1),
-    photo: image(),
-    photoAlt: z.string().min(1),
+    // Фото необязательно: без него сайт рисует аватар с инициалами на сборке.
+    photo: image().optional(),
+    photoAlt: z.string().min(1).optional(),
     links: z.array(z.object({ label: z.string().min(1), url })).optional(),
     draft: z.boolean().default(false),
+  }).refine((speaker) => speaker.photo === undefined || speaker.photoAlt !== undefined, {
+    message: 'у фото нужно описание photoAlt: что на нём видно',
+    path: ['photoAlt'],
   });
 
 export const PartnerSchema = z.object({

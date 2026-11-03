@@ -10,6 +10,7 @@ import EntityPage from '../../../components/EntityPage.astro';
 import { body, header, photo } from '../../../components/EntityPage.css';
 import { loadCatalog, localeOf, slugOf, talksOfSpeaker, type SpeakerEntry } from '../../../content/catalog';
 import { eventDateParts, fillTemplate } from '../../../content/format';
+import { speakerImage } from '../../../content/speaker-image';
 import { localizePath, useTranslations } from '../../../i18n';
 import { localeParam, pagesOfKind, publicPagesOf, type PublicPage } from '../../../seo/pages';
 
@@ -35,7 +36,8 @@ const appearances = talksOfSpeaker(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const { Content } = await render(entry as any);
 
-const { name, role, photo: image, photoAlt, links } = entry.data;
+const { name, role, links } = entry.data;
+const image = await speakerImage(entry);
 ---
 
 <BaseLayout
@@ -46,7 +48,7 @@ const { name, role, photo: image, photoAlt, links } = entry.data;
 >
   <EntityPage>
     <div class={header}>
-      <img class={photo} src={image.src} width={image.width} height={image.height} alt={photoAlt} decoding="async" />
+      <img class={photo} src={image.src} width={image.width} height={image.height} alt={image.alt} decoding="async" />
       <H1>{name}</H1>
       <Paragraph>{role}</Paragraph>
     </div>

@@ -40,7 +40,7 @@ const fill = (template, values) =>
 
 /**
  * Какие файлы создать. Ничего не пишет: на вход — что уже есть на диске, на выход — список
- * `{ path, content }` (для фото-заглушки спикера `{ path, source }`) или ошибка с понятным текстом.
+ * `{ path, content }` или ошибка с понятным текстом.
  */
 export function planEntry({ kind, name, today, dirs = DEFAULT_DIRS, exists = existsSync, read = (p) => readFileSync(p, 'utf8') }) {
   const spec = Object.hasOwn(KINDS, kind) ? KINDS[kind] : undefined;
@@ -54,13 +54,6 @@ export function planEntry({ kind, name, today, dirs = DEFAULT_DIRS, exists = exi
     path: join(dirs.content, spec.collection, locale, `${name}.md`),
     content: fill(read(join(dirs.templates, locale, `${kind}.md`)), values),
   }));
-  if (kind === 'speaker') {
-    files.push({
-      path: join(dirs.content, 'speakers', 'assets', `${name}.jpg`),
-      source: join(dirs.templates, 'placeholder-photo.jpg'),
-    });
-  }
-
   const taken = files.filter((file) => exists(file.path));
   if (taken.length > 0) throw new Error(`уже есть: ${taken.map((file) => file.path).join(', ')}. Ничего не создано`);
   return files;
@@ -80,8 +73,7 @@ export function runNewEntry(argv, { today = new Date(), dirs = DEFAULT_DIRS, log
   try {
     for (const file of files) {
       mkdirSync(dirname(file.path), { recursive: true });
-      const data = file.source === undefined ? file.content : readFileSync(file.source);
-      writeFileSync(file.path, data, { flag: 'wx' });
+      writeFileSync(file.path, file.content, { flag: 'wx' });
       written.push(file.path);
     }
   } catch (err) {

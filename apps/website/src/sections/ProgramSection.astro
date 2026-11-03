@@ -4,6 +4,7 @@ import SpeakerAvatar from '@moscowcss/ui/components/SpeakerAvatar';
 import Prose from '@moscowcss/ui/components/Prose';
 import { render, type CollectionEntry } from 'astro:content';
 import { scheduleOf, slugOf } from '../content/catalog';
+import { speakerImage } from '../content/speaker-image';
 import { useTranslations, type Locale } from '../i18n';
 import {
   section,
@@ -48,7 +49,11 @@ const items = await Promise.all(
       const speaker = speakerBySlug.get(slug);
       return speaker ? [speaker.data] : [];
     });
-    return { ...item, Content, people };
+    const lead = item.talk.data.speakers
+      .map((slug) => speakerBySlug.get(slug))
+      .find((speaker) => speaker !== undefined);
+    const portrait = lead ? await speakerImage(lead) : undefined;
+    return { ...item, Content, people, portrait };
   }),
 );
 ---
@@ -67,7 +72,7 @@ const items = await Promise.all(
             <li class={row}>
               <div class={portraitColumn}>
                 <p class={time}>{item.time}</p>
-                <SpeakerAvatar src={item.people[0]?.photo.src} alt={item.people[0]?.photoAlt ?? ''} />
+                <SpeakerAvatar src={item.portrait?.src} alt={item.portrait?.alt ?? ''} />
               </div>
               <div class={talkMain}>
                 <h3 class={talkTitle}>{item.title}</h3>

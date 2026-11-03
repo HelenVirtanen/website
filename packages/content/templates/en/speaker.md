@@ -1,9 +1,7 @@
 ---
 name: "First Last"
 role: "Job title and company"
-photo: ../assets/{{name}}.jpg
-photoAlt: "First Last"
 draft: true
-# Draft. The photo path and links must match the Russian file. The photo is shared between
-# languages. Remove draft: true before publishing.
+# Draft. A photo is optional: without one the site draws an avatar with the initials. photo and
+# links must match the Russian file (the photo is shared between languages). Remove draft: true.
 ---
