@@ -10,7 +10,7 @@ import EntityPage from '../../../components/EntityPage.astro';
 import EventSchedule from '../../../components/EventSchedule.astro';
 import { body, header } from '../../../components/EntityPage.css';
 import { loadCatalog, localeOf, scheduleOf, type EventEntry } from '../../../content/catalog';
-import { eventDateParts, fillTemplate } from '../../../content/format';
+import { eventWhen, venueLine } from '../../../content/format';
 import { eventLinksOf } from '../../../content/event-links';
 import { buildNow } from '../../../content/now';
 import { useTranslations } from '../../../i18n';
@@ -34,9 +34,9 @@ const inLocale = <T extends { id: string }>(entries: T[]): T[] =>
 const speakers = inLocale(catalog.speakers);
 const schedule = scheduleOf(entry as EventEntry, inLocale(catalog.talks));
 
-const { tagline, venue, date } = entry.data;
-const dateTime = fillTemplate(t('hero.dateTime'), eventDateParts(date, locale));
-const place = `${venue.name}, ${venue.address}`;
+const { tagline, venue } = entry.data;
+const dateTime = eventWhen(entry.data, locale, { withTime: t('hero.dateTime'), dateOnly: t('date.long') });
+const place = venueLine(venue);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const { Content } = await render(entry as any);
 
@@ -51,7 +51,7 @@ const links = eventLinksOf(entry, buildNow(), {
 
 <BaseLayout
   title={`${tagline} — ${t('site.name')}`}
-  description={`${tagline}. ${dateTime}, ${venue.address}`}
+  description={`${tagline}. ${dateTime}, ${place}`}
   lang={locale}
   alternates={alternates}
 >

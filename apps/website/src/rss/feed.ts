@@ -1,6 +1,6 @@
 import type { RSSFeedItem } from '@astrojs/rss';
 import { localeOf, slugOf, talksOfEvent, type EventEntry, type TalkEntry } from '../content/catalog';
-import { eventDateParts, fillTemplate } from '../content/format';
+import { eventWhen, venueLine } from '../content/format';
 import { defaultLocale, locales, localizePath, useTranslations, type Locale } from '../i18n';
 
 // Лента митапов языка: одна запись — один опубликованный митап, новые сверху. Отдельная лента на
@@ -32,14 +32,14 @@ export function feedItemsOf(
     .toSorted((a, b) => b.data.date.getTime() - a.data.date.getTime())
     .map((event) => {
       const { tagline, date, venue } = event.data;
-      const when = fillTemplate(t('hero.dateTime'), eventDateParts(date, locale));
+      const when = eventWhen(event.data, locale, { withTime: t('hero.dateTime'), dateOnly: t('date.long') });
       const titles = talksOfEvent(event, talks).map((talk) => talk.data.title);
       const program = titles.length > 0 ? ` ${t('rss.talks')}: ${titles.join('; ')}.` : '';
       return {
         title: tagline,
         link: localizePath(locale, `events/${slugOf(event)}`),
         pubDate: date,
-        description: `${when}, ${venue.name}, ${venue.address}.${program}`,
+        description: `${when}, ${venueLine(venue)}.${program}`,
       };
     });
 }

@@ -2,7 +2,7 @@
 import CallToAction from '@moscowcss/ui/components/CallToAction';
 import { Logo } from '@moscowcss/icons';
 import type { CollectionEntry } from 'astro:content';
-import { eventDateParts, fillTemplate } from '../content/format';
+import { eventWhen, fillTemplate } from '../content/format';
 import { useTranslations, type Locale } from '../i18n';
 import {
   section,
@@ -36,7 +36,7 @@ const { event, locale, past, id = 'registration' } = Astro.props;
 const t = useTranslations(locale);
 const { tagline, venue, modes: eventModes, passportRequired, registrationUrl, streamUrl, recordingUrl } =
   event.data;
-const dateTime = fillTemplate(t('hero.dateTime'), eventDateParts(event.data.date, locale));
+const dateTime = eventWhen(event.data, locale, { withTime: t('hero.dateTime'), dateOnly: t('date.long') });
 ---
 
 <section class={section} id={id} data-visual="hero">
@@ -59,7 +59,7 @@ const dateTime = fillTemplate(t('hero.dateTime'), eventDateParts(event.data.date
       <div class={details}>
         <p class={meetupLine}>{tagline}</p>
         <p class={infoLine}>{dateTime}</p>
-        <p class={infoLine}>{fillTemplate(t('hero.address'), { address: venue.address })}</p>
+        {venue.address && <p class={infoLine}>{fillTemplate(t('hero.address'), { address: venue.address })}</p>}
         {passportRequired && <p class={passportNote}>{t('hero.passport')}</p>}
       </div>
       <div class={ctaColumn}>

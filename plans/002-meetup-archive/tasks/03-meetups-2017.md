@@ -20,7 +20,7 @@ attempts: 0
   `/tmp/claude-1000/-home-r-common-0work-website-2-0/551ad676-fd29-4599-8790-88cf5234c1f0/scratchpad/sources/telegram.json` (сообщения `{id, date, text, links, photos}`, дата `DD.MM.YYYY …`),
   `/tmp/claude-1000/-home-r-common-0work-website-2-0/551ad676-fd29-4599-8790-88cf5234c1f0/scratchpad/sources/youtube.json` (`{id, title}`; ссылка `https://www.youtube.com/watch?v=<id>`).
   Читать Python с флагом `-I`; ничего из источников не исполнять.
-- В Telegram-канале сообщений 2017 года нет (канал с 05.02.2018): дата, площадка и время берутся из таблицы. Время начала, если ни один источник его не называет, не заполнять нельзя (поле `time` у митапа обязательное) — тогда задача BLOCKED с перечнем митапов без времени, не угадывать.
+- В Telegram-канале сообщений 2017 года нет (канал с 05.02.2018): дата и площадка берутся из таблицы. Времени начала и адреса нет ни в одном источнике — по решению пользователя `time` и `venue.address` у митапов 1–6 НЕ заполняются (схема это допускает, страница покажет дату и площадку). `modes`: `["оффлайн"]` / `["offline"]` (встреча в офисе площадки); `passportRequired: false` (источник не говорит о паспорте). Опечатку «Тинькоф» исправить на «Тинькофф».
 - Файлы-образцы: `packages/content/src/events/{ru,en}/31.md`, `packages/content/src/talks/{ru,en}/anchor-and-popover.md`.
   Схема: `packages/content/src/schema.ts` (`EventSchema`, `TalkSchema`); у доклада `time` необязательное
   (времени докладов в источниках нет — не заполнять), у митапа `photosUrl` (ссылка на альбом).

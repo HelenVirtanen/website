@@ -1,6 +1,6 @@
 import { CARD_SIZES, type CardInput, type CardSize } from '@moscowcss/og';
 import { localeOf, slugOf, type Catalog } from '../content/catalog';
-import { eventDateParts, fillTemplate } from '../content/format';
+import { eventWhen, fillTemplate } from '../content/format';
 import { useTranslations } from '../i18n';
 import { trimTrailingSlashes, type PublicPage } from './pages';
 
@@ -65,8 +65,8 @@ export function cardInputOf(
     case 'home':
       return { title: page.entry.data.title, kicker: t('og.kind.home'), meta: t('og.home.meta') };
     case 'event': {
-      const { tagline, date, venue } = page.entry.data;
-      const dateTime = fillTemplate(t('hero.dateTime'), eventDateParts(date, locale));
+      const { tagline, venue } = page.entry.data;
+      const dateTime = eventWhen(page.entry.data, locale, { withTime: t('hero.dateTime'), dateOnly: t('date.long') });
       return {
         title: tagline,
         kicker: fillTemplate(t('og.kicker.event'), { slug }),

@@ -24,6 +24,14 @@ describe('EventSchema', () => {
     expect(EventSchema.parse(event()).date.toISOString()).toBe('2026-07-09T15:00:00.000Z');
   });
 
+  it('митап 2017 года без времени и адреса: дата — начало суток по Москве', () => {
+    const archive = event({ time: undefined, venue: { name: 'Яндекс' } });
+    const parsed = EventSchema.parse(archive);
+    expect(parsed.date.toISOString()).toBe('2026-07-08T21:00:00.000Z');
+    expect(parsed.time).toBeUndefined();
+    expect(parsed.venue.address).toBeUndefined();
+  });
+
   it('YAML-дата (Date в полночь UTC) принимается так же, как строка', () => {
     expect(EventSchema.parse(event({ date: new Date('2026-07-09') })).date.toISOString()).toBe(
       '2026-07-09T15:00:00.000Z',

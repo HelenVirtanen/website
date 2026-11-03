@@ -33,7 +33,9 @@ Decision record: `adr/001-content-model-md-relations.md`.
   it). A mismatch fails the build with the file path and the field name.
 - **Meetup date and time:** `date` is a day (`2026-07-09`, no time), `time` is the
   start in Moscow time (`"18:00"`, quoted). A date with a time is rejected: YAML
-  would read it as UTC.
+  would read it as UTC. Only the 2017 meetups (1–6) have no `time` and no
+  `venue.address`: no source kept them, and the site then shows the date alone.
+  Every new meetup has both.
 - **Links are `https` only**; bodies are Markdown only (raw HTML or a non-`https`
   link fails the build — `apps/website/src/content/markdown-safety.ts`). Empty
   bodies of pages, talks and FAQ are errors.

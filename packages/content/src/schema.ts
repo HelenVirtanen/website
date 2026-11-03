@@ -71,11 +71,14 @@ const ScheduleItemSchema = z.object({
 const EventFields = z.object({
   // День митапа `2026-07-09` и начало по Москве `"18:00"`; на выходе `date` — момент начала.
   date: day,
-  time: clockTime,
+  // Нет только у митапов 2017 года: ни один источник не сохранил время начала. Тогда `date` —
+  // начало суток по Москве, а сайт показывает одну дату.
+  time: clockTime.optional(),
   tagline: z.string().min(1),
   venue: z.object({
     name: z.string().min(1),
-    address: z.string().min(1),
+    // Нет только у митапов 2017 года: в источниках есть площадка, но не адрес.
+    address: z.string().min(1).optional(),
     mapUrl: url.optional(),
     // Точка на карте-заглушке; одинакова во всех языках.
     coordinates: z
@@ -100,7 +103,7 @@ const EventFields = z.object({
 });
 
 export const EventSchema = EventFields.transform((event) => {
-  const [hours = 0, minutes = 0] = event.time.split(":").map(Number);
+  const [hours = 0, minutes = 0] = (event.time ?? "00:00").split(":").map(Number);
   const { date } = event;
   return {
     ...event,

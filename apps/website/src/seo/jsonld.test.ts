@@ -71,6 +71,17 @@ describe('jsonLdOf', () => {
     });
   });
 
+  it('митап без времени — startDate только днём, без адреса — место без address', () => {
+    const catalog = {
+      ...twoMeetupsCatalog(),
+      events: [event('ru/10', { date: new Date('2017-03-02T00:00:00+03:00'), time: undefined, venue: { name: 'Яндекс' } })],
+      pages: [home('ru')],
+    };
+    const graph = graphAt('/events/10/', catalog) as { startDate: string; location: Record<string, unknown> };
+    expect(graph.startDate).toBe('2017-03-02');
+    expect(graph.location).toEqual({ '@type': 'Place', name: 'Яндекс' });
+  });
+
   it('митап с трансляцией — смешанный формат и онлайн-место', () => {
     const catalog = {
       ...twoMeetupsCatalog(),

@@ -39,3 +39,30 @@ export function fillTemplate(template: string, values: Readonly<Record<string, s
     return value;
   });
 }
+
+/** Шаблоны словаря для даты митапа: со временем и без него. */
+export interface WhenTemplates {
+  /** `{day} {year} в {time}` */
+  withTime: string;
+  /** `{day} {year}` */
+  dateOnly: string;
+}
+
+/**
+ * Когда проходит митап, строкой для страницы: «9 июля 2026 в 18:00» или, если время не
+ * сохранилось (митапы 2017 года), только «2 марта 2017».
+ */
+export function eventWhen(
+  event: { date: Date; time?: string | undefined },
+  locale: string,
+  templates: WhenTemplates,
+): string {
+  const parts = eventDateParts(event.date, locale);
+  return event.time === undefined
+    ? fillTemplate(templates.dateOnly, parts)
+    : fillTemplate(templates.withTime, parts);
+}
+
+/** Площадка и адрес через запятую; адреса нет — только площадка. */
+export const venueLine = (venue: { name: string; address?: string | undefined }): string =>
+  [venue.name, venue.address].filter(Boolean).join(', ');

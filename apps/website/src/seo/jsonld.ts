@@ -65,7 +65,7 @@ export function jsonLdOf(
       };
 
     case 'event': {
-      const { tagline, date, venue, streamUrl } = page.entry.data;
+      const { tagline, date, time, venue, streamUrl } = page.entry.data;
       const speakerSlugs = new Set(
         talksOfEvent(page.entry, catalog.talks).flatMap((talk) => talk.data.speakers),
       );
@@ -76,7 +76,7 @@ export function jsonLdOf(
       const place = {
         '@type': 'Place',
         name: venue.name,
-        address: venue.address,
+        ...(venue.address && { address: venue.address }),
         ...(venue.coordinates && {
           geo: {
             '@type': 'GeoCoordinates',
@@ -90,7 +90,8 @@ export function jsonLdOf(
         '@type': 'Event',
         ...base,
         name: tagline,
-        startDate: moscowIso(date),
+        // Без времени — только день: полночь в startDate была бы выдуманным временем начала.
+        startDate: time === undefined ? moscowIso(date).slice(0, 10) : moscowIso(date),
         eventStatus: 'https://schema.org/EventScheduled',
         // Онлайн-участие подтверждает только ссылка на трансляцию: `modes` — свободный текст для людей.
         eventAttendanceMode: streamUrl
