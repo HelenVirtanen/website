@@ -79,7 +79,9 @@ describe('aiCatalog', () => {
 describe('llmsTxt', () => {
   const data = { ...twoMeetupsCatalog(), pages: [page('ru/index'), page('en/index')] };
   data.events.push(event('en/16', { date: new Date('2026-03-01T19:00:00+03:00'), tagline: 'Meetup 16' }));
-  const text = llmsTxt(publicPagesOf(data), data, site, new Date('2026-01-01T00:00:00+03:00'));
+  const now = new Date('2026-01-01T00:00:00+03:00');
+  const text = llmsTxt(publicPagesOf(data), data, site, now, 'full');
+  const index = llmsTxt(publicPagesOf(data), data, site, now);
 
   it('формат llmstxt.org: H1, цитата-резюме, затем секции H2', () => {
     const lines = text.split('\n');
@@ -102,5 +104,13 @@ describe('llmsTxt', () => {
     for (const href of links.filter((url) => url.includes('/events/') || url.includes('/talks/'))) {
       expect(href.endsWith('/index.md')).toBe(true);
     }
+  });
+
+  it('оглавление: митапы и документы без докладов и спикеров, ссылка на полный список', () => {
+    expect(index).toContain('(https://css.moscow/events/10/index.md)');
+    expect(index).not.toContain('/talks/');
+    expect(index).not.toContain('/speakers/');
+    expect(index).toContain('[llms-full.txt](https://css.moscow/llms-full.txt)');
+    expect(text).toContain('[llms.txt](https://css.moscow/llms.txt) is the short index');
   });
 });

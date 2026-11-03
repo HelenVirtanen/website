@@ -69,7 +69,8 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   (kind `document`, no JSON-LD). The meetup page hides the registration link once
   the meetup is past (`src/content/event-links.ts`, "now" from `src/content/now.ts`).
 - **Legacy addresses** of the old site (`/28.html`, `/29.html`, `/30.html`,
-  `/personal-data.html`) are noindex stub pages with a meta refresh to the new
+  `/personal-data.html`, and `/personal-data/` + `/en/personal-data/` where the
+  policy lived before `/privacy/`) are noindex stub pages with a meta refresh to the new
   address: one `pages/<name>.html.ts` per address, table and HTML in
   `src/seo/legacy.ts`. Not a `[legacy].html` dynamic route: Astro 7 loses its
   param.

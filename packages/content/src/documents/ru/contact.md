@@ -15,4 +15,4 @@ description: "Как связаться с Moscow CSS: Telegram-канал с а
 
 ## Выступить на митапе
 
-Прочитайте [памятку для спикеров](https://gist.github.com/LenaVladi/5f196be72b5a2bca9a4c5869cf2b2088) и напишите организаторам в Telegram: [@RinaPa](https://t.me/RinaPa), [@DreamShaded](https://t.me/DreamShaded), [@Ppppst](https://t.me/Ppppst). Расскажите тему и пару слов о докладе: организаторы помогут с программой и подготовкой. Данные спикеров обрабатываются по [политике обработки персональных данных](https://css.moscow/personal-data/).
+Прочитайте [памятку для спикеров](https://gist.github.com/LenaVladi/5f196be72b5a2bca9a4c5869cf2b2088) и напишите организаторам в Telegram: [@RinaPa](https://t.me/RinaPa), [@DreamShaded](https://t.me/DreamShaded), [@Ppppst](https://t.me/Ppppst). Расскажите тему и пару слов о докладе: организаторы помогут с программой и подготовкой. Данные спикеров обрабатываются по [политике обработки персональных данных](https://css.moscow/privacy/).

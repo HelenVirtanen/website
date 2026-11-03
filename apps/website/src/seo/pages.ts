@@ -41,7 +41,7 @@ export type PublicPage =
 
 type Kind = PublicPage['kind'];
 
-// Документ живёт прямо под языком, без папки раздела: `/personal-data/`.
+// Документ живёт прямо под языком, без папки раздела: `/privacy/`.
 const SECTION: Record<Exclude<Kind, 'home' | 'document'>, string> = {
   event: 'events',
   talk: 'talks',
