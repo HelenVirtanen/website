@@ -16,9 +16,10 @@ Decisions: `specs/001-blog-like-architecture.md`, `adr/001-*.md`, `adr/002-*.md`
 src/
 ├── i18n/       # config.ts (locales), ui.ts (UI dictionary, ru is the source), URL helpers
 ├── content/    # catalog.ts (relations + validation), format.ts, markdown-safety.ts
-├── seo/        # pages.ts (public pages), og.ts (card input)
+├── seo/        # pages.ts (public pages), og.ts (card input), jsonld.ts (schema.org), sitemap.ts (sitemap + robots)
 ├── layouts/    # BaseLayout: canonical, hreflang, og/twitter tags
-├── pages/      # [...locale]/ (home, events, talks, speakers, search), og/[...path].ts (cards)
+├── pages/      # [...locale]/ (home, events, talks, speakers, search), og/ and avatars/ (images),
+│               # 404.astro (one bilingual page for GitHub Pages), sitemap.xml.ts, robots.txt.ts
 ├── sections/   # homepage sections
 ├── components/ # page-level pieces that are not reusable UI
 ├── search/     # Pagefind client
@@ -64,6 +65,12 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   depends on the current date.
 - Every indexable page needs the full SEO set; `pnpm check:seo` verifies the
   built `dist` and CI runs it.
+- Headings go in order (`h1` → `h2` → `h3`, no skipped level): section titles
+  are `h2` (`BlockTitle`), cards inside them are `h3`. Agents and screen readers
+  read a skipped level as a missing section.
+- Structured data is built in `src/seo/jsonld.ts` from the same catalog as the
+  page: `Organization` + `WebSite` on home, `Event` on a meetup, `Person` on a
+  speaker. Event times are written in Moscow time with `+03:00`.
 - Tests are vitest (`vitest.config.ts` uses `getViteConfig`, so they see the same
   plugins as the build); `astro:content` is mocked with `vi.mock`.
 - Theme is **colour-only** and driven by `data-theme` (`<html data-theme="…">`) /

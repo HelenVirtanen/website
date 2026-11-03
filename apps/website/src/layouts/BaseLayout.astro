@@ -15,6 +15,7 @@ import {
 } from '../i18n';
 import { loadCatalog } from '../content/catalog';
 import { CARD_TYPE, OG_SIZE, OG_TYPE, cardMetaOf } from '../seo/og';
+import { jsonLdOf, serializeJsonLd } from '../seo/jsonld';
 import { publicPagesOf } from '../seo/pages';
 
 interface Alternate {
@@ -57,6 +58,10 @@ const publicPage = noindex
 const card = publicPage && { ...cardMetaOf(publicPage), type: OG_TYPE[publicPage.kind] };
 const ogImage = card && absolute(card.image);
 const twitterImage = card && absolute(card.twitterImage);
+const jsonLd =
+  publicPage &&
+  site &&
+  jsonLdOf(publicPage, catalog, { site, siteName: t('site.name'), telegramUrl: telegramHref, image: ogImage });
 const ogLocale: Record<Locale, string> = { ru: 'ru_RU', en: 'en_US' };
 const xDefault = alternates.find((alternate) => alternate.locale === defaultLocale);
 
@@ -120,6 +125,7 @@ const localeOptions = locales.map((code) => ({
       )
     }
     {xDefault && <link rel="alternate" hreflang="x-default" href={absolute(xDefault.path)} />}
+    {jsonLd && <script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />}
   </head>
   <body>
     <NavBar
