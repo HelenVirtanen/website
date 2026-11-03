@@ -27,7 +27,11 @@ attempts: 0
 - Новый компонент — ТОЛЬКО `pnpm new:component` (plop, `plopfile.mjs:6-32`), дом-стиль `Card.astro:1-14`
   (`const Tag`, `HTMLAttributes<typeof Tag>`, русский JSDoc на каждом своём пропе), стори в
   `apps/storybook/stories/`. Чек-лист компонента: `/home/r/.claude/plugins/cache/vzhyx/vzhyx/0.26.0/conventions/ui-component-house-style.md`.
-- Эталон снимков `.visual/baseline` (`tools/visual/README.md`): стори NavBar должна совпасть.
+- Эталон снимков `.visual/baseline` (`tools/visual/README.md`): стори NavBar должна совпасть. Сравнивать
+  `node tools/visual/compare.mjs --exact .visual/baseline .visual/t07` (рефакторинг без изменения вида);
+  каталог снимков — только внутри `.visual/`. Серверы гасить по PID (`setsid` + `kill -- -PID`).
+- `apps/website/src/pages/index.astro` сейчас вызывает `await loadCatalog()` (`apps/website/src/content/catalog.ts`) —
+  так валидация контента участвует в сборке. Новая `pages/[...locale]/index.astro` ОБЯЗАНА сохранить этот вызов.
 
 ## Steps
 1. `src/i18n/{config,index,ui}.ts` + `ui.test.ts` (у ru и en одинаковые ключи). Ключи: подписи навигации,
