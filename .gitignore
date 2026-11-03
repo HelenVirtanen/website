@@ -13,3 +13,4 @@ temp
 !plans/
 # снимки визуального тулинга (tools/visual)
 .visual/
+!docs/

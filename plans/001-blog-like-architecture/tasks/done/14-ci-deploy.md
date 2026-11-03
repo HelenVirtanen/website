@@ -3,7 +3,7 @@ id: "14"
 title: github-actions-pages-deploy
 spec: "001"
 criteria: ["AC-22", "AC-23"]
-status: pending
+status: done
 depends_on: ["13"]
 owns: [".github/workflows/deploy.yml", ".nvmrc", "docs/deploy.md", ".husky/pre-commit"]
 model: sonnet
