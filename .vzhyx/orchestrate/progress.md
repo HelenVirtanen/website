@@ -82,3 +82,15 @@ Consent: spec 002 layout 92d44e37
 Ruling: время доклада необязательно; должность спикера необязательна — источники их не хранят — архив без времени и части должностей
 Ruling: логотипы партнёров 28–30 удалены — страницы партнёров архива вне охвата — нет
 - 01 site-support: done, contract e9668572, verified lint/test/build/check:seo/storybook
+- 02 speaker-registry: done, 85 speakers, contract e9668572
+- 03 meetups-2017: BLOCKED — нет времени начала митапов 1–6 ни в одном источнике; вопрос пользователю. 08 запущен вне порядка волн: owns не пересекаются с 03
+- 03 meetups-2017: done (retry), 6 meetups, 18 talks, 15 videos, contract 8e4298e3
+- 08 portraits-a-k: done, 42 portraits / 12 avatars; worker had contract e9668572 (contract changed mid-run only in schema-weakening clause, irrelevant to portraits) — accepted
+- 09 portraits-l-z: done, 21 portraits / 10 avatars, contract 8e4298e3
+- 04 meetups-2018-2019: done, 10 meetups, 35 talks; time/address absent for 7–16 (Telegram links only to Timepad; Timepad pages JS-rendered, API needs token) — follow-up: read Timepad via browser
+Ruling: time/address omitted for 7–16 too — docs say «2017 only», fix wording at the end — cost: docs mislead editors until fixed
+Ruling: Арслан Мамедов (4-й спикер 12-го по Telegram, нет в таблице) — не добавлен, вынесен пользователю
+- 05 meetups-2020-2023: done, 9 meetups, 25 talks; conductor removed dead photosUrl https://bit.do/fsEtM (17: cert mismatch + timeout)
+Ruling: «документы» на входе → passportRequired: true — паспорт и есть документ — цена: на старой странице плашка «по паспорту» не показывается (только у ближайшего митапа)
+- 06 meetups-2024: done, 4 meetups, 15 talks; conductor added '27': 3 to COUNT_OVERRIDE (sheet rows without number, Telegram 299/300)
+- 07 meetups-2025-2026: done, 3 meetups, 10 talks. Conductor removed deleted recording rYK74pJp_10 (9). Final: 32 meetups ok, 53/53 videos linked, gate green
