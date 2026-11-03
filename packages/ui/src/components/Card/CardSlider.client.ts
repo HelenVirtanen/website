@@ -27,23 +27,6 @@ function slidesPerView(laptop: MediaQueryList, desktop: MediaQueryList): number 
   return 1;
 }
 
-function equalizeSlideHeights(container: HTMLElement) {
-  const slides = Array.from(container.querySelectorAll<HTMLElement>('.swiper-slide'));
-  if (slides.length === 0) return;
-
-  slides.forEach((slide) => {
-    slide.style.height = '';
-  });
-
-  const maxHeight = slides.reduce((max, slide) => Math.max(max, slide.offsetHeight), 0);
-  if (maxHeight <= 0) return;
-
-  const height = `${maxHeight}px`;
-  slides.forEach((slide) => {
-    slide.style.height = height;
-  });
-}
-
 export function setupCardSlider(root: HTMLElement) {
   if (root.hasAttribute(INITIALIZED)) return;
   root.setAttribute(INITIALIZED, '');
@@ -74,24 +57,19 @@ export function setupCardSlider(root: HTMLElement) {
     resizeObserver: true,
   });
 
-  const refresh = () => {
-    requestAnimationFrame(() => {
-      const slides = container.querySelectorAll<HTMLElement>('.swiper-slide');
-      slides.forEach((slide) => {
-        slide.style.height = '';
-      });
-      swiper.params.slidesPerView = slidesPerView(laptopQuery, desktopQuery);
-      swiper.params.spaceBetween = cssVarToPx(GAP_VAR);
-      swiper.update();
-      requestAnimationFrame(() => {
-        equalizeSlideHeights(container);
-      });
-    });
+  // Высоту слайдов выравнивает CSS (stretch во flex-ряду, CardSlider.css.ts). Здесь — только колонки и
+  // отступ, и только когда они изменились: правка размеров слайдов из обработчика resize будит
+  // ResizeObserver Swiper, и петля дёргала секцию и всё под ней на долю пикселя каждый кадр.
+  const sync = () => {
+    const perView = slidesPerView(laptopQuery, desktopQuery);
+    const gap = cssVarToPx(GAP_VAR);
+    if (swiper.params.slidesPerView === perView && swiper.params.spaceBetween === gap) return;
+    swiper.params.slidesPerView = perView;
+    swiper.params.spaceBetween = gap;
+    swiper.update();
   };
 
-  swiper.on('init resize slideChange transitionEnd', refresh);
-  laptopQuery.addEventListener('change', refresh);
-  desktopQuery.addEventListener('change', refresh);
-  refresh();
+  swiper.on('resize', sync);
+  laptopQuery.addEventListener('change', sync);
+  desktopQuery.addEventListener('change', sync);
 }
-
