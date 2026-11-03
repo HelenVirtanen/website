@@ -3,7 +3,7 @@ id: "13"
 title: content-scaffolding-commands
 spec: "001"
 criteria: ["AC-8", "AC-9"]
-status: pending
+status: done
 depends_on: ["12"]
 owns: ["apps/website/scripts/new-entry.mjs", "apps/website/scripts/new-entry.test.mjs", "packages/content/templates/**", "packages/content/README.md", "package.json", "plopfile.mjs", "plop-templates/content/**"]
 model: sonnet

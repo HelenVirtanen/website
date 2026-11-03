@@ -133,10 +133,12 @@ export const PartnerSchema = z.object({
       }),
     )
     .min(1),
+  draft: z.boolean().default(false),
 });
 
 export const FaqSchema = z.object({
   title: z.string().min(1),
   // Порядок карточек: меньше — левее.
   order: z.number().int().nonnegative(),
+  draft: z.boolean().default(false),
 });

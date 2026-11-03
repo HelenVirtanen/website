@@ -63,7 +63,7 @@ const alternates = locales.map((code) => ({ locale: code, path: localizePath(cod
       )
     }
     {partner && featured && <PartnerSection partner={partner} event={featured.event} locale={locale} />}
-    <FAQSection entries={inLocale(catalog.faq)} locale={locale} />
+    <FAQSection entries={inLocale(catalog.faq).filter((entry) => !entry.data.draft)} locale={locale} />
     <JoinSection locale={locale} />
     <AboutSection page={page} locale={locale} />
     <PastEventsSection events={pastEvents(events, now)} locale={locale} />

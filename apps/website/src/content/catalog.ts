@@ -148,14 +148,18 @@ export function validateCatalog(catalog: Catalog): void {
   const problems: string[] = [];
   const events = new Map(catalog.events.map((entry) => [entry.id, entry]));
   const speakers = new Map(catalog.speakers.map((entry) => [entry.id, entry]));
-  const partners = new Set(catalog.partners.map((entry) => entry.id));
+  const partners = new Map(catalog.partners.map((entry) => [entry.id, entry]));
 
   for (const event of catalog.events) {
     const { partner } = event.data;
-    if (partner && !partners.has(`${localeOf(event)}/${partner}`)) {
+    if (!partner) continue;
+    const found = partners.get(`${localeOf(event)}/${partner}`);
+    if (!found) {
       problems.push(
         `${whereOf(event)}: partner → нет записи «${partner}» в partners/${localeOf(event)}`,
       );
+    } else if (isPublished(event) && !isPublished(found)) {
+      problems.push(`${whereOf(event)}: partner → партнёр «${partner}» — черновик, а митап опубликован`);
     }
   }
 

@@ -47,6 +47,13 @@ describe('validateCatalog', () => {
     expect(() => validateCatalog(clean)).not.toThrow();
   });
 
+  it('опубликованный митап ссылается на партнёра-черновика', () => {
+    const catalog = twoMeetupsCatalog();
+    catalog.events[0] = event('ru/10', { date: new Date('2024-03-14T18:00:00+03:00'), partner: 'zvuk' });
+    catalog.partners = [{ ...partner('ru/zvuk'), data: { ...partner('ru/zvuk').data, draft: true } }];
+    expect(messageOf(() => validateCatalog(catalog))).toContain('партнёр «zvuk» — черновик');
+  });
+
   it('расхождение passportRequired в переводе митапа', () => {
     const catalog = twoMeetupsCatalog();
     catalog.events[2] = event('en/10', { date: new Date('2024-03-14T18:00:00+03:00'), passportRequired: true });

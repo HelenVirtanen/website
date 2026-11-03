@@ -71,6 +71,7 @@ export function partner(id: string): PartnerEntry {
       handle: '@ZVUK_JOBS',
       tagline: 'Партнёр',
       features: [{ title: 'Вакансии', description: 'Описание' }],
+      draft: false,
     },
   };
 }

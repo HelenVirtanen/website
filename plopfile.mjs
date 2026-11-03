@@ -30,20 +30,4 @@ export default function (plop) {
       },
     ],
   });
-
-  // pnpm new:speaker | new:event | new:report  -> заглушки контентных страниц
-  for (const kind of ['speaker', 'event', 'report']) {
-    plop.setGenerator(kind, {
-      description: `New ${kind} content page (stub)`,
-      prompts: [{ type: 'input', name: 'slug', message: `${kind} slug:` }],
-      actions: [
-        {
-          type: 'add',
-          path: `apps/website/src/pages/${kind}s/{{kebabCase slug}}.astro`,
-          templateFile: 'plop-templates/content/page.astro.hbs',
-          data: { kind },
-        },
-      ],
-    });
-  }
 }
