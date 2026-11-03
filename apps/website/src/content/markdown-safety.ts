@@ -8,6 +8,17 @@ import type { AstroIntegration } from 'astro';
 const SAFE_PROTOCOLS = new Set(['https:', 'mailto:']);
 // Относительные адреса и якоря разрешаются от сайта и получают его протокол.
 const BASE = 'https://css.moscow/';
+const SITE_HOST = new URL(BASE).host;
+
+/** Ссылка ведёт на другой сайт: https и чужой хост. */
+export function isExternalUrl(value: string): boolean {
+  try {
+    const url = new URL(value, BASE);
+    return url.protocol === 'https:' && url.host !== SITE_HOST;
+  } catch {
+    return false;
+  }
+}
 
 /** Адрес безопасен в href/src: после разрешения от сайта схема https или mailto. */
 export function isSafeUrl(value: string): boolean {
@@ -40,6 +51,7 @@ function reject(fileURL: URL | undefined, problem: string): never {
 
 interface VisitorContext {
   readonly fileURL: URL | undefined;
+  setProperty(node: Readonly<ElementNode>, key: string, value: unknown): void;
 }
 
 interface ElementNode {
@@ -47,7 +59,7 @@ interface ElementNode {
   readonly properties?: Readonly<Record<string, unknown>>;
 }
 
-/** hast-плагин процессора satteri: сырой HTML и опасные ссылки роняют сборку. */
+/** hast-плагин процессора satteri: сырой HTML и опасные ссылки роняют сборку, внешние ссылки — в новой вкладке. */
 export const markdownSafetyPlugin = {
   name: 'moscowcss-markdown-safety',
   raw(_node: unknown, ctx: VisitorContext): void {
@@ -58,8 +70,14 @@ export const markdownSafetyPlugin = {
     visit(node: ElementNode, ctx: VisitorContext): void {
       const attribute = node.tagName === 'a' ? 'href' : 'src';
       const value = node.properties?.[attribute];
-      if (typeof value === 'string' && !isSafeUrl(value)) {
+      if (typeof value !== 'string') return;
+      if (!isSafeUrl(value)) {
         reject(ctx.fileURL, `адрес «${value}» в ${attribute} — разрешены только https://, mailto: и адреса сайта`);
+      }
+      // Внешняя ссылка открывается в новой вкладке; noopener не даёт чужой странице управлять нашей.
+      if (node.tagName === 'a' && isExternalUrl(value)) {
+        ctx.setProperty(node, 'target', '_blank');
+        ctx.setProperty(node, 'rel', 'noopener noreferrer');
       }
     },
   },

@@ -29,6 +29,6 @@ const {
 } = Astro.props;
 ---
 <Tag class:list={[root, className]} role="search" {...attrs}>
-  <input class={input} type="search" name={name} value={value} placeholder={placeholder} aria-label={labelText} />
+  <input class={input} type="search" name={name} value={value} placeholder={placeholder} aria-label={labelText} data-search-input />
   <button class={submit} type="submit">{submitLabel}</button>
 </Tag>

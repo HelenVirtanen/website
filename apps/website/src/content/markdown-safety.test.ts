@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { isSafeUrl, markdownSafetyPlugin, MarkdownSafetyError } from './markdown-safety';
+import { isExternalUrl, isSafeUrl, markdownSafetyPlugin, MarkdownSafetyError } from './markdown-safety';
 
-const ctx = { fileURL: new URL('file:///repo/packages/content/src/talks/ru/x.md') };
+const set: [string, unknown][] = [];
+const ctx = {
+  fileURL: new URL('file:///repo/packages/content/src/talks/ru/x.md'),
+  setProperty: (_node: unknown, key: string, value: unknown) => {
+    set.push([key, value]);
+  },
+};
 
 describe('isSafeUrl', () => {
   it('https, mailto, адреса сайта и якоря безопасны', () => {
@@ -17,7 +23,28 @@ describe('isSafeUrl', () => {
   });
 });
 
+describe('isExternalUrl', () => {
+  it('чужой https — внешний; сайт, якорь, относительный и mailto — нет', () => {
+    expect(isExternalUrl('https://t.me/moscowcss')).toBe(true);
+    for (const url of ['https://css.moscow/events/31/', '/talks/x/', '#faq', 'mailto:hi@css.moscow']) {
+      expect(isExternalUrl(url), url).toBe(false);
+    }
+  });
+});
+
 describe('markdownSafetyPlugin', () => {
+  it('внешней ссылке ставит target=_blank и rel=noopener noreferrer, своей — нет', () => {
+    const { visit } = markdownSafetyPlugin.element;
+    set.length = 0;
+    visit({ tagName: 'a', properties: { href: '/events/31/' } }, ctx);
+    expect(set).toEqual([]);
+    visit({ tagName: 'a', properties: { href: 'https://t.me/moscowcss' } }, ctx);
+    expect(set).toEqual([
+      ['target', '_blank'],
+      ['rel', 'noopener noreferrer'],
+    ]);
+  });
+
   it('сырой HTML роняет сборку с путём файла', () => {
     expect(() => markdownSafetyPlugin.raw({}, ctx)).toThrow(MarkdownSafetyError);
     expect(() => markdownSafetyPlugin.raw({}, ctx)).toThrow('/repo/packages/content/src/talks/ru/x.md');

@@ -48,8 +48,9 @@ export async function initSearch(
   const template = root.querySelector<HTMLTemplateElement>('template[data-search-item]');
   if (!status || !list || !template) return;
 
-  const input = document.querySelector<HTMLInputElement>('input[name="q"]');
-  const q = new URLSearchParams(location.search).get('q') ?? '';
+  // Поле находим по data-атрибуту, а не по name: имя параметра у SearchField настраивается.
+  const input = document.querySelector<HTMLInputElement>('input[data-search-input]');
+  const q = new URLSearchParams(location.search).get(input?.name || 'q') ?? '';
   if (input) input.value = q;
 
   const { query, hits, indexAvailable } = await search(q, load);

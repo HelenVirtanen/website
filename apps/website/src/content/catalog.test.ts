@@ -67,6 +67,13 @@ describe('validateCatalog', () => {
     expect(message).toContain('speakers/ru');
   });
 
+  it('черновик доклада может ссылаться на ещё не заведённых спикера и митап', () => {
+    const catalog = twoMeetupsCatalog();
+    catalog.talks.push(talk('ru/future', { event: '99', speakers: ['someone'], draft: true }));
+    catalog.talks.push(talk('en/future', { event: '99', speakers: ['someone'], draft: true }));
+    expect(() => validateCatalog(catalog)).not.toThrow();
+  });
+
   it('спикер есть только в другом языке: в своём языке это ошибка', () => {
     const catalog = twoMeetupsCatalog();
     catalog.speakers = [speaker('en/daria-egorova')];

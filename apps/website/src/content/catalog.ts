@@ -176,9 +176,11 @@ export function validateCatalog(
   for (const talk of catalog.talks) {
     const locale = localeOf(talk);
     const event = events.get(`${locale}/${talk.data.event}`);
-    if (!event) {
+    // Черновик может ссылаться на ещё не заведённые записи: доклад заводят раньше спикера.
+    // Опубликованный — нет: тогда опечатка в имени уехала бы на сайт.
+    if (!event && isPublished(talk)) {
       problems.push(`${whereOf(talk)}: event → нет записи «${talk.data.event}» в events/${locale}`);
-    } else if (isPublished(talk) && !isPublished(event)) {
+    } else if (event && isPublished(talk) && !isPublished(event)) {
       problems.push(
         `${whereOf(talk)}: event → митап «${talk.data.event}» — черновик, а доклад опубликован`,
       );
@@ -186,7 +188,9 @@ export function validateCatalog(
     for (const name of talk.data.speakers) {
       const speaker = speakers.get(`${locale}/${name}`);
       if (!speaker) {
-        problems.push(`${whereOf(talk)}: speakers → нет записи «${name}» в speakers/${locale}`);
+        if (isPublished(talk)) {
+          problems.push(`${whereOf(talk)}: speakers → нет записи «${name}» в speakers/${locale}`);
+        }
       } else if (isPublished(talk) && !isPublished(speaker)) {
         problems.push(
           `${whereOf(talk)}: speakers → спикер «${name}» — черновик, а доклад опубликован`,

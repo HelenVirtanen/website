@@ -45,6 +45,11 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   (`src/content/markdown-safety.ts`) fails the build on raw HTML in content and on
   any `href`/`src` that is not `https:`/`mailto:` after URL resolution. Check
   stays on the parsed tree (hast), never regexes over the source.
+  The plugin also opens external links in a new tab (`target="_blank"`,
+  `rel="noopener noreferrer"`). Rendered content is cached in
+  `.astro/data-store.json` and `node_modules/.astro/`: after changing a Markdown
+  plugin, delete those files, or unchanged content keeps the old HTML locally
+  (CI starts clean).
 - `site` is `https://css.moscow`, `trailingSlash: 'always'`: canonical, hreflang
   and internal links are absolute/with a trailing slash.
 - **Content entries** are created with `pnpm new:event | new:talk | new:speaker |

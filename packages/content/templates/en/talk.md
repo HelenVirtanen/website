@@ -1,12 +1,12 @@
 ---
-event: "31"
+event: "0"
 speakers:
-  - daria-egorova
+  - speaker-name
 time: "19:10"
 title: "Talk title"
 draft: true
-# Draft. event, speakers, time, slidesUrl and videoUrl must match the Russian file. Speakers
-# must exist as files. Remove draft: true before publishing.
+# Draft. event, speakers, time, slidesUrl and videoUrl must match the Russian file. A draft may
+# point at entries that do not exist yet; by publishing they must. Remove draft: true.
 ---
 
 Talk description: what it is about and what the audience will learn.
