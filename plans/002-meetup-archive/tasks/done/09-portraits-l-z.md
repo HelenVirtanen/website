@@ -3,7 +3,7 @@ id: "09"
 title: portraits-l-z
 spec: "002"
 criteria: ["AC-7", "AC-10"]
-status: pending
+status: done
 depends_on: ["02"]
 owns: ["packages/content/src/speakers/assets/[l-z]*", "packages/content/src/speakers/ru/[l-z]*.md", "packages/content/src/speakers/en/[l-z]*.md", "plans/002-meetup-archive/portraits-l-z.csv"]
 model: sonnet
