@@ -1,10 +1,12 @@
 ---
-import BlockTitle from '@moscowcss/ui/components/BlockTitle';
 import FeatureCard from '@moscowcss/ui/components/FeatureCard';
 import MapPlaceholder from '@moscowcss/ui/components/MapPlaceholder';
 import MediaTile from '@moscowcss/ui/components/MediaTile';
 import { LineVektor, QrCode, ZvukLogo } from '@moscowcss/icons';
-import { directions, partnerBrand, partnerFeatures } from '../data/partner';
+import Prose from '@moscowcss/ui/components/Prose';
+import { render, type CollectionEntry } from 'astro:content';
+import { fillTemplate } from '../content/format';
+import { useTranslations, type Locale } from '../i18n';
 import partnerCardsWave from '../../public/assets/partner-cards-wave.svg?raw';
 import {
   section,
@@ -19,19 +21,33 @@ import {
   cardsRow,
   cardsGrid,
   directionsBlock,
-  address,
-  hints,
-  mediaTitle,
+  directionsProse,
   mediaRow,
   mapFrame,
   mediaTileFrame,
 } from './PartnerSection.css';
 
 interface Props {
+  // Партнёр митапа
+  partner: CollectionEntry<'partners'>;
+  // Митап: площадка, карта и текст «как добраться»
+  event: CollectionEntry<'events'>;
+  // Язык страницы
+  locale: Locale;
   id?: string;
 }
 
-const { id = 'partners' } = Astro.props;
+const { partner, event, locale, id = 'partners' } = Astro.props;
+const t = useTranslations(locale);
+const { name, handle: partnerHandle, tagline: partnerTagline, features } = partner.data;
+const { venue } = event.data;
+const { Content: Directions } = await render(event);
+
+const routeMedia = [
+  { kind: 'image', alt: t('route.photoFirst') },
+  { kind: 'video', alt: t('route.video') },
+  { kind: 'image', alt: t('route.photoSecond') },
+] as const;
 ---
 
 <section class={section} id={id} data-visual="partner">
@@ -41,16 +57,16 @@ const { id = 'partners' } = Astro.props;
     </div>
     <div class={inner}>
       <div class={partnerHeader}>
-        <ZvukLogo class={brandLogo} aria-label={partnerBrand.name} role="img" />
-        <QrCode class={qr} aria-label={`QR-код ${partnerBrand.handle}`} role="img" />
-        <p class={handle}>{partnerBrand.handle}</p>
-        <p class={tagline}>{partnerBrand.tagline}</p>
+        <ZvukLogo class={brandLogo} aria-label={name} role="img" />
+        <QrCode class={qr} aria-label={fillTemplate(t('partner.qrLabel'), { handle: partnerHandle })} role="img" />
+        <p class={handle}>{partnerHandle}</p>
+        <p class={tagline}>{partnerTagline}</p>
       </div>
 
       <div class={cardsRow}>
         <div class={cardsGrid}>
           {
-            partnerFeatures.map((feature, index) => (
+            features.map((feature, index) => (
               <FeatureCard
                 title={feature.title}
                 description={feature.description}
@@ -64,31 +80,24 @@ const { id = 'partners' } = Astro.props;
       </div>
 
       <div class={directionsBlock} id="address">
-        <BlockTitle tone="inverse">Как добраться</BlockTitle>
-        <p class={address}>Адрес: {directions.address}</p>
-        <ul class={hints}>
-          {directions.hints.map((hint) => (
-            <li>{hint}</li>
-          ))}
-        </ul>
-        <MapPlaceholder
-          class={mapFrame}
-          latitude={directions.map.latitude}
-          longitude={directions.map.longitude}
-          zoom={directions.map.zoom}
-          caption={directions.map.caption}
-        />
-        <p class={mediaTitle}>{directions.routeMediaTitle}</p>
+        <Prose class={directionsProse}>
+          <Directions />
+        </Prose>
+        {
+          venue.coordinates && (
+            <MapPlaceholder
+              class={mapFrame}
+              latitude={venue.coordinates.latitude}
+              longitude={venue.coordinates.longitude}
+              zoom={venue.coordinates.zoom}
+              caption={venue.address}
+            />
+          )
+        }
         <div class={mediaRow}>
           {
-            directions.media.map((item) => (
-              <MediaTile
-                class={mediaTileFrame}
-                kind={item.kind}
-                src={item.src}
-                poster={item.poster}
-                alt={item.alt}
-              />
+            routeMedia.map((item) => (
+              <MediaTile class={mediaTileFrame} kind={item.kind} alt={item.alt} />
             ))
           }
         </div>

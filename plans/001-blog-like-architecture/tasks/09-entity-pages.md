@@ -26,6 +26,13 @@ attempts: 0
   `apps/website/src/components/` (НЕ в `src/pages`: `.ts` в pages Astro считает эндпоинтом), только
   `vars`/`media`, без `px`. Макетов у страниц нет — композиция из существующих компонентов.
 - Фото — `<Image>` из `astro:assets`, `alt` из `photoAlt`.
+- Хвосты задачи 08, которые закрывает эта задача (AC-11 на /en/): `packages/ui/src/components/JoinBlock` и
+  `MapPlaceholder` содержат русский текст литералами — перевести на пропсы (JSDoc), строки передавать из
+  словаря сайта; стори передают прежние русские значения (снимки стори не должны измениться). В Hero ссылка
+  «Смотри трансляцию» рендерится с `href=""`, когда `streamUrl` нет, — не рендерить ссылку без адреса.
+- Сравнение снимков после правок: `node tools/visual/compare.mjs --ignore site/navbar@ --ignore stories/components-localeswitcher --ignore stories/components-prose --ignore stories/components-linklist .visual/baseline .visual/<run>`
+  при сборке `BUILD_NOW=2026-07-01 pnpm build` (в эталоне ссылка трансляции видна — если её скрытие
+  меняет hero, это ожидаемо: зафиксировать в отчёте долю и причину, а не подгонять).
 
 ## Steps
 1. `src/seo/pages.ts`: `publicPages()` для главной, митапов (`/events/<номер>/`), докладов

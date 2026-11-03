@@ -3,7 +3,7 @@ id: "08"
 title: home-page-from-content-and-dictionary
 spec: "001"
 criteria: ["AC-1", "AC-3", "AC-11", "AC-12", "AC-21"]
-status: pending
+status: done
 depends_on: ["07"]
 owns: ["apps/website/src/pages/**", "apps/website/src/sections/**", "apps/website/src/data/**", "apps/website/src/i18n/ui.ts", "apps/website/src/styles/**", "apps/website/src/content/**", "packages/ui/src/components/Prose/**", "packages/ui/src/components/LinkList/**", "packages/ui/src/components/Card/**", "packages/ui/src/index.ts", "apps/storybook/stories/Prose.stories.ts", "apps/storybook/stories/LinkList.stories.ts"]
 model: sonnet

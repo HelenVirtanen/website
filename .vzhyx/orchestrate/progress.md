@@ -27,3 +27,9 @@ Deferred: устаревшая §5 в CLAUDE.md про растущие padding 
 - 07 i18n-layout: done (attempt 1) — ru `/` + en `/en/`, BaseLayout (canonical, 3 абсолютных hreflang), LocaleSwitcher, NavBar на пропсах; 27 тестов.
 Ruling: AC-21 изменён в спеке на месте — шапка сайта исключена (AC-10 требует переключатель), секции снимаются со скрытой липкой шапкой; эталон переснят с dad0413 в отдельном worktree (manifest: dad0413, clean), старый эталон — .visual/baseline-v1. Снимки 07: все прежние 0 пикселей, расходятся только новые стори LocaleSwitcher (нет в базе).
 Ruling: plop-шаблон component.css.ts.hbs исправлен conductor-ом (vars.padding.medium/vars.font.body не существуют) — иначе каждый new:component генерирует неcобираемый css.
+- 08 home-from-content: done (attempt 1 + conductor fix) — главная ru/en из контента и словаря, src/data удалён, Prose и LinkList; снимки с BUILD_NOW ≤0.0014% (FAQ), прод-сборка без регистрации и со ссылкой на /events/31/; 35 тестов.
+Ruling: turbo.json build.env = [BUILD_NOW] (conductor) — strict env mode turbo отбрасывал переменную, снимки молча собирались с реальной датой; заодно переменная входит в ключ кэша.
+Ruling: временные копии фото в apps/website/public/assets удалены — секции берут фото из контента.
+Ruling: блоки «о митапе» и «прошлые митапы» стоят после Join — вставка выше сдвигала субпиксельную y секций и ломала паритет; порядок секций спека не задаёт — цена: «о митапе» внизу главной до редизайна.
+Deferred → 09: JoinBlock/MapPlaceholder с русскими литералами на /en/, пустой href трансляции.
+Deferred (вне спеки, отметить в итоге): внешние ссылки из Markdown без target/rel; логотип и QR партнёра зашиты под Звук; фото спикеров без оптимизации (photo.src).

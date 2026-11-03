@@ -1,7 +1,9 @@
 ---
 import CallToAction from '@moscowcss/ui/components/CallToAction';
 import { Logo } from '@moscowcss/icons';
-import { hero } from '../data/hero';
+import type { CollectionEntry } from 'astro:content';
+import { eventDateParts, fillTemplate } from '../content/format';
+import { useTranslations, type Locale } from '../i18n';
 import {
   section,
   inner,
@@ -22,10 +24,20 @@ import {
 } from './HeroSection.css';
 
 interface Props {
+  // Митап, который показывает блок
+  event: CollectionEntry<'events'>;
+  // Язык страницы
+  locale: Locale;
+  // Митап уже прошёл: вместо регистрации — пометка и ссылка на запись
+  past: boolean;
   id?: string;
 }
 
-const { id = 'registration' } = Astro.props;
+const { event, locale, past, id = 'registration' } = Astro.props;
+const t = useTranslations(locale);
+const { tagline, venue, modes: eventModes, passportRequired, registrationUrl, streamUrl, recordingUrl } =
+  event.data;
+const dateTime = fillTemplate(t('hero.dateTime'), eventDateParts(event.data.date, locale));
 ---
 
 <section class={section} id={id} data-visual="hero">
@@ -33,11 +45,11 @@ const { id = 'registration' } = Astro.props;
     <div class={intro}>
       <div class={introHead}>
         <Logo class={star} aria-hidden="true" />
-        <h1 class={title}>{hero.title}</h1>
+        <h1 class={title}>{t('hero.title')}</h1>
       </div>
       <ul class={modes}>
         {
-          hero.modes.map((mode) => (
+          eventModes.map((mode) => (
             <li class={modeItem}>{mode}</li>
           ))
         }
@@ -46,19 +58,41 @@ const { id = 'registration' } = Astro.props;
 
     <div class={footer}>
       <div class={details}>
-        <p class={meetupLine}>{hero.meetupLine}</p>
-        <p class={infoLine}>{hero.dateTime}</p>
-        <p class={infoLine}>{hero.address}</p>
-        <p class={passportNote}>{hero.passportNote}</p>
+        <p class={meetupLine}>{tagline}</p>
+        <p class={infoLine}>{dateTime}</p>
+        <p class={infoLine}>{fillTemplate(t('hero.address'), { address: venue.address })}</p>
+        {passportRequired && <p class={passportNote}>{t('hero.passport')}</p>}
       </div>
       <div class={ctaColumn}>
-        <CallToAction class={ctaButton} href={hero.registrationHref}>
-          Регистрация
-        </CallToAction>
-        <p class={onlineNote}>Для онлайн просмотра регистрация не нужна 
-                              <br/>
-                              <a href={hero.translationHref} target="_blank" rel="noopener noreferrer">Смотри трансляцию</a>
-        </p>
+        {
+          past ? (
+            <>
+              <p class={onlineNote}>{t('hero.pastNote')}</p>
+              {recordingUrl && (
+                <p class={onlineNote}>
+                  <a href={recordingUrl} target="_blank" rel="noopener noreferrer">
+                    {t('hero.watchRecording')}
+                  </a>
+                </p>
+              )}
+            </>
+          ) : (
+            <>
+              {registrationUrl && (
+                <CallToAction class={ctaButton} href={registrationUrl}>
+                  {t('hero.registration')}
+                </CallToAction>
+              )}
+              <p class={onlineNote}>
+                {t('hero.onlineNote')}
+                <br />
+                <a href={streamUrl ?? ''} target="_blank" rel="noopener noreferrer">
+                  {t('hero.watchStream')}
+                </a>
+              </p>
+            </>
+          )
+        }
       </div>
     </div>
   </div>

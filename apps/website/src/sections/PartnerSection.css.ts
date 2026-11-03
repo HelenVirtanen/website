@@ -127,13 +127,34 @@ export const directionsBlock = style({
   gap: vars.layout.gap.xxl,
 });
 
-export const address = style({
+// Текст «как добраться» приходит отрендеренным Markdown-ом тела митапа: заголовок, адрес,
+// список подсказок и подпись к фото маршрута. Контейнер — display: contents, поэтому его дети
+// становятся элементами колонки `directionsBlock`: карта встаёт между списком и подписью (order).
+export const directionsProse = style({
+  display: 'contents',
+});
+
+globalStyle(`${directionsProse} > h2`, {
+  width: 'fit-content',
+  padding: `${vars.padding.xl} ${vars.padding.xxxl} ${vars.layout.inset.l} ${vars.padding.xxxl}`,
+  color: vars.color.onSurfaceDark,
+  font: vars.font.shorthand.subtitle,
+  letterSpacing: 'normal',
+  border: `${vars.border.width.thick} ${vars.border.style.dashed} ${vars.color.borderOnDark}`,
+  '@media': {
+    [media.tablet]: {
+      font: vars.font.shorthand.blockTitle,
+    },
+  },
+});
+
+globalStyle(`${directionsProse} > p`, {
   margin: 0,
   font: vars.font.shorthand.partnerAddress,
   letterSpacing: vars.font.letterSpacing.figmaWide,
 });
 
-export const hints = style({
+globalStyle(`${directionsProse} > ul`, {
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
   gap: vars.spacing.s,
@@ -143,13 +164,17 @@ export const hints = style({
   letterSpacing: vars.font.letterSpacing.figmaWide,
 });
 
-export const mediaTitle = style({
+globalStyle(`${directionsProse} > ul > li`, {
   margin: 0,
+});
+
+globalStyle(`${directionsProse} > p:last-child`, {
+  order: 1,
   font: vars.font.shorthand.partnerDirectionsHint,
-  letterSpacing: vars.font.letterSpacing.figmaWide,
 });
 
 export const mediaRow = style({
+  order: 2,
   display: vars.display.grid,
   gap: vars.layout.gap.m,
   gridTemplateColumns: '1fr',

@@ -1,8 +1,10 @@
 ---
 import BlockTitle from '@moscowcss/ui/components/BlockTitle';
 import SpeakerAvatar from '@moscowcss/ui/components/SpeakerAvatar';
-import { scheduleHint, scheduleItems } from '../data/schedule';
-import type { ScheduleTalk } from '../data/schedule';
+import Prose from '@moscowcss/ui/components/Prose';
+import { render, type CollectionEntry } from 'astro:content';
+import { scheduleOf, slugOf } from '../content/catalog';
+import { useTranslations, type Locale } from '../i18n';
 import {
   section,
   inner,
@@ -22,40 +24,65 @@ import {
 } from './ProgramSection.css';
 
 interface Props {
+  // Митап, чью программу показывает блок
+  event: CollectionEntry<'events'>;
+  // Доклады всех митапов языка страницы
+  talks: CollectionEntry<'talks'>[];
+  // Спикеры языка страницы
+  speakers: CollectionEntry<'speakers'>[];
+  // Язык страницы
+  locale: Locale;
   id?: string;
 }
 
-const { id = 'program' } = Astro.props;
+const { event, talks, speakers, locale, id = 'program' } = Astro.props;
+const t = useTranslations(locale);
 
-const isTalk = (item: (typeof scheduleItems)[number]): item is ScheduleTalk => item.type === 'talk';
+const speakerBySlug = new Map(speakers.map((speaker) => [slugOf(speaker), speaker]));
+
+const items = await Promise.all(
+  scheduleOf(event, talks).map(async (item) => {
+    if (item.kind !== 'talk') return item;
+    const { Content } = await render(item.talk);
+    const people = item.talk.data.speakers.flatMap((slug) => {
+      const speaker = speakerBySlug.get(slug);
+      return speaker ? [speaker.data] : [];
+    });
+    return { ...item, Content, people };
+  }),
+);
 ---
 
 <section class={section} id={id} data-visual="program">
   <div class={inner}>
     <div class={header}>
-      <BlockTitle>Программа</BlockTitle>
-      <p class={hint}>{scheduleHint}</p>
+      <BlockTitle>{t('program.title')}</BlockTitle>
+      <p class={hint}>{t('program.hint')}</p>
     </div>
 
     <ul class={list}>
       {
-        scheduleItems.map((item) =>
-          isTalk(item) ? (
+        items.map((item) =>
+          item.kind === 'talk' ? (
             <li class={row}>
               <div class={portraitColumn}>
                 <p class={time}>{item.time}</p>
-                <SpeakerAvatar src={item.speaker.avatarSrc} alt={item.speaker.avatarAlt} />
+                <SpeakerAvatar src={item.people[0]?.photo.src} alt={item.people[0]?.photoAlt ?? ''} />
               </div>
               <div class={talkMain}>
                 <h3 class={talkTitle}>{item.title}</h3>
-                <p class={speakerName}>{item.speaker.name}</p>
-                <p class={speakerRole}>{item.speaker.role}</p>
+                <p class={speakerName}>{item.people.map((person) => person.name).join(', ')}</p>
+                <p class={speakerRole}>{item.people.map((person) => person.role).join(' · ')}</p>
               </div>
-              <p class={description}>{item.description}</p>
+              <div class={description}>
+                <Prose>
+                  <item.Content />
+                </Prose>
+              </div>
             </li>
           ) : (
             <li class={activityRow}>
-              <p class={time}>{item.timeRange}</p>
+              <p class={time}>{item.time}</p>
               <p class={activityTitle}>{item.title}</p>
             </li>
           ),

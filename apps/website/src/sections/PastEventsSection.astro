@@ -1,0 +1,34 @@
+---
+import LinkList from '@moscowcss/ui/components/LinkList';
+import type { CollectionEntry } from 'astro:content';
+import { slugOf } from '../content/catalog';
+import { eventDateParts, fillTemplate } from '../content/format';
+import { localizePath, useTranslations, type Locale } from '../i18n';
+import { section, inner } from './PastEventsSection.css';
+
+interface Props {
+  // Прошедшие митапы языка страницы, новые выше
+  events: CollectionEntry<'events'>[];
+  // Язык страницы
+  locale: Locale;
+}
+
+const { events, locale } = Astro.props;
+const t = useTranslations(locale);
+
+const items = events.map((event) => ({
+  href: localizePath(locale, `events/${slugOf(event)}`),
+  label: event.data.tagline,
+  caption: fillTemplate(t('date.long'), eventDateParts(event.data.date, locale)),
+}));
+---
+
+{
+  items.length > 0 && (
+    <section class={section} id="events">
+      <div class={inner}>
+        <LinkList title={t('events.past')} items={items} />
+      </div>
+    </section>
+  )
+}

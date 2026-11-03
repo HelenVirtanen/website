@@ -1,0 +1,44 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { root, title, list, item, link, caption } from './LinkList.css';
+
+// Тег — единственный источник правды: заменишь 'div' на 'section' —
+// тип пропсов (HTMLAttributes<typeof Tag>) и разметка поменяются вместе.
+const Tag = 'div';
+
+export interface LinkListItem {
+  /** Адрес ссылки */
+  href: string;
+  /** Текст ссылки */
+  label: string;
+  /** Подпись справа от ссылки, например дата */
+  caption?: string;
+}
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Заголовок списка */
+  title: string;
+  /** Ссылки списка в порядке показа */
+  items: LinkListItem[];
+  /** Уровень заголовка: иерархию документа задаёт страница */
+  headingLevel?: 2 | 3 | 4;
+}
+
+const { title: heading, items, headingLevel = 2, class: className, ...attrs } = Astro.props;
+const Heading = `h${headingLevel}` as const;
+---
+<Tag class:list={[root, className]} {...attrs}>
+  <Heading class={title}>{heading}</Heading>
+  {
+    items.length > 0 && (
+      <ul class={list}>
+        {items.map((entry) => (
+          <li class={item}>
+            <a class={link} href={entry.href}>{entry.label}</a>
+            {entry.caption != null && <span class={caption}>{entry.caption}</span>}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</Tag>

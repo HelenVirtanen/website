@@ -1,0 +1,27 @@
+---
+import Prose from '@moscowcss/ui/components/Prose';
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import { useTranslations, type Locale } from '../i18n';
+import { section, inner, title, body } from './AboutSection.css';
+
+interface Props {
+  // Страница «о митапе» языка страницы
+  page: CollectionEntry<'pages'>;
+  // Язык страницы
+  locale: Locale;
+}
+
+const { page, locale } = Astro.props;
+const t = useTranslations(locale);
+const { Content } = await render(page);
+---
+
+<section class={section} id="about">
+  <div class={inner}>
+    <h2 class={title}>{t('about.title')}</h2>
+    <Prose class={body}>
+      <Content />
+    </Prose>
+  </div>
+</section>

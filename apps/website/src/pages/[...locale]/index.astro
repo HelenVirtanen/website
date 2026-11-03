@@ -1,13 +1,15 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import AboutSection from '../../sections/AboutSection.astro';
 import HeroSection from '../../sections/HeroSection.astro';
 import ProgramSection from '../../sections/ProgramSection.astro';
 import PartnerSection from '../../sections/PartnerSection.astro';
 import FAQSection from '../../sections/FAQSection.astro';
+import PastEventsSection from '../../sections/PastEventsSection.astro';
 import JoinSection from '../../sections/JoinSection.astro';
-import { loadCatalog } from '../../content/catalog';
-import { defaultLocale, localizePath, locales, useTranslations, type Locale } from '../../i18n';
+import { loadCatalog, localeOf, pastEvents, upcomingEvent } from '../../content/catalog';
+import { defaultLocale, localizePath, locales, type Locale } from '../../i18n';
 
 // Маршрут `[...locale]`: у языка по умолчанию параметр пустой, поэтому ru живёт в `/`, en в `/en/`.
 export const getStaticPaths = (() =>
@@ -17,25 +19,53 @@ export const getStaticPaths = (() =>
   }))) satisfies GetStaticPaths;
 
 const { locale } = Astro.props as { locale: Locale };
-const t = useTranslations(locale);
+
+// BUILD_NOW — только для визуальных снимков: фиксирует «сейчас», чтобы главная не зависела от часов.
+const buildNow = process.env['BUILD_NOW'];
+const now = buildNow === undefined || buildNow === '' ? new Date() : new Date(buildNow);
+if (Number.isNaN(now.getTime())) {
+  throw new Error(`BUILD_NOW="${buildNow ?? ''}": expected an ISO date, e.g. 2026-07-01`);
+}
 
 // Каталог проверяется на сборке: битая ссылка или разошедшийся перевод роняют build.
-await loadCatalog();
+const catalog = await loadCatalog();
+const inLocale = <T extends { id: string }>(entries: T[]): T[] =>
+  entries.filter((entry) => localeOf(entry) === locale);
+
+const page = inLocale(catalog.pages).find((entry) => entry.id === `${locale}/index`);
+if (!page) throw new Error(`Missing page content: pages/${locale}/index.md`);
+
+const events = inLocale(catalog.events);
+const featured = upcomingEvent(events, now);
+const partner = featured?.event.data.partner
+  ? inLocale(catalog.partners).find((entry) => entry.id === `${locale}/${featured.event.data.partner}`)
+  : undefined;
 
 const alternates = locales.map((code) => ({ locale: code, path: localizePath(code) }));
 ---
 
 <BaseLayout
-  title={t('site.name')}
-  description={t('site.description')}
+  title={page.data.title}
+  description={page.data.description}
   lang={locale}
   alternates={alternates}
 >
   <main>
-    <HeroSection />
-    <ProgramSection />
-    <PartnerSection />
-    <FAQSection />
+    {featured && <HeroSection event={featured.event} locale={locale} past={featured.past} />}
+    {
+      featured && (
+        <ProgramSection
+          event={featured.event}
+          talks={inLocale(catalog.talks)}
+          speakers={inLocale(catalog.speakers)}
+          locale={locale}
+        />
+      )
+    }
+    {partner && featured && <PartnerSection partner={partner} event={featured.event} locale={locale} />}
+    <FAQSection entries={inLocale(catalog.faq)} locale={locale} />
     <JoinSection />
+    <AboutSection page={page} locale={locale} />
+    <PastEventsSection events={pastEvents(events, now)} locale={locale} />
   </main>
 </BaseLayout>
