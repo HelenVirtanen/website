@@ -3,7 +3,7 @@ id: "08"
 title: portraits-a-k
 spec: "002"
 criteria: ["AC-7", "AC-10"]
-status: pending
+status: done
 depends_on: ["02"]
 owns: ["packages/content/src/speakers/assets/[a-k]*", "packages/content/src/speakers/ru/[a-k]*.md", "packages/content/src/speakers/en/[a-k]*.md", "plans/002-meetup-archive/portraits-a-k.csv"]
 model: sonnet
