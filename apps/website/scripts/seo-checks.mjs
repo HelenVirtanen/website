@@ -1,7 +1,7 @@
 // Проверки собранного сайта: библиотека для CLI scripts/check-seo.mjs и тестов.
 // Для каждой индексируемой страницы (без noindex) требуются теги карточки и ссылок,
 // картинки лежат в dist и имеют заявленный размер, hreflang взаимен, RSS-ленты существуют
-// и ведут на страницы сборки.
+// и ведут на страницы сборки, иконки из <head> лежат в сборке.
 import { readFile, readdir } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
 import { parse } from 'parse5';
@@ -173,6 +173,17 @@ async function checkFeedLinks(ctx, where, url, doc) {
   }
 }
 
+// Иконки и манифест из <head> лежат в сборке: битая favicon — пустая вкладка и 404 в логах.
+async function checkIcons(ctx, where, url, doc) {
+  for (const rel of ['icon', 'apple-touch-icon', 'manifest']) {
+    for (const link of doc.links(rel)) {
+      const target = new URL(attr(link, 'href') ?? '', url);
+      if (target.origin !== ctx.site.origin) ctx.fail(where, `${rel} ${target.href}: не на ${ctx.site.origin}`);
+      else if (!(await ctx.readPublic(target.pathname))) ctx.fail(where, `${rel} ${target.pathname}: файла нет в dist`);
+    }
+  }
+}
+
 // Каждая <link> ленты — страница этой сборки по точному адресу: без слэша хостинг ответит редиректом.
 // Язык ленты — по её папке (`en/rss.xml`; без папки — ru): `<language>` и записи того же языка,
 // иначе подписчик английской ленты получит русские митапы.
@@ -239,6 +250,7 @@ export async function checkDist(dist, siteUrl) {
     indexableCount += 1;
     await checkPage(ctx, page.where, url, page.doc);
     await checkFeedLinks(ctx, page.where, url, page.doc);
+    await checkIcons(ctx, page.where, url, page.doc);
   }
   checkHreflang(ctx, pages);
   const feeds = await Promise.all(

@@ -216,4 +216,27 @@ describe('checkDist', () => {
       ]);
     });
   });
+
+  describe('иконки', () => {
+    const icons = '<link rel="icon" href="/favicon.svg"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">';
+
+    it('файлы иконок и манифеста есть — проходит', async () => {
+      await validSite();
+      await put('index.html', page({ path: '/', alternates: pair, links: icons }));
+      await put('favicon.svg', '<svg/>');
+      await put('apple-touch-icon.png', png(180, 180));
+      await put('site.webmanifest', '{}');
+      expect((await checkDist(dist, SITE)).errors).toEqual([]);
+    });
+
+    it('нет файла — ошибка на каждый', async () => {
+      await validSite();
+      await put('index.html', page({ path: '/', alternates: pair, links: icons }));
+      await put('favicon.svg', '<svg/>');
+      expect((await checkDist(dist, SITE)).errors).toEqual([
+        'index.html: apple-touch-icon /apple-touch-icon.png: файла нет в dist',
+        'index.html: manifest /site.webmanifest: файла нет в dist',
+      ]);
+    });
+  });
 });

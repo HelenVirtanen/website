@@ -20,7 +20,7 @@ src/
 ├── layouts/    # BaseLayout: canonical, hreflang, og/twitter tags
 ├── pages/      # [...locale]/ (home, events, talks, speakers, search), og/ and avatars/ (images),
 │               # 404.astro (one bilingual page for GitHub Pages), sitemap.xml.ts, robots.txt.ts,
-│               # [...locale]/rss.xml.ts (feed)
+│               # [...locale]/rss.xml.ts (feed), [icon].ts (favicon set + manifest, from @moscowcss/og)
 ├── sections/   # homepage sections
 ├── components/ # page-level pieces that are not reusable UI
 ├── search/     # Pagefind client
@@ -78,6 +78,9 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   feed route takes its language from the URL, not from `props` (Astro gives an
   extension endpoint under `[...locale]` the first path's props). `check:seo`
   checks the head links, the feed language and that every item link is a page.
+- **Icons** (`favicon.ico`/`.svg`, `apple-touch-icon.png`, manifest + 192/512) are
+  drawn at build time from the MoscowCSS star in the brand red (`color.focus`,
+  as the Hero star): `src/seo/icons.ts` lists them, `@moscowcss/og` renders them.
 - Tests are vitest (`vitest.config.ts` uses `getViteConfig`, so they see the same
   plugins as the build); `astro:content` is mocked with `vi.mock`.
 - Theme is **colour-only** and driven by `data-theme` (`<html data-theme="…">`) /

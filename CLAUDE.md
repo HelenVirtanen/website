@@ -40,7 +40,7 @@ changing the architecture they describe.
 │   └── storybook/        # component demo (@storybook-astro/framework)
 ├── packages/
 │   ├── content/          # all site content: .md files per collection and language + zod schema
-│   ├── og/               # build-time OG/Twitter PNG cards (satori + sharp)
+│   ├── og/               # build-time OG/Twitter cards, speaker avatars, site icons (satori + sharp)
 │   ├── ui/               # Astro components + their vanilla-extract styles
 │   ├── design-system/    # the design-token system: palette + semantic vars + scale tables + layout/typography tokens + breakpoints
 │   ├── icons/            # source SVGs -> SVGO-cleaned, generated .astro icon components
