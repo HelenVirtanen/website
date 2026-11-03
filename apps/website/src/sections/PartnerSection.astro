@@ -16,6 +16,7 @@ import {
   inner,
   partnerHeader,
   brandLogo,
+  brandTitle,
   brandName,
   handle,
   tagline,
@@ -36,7 +37,6 @@ interface Props {
   partner: CollectionEntry<'partners'>;
   // Митап: площадка, карта и текст «как добраться»
   event: CollectionEntry<'events'>;
-  // Язык страницы
   locale: Locale;
   id?: string;
 }
@@ -64,13 +64,15 @@ const routeMedia = [
     </div>
     <div class={inner}>
       <div class={partnerHeader}>
-        {
-          logo ? (
-            <img class={brandLogo} src={logo.src} width={logo.width} height={logo.height} alt={name} decoding="async" />
-          ) : (
-            <p class={brandName}>{name}</p>
-          )
-        }
+        <h2 class:list={[brandTitle, !logo && brandName]}>
+          {
+            logo ? (
+              <img class={brandLogo} src={logo.src} width={logo.width} height={logo.height} alt={name} decoding="async" />
+            ) : (
+              name
+            )
+          }
+        </h2>
         {
           qrCode && (
             <svg

@@ -51,6 +51,11 @@ export const partnerHeader = style({
   textAlign: 'center',
 });
 
+export const brandTitle = style({
+  margin: 0,
+  width: '100%',
+});
+
 export const brandLogo = style({
   display: vars.display.block,
   width: '100%',

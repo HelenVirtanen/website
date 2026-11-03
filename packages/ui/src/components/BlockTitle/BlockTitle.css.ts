@@ -2,6 +2,7 @@ import { style } from '@vanilla-extract/css';
 import { media, vars } from '@moscowcss/design-system';
 
 export const blockTitle = style({
+  margin: 0,
   padding: `${vars.padding.xl} ${vars.padding.xxxl} ${vars.layout.inset.l} ${vars.padding.xxxl}`,
   color: vars.color.text,
   font: vars.font.shorthand.subtitle,

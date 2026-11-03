@@ -2,7 +2,8 @@
 import type { HTMLAttributes } from 'astro/types';
 import { blockTitle, blockTitleInverse, blockTitleWhite } from './BlockTitle.css';
 
-const Tag = 'div';
+// Заголовок секции: под ним идут h3 карточек, поэтому уровень — h2.
+const Tag = 'h2';
 
 interface Props extends HTMLAttributes<typeof Tag> {
   /** Белый текст и рамка — для тёмного фона (JoinBlock и старые истории) */

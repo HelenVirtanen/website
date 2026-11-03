@@ -9,8 +9,12 @@ export const root = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
 });
+// Через root: BlockTitle (h2) обнуляет свой margin тем же весом селектора, и без этого исход
+// зависел бы от порядка CSS-файлов в сборке.
 export const title = style({
-  marginBottom: vars.size.cardPaddingBlock,
+  selectors: {
+    [`${root} &`]: { marginBottom: vars.size.cardPaddingBlock },
+  },
 });
 export const row = style({
   justifyContent: vars.justifyContent.center,
