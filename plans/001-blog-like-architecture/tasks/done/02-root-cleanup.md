@@ -3,7 +3,7 @@ id: "02"
 title: remove-legacy-root-layout
 spec: "001"
 criteria: ["AC-1"]
-status: pending
+status: done
 depends_on: ["01"]
 owns: ["src/**", "public/**", "scripts/**", "astro.config.mjs", "tsconfig.json", "gitignore", "npmrc", "apps/website/src/Новая папка/**", "moscowcss-site.code-workspace"]
 model: sonnet

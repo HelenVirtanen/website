@@ -1,5 +1,0 @@
-{
-  "extends": "@moscowcss/typescript-config/astro.json",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
-}

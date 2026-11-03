@@ -11,3 +11,4 @@ Ruling: no CI cron (former AC-14) — user — past meetup shown as upcoming unt
 ## Tasks
 - 01 visual-baseline: done (attempt 1) — 160 снимков, повтор 0%; concerns: ResizeObserver заглушён в capture (дрожь Swiper), чужие origin блокируются (карта пустая), стори mediatile placeholder высотой 1px.
 Ruling: отчёты исполнителей пишутся в scratchpad и переносятся conductor-ом — owns-guard не пускает reports/ вне owns, а правка owns сделала бы согласие устаревшим — цена: один cp на задачу.
+- 02 root-cleanup: done (attempt 1) — 20 файлов старой раскладки удалены.
