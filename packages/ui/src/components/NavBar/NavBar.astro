@@ -1,11 +1,13 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
-import { Close } from '@moscowcss/icons';
+import { Close, Logo } from '@moscowcss/icons';
 import BurgerButton from '../BurgerButton';
 import TgLinkButton from '../TgLinkButton';
 import {
   root,
   burger,
+  home,
+  homeLogo,
   links,
   link,
   overlay,
@@ -29,16 +31,36 @@ interface Props extends HTMLAttributes<typeof Tag> {
   menuLabel: string;
   /** Доступное имя кнопки закрытия меню */
   closeLabel: string;
+  /** Адрес главной: знак митапа слева ведёт на неё; без адреса знака нет */
+  homeHref?: string;
+  /** Доступное имя ссылки на главную */
+  homeLabel?: string;
 }
 
-const { links: navLinks, telegramHref, telegramLabel, menuLabel, closeLabel, class: className, ...attrs } =
-  Astro.props;
+const {
+  links: navLinks,
+  telegramHref,
+  telegramLabel,
+  menuLabel,
+  closeLabel,
+  homeHref,
+  homeLabel,
+  class: className,
+  ...attrs
+} = Astro.props;
 ---
 
 <Tag class:list={[root, className]} data-navbar {...attrs}>
   <div class={burger}>
     <BurgerButton controls={MENU_ID} aria-label={menuLabel} />
   </div>
+  {
+    homeHref && (
+      <a class={home} href={homeHref} aria-label={homeLabel}>
+        <Logo class={homeLogo} />
+      </a>
+    )
+  }
   <ul class={links}>
     {navLinks.map((item) => (
       <li>

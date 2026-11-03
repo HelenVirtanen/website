@@ -16,6 +16,7 @@ import {
 import { loadCatalog } from '../content/catalog';
 import { CARD_TYPE, OG_SIZE, OG_TYPE, cardMetaOf } from '../seo/og';
 import { feedPath } from '../rss/feed';
+import { navLinksOf } from './nav';
 import { jsonLdOf, serializeJsonLd } from '../seo/jsonld';
 import { publicPagesOf } from '../seo/pages';
 
@@ -66,13 +67,7 @@ const jsonLd =
 const ogLocale: Record<Locale, string> = { ru: 'ru_RU', en: 'en_US' };
 const xDefault = alternates.find((alternate) => alternate.locale === defaultLocale);
 
-const navLinks = [
-  { href: '#registration', label: t('nav.registration') },
-  { href: '#program', label: t('nav.program') },
-  { href: '#partners', label: t('nav.partners') },
-  { href: '#address', label: t('nav.address') },
-  { href: localizePath(lang, 'search'), label: t('nav.search') },
-];
+const navLinks = navLinksOf(lang, t);
 
 const localeOptions = locales.map((code) => ({
   code,
@@ -136,6 +131,8 @@ const localeOptions = locales.map((code) => ({
   <body>
     <NavBar
       links={navLinks}
+      homeHref={localizePath(lang)}
+      homeLabel={t('nav.home')}
       telegramHref={telegramHref}
       telegramLabel={t('nav.telegram')}
       menuLabel={t('nav.menu')}

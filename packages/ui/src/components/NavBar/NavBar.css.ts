@@ -36,6 +36,32 @@ export const burger = style({
   },
 });
 
+export const home = style({
+  display: vars.display.flex,
+  flexShrink: 0,
+  width: vars.size.navLogo,
+  height: vars.size.navLogo,
+  color: vars.color.focus,
+  selectors: {
+    '&:focus-visible': {
+      outline: `${vars.border.width.medium} ${vars.border.style.solid} ${vars.color.focus}`,
+      outlineOffset: vars.spacing.xs,
+    },
+  },
+  '@media': {
+    [media.mobile]: {
+      width: vars.size.navLogoCompact,
+      height: vars.size.navLogoCompact,
+    },
+  },
+});
+
+export const homeLogo = style({
+  display: vars.display.block,
+  width: '100%',
+  height: '100%',
+});
+
 export const links = style({
   display: vars.display.flex,
   alignItems: vars.alignItems.center,
