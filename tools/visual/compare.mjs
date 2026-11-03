@@ -11,9 +11,12 @@ const args = process.argv.slice(2);
 // --exact: для рефакторингов, которые не должны менять ни пикселя; порог 0.1% на крупном снимке
 // пропускает тысячи пикселей (например, сдвиг разделителя на всю ширину).
 const exact = args.includes('--exact');
-const [baseDir, nextDir] = args.filter((arg) => arg !== '--exact');
+// --ignore <префикс>: снимки, чьё изменение задумано (например, шапка с новым элементом). Печатаются в итоге.
+const ignored = args.flatMap((arg, i) => (arg === '--ignore' && args[i + 1] ? [args[i + 1]] : []));
+const [baseDir, nextDir] = args.filter((arg, i) => arg !== '--exact' && arg !== '--ignore' && args[i - 1] !== '--ignore');
+const isIgnored = (file) => ignored.some((prefix) => file.startsWith(prefix));
 if (!baseDir || !nextDir) {
-  console.error('Использование: node tools/visual/compare.mjs [--exact] <base-dir> <next-dir>');
+  console.error('Использование: node tools/visual/compare.mjs [--exact] [--ignore <префикс>]… <base-dir> <next-dir>');
   process.exit(2);
 }
 
@@ -61,6 +64,10 @@ const rows = [];
 let failed = 0;
 
 for (const file of baseFiles) {
+  if (isIgnored(file)) {
+    rows.push([file, 'ИСКЛЮЧЁН (--ignore)']);
+    continue;
+  }
   const nextPath = join(nextDir, file);
   let next;
   try {
@@ -94,7 +101,7 @@ for (const file of baseFiles) {
 // Снимки, которых нет в базе, означают, что база неполная и часть покрытия молча выпала.
 const baseSet = new Set(baseFiles);
 for (const file of await listPngs(nextDir).catch(() => [])) {
-  if (!baseSet.has(file)) {
+  if (!baseSet.has(file) && !isIgnored(file)) {
     rows.push([file, 'НЕТ В БАЗЕ']);
     failed += 1;
   }

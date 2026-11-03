@@ -47,7 +47,7 @@ attempts: 0
 ## Done when
 - [ ] `git ls-files apps/website/src/data` → пусто (AC-1)
 - [ ] `grep -rnP "[А-Яа-яЁё]" apps/website/src/sections apps/website/src/pages apps/website/src/layouts --include='*.astro' | grep -v '//\|{/\*'` → пусто — текст только из словаря и контента (AC-11)
-- [ ] `BUILD_NOW=2026-07-01 pnpm build` + снимки → `node tools/visual/compare.mjs .visual/baseline .visual/t08` exit 0, каждая доля ≤ 0.1% — русская главная показывает тот же текст и вид (AC-3, AC-21)
+- [ ] `BUILD_NOW=2026-07-01 pnpm build` + снимки → `node tools/visual/compare.mjs --ignore site/navbar@ --ignore stories/components-localeswitcher .visual/baseline .visual/t08` exit 0, каждая доля ≤ 0.1% — русская главная показывает тот же текст и вид (AC-3, AC-21)
 - [ ] `pnpm build` (реальная дата) → `grep -c "timepad" apps/website/dist/index.html` = 0 и в `dist/index.html` есть ссылка на `/events/31/` в списке/блоке прошедшего митапа — прошедший митап без регистрации (AC-12)
 - [ ] `apps/website/dist/en/index.html` содержит английские строки секций (например, перевод «Регистрация» нет, т.к. прошёл; заголовок FAQ на английском)
 - [ ] `pnpm lint && pnpm test && pnpm build:storybook` → exit 0

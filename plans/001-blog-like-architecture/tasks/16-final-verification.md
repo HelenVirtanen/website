@@ -30,7 +30,7 @@ attempts: 0
 
 ## Done when
 - [ ] шаг 1 → каждая команда exit 0 (AC-22)
-- [ ] `node tools/visual/compare.mjs .visual/baseline .visual/final` → exit 0, все доли ≤ 0.1% (AC-21)
+- [ ] `node tools/visual/compare.mjs --ignore site/navbar@ --ignore stories/components-localeswitcher .visual/baseline .visual/final` → exit 0, все доли ≤ 0.1% (AC-21)
 - [ ] font-size `html` = `16px` при 1920 и `32px` при 3840 (AC-20)
 - [ ] `git ls-files src public scripts astro.config.mjs tsconfig.json gitignore npmrc apps/website/src/data` → пусто (AC-1)
 - [ ] `grep -rnE "[0-9]px" --include='*.css.ts' packages/ui/src apps/website/src | grep -v '//'` → пусто (AC-19)

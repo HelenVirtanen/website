@@ -24,3 +24,6 @@ Ruling: venue.coordinates добавлено исполнителем 05 в сх
 Ruling: промежуточный коммит 1ba6d1a визуально сдвигает desktop до 3afe459 — не переписываем опубликованную историю ветки; рекомендовать squash-merge — цена: bisect внутри ветки неточен.
 Ruling: SpeakerAvatar/Button меняют ступень токеном в собственном @media — допустимо (смена узла макета на брейкпоинте, как правило блога); AC-19 запрещает только литералы.
 Deferred: устаревшая §5 в CLAUDE.md про растущие padding — задача 15; tools/visual не линтится turbo — отмечено, вне спеки.
+- 07 i18n-layout: done (attempt 1) — ru `/` + en `/en/`, BaseLayout (canonical, 3 абсолютных hreflang), LocaleSwitcher, NavBar на пропсах; 27 тестов.
+Ruling: AC-21 изменён в спеке на месте — шапка сайта исключена (AC-10 требует переключатель), секции снимаются со скрытой липкой шапкой; эталон переснят с dad0413 в отдельном worktree (manifest: dad0413, clean), старый эталон — .visual/baseline-v1. Снимки 07: все прежние 0 пикселей, расходятся только новые стори LocaleSwitcher (нет в базе).
+Ruling: plop-шаблон component.css.ts.hbs исправлен conductor-ом (vars.padding.medium/vars.font.body не существуют) — иначе каждый new:component генерирует неcобираемый css.

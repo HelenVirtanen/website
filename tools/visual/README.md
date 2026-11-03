@@ -56,6 +56,7 @@ single pixel: 0.1% of a 1920×2800 capture is ~5,000 pixels, enough to hide a fu
 | --------------- | ------------------------ | ---------------------------------------- |
 | `SITE_URL`      | `http://localhost:4321/` | Homepage served by `astro preview`.      |
 | `STORYBOOK_URL` | `http://localhost:6006`  | Storybook dev server (`/index.json`).    |
+| `VISUAL_SOURCE_DIR` | repo root | Checkout the servers run from; its commit goes into `manifest.json`. |
 | `CHROMIUM_PATH` | `/usr/bin/chromium`      | Chromium executable used by Playwright.  |
 
 ## Determinism notes
@@ -73,3 +74,9 @@ single pixel: 0.1% of a 1920×2800 capture is ~5,000 pixels, enough to hide a fu
   determinism; it is captured as an empty frame.
 - The sticky navbar can overlap a section in an element screenshot taken at a scroll offset; it is
   the same in every run, so it does not affect comparisons.
+
+Section shots hide every other `[data-visual]` element (visibility only, layout unchanged), so the sticky
+NavBar does not bleed into the sections under it.
+
+To rebuild a baseline from an older commit, serve it from a separate worktree and point
+`VISUAL_SOURCE_DIR` at it; run `capture.mjs` from the current tree.

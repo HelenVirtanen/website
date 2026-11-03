@@ -29,7 +29,9 @@ if (!outPath.startsWith(VISUAL_ROOT + sep)) {
   process.exit(2);
 }
 
-const git = (...args) => execFileSync('git', args, { cwd: REPO_ROOT, encoding: 'utf8' }).trim();
+// Код, с которого сняты снимки, может лежать в другом worktree (эталон со старого коммита).
+const SOURCE_ROOT = process.env.VISUAL_SOURCE_DIR ?? REPO_ROOT;
+const git = (...args) => execFileSync('git', args, { cwd: SOURCE_ROOT, encoding: 'utf8' }).trim();
 
 const failures = [];
 const fail = (message) => {
@@ -77,6 +79,13 @@ async function captureSite(page) {
     if (names.length === 0) throw new Error(`на ${SITE_URL} не найдено ни одного [data-visual]`);
     for (const name of names) {
       try {
+        // Липкая шапка перекрывает верх соседних секций: на их снимках прячем её (место в потоке остаётся),
+        // иначе любая правка шапки «ломала» бы снимки секций, которые не менялись.
+        await page.evaluate((current) => {
+          for (const node of document.querySelectorAll('[data-visual]')) {
+            if (node instanceof HTMLElement) node.style.visibility = node.dataset.visual === current ? '' : 'hidden';
+          }
+        }, name);
         await page.locator(`[data-visual="${name}"]`).first().screenshot({
           path: join(dir, `${safeName(name)}@${width}.png`),
           animations: 'disabled',

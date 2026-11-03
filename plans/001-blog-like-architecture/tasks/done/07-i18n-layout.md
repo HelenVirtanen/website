@@ -3,7 +3,7 @@ id: "07"
 title: i18n-routing-base-layout-locale-switcher
 spec: "001"
 criteria: ["AC-10", "AC-11"]
-status: pending
+status: done
 depends_on: ["06"]
 owns: ["apps/website/src/i18n/**", "apps/website/src/layouts/**", "apps/website/astro.config.mjs", "apps/website/src/pages/**", "packages/ui/src/components/LocaleSwitcher/**", "packages/ui/src/components/NavBar/**", "packages/ui/src/index.ts", "apps/storybook/stories/LocaleSwitcher.stories.ts", "apps/storybook/stories/NavBar.stories.ts"]
 model: sonnet
