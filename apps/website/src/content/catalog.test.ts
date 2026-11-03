@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { event, partner, speaker, talk, twoMeetupsCatalog } from '../test/fixtures';
 import {
   CatalogError,
+  checkEventDays,
   EVENT_DURATION_MS,
   pastEvents,
   scheduleOf,
@@ -216,6 +217,20 @@ describe('связи', () => {
       ['talk', 'Второй'],
       ['talk', 'Третий'],
     ]);
+  });
+});
+
+describe('checkEventDays', () => {
+  it('несуществующая дата (YAML перенёс 30 февраля на 2 марта) — ошибка с путём; верная — нет', () => {
+    const rolled = event('ru/32', { date: new Date('2026-03-02T18:00:00+03:00') });
+    const fine = event('ru/31');
+    const sources: Record<string, string> = {
+      [rolled.filePath ?? '']: '---\ndate: 2026-02-30\ntime: "18:00"\n---\n',
+      [fine.filePath ?? '']: '---\ndate: 2026-07-09\ntime: "18:00"\n---\n',
+    };
+    const problems: string[] = [];
+    checkEventDays([rolled, fine], (path) => sources[path] ?? '', problems);
+    expect(problems).toEqual(['packages/content/src/events/ru/32.md: date 2026-02-30 — такой даты нет в календаре']);
   });
 });
 

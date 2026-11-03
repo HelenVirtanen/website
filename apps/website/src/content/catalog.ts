@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { getCollection } from 'astro:content';
 import type { z } from 'astro/zod';
 import type {
@@ -144,7 +146,14 @@ function checkTranslations<D>(
  */
 export function validateCatalog(
   catalog: Catalog,
-  { requireRendered = false }: { requireRendered?: boolean } = {},
+  {
+    requireRendered = false,
+    readSource,
+  }: {
+    requireRendered?: boolean;
+    /** Исходный текст файла по пути: нужен, чтобы поймать несуществующую дату (см. checkEventDays) */
+    readSource?: (filePath: string) => string;
+  } = {},
 ): void {
   const problems: string[] = [];
   const events = new Map(catalog.events.map((entry) => [entry.id, entry]));
@@ -186,6 +195,7 @@ export function validateCatalog(
     }
   }
 
+  if (readSource) checkEventDays(catalog.events, readSource, problems);
   checkTranslations('events', catalog.events, problems);
   checkTranslations('talks', catalog.talks, problems);
   checkTranslations('speakers', catalog.speakers, problems);
@@ -218,6 +228,34 @@ export function validateCatalog(
   if (problems.length > 0) throw new CatalogError(problems);
 }
 
+// День в поясе митапа: `date` в данных — уже момент начала по Москве.
+const moscowDay = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Europe/Moscow',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
+
+const DATE_LINE = /^date:\s*["']?(\d{4}-\d{2}-\d{2})/m;
+
+/**
+ * YAML превращает `2026-02-30` в 2 марта ещё до схемы, и после разбора опечатку не видно. Поэтому
+ * день из исходного текста сверяется с днём, который получился: разошлись — даты не существует.
+ */
+export function checkEventDays(
+  events: readonly EventEntry[],
+  readSource: (filePath: string) => string,
+  problems: string[],
+): void {
+  for (const event of events) {
+    if (!event.filePath) continue;
+    const written = DATE_LINE.exec(readSource(event.filePath))?.[1];
+    if (written && written !== moscowDay.format(event.data.date)) {
+      problems.push(`${whereOf(event)}: date ${written} — такой даты нет в календаре`);
+    }
+  }
+}
+
 /**
  * Весь контент с проверенными связями. Единственное место с `getCollection`: ошибка схемы
  * приходит от Astro (с путём файла), ошибка связей и переводов — от `validateCatalog`.
@@ -232,7 +270,11 @@ export async function loadCatalog(): Promise<Catalog> {
     getCollection('faq'),
   ]);
   const catalog = { events, talks, speakers, partners, pages, faq };
-  validateCatalog(catalog, { requireRendered: true });
+  validateCatalog(catalog, {
+    requireRendered: true,
+    // filePath у записей Astro — относительно корня проекта, а сборка идёт из него же.
+    readSource: (filePath) => readFileSync(resolve(filePath), 'utf8'),
+  });
   return catalog;
 }
 
