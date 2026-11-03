@@ -5,12 +5,19 @@ export default {
   component: MapPlaceholder,
 };
 
+const labels = {
+  emptyLabel: 'Карта',
+  emptyHint: 'Укажите latitude и longitude',
+  openLabel: 'Открыть на карте',
+};
+
 export const Empty = {
-  args: {},
+  args: { ...labels, caption: 'Карта' },
 };
 
 export const WithCoords = {
   args: {
+    ...labels,
     latitude: 55.7367,
     longitude: 37.5214,
     zoom: 16,

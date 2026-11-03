@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { main, inner } from './EntityPage.css';
+
+const Tag = 'main';
+
+// Каркас страницы митапа, доклада или спикера: отступы секций и поиск по телу страницы.
+interface Props extends HTMLAttributes<typeof Tag> {}
+
+const { class: className, ...attrs } = Astro.props;
+---
+
+<Tag class:list={[main, className]} data-pagefind-body {...attrs}>
+  <div class={inner}>
+    <slot />
+  </div>
+</Tag>

@@ -91,6 +91,9 @@ const routeMedia = [
               longitude={venue.coordinates.longitude}
               zoom={venue.coordinates.zoom}
               caption={venue.address}
+              emptyLabel={t('map.empty')}
+              emptyHint={t('map.emptyHint')}
+              openLabel={t('map.open')}
             />
           )
         }

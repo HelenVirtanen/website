@@ -33,3 +33,16 @@ Ruling: временные копии фото в apps/website/public/assets у�
 Ruling: блоки «о митапе» и «прошлые митапы» стоят после Join — вставка выше сдвигала субпиксельную y секций и ломала паритет; порядок секций спека не задаёт — цена: «о митапе» внизу главной до редизайна.
 Deferred → 09: JoinBlock/MapPlaceholder с русскими литералами на /en/, пустой href трансляции.
 Deferred (вне спеки, отметить в итоге): внешние ссылки из Markdown без target/rel; логотип и QR партнёра зашиты под Звук; фото спикеров без оптимизации (photo.src).
+- review checkpoint 2 (05–08): Block → исправлено conductor-ом (коммит после задачи 09, чтобы pre-commit собирал согласованное дерево):
+  [HIGH] дата митапа: формат `date: 2026-07-09` + `time: "18:00"` по Москве (+03:00, без DST), дата со временем отклоняется — YAML молча читал время без пояса как UTC;
+  [HIGH] /events/31/ → 404 до задачи 09: не вливать в master до её завершения;
+  [MED] URL только https (javascript:/data:/http: отклоняются); тело файла: сырой HTML и javascript:-ссылки роняют сборку; пустое тело pages/talks/faq — ошибка;
+  [MED] инварианты переводов + time, passportRequired, partners.url/handle, faq.order, pages.telegramUrl; README синхронизирован;
+  [MED] title ≤70 / description 50–160 у pages; ЧЧ:ММ 00–23:59, интервал «наоборот» отклоняется;
+  [MED] митап идёт ещё 4 ч после начала (EVENT_DURATION_MS) — пуш во время митапа не делает его прошедшим;
+  [MED] apps/website/turbo.json build.cache=false — сборка зависит от текущей даты, turbo проигрывал вчерашний dist.
+  Тесты: 41 (новые schema.test.ts + проверки тела/HTML/инвариантов/окна митапа).
+Deferred → после 09: telegramUrl из контента вместо константы в BaseLayout; тег #вопросспикеру vs #moscowcss_questions (решает пользователь); битая ссылка https://t.me/@moscowcss в faq; pnpm test в deploy.yml — задача 14.
+- 09 entity-pages: done (attempt 1 + conductor fixes) — /events/<n>/, /talks/<имя>/, /speakers/<имя>/ на ru/en, seo/pages.ts publicPages, JoinBlock/MapPlaceholder на пропсах; conductor: подписи карты из словаря в PartnerSection, строка трансляции без адреса — текст, дубль components/JoinSection слит в sections/JoinSection; тесты 54+11.
+Ruling: Hero после исправления пустой ссылки сверяется с .visual/hero-09 (снят с этого состояния), AC-21 правлен на месте — diff задачи 09 показал отличие только в строке трансляции.
+Deferred: фото спикеров обычным <img> — sharp не установлен у website; задача 10 ставит sharp (allowBuilds) — после неё можно перейти на <Image>, вне спеки.

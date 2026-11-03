@@ -1,0 +1,66 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import H2 from '@moscowcss/ui/components/H2';
+import { localizePath, useTranslations, type Locale } from '../i18n';
+import { slugOf, type ScheduleItem, type SpeakerEntry } from '../content/catalog';
+import { root, list, row, time, main, title, people, link } from './EventSchedule.css';
+
+const Tag = 'section';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  // Расписание митапа: доклады и перерывы по времени
+  items: ScheduleItem[];
+  // Спикеры языка страницы: по ним доклад получает имена со ссылками
+  speakers: SpeakerEntry[];
+  // Язык страницы
+  locale: Locale;
+}
+
+const { items, speakers, locale, class: className, ...attrs } = Astro.props;
+const t = useTranslations(locale);
+const speakerBySlug = new Map(speakers.map((speaker) => [slugOf(speaker), speaker]));
+
+const rows = items.map((item) =>
+  item.kind === 'talk'
+    ? {
+        time: item.time,
+        title: item.title,
+        href: localizePath(locale, `talks/${slugOf(item.talk)}`),
+        people: item.talk.data.speakers.flatMap((slug) => {
+          const speaker = speakerBySlug.get(slug);
+          return speaker
+            ? [{ name: speaker.data.name, href: localizePath(locale, `speakers/${slug}`) }]
+            : [];
+        }),
+      }
+    : { time: item.time, title: item.title, href: undefined, people: [] },
+);
+---
+
+<Tag class:list={[root, className]} {...attrs}>
+  <H2>{t('event.schedule')}</H2>
+  <ul class={list}>
+    {
+      rows.map((item) => (
+        <li class={row}>
+          <p class={time}>{item.time}</p>
+          <div class={main}>
+            <p class={title}>{item.href ? <a class={link} href={item.href}>{item.title}</a> : item.title}</p>
+            {item.people.length > 0 && (
+              <p class={people}>
+                {item.people.map((person, index) => (
+                  <>
+                    {index > 0 && ', '}
+                    <a class={link} href={person.href}>
+                      {person.name}
+                    </a>
+                  </>
+                ))}
+              </p>
+            )}
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</Tag>

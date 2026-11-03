@@ -12,14 +12,23 @@ interface Props extends HTMLAttributes<typeof Tag> {
   /** Масштаб карты (1–17) */
   zoom?: number;
   /** Подпись для iframe */
-  caption?: string;
+  caption: string;
+  /** Заголовок заглушки, когда координат нет */
+  emptyLabel: string;
+  /** Подсказка заглушки, когда координат нет */
+  emptyHint: string;
+  /** Текст ссылки на полную карту */
+  openLabel: string;
 }
 
 const {
   latitude,
   longitude,
   zoom = 16,
-  caption = 'Карта',
+  caption,
+  emptyLabel,
+  emptyHint,
+  openLabel,
   class: className,
   ...attrs
 } = Astro.props;
@@ -41,15 +50,15 @@ const mapUrl = hasCoords
       />
     ) : (
       <div class={label}>
-        <p>Карта</p>
-        <p>Укажите latitude и longitude</p>
+        <p>{emptyLabel}</p>
+        <p>{emptyHint}</p>
       </div>
     )
   }
   {
     mapUrl ? (
       <a class={link} href={mapUrl} target="_blank" rel="noopener noreferrer">
-        Открыть на карте
+        {openLabel}
       </a>
     ) : null
   }

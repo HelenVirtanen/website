@@ -1,10 +1,34 @@
 ---
 import JoinBlock from '@moscowcss/ui/components/JoinBlock';
+import { useTranslations, type Locale } from '../i18n';
 import { section, inner } from './JoinSection.css';
+
+interface Props {
+  // Язык страницы
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
 ---
 
 <section class={section} data-visual="join">
   <div class={inner}>
-    <JoinBlock />
+    <JoinBlock
+      title={t('join.title')}
+      speakerTitle={t('join.speaker.title')}
+      speakerIntro={t('join.speaker.intro')}
+      speakerContactPrefix={t('join.speaker.contactPrefix')}
+      speakerContactSuffix={t('join.speaker.contactSuffix')}
+      orgTitle={t('join.org.title')}
+      orgLines={[
+        t('join.org.line1'),
+        t('join.org.line2'),
+        t('join.org.line3'),
+        t('join.org.line4'),
+        t('join.org.line5'),
+        t('join.org.line6'),
+      ]}
+    />
   </div>
 </section>

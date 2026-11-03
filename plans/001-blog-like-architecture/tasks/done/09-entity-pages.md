@@ -3,7 +3,7 @@ id: "09"
 title: event-talk-speaker-pages
 spec: "001"
 criteria: ["AC-7", "AC-13"]
-status: pending
+status: done
 depends_on: ["08"]
 owns: ["apps/website/src/pages/**", "apps/website/src/seo/**", "apps/website/src/components/**", "apps/website/src/i18n/ui.ts", "packages/ui/src/components/**", "packages/ui/src/index.ts", "apps/storybook/stories/**"]
 model: sonnet

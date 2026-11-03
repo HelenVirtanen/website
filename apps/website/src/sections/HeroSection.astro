@@ -86,9 +86,14 @@ const dateTime = fillTemplate(t('hero.dateTime'), eventDateParts(event.data.date
               <p class={onlineNote}>
                 {t('hero.onlineNote')}
                 <br />
-                <a href={streamUrl ?? ''} target="_blank" rel="noopener noreferrer">
-                  {t('hero.watchStream')}
-                </a>
+                {/* Без адреса трансляции ссылка была бы пустой — показываем текст без ссылки */}
+                {streamUrl ? (
+                  <a href={streamUrl} target="_blank" rel="noopener noreferrer">
+                    {t('hero.watchStream')}
+                  </a>
+                ) : (
+                  <span>{t('hero.watchStream')}</span>
+                )}
               </p>
             </>
           )
