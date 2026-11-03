@@ -1,0 +1,9 @@
+---
+event: "18"
+speakers:
+  - "ilya-olovyannikov"
+title: "The CSS you ~forgot~ deserved"
+time: "19:30"
+---
+
+Frontend developers build projects "from scratch" less and less often and begin to forget many built-in features of such a familiar language. Time to remind everyone that CSS is power!
