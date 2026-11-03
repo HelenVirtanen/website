@@ -17,10 +17,10 @@ const contract = {
 const values = {
   border: {
     width: {
-      thin: '1px',
-      medium: '2px',
-      thick: '4px',
-      superThick: '8px',
+      thin: '0.0625rem', // 1px
+      medium: '0.125rem', // 2px
+      thick: '0.25rem', // 4px
+      superThick: '0.5rem', // 8px
     },
     style: {
       solid: 'solid',

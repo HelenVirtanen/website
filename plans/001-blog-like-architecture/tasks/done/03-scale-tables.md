@@ -3,7 +3,7 @@ id: "03"
 title: design-system-scale-tables-rem-root-growth
 spec: "001"
 criteria: ["AC-18", "AC-20"]
-status: pending
+status: done
 depends_on: ["02"]
 owns: ["packages/design-system/**", "turbo.json", "package.json", "pnpm-lock.yaml"]
 model: sonnet

@@ -1,4 +1,9 @@
+import { baseValues, layoutSpace, type LayoutStep } from './scale';
+
 // Базовые layout-значения — от темы не зависят.
+const layoutKeys = () =>
+  Object.fromEntries(Object.keys(layoutSpace.inset).map((k) => [k, null])) as Record<LayoutStep, null>;
+
 const contract = {
   display: {
     inlineFlex: null,
@@ -28,6 +33,11 @@ const contract = {
   },
   inset: {
     zero: null,
+  },
+  // Растущие по брейкпоинтам поля и промежутки; значения — layoutSpace в scale.ts
+  layout: {
+    inset: layoutKeys(),
+    gap: layoutKeys(),
   },
 } as const;
 
@@ -61,6 +71,10 @@ const values = {
   },
   inset: {
     zero: '0',
+  },
+  layout: {
+    inset: baseValues(layoutSpace.inset),
+    gap: baseValues(layoutSpace.gap),
   },
 };
 

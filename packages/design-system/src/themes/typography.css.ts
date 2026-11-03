@@ -1,40 +1,12 @@
 import { createGlobalTheme, globalStyle } from '@vanilla-extract/css';
-import { media } from '../breakpoints';
 import { vars } from '../contract';
+import { mediaOverrides, typeScale } from '../scale';
 import { typography } from '../typography';
 
 // Шрифты от темы не зависят — базовые (mobile-first) значения задаём один раз.
 createGlobalTheme(':root', vars.font, typography.values.font);
 
-// Адаптивная типографика: на брейкпоинтах меняем ТОЛЬКО переменные размеров.
-// Шорткаты (vars.font.shorthand.*) ссылаются на них, поэтому обновляются сами.
-const { size } = vars.font;
-globalStyle(':root', {
-  '@media': {
-    [media.tablet]: {
-      vars: { [size.websiteTitle]: '3rem', [size.h1]: '2.25rem', [size.h2]: '1.75rem' },
-    },
-    [media.laptop]: {
-      vars: {
-        [size.websiteTitle]: '3.75rem', // 60px
-        [size.h1]: '2.75rem', // 44px
-        [size.h2]: '2rem', // 32px
-        [size.h3]: '1.5rem', // 24px
-        [size.h4]: '1.25rem', // 20px
-      },
-    },
-    [media.desktop]: {
-      vars: {
-        [size.websiteTitle]: '4.5rem',
-        [size.h1]: '3.25rem',
-        [size.h2]: '2.25rem',
-        [size.h3]: '1.625rem',
-        [size.h4]: '1.375rem',
-        [size.body]: '1.125rem',
-        [size.heroTitle]: '10.625rem',
-        [size.heroInfoLine]: '2.5rem',
-        [size.heroCtaLabel]: '3rem',
-      },
-    },
-  },
-});
+// Адаптивная типографика: ступени кеглей берём из typeScale и меняем ТОЛЬКО
+// переменные размеров. Шорткаты (vars.font.shorthand.*) ссылаются на них, поэтому
+// обновляются сами.
+globalStyle(':root', { '@media': mediaOverrides(vars.font.size, typeScale) });

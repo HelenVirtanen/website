@@ -1,20 +1,11 @@
-// Пространственный масштаб (t-shirt) — один набор ступеней для двух семантических
-// групп: `padding` (внутренние отступы) и `spacing` (промежутки между элементами,
-// gap/margin). Значения общие, но группы независимы — адаптив можно задавать
-// каждой отдельно (см. themes/spacing.css.ts). Радиусы — отдельная ось.
-const scale = {
-  xs: '4px',
-  s: '8px',
-  m: '12px',
-  l: '16px',
-  xl: '20px',
-  xxl: '24px',
-  xxxl: '32px',
-  '4xl': '80px',
-} as const;
+import { space, type SpaceStep } from './scale';
 
+// Пространственный масштаб (t-shirt, значения в scale.ts) — один набор ступеней для двух
+// семантических групп: `padding` (внутренние отступы) и `spacing` (промежутки между
+// элементами, gap/margin). Ступени постоянны на всех ширинах; растущие величины — это
+// `layout.inset` и `layout.gap`. Радиусы — отдельная ось.
 const scaleKeys = () =>
-  Object.fromEntries(Object.keys(scale).map((k) => [k, null])) as Record<keyof typeof scale, null>;
+  Object.fromEntries(Object.keys(space).map((k) => [k, null])) as Record<SpaceStep, null>;
 
 const contract = {
   padding: scaleKeys(),
@@ -40,11 +31,11 @@ const contract = {
 
 // От темы не зависят — задаются один раз (тема отвечает только за цвет).
 const values = {
-  padding: { ...scale },
-  spacing: { ...scale },
+  padding: { ...space },
+  spacing: { ...space },
   radius: {
-    small: '4px',
-    medium: '8px',
+    small: '0.25rem', // 4px
+    medium: '0.5rem', // 8px
   },
   size: {
     tgLinkButton: '3.75rem', // 60px

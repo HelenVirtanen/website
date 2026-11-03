@@ -32,20 +32,28 @@ src/
 ├── palette.ts      # primitives (raw values)
 ├── fonts.ts        # primitives: fontFamily {display,sans,mono} + fontWeight (NOT @font-face)
 ├── colors.ts       # semantic colours: contract slice + light/dark (from palette)
-├── spacing.ts      # t-shirt scale (xs…xxl) as padding + spacing groups + radius: contract slice + values
+├── scale.ts        # scale tables ("base + steps per breakpoint", rem) + resolver; tested in scale.test.ts
+├── spacing.ts      # t-shirt scale (xs…4xl, constant) as padding + spacing groups + radius: contract slice + values
 ├── typography.ts   # font tokens: size / shorthand / letterSpacing (shorthand refs size vars)
 ├── contract.ts     # createGlobalThemeContract -> `vars`  (assembles the slices)
 ├── themes/         # per-concern appliers: each writes to :root and owns its adaptive
 │   ├── colors.css.ts     # colour = light base + dark (prefers-color-scheme + data-theme)
-│   ├── spacing.css.ts    # padding/spacing/radius once on :root + responsive scale overrides (m/l/xxl) per breakpoint
-│   ├── typography.css.ts # font once on :root + responsive font-size overrides per breakpoint
-│   └── index.css.ts      # imports the three appliers — the theme entry point
+│   ├── spacing.css.ts    # padding/spacing/radius/size once on :root, constant (no @media)
+│   ├── layout.css.ts     # layout.inset / layout.gap ladders: base + overrides per breakpoint from `layoutSpace`
+│   ├── typography.css.ts # font once on :root + font-size overrides generated from `typeScale`
+│   ├── root.css.ts       # html font-size: max(100%, 100vw / 120) — the UI grows above 1920px (ADR-002)
+│   └── index.css.ts      # imports all appliers — the theme entry point
 ├── breakpoints.ts  # mobile/tablet/laptop/desktop/desktopLarge (rem) + `media` query strings (NOT css vars)
 └── index.ts        # side-effect: applies the theme; re-exports { vars, breakpoints, media, palette }
 ```
 
 ## Rules
 
+- **Scale lives in tables (`scale.ts`).** Font sizes (`typeScale`), the constant
+  spacing steps (`space`) and the growing ladders (`layoutSpace.inset|gap`) are
+  "base + overrides per breakpoint" tables in `rem`; themes generate CSS from them
+  (`baseValues`, `mediaOverrides`) and `scale.test.ts` checks the resolver. Growing
+  values go to `vars.layout.inset|gap`; `vars.padding|spacing` never change with width.
 - **Add a token** by editing the concern file (e.g. a new colour → `colors.ts`):
   add the key to its `contract` slice **and** to its values (`colors` has
   `light`/`dark`; theme-independent slices like `spacing`/`typography` have a
