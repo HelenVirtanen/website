@@ -1,0 +1,20 @@
+{
+  "name": "@moscowcss/icons",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/generated/index.ts",
+    "./*": "./src/generated/*.astro"
+  },
+  "scripts": {
+    "build": "node scripts/generate.mjs",
+    "lint": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@moscowcss/eslint-config": "workspace:*",
+    "@moscowcss/typescript-config": "workspace:*",
+    "astro": "7.0.6",
+    "svgo": "4.0.1"
+  }
+}

@@ -1,0 +1,45 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { card, content, waveClip, waveTrack, title, text, note } from './FeatureCard.css';
+
+const Tag = 'article';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Заголовок карточки (обычно caps) */
+  title: string;
+  /** Основной текст карточки */
+  description: string;
+  /** Дополнительная подпись мелким текстом */
+  footnote?: string;
+  /** Позиция в ряду (0–3) — смещает общую волну внутри карточки */
+  waveIndex?: number;
+  /** SVG одной волны на весь ряд карточек */
+  waveSvg?: string;
+}
+
+const {
+  title: cardTitle,
+  description,
+  footnote,
+  waveIndex,
+  waveSvg,
+  class: className,
+  ...attrs
+} = Astro.props;
+
+const waveOffset = waveIndex !== undefined ? `translateX(calc(-25% * ${waveIndex}))` : undefined;
+---
+<Tag class:list={[card, className]} {...attrs}>
+  {
+    waveSvg && waveIndex !== undefined ? (
+      <div class={waveClip} aria-hidden="true">
+        <div class={waveTrack} style={{ transform: waveOffset }} set:html={waveSvg} />
+      </div>
+    ) : null
+  }
+  <div class={content}>
+    <h3 class={title}>{cardTitle}</h3>
+    <p class={text}>{description}</p>
+    {footnote ? <p class={note}>{footnote}</p> : null}
+  </div>
+</Tag>

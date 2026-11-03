@@ -1,0 +1,40 @@
+{
+  "folders": [
+    {
+      "name": "🌐 Сам сайт",
+      "path": "apps/website"
+    },
+    {
+      "name": "🧩 UI компоненты",
+      "path": "packages/ui"
+    },
+    {
+      "name": "🎨 Дизайн-система",
+      "path": "packages/design-system"
+    },
+    {
+      "name": "🖼️ Иконки",
+      "path": "packages/icons"
+    },
+    {
+      "name": "📚 Storybook",
+      "path": "apps/storybook"
+    },
+    {
+      "name": "🔤 Шрифты",
+      "path": "packages/fonts"
+    },
+    {
+      "name": "🔧 ESLint конфиг",
+      "path": "packages/eslint-config"
+    },
+    {
+      "name": "🏷️ TypeScript конфиг",
+      "path": "packages/typescript-config"
+    },
+    {
+      "name": "📁 Root",
+      "path": "./"
+    }
+  ]
+}

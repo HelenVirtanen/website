@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { root } from './H1.css';
+
+// Тег — единственный источник правды: тип пропсов (HTMLAttributes<typeof Tag>)
+// и разметка меняются вместе, рассинхрон невозможен by design.
+const Tag = 'h1';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  // свои дополнительные пропсы
+}
+
+const { class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[root, className]} {...attrs}>
+  <slot />
+</Tag>

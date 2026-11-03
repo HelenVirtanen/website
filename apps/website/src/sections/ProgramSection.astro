@@ -1,0 +1,106 @@
+---
+import BlockTitle from '@moscowcss/ui/components/BlockTitle';
+import SpeakerAvatar from '@moscowcss/ui/components/SpeakerAvatar';
+import Prose from '@moscowcss/ui/components/Prose';
+import { render, type CollectionEntry } from 'astro:content';
+import { scheduleOf, slugOf } from '../content/catalog';
+import { fillTemplate } from '../content/format';
+import { speakerImage } from '../content/speaker-image';
+import { useTranslations, type Locale } from '../i18n';
+import {
+  section,
+  inner,
+  header,
+  hint,
+  list,
+  row,
+  portraitColumn,
+  time,
+  talkMain,
+  talkTitle,
+  speakerName,
+  speakerRole,
+  description,
+  activityRow,
+  activityTitle,
+} from './ProgramSection.css';
+
+interface Props {
+  // Митап, чью программу показывает блок
+  event: CollectionEntry<'events'>;
+  // Доклады всех митапов языка страницы
+  talks: CollectionEntry<'talks'>[];
+  // Спикеры языка страницы
+  speakers: CollectionEntry<'speakers'>[];
+  locale: Locale;
+  // Тег вопросов спикерам из контента главной
+  questionTag: string;
+  id?: string;
+}
+
+const { event, talks, speakers, locale, questionTag, id = 'program' } = Astro.props;
+const t = useTranslations(locale);
+
+const speakerBySlug = new Map(speakers.map((speaker) => [slugOf(speaker), speaker]));
+
+const roles = (people: { role?: string | undefined }[]): string =>
+  people
+    .map((person) => person.role)
+    .filter(Boolean)
+    .join(' · ');
+
+const items = await Promise.all(
+  scheduleOf(event, talks).map(async (item) => {
+    if (item.kind !== 'talk') return item;
+    const { Content } = await render(item.talk);
+    const people = item.talk.data.speakers.flatMap((slug) => {
+      const speaker = speakerBySlug.get(slug);
+      return speaker ? [speaker.data] : [];
+    });
+    const lead = item.talk.data.speakers
+      .map((slug) => speakerBySlug.get(slug))
+      .find((speaker) => speaker !== undefined);
+    const portrait = lead ? await speakerImage(lead) : undefined;
+    return { ...item, Content, people, portrait };
+  }),
+);
+---
+
+<section class={section} id={id} data-visual="program">
+  <div class={inner}>
+    <div class={header}>
+      <BlockTitle>{t('program.title')}</BlockTitle>
+      <p class={hint}>{fillTemplate(t('program.hint'), { tag: questionTag })}</p>
+    </div>
+
+    <ul class={list}>
+      {
+        items.map((item) =>
+          item.kind === 'talk' ? (
+            <li class={row}>
+              <div class={portraitColumn}>
+                <p class={time}>{item.time}</p>
+                <SpeakerAvatar src={item.portrait?.src} alt={item.portrait?.alt ?? ''} />
+              </div>
+              <div class={talkMain}>
+                <h3 class={talkTitle}>{item.title}</h3>
+                <p class={speakerName}>{item.people.map((person) => person.name).join(', ')}</p>
+                {roles(item.people) && <p class={speakerRole}>{roles(item.people)}</p>}
+              </div>
+              <div class={description}>
+                <Prose>
+                  <item.Content />
+                </Prose>
+              </div>
+            </li>
+          ) : (
+            <li class={activityRow}>
+              <p class={time}>{item.time}</p>
+              <p class={activityTitle}>{item.title}</p>
+            </li>
+          ),
+        )
+      }
+    </ul>
+  </div>
+</section>

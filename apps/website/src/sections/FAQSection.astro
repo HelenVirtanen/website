@@ -1,0 +1,48 @@
+---
+import BlockTitle from '@moscowcss/ui/components/BlockTitle';
+import Card, { CardSlider, CardSlide } from '@moscowcss/ui/components/Card';
+import Prose from '@moscowcss/ui/components/Prose';
+import { render, type CollectionEntry } from 'astro:content';
+import { useTranslations, type Locale } from '../i18n';
+import { section, inner, header, slider } from './FAQSection.css';
+
+interface Props {
+  // Вопросы языка страницы
+  entries: CollectionEntry<'faq'>[];
+  locale: Locale;
+}
+
+const { entries, locale } = Astro.props;
+const t = useTranslations(locale);
+
+const cards = await Promise.all(
+  [...entries]
+    .sort((a, b) => a.data.order - b.data.order)
+    .map(async (entry) => ({
+      title: entry.data.title,
+      Content: (await render(entry)).Content,
+    })),
+);
+---
+
+<section class={section} data-visual="faq">
+  <div class={inner}>
+    <div class={header}>
+      <BlockTitle>{t('faq.title')}</BlockTitle>
+    </div>
+
+    <CardSlider class={slider}>
+      {
+        cards.map(({ title, Content }) => (
+          <CardSlide>
+            <Card title={title}>
+              <Prose>
+                <Content />
+              </Prose>
+            </Card>
+          </CardSlide>
+        ))
+      }
+    </CardSlider>
+  </div>
+</section>

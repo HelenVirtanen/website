@@ -1,0 +1,35 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { frame, image, placeholder, play, videoLink } from './MediaTile.css';
+
+const Tag = 'figure';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Тип медиа: фото или видео */
+  kind: 'image' | 'video';
+  /** URL изображения или видео */
+  src?: string;
+  /** Постер для видео, если src задан */
+  poster?: string;
+  /** Подпись для img / ссылки на видео */
+  alt: string;
+}
+
+const { kind, src, poster, alt, class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[frame, className]} {...attrs}>
+  {
+    src && kind === 'image' ? (
+      <img class={image} src={src} alt={alt} loading="lazy" decoding="async" />
+    ) : src && kind === 'video' ? (
+      <a class={videoLink} href={src} target="_blank" rel="noopener noreferrer" aria-label={alt}>
+        {poster ? <img class={image} src={poster} alt="" loading="lazy" decoding="async" /> : null}
+        <span class={play} aria-hidden="true" />
+      </a>
+    ) : (
+      <div class={placeholder} aria-label={alt} role="img">
+        {kind === 'video' ? <span class={play} aria-hidden="true" /> : null}
+      </div>
+    )
+  }
+</Tag>

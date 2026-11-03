@@ -1,0 +1,22 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { blockTitle, blockTitleInverse, blockTitleWhite } from './BlockTitle.css';
+
+// Заголовок секции: под ним идут h3 карточек, поэтому уровень — h2.
+const Tag = 'h2';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Белый текст и рамка — для тёмного фона (JoinBlock и старые истории) */
+  white?: boolean;
+  /** Вариант оформления: светлый или для тёмного фона */
+  tone?: 'default' | 'inverse';
+}
+
+const { white = false, tone, class: className, ...attrs } = Astro.props;
+//TODO: убрать white
+const isInverse = tone === 'inverse' || white;
+const inverseClass = white ? blockTitleWhite : blockTitleInverse;
+---
+<Tag class:list={[blockTitle, isInverse && inverseClass, className]} {...attrs}>
+  <slot />
+</Tag>

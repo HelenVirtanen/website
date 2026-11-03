@@ -1,0 +1,29 @@
+{
+  "name": "@moscowcss/design-system",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "*.css.ts",
+    "*.css"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./palette": "./src/palette.ts",
+    "./breakpoints": "./src/breakpoints.ts",
+    "./theme-colors": "./src/theme-colors.ts",
+    "./scale": "./src/scale.ts"
+  },
+  "scripts": {
+    "lint": "eslint . --fix",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@moscowcss/eslint-config": "workspace:*",
+    "@moscowcss/typescript-config": "workspace:*",
+    "vitest": "5.0.5"
+  },
+  "dependencies": {
+    "@vanilla-extract/css": "1.21.1"
+  }
+}

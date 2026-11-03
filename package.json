@@ -1,0 +1,35 @@
+{
+  "name": "@moscowcss/root",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "turbo run dev --filter=website",
+    "storybook": "turbo run storybook --filter=storybook",
+    "build": "turbo run build --filter=website",
+    "build:storybook": "turbo run build --filter=storybook",
+    "lint": "turbo run lint",
+    "new:component": "plop component",
+    "new:event": "node apps/website/scripts/new-entry.mjs event",
+    "new:talk": "node apps/website/scripts/new-entry.mjs talk",
+    "new:speaker": "node apps/website/scripts/new-entry.mjs speaker",
+    "new:partner": "node apps/website/scripts/new-entry.mjs partner",
+    "new:faq": "node apps/website/scripts/new-entry.mjs faq",
+    "prepare": "husky",
+    "test": "turbo run test"
+  },
+  "packageManager": "pnpm@11.9.0+sha512.bd682d5d03fe525ef7c9fd6780c6884d1e756ac4c9c9fe00c538782824310dcf90e3ddc4f53835f06dfaebd5085e41855e0bcbb3b60de2ac5bbab89e5036f03b",
+  "devDependencies": {
+    "eslint": "10.6.0",
+    "husky": "9.1.7",
+    "pixelmatch": "8.0.0",
+    "playwright-core": "1.64.1",
+    "plop": "4.0.5",
+    "pngjs": "7.0.0",
+    "prettier": "3.9.4",
+    "turbo": "2.10.2",
+    "typescript": "6.0.3"
+  }
+}

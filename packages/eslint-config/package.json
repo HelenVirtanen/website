@@ -1,0 +1,17 @@
+{
+  "name": "@moscowcss/eslint-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-astro": "2.1.1",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "globals": "17.7.0",
+    "typescript-eslint": "8.62.1"
+  }
+}

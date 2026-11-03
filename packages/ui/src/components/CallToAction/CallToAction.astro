@@ -1,0 +1,28 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { root, face } from './CallToAction.css';
+
+interface LinkProps extends HTMLAttributes<'a'> {
+  /** Адрес перехода — рендер как ссылка вместо кнопки */
+  href: string;
+}
+
+interface ButtonProps extends HTMLAttributes<'button'> {
+  href?: undefined;
+}
+
+type Props = LinkProps | ButtonProps;
+
+const props = Astro.props as Props;
+const { class: className, href, type = 'button', ...attrs } = props;
+---
+
+{href != null ? (
+  <a href={href} class:list={[root, className]} {...attrs}>
+    <span class={face}><slot /></span>
+  </a>
+) : (
+  <button type={type} class:list={[root, className]} {...attrs}>
+    <span class={face}><slot /></span>
+  </button>
+)}

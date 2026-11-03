@@ -1,0 +1,151 @@
+---
+import '@moscowcss/fonts';
+import '@moscowcss/design-system';
+import '../styles/global.css';
+import NavBar from '@moscowcss/ui/components/NavBar';
+import LocaleSwitcher from '@moscowcss/ui/components/LocaleSwitcher';
+import {
+  defaultLocale,
+  locales,
+  localeNames,
+  localeSwitchHints,
+  localizePath,
+  useTranslations,
+  type Locale,
+} from '../i18n';
+import { loadCatalog } from '../content/catalog';
+import { CARD_TYPE, OG_SIZE, OG_TYPE, cardMetaOf } from '../seo/og';
+import { feedPath } from '../rss/feed';
+import { jsonLdOf, serializeJsonLd } from '../seo/jsonld';
+import { publicPagesOf } from '../seo/pages';
+
+interface Alternate {
+  /** Язык версии страницы */
+  locale: Locale;
+  /** Адрес версии от корня сайта, с хвостовым слэшем */
+  path: string;
+}
+
+interface Props {
+  /** Заголовок страницы: `<title>` */
+  title: string;
+  /** Описание страницы: meta description */
+  description: string;
+  /** Язык страницы: `<html lang>` и язык подписей интерфейса */
+  lang: Locale;
+  /** Версии этой страницы на всех языках: hreflang и переключатель языка */
+  alternates: Alternate[];
+  /** Закрыть страницу от индексации; canonical у такой страницы не ставится */
+  noindex?: boolean;
+}
+
+const { title, description, lang, alternates, noindex = false } = Astro.props;
+const t = useTranslations(lang);
+
+// Ссылка на Telegram живёт в контенте: pages/<язык>/index.md → telegramUrl.
+const catalog = await loadCatalog();
+const telegramHref = catalog.pages.find((entry) => entry.id === `${lang}/index`)?.data.telegramUrl;
+if (!telegramHref) throw new Error(`Missing page content: pages/${lang}/index.md`);
+
+const site = Astro.site;
+const absolute = (path: string) => (site ? new URL(path, site).href : path);
+// У noindex-страницы canonical нет: «не индексируй» и «вот каноническая версия» противоречат друг другу.
+const canonical = noindex ? undefined : absolute(Astro.url.pathname);
+// Карточка и тип страницы берутся из общего списка публичных страниц по адресу: у noindex-страницы
+// и у адреса вне списка карточки нет, и мета-теги картинки не пишутся.
+const publicPage = noindex
+  ? undefined
+  : publicPagesOf(catalog).find((candidate) => candidate.path === Astro.url.pathname);
+const card = publicPage && { ...cardMetaOf(publicPage), type: OG_TYPE[publicPage.kind] };
+const ogImage = card && absolute(card.image);
+const twitterImage = card && absolute(card.twitterImage);
+const jsonLd =
+  publicPage &&
+  site &&
+  jsonLdOf(publicPage, catalog, { site, siteName: t('site.name'), telegramUrl: telegramHref, image: ogImage });
+const ogLocale: Record<Locale, string> = { ru: 'ru_RU', en: 'en_US' };
+const xDefault = alternates.find((alternate) => alternate.locale === defaultLocale);
+
+const navLinks = [
+  { href: '#registration', label: t('nav.registration') },
+  { href: '#program', label: t('nav.program') },
+  { href: '#partners', label: t('nav.partners') },
+  { href: '#address', label: t('nav.address') },
+  { href: localizePath(lang, 'search'), label: t('nav.search') },
+];
+
+const localeOptions = locales.map((code) => ({
+  code,
+  label: localeNames[code],
+  href: alternates.find((alternate) => alternate.locale === code)?.path ?? localizePath(code),
+  hint: localeSwitchHints[code],
+  current: code === lang,
+}));
+---
+
+<html lang={lang} data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    {/* Pagefind берёт описание для выдачи поиска из этого же тега */}
+    <meta name="description" content={description} data-pagefind-meta="description[content]" />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    {
+      alternates.map((alternate) => (
+        <link rel="alternate" hreflang={alternate.locale} href={absolute(alternate.path)} />
+      ))
+    }
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={card?.type ?? 'website'} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:locale" content={ogLocale[lang]} />
+    <meta property="og:site_name" content={t('site.name')} />
+    {
+      ogImage && (
+        <>
+          <meta property="og:image" content={ogImage} />
+          <meta property="og:image:type" content={CARD_TYPE} />
+          <meta property="og:image:width" content={String(OG_SIZE.width)} />
+          <meta property="og:image:height" content={String(OG_SIZE.height)} />
+          <meta property="og:image:alt" content={title} />
+        </>
+      )
+    }
+    <meta name="twitter:card" content={twitterImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {
+      twitterImage && (
+        <>
+          <meta name="twitter:image" content={twitterImage} />
+          <meta name="twitter:image:alt" content={title} />
+        </>
+      )
+    }
+    {xDefault && <link rel="alternate" hreflang="x-default" href={absolute(xDefault.path)} />}
+    <link rel="alternate" type="application/rss+xml" title={t('rss.title')} href={absolute(feedPath(lang))} />
+    {jsonLd && <script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />}
+  </head>
+  <body>
+    <NavBar
+      links={navLinks}
+      telegramHref={telegramHref}
+      telegramLabel={t('nav.telegram')}
+      menuLabel={t('nav.menu')}
+      closeLabel={t('nav.closeMenu')}
+      data-visual="navbar"
+    >
+      <Fragment slot="locale">
+        <LocaleSwitcher label={t('locale.label')} options={localeOptions} />
+      </Fragment>
+    </NavBar>
+    <slot />
+  </body>
+</html>

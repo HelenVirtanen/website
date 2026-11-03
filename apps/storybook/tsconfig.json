@@ -1,0 +1,4 @@
+{
+  "extends": "@moscowcss/typescript-config/astro.json",
+  "include": [".storybook/**/*", "**/*"]
+}

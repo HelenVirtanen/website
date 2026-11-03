@@ -1,0 +1,26 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { Burger } from '@moscowcss/icons';
+import { root, icon } from './BurgerButton.css';
+
+const Tag = 'button';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** id панели меню, которой управляет кнопка (aria-controls) */
+  controls: string;
+}
+
+const { controls, type = 'button', class: className, ...attrs } = Astro.props;
+---
+
+<Tag
+  type={type}
+  class:list={[root, className]}
+  aria-controls={controls}
+  aria-expanded="false"
+  aria-label="Меню"
+  data-nav-toggle
+  {...attrs}
+>
+  <Burger class={icon} height="auto" />
+</Tag>

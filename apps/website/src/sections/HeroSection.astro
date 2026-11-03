@@ -1,0 +1,103 @@
+---
+import CallToAction from '@moscowcss/ui/components/CallToAction';
+import { Logo } from '@moscowcss/icons';
+import type { CollectionEntry } from 'astro:content';
+import { eventWhen, fillTemplate } from '../content/format';
+import { useTranslations, type Locale } from '../i18n';
+import {
+  section,
+  inner,
+  intro,
+  introHead,
+  star,
+  title,
+  modes,
+  modeItem,
+  footer,
+  details,
+  meetupLine,
+  infoLine,
+  passportNote,
+  ctaColumn,
+  ctaButton,
+  onlineNote,
+} from './HeroSection.css';
+
+interface Props {
+  // Митап, который показывает блок
+  event: CollectionEntry<'events'>;
+  locale: Locale;
+  // Митап уже прошёл: вместо регистрации — пометка и ссылка на запись
+  past: boolean;
+  id?: string;
+}
+
+const { event, locale, past, id = 'registration' } = Astro.props;
+const t = useTranslations(locale);
+const { tagline, venue, modes: eventModes, passportRequired, registrationUrl, streamUrl, recordingUrl } =
+  event.data;
+const dateTime = eventWhen(event.data, locale, { withTime: t('hero.dateTime'), dateOnly: t('date.long') });
+---
+
+<section class={section} id={id} data-visual="hero">
+  <div class={inner}>
+    <div class={intro}>
+      <div class={introHead}>
+        <Logo class={star} aria-hidden="true" />
+        <h1 class={title}>{t('hero.title')}</h1>
+      </div>
+      <ul class={modes}>
+        {
+          eventModes.map((mode) => (
+            <li class={modeItem}>{mode}</li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class={footer}>
+      <div class={details}>
+        <p class={meetupLine}>{tagline}</p>
+        <p class={infoLine}>{dateTime}</p>
+        {venue.address && <p class={infoLine}>{fillTemplate(t('hero.address'), { address: venue.address })}</p>}
+        {passportRequired && <p class={passportNote}>{t('hero.passport')}</p>}
+      </div>
+      <div class={ctaColumn}>
+        {
+          past ? (
+            <>
+              <p class={onlineNote}>{t('hero.pastNote')}</p>
+              {recordingUrl && (
+                <p class={onlineNote}>
+                  <a href={recordingUrl} target="_blank" rel="noopener noreferrer">
+                    {t('hero.watchRecording')}
+                  </a>
+                </p>
+              )}
+            </>
+          ) : (
+            <>
+              {registrationUrl && (
+                <CallToAction class={ctaButton} href={registrationUrl}>
+                  {t('hero.registration')}
+                </CallToAction>
+              )}
+              <p class={onlineNote}>
+                {t('hero.onlineNote')}
+                <br />
+                {/* Без адреса трансляции ссылка была бы пустой — показываем текст без ссылки */}
+                {streamUrl ? (
+                  <a href={streamUrl} target="_blank" rel="noopener noreferrer">
+                    {t('hero.watchStream')}
+                  </a>
+                ) : (
+                  <span>{t('hero.watchStream')}</span>
+                )}
+              </p>
+            </>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>

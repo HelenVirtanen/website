@@ -1,0 +1,24 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { frame, image, placeholder } from './SpeakerAvatar.css';
+
+const Tag = 'div';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** URL фото спикера; без src показывается заглушка */
+  src?: string;
+  /** Подпись для img и aria-label заглушки */
+  alt: string;
+}
+
+const { src, alt, class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[frame, className]} {...attrs}>
+  {
+    src ? (
+      <img class={image} src={src} alt={alt} loading="lazy" decoding="async" />
+    ) : (
+      <span class={placeholder} aria-label={alt} role="img" />
+    )
+  }
+</Tag>

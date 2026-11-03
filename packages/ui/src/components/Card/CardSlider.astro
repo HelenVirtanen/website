@@ -1,0 +1,44 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { ArrowRight } from '@moscowcss/icons';
+import {
+  nav,
+  navButton,
+  navButtonIcon,
+  navButtonPrev,
+  root,
+  swiper,
+} from './CardSlider.css';
+
+const Tag = 'div';
+
+interface Props extends HTMLAttributes<typeof Tag> {}
+
+const { class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[root, className]} data-card-slider {...attrs}>
+  <div class={nav}>
+    <button type="button" class:list={[navButton, navButtonPrev]} data-card-slider-prev aria-label="Предыдущий слайд">
+      <ArrowRight class={navButtonIcon} aria-hidden="true" />
+    </button>
+    <button type="button" class={navButton} data-card-slider-next aria-label="Следующий слайд">
+      <ArrowRight class={navButtonIcon} aria-hidden="true" />
+    </button>
+  </div>
+  <div class:list={[swiper, 'swiper']} data-card-slider-container>
+    <div class="swiper-wrapper">
+      <slot />
+    </div>
+  </div>
+</Tag>
+
+<script>
+  import { setupCardSlider } from './CardSlider.client';
+
+  const init = () => {
+    document.querySelectorAll<HTMLElement>('[data-card-slider]').forEach(setupCardSlider);
+  };
+
+  init();
+  document.addEventListener('astro:page-load', init);
+</script>

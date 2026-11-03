@@ -1,0 +1,13 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { slide } from './CardSlider.css';
+
+const Tag = 'div';
+
+interface Props extends HTMLAttributes<typeof Tag> {}
+
+const { class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[slide, className, 'swiper-slide']} {...attrs}>
+  <slot />
+</Tag>

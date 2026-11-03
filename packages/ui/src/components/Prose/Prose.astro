@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { root } from './Prose.css';
+
+// Тег — единственный источник правды: заменишь 'div' на 'span' —
+// тип пропсов (HTMLAttributes<typeof Tag>) и разметка поменяются вместе.
+const Tag = 'div';
+
+// Своих пропсов нет: содержимое — отрендеренный Markdown (`<Content />`) в слоте,
+// внешний вид задаётся на тегах внутри, потому что `.md` не подменяет теги компонентами.
+interface Props extends HTMLAttributes<typeof Tag> {}
+
+const { class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[root, className]} {...attrs}>
+  <slot />
+</Tag>

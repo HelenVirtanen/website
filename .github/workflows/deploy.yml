@@ -1,0 +1,77 @@
+name: Check and deploy website to GitHub Pages (css.moscow)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Проверки одной ветки/PR: новый пуш отменяет устаревший прогон PR
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # Версия pnpm берётся из поля packageManager в package.json
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build website
+        run: pnpm build
+
+      # check:seo читает собранный сайт, поэтому идёт строго после build
+      - name: Check SEO of built site
+        run: pnpm --filter website check:seo
+
+      - name: Build Storybook
+        run: pnpm build:storybook
+
+      - name: Upload Pages artifact
+        # Прод собирается только из main: ручной запуск с другой ветки проверяет, но не выкатывает
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: apps/website/dist
+
+  deploy:
+    needs: check
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    # Один выкат Pages за раз для всех запусков; недоделанный выкат не отменяем — он хуже запоздавшего
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

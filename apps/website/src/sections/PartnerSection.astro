@@ -1,0 +1,144 @@
+---
+import FeatureCard from '@moscowcss/ui/components/FeatureCard';
+import MapPlaceholder from '@moscowcss/ui/components/MapPlaceholder';
+import MediaTile from '@moscowcss/ui/components/MediaTile';
+import { LineVektor } from '@moscowcss/icons';
+import Prose from '@moscowcss/ui/components/Prose';
+import { render, type CollectionEntry } from 'astro:content';
+import { fillTemplate } from '../content/format';
+import { qrPath } from '../content/qr';
+import { useTranslations, type Locale } from '../i18n';
+import partnerCardsWave from '../../public/assets/partner-cards-wave.svg?raw';
+import {
+  section,
+  hero,
+  heroWave,
+  inner,
+  partnerHeader,
+  brandLogo,
+  brandTitle,
+  brandName,
+  handle,
+  tagline,
+  qr,
+  qrBackground,
+  qrModules,
+  cardsRow,
+  cardsGrid,
+  directionsBlock,
+  directionsProse,
+  mediaRow,
+  mapFrame,
+  mediaTileFrame,
+} from './PartnerSection.css';
+
+interface Props {
+  // Партнёр митапа
+  partner: CollectionEntry<'partners'>;
+  // Митап: площадка, карта и текст «как добраться»
+  event: CollectionEntry<'events'>;
+  locale: Locale;
+  id?: string;
+}
+
+const { partner, event, locale, id = 'partners' } = Astro.props;
+const t = useTranslations(locale);
+const { name, handle: partnerHandle, tagline: partnerTagline, features, logo, qrUrl } = partner.data;
+const qrCode = qrUrl ? qrPath(qrUrl) : undefined;
+// Поле вокруг кода в модулях: без него камера не находит границы на тёмном фоне.
+const QR_QUIET_ZONE = 2;
+const { venue } = event.data;
+const { Content: Directions } = await render(event);
+
+const routeMedia = [
+  { kind: 'image', alt: t('route.photoFirst') },
+  { kind: 'video', alt: t('route.video') },
+  { kind: 'image', alt: t('route.photoSecond') },
+] as const;
+---
+
+<section class={section} id={id} data-visual="partner">
+  <div class={hero}>
+    <div class={heroWave} aria-hidden="true">
+      <LineVektor />
+    </div>
+    <div class={inner}>
+      <div class={partnerHeader}>
+        <h2 class:list={[brandTitle, !logo && brandName]}>
+          {
+            logo ? (
+              <img class={brandLogo} src={logo.src} width={logo.width} height={logo.height} alt={name} decoding="async" />
+            ) : (
+              name
+            )
+          }
+        </h2>
+        {
+          qrCode && (
+            <svg
+              class={qr}
+              viewBox={`${String(-QR_QUIET_ZONE)} ${String(-QR_QUIET_ZONE)} ${String(qrCode.size + 2 * QR_QUIET_ZONE)} ${String(qrCode.size + 2 * QR_QUIET_ZONE)}`}
+              role="img"
+              aria-label={fillTemplate(t('partner.qrLabel'), { handle: partnerHandle })}
+              shape-rendering="crispEdges"
+            >
+              <rect
+                class={qrBackground}
+                x={-QR_QUIET_ZONE}
+                y={-QR_QUIET_ZONE}
+                width={qrCode.size + 2 * QR_QUIET_ZONE}
+                height={qrCode.size + 2 * QR_QUIET_ZONE}
+              />
+              <path class={qrModules} d={qrCode.d} />
+            </svg>
+          )
+        }
+        <p class={handle}>{partnerHandle}</p>
+        <p class={tagline}>{partnerTagline}</p>
+      </div>
+
+      <div class={cardsRow}>
+        <div class={cardsGrid}>
+          {
+            features.map((feature, index) => (
+              <FeatureCard
+                title={feature.title}
+                description={feature.description}
+                footnote={feature.footnote}
+                waveIndex={index}
+                waveSvg={partnerCardsWave}
+              />
+            ))
+          }
+        </div>
+      </div>
+
+      <div class={directionsBlock} id="address">
+        <Prose class={directionsProse}>
+          <Directions />
+        </Prose>
+        {
+          venue.coordinates && (
+            <MapPlaceholder
+              class={mapFrame}
+              latitude={venue.coordinates.latitude}
+              longitude={venue.coordinates.longitude}
+              zoom={venue.coordinates.zoom}
+              caption={venue.address}
+              emptyLabel={t('map.empty')}
+              emptyHint={t('map.emptyHint')}
+              openLabel={t('map.open')}
+            />
+          )
+        }
+        <div class={mediaRow}>
+          {
+            routeMedia.map((item) => (
+              <MediaTile class={mediaTileFrame} kind={item.kind} alt={item.alt} />
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

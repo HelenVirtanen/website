@@ -1,0 +1,36 @@
+{
+  "name": "website",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "lint": "eslint . --fix",
+    "test": "vitest run",
+    "check:seo": "node scripts/check-seo.mjs"
+  },
+  "dependencies": {
+    "@astrojs/rss": "4.0.19",
+    "@moscowcss/content": "workspace:*",
+    "@moscowcss/design-system": "workspace:*",
+    "@moscowcss/fonts": "workspace:*",
+    "@moscowcss/icons": "workspace:*",
+    "@moscowcss/og": "workspace:*",
+    "@moscowcss/ui": "workspace:*",
+    "@vanilla-extract/css": "1.21.1",
+    "@vanilla-extract/vite-plugin": "5.2.3",
+    "astro": "7.0.6",
+    "qrcode-generator": "2.0.4",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "@moscowcss/eslint-config": "workspace:*",
+    "@moscowcss/typescript-config": "workspace:*",
+    "js-yaml": "5.5.0",
+    "pagefind": "1.6.0",
+    "parse5": "8.1.0",
+    "vitest": "5.0.5"
+  }
+}

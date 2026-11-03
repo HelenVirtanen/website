@@ -1,0 +1,51 @@
+---
+import H1 from '@moscowcss/ui/components/H1';
+import H2 from '@moscowcss/ui/components/H2';
+import Paragraph from '@moscowcss/ui/components/Paragraph';
+import LinkList from '@moscowcss/ui/components/LinkList';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { main, inner, block, blocks as blockList } from '../components/NotFoundPage.css';
+import { defaultLocale, locales, localizePath, useTranslations } from '../i18n';
+
+// GitHub Pages отдаёт один 404.html на любой несуществующий адрес, язык по адресу не угадать:
+// текст и ссылки — на всех языках, первым — язык по умолчанию.
+const ordered = [defaultLocale, ...locales.filter((locale) => locale !== defaultLocale)];
+const t = useTranslations(defaultLocale);
+const blocks = ordered.map((locale) => {
+  const tl = useTranslations(locale);
+  return {
+    locale,
+    title: tl('notFound.title'),
+    text: tl('notFound.text'),
+    links: tl('notFound.links'),
+    items: [
+      { href: localizePath(locale), label: tl('notFound.home') },
+      { href: localizePath(locale, 'search'), label: tl('notFound.search') },
+    ],
+  };
+});
+---
+
+<BaseLayout
+  title={`${t('notFound.title')} — ${t('site.name')}`}
+  description={t('notFound.text')}
+  lang={defaultLocale}
+  alternates={[]}
+  noindex
+>
+  <main class={main}>
+    <div class={inner}>
+      <div class={blockList}>
+        {
+          blocks.map((item, index) => (
+            <section class={block} lang={item.locale}>
+              {index === 0 ? <H1>{item.title}</H1> : <H2>{item.title}</H2>}
+              <Paragraph>{item.text}</Paragraph>
+              <LinkList title={item.links} items={item.items} headingLevel={index === 0 ? 2 : 3} />
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </main>
+</BaseLayout>

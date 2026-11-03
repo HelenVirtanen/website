@@ -1,0 +1,17 @@
+{
+  "name": "@moscowcss/fonts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": "./index.css",
+    "./index.css": "./index.css",
+    "./montserrat-regular.ttf": "./montserrat/Montserrat-Regular.ttf",
+    "./montserrat-semibold.ttf": "./montserrat/Montserrat-SemiBold.ttf",
+    "./montserrat-bold.ttf": "./montserrat/Montserrat-Bold.ttf",
+    "./package.json": "./package.json"
+  }
+}

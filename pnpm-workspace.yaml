@@ -1,0 +1,15 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# Точные версии, без диапазонов. В pnpm 11 `.npmrc` отвечает только за
+# auth/registry, поэтому настройки живут здесь (копия в `.npmrc` оставлена для
+# документации, но pnpm её для save-поведения больше не читает).
+saveExact: true
+savePrefix: ""
+
+# Зависимости, которым разрешено выполнять install/build-скрипты (pnpm 11 по
+# умолчанию их блокирует): esbuild и sharp скачивают платформенные бинарники.
+allowBuilds:
+  esbuild: true
+  sharp: true

@@ -1,0 +1,28 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { content, header, root, subtitle, title } from './Card.css';
+
+const Tag = 'article';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Заголовок карточки */
+  title: string;
+  /** Подзаголовок под заголовком */
+  subtitle?: string;
+}
+
+const { title: cardTitle, subtitle: cardSubtitle, class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[root, className]} {...attrs}>
+  <header class={header}>
+    <h3 class={title}>{cardTitle}</h3>
+    {cardSubtitle != null && <p class={subtitle}>{cardSubtitle}</p>}
+  </header>
+  {
+    Astro.slots.has('default') && (
+      <div class={content}>
+        <slot />
+      </div>
+    )
+  }
+</Tag>
