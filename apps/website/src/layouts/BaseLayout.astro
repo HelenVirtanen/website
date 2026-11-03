@@ -13,6 +13,9 @@ import {
   useTranslations,
   type Locale,
 } from '../i18n';
+import { loadCatalog } from '../content/catalog';
+import { CARD_TYPE, OG_SIZE, OG_TYPE, cardMetaOf } from '../seo/og';
+import { publicPagesOf } from '../seo/pages';
 
 interface Alternate {
   /** Язык версии страницы */
@@ -32,19 +35,29 @@ interface Props {
   alternates: Alternate[];
   /** Закрыть страницу от индексации; canonical у такой страницы не ставится */
   noindex?: boolean;
-  /** Карточка для Open Graph (картинка и alt); отрисовка добавляется вместе с генератором карточек */
-  card?: { image: string; alt: string };
 }
 
 const { title, description, lang, alternates, noindex = false } = Astro.props;
 const t = useTranslations(lang);
 
-const TELEGRAM_HREF = 'https://t.me/moscowcss';
+// Ссылка на Telegram живёт в контенте: pages/<язык>/index.md → telegramUrl.
+const catalog = await loadCatalog();
+const telegramHref = catalog.pages.find((entry) => entry.id === `${lang}/index`)?.data.telegramUrl;
+if (!telegramHref) throw new Error(`Missing page content: pages/${lang}/index.md`);
 
 const site = Astro.site;
 const absolute = (path: string) => (site ? new URL(path, site).href : path);
 // У noindex-страницы canonical нет: «не индексируй» и «вот каноническая версия» противоречат друг другу.
 const canonical = noindex ? undefined : absolute(Astro.url.pathname);
+// Карточка и тип страницы берутся из общего списка публичных страниц по адресу: у noindex-страницы
+// и у адреса вне списка карточки нет, и мета-теги картинки не пишутся.
+const publicPage = noindex
+  ? undefined
+  : publicPagesOf(catalog).find((candidate) => candidate.path === Astro.url.pathname);
+const card = publicPage && { ...cardMetaOf(publicPage), type: OG_TYPE[publicPage.kind] };
+const ogImage = card && absolute(card.image);
+const twitterImage = card && absolute(card.twitterImage);
+const ogLocale: Record<Locale, string> = { ru: 'ru_RU', en: 'en_US' };
 const xDefault = alternates.find((alternate) => alternate.locale === defaultLocale);
 
 const navLinks = [
@@ -76,12 +89,40 @@ const localeOptions = locales.map((code) => ({
         <link rel="alternate" hreflang={alternate.locale} href={absolute(alternate.path)} />
       ))
     }
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={card?.type ?? 'website'} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:locale" content={ogLocale[lang]} />
+    <meta property="og:site_name" content={t('site.name')} />
+    {
+      ogImage && (
+        <>
+          <meta property="og:image" content={ogImage} />
+          <meta property="og:image:type" content={CARD_TYPE} />
+          <meta property="og:image:width" content={String(OG_SIZE.width)} />
+          <meta property="og:image:height" content={String(OG_SIZE.height)} />
+          <meta property="og:image:alt" content={title} />
+        </>
+      )
+    }
+    <meta name="twitter:card" content={twitterImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {
+      twitterImage && (
+        <>
+          <meta name="twitter:image" content={twitterImage} />
+          <meta name="twitter:image:alt" content={title} />
+        </>
+      )
+    }
     {xDefault && <link rel="alternate" hreflang="x-default" href={absolute(xDefault.path)} />}
   </head>
   <body>
     <NavBar
       links={navLinks}
-      telegramHref={TELEGRAM_HREF}
+      telegramHref={telegramHref}
       telegramLabel={t('nav.telegram')}
       menuLabel={t('nav.menu')}
       closeLabel={t('nav.closeMenu')}

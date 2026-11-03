@@ -67,6 +67,11 @@ const ru = {
   'speaker.talks': 'Доклады',
   'speaker.events': 'Митапы',
   'speaker.links': 'Ссылки',
+  'og.kind.home': 'Сообщество фронтендеров',
+  'og.kind.talk': 'Доклад',
+  'og.kind.speaker': 'Спикер',
+  'og.kicker.event': 'Митап № {slug}',
+  'og.home.meta': 'Митапы фронтендеров в Москве',
 } as const;
 
 export type UiKey = keyof typeof ru;
@@ -136,6 +141,11 @@ const en = {
   'speaker.talks': 'Talks',
   'speaker.events': 'Meetups',
   'speaker.links': 'Links',
+  'og.kind.home': 'Frontend community',
+  'og.kind.talk': 'Talk',
+  'og.kind.speaker': 'Speaker',
+  'og.kicker.event': 'Meetup #{slug}',
+  'og.home.meta': 'Frontend meetups in Moscow',
 } satisfies Record<UiKey, string>;
 
 export const ui: Record<Locale, Record<UiKey, string>> = { ru, en };

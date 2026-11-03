@@ -12,3 +12,4 @@ savePrefix: ""
 # умолчанию их блокирует). esbuild качает свой платформенный бинарник в build-скрипте.
 allowBuilds:
   esbuild: true
+  sharp: true

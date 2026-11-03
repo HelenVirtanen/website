@@ -3,7 +3,7 @@ id: "10"
 title: og-package-and-meta-tags
 spec: "001"
 criteria: ["AC-16", "AC-17"]
-status: pending
+status: done
 depends_on: ["09"]
 owns: ["packages/og/**", "packages/fonts/package.json", "packages/fonts/montserrat/*.ttf", "packages/design-system/package.json", "apps/website/src/seo/**", "apps/website/src/pages/og/**", "apps/website/src/layouts/BaseLayout.astro", "apps/website/src/i18n/ui.ts", "apps/website/package.json", "pnpm-workspace.yaml", "pnpm-lock.yaml"]
 model: sonnet

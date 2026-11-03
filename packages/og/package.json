@@ -1,0 +1,27 @@
+{
+  "name": "@moscowcss/og",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "lint": "eslint . --fix",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@moscowcss/design-system": "workspace:*",
+    "@moscowcss/fonts": "workspace:*",
+    "satori": "0.63.2",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "@moscowcss/eslint-config": "workspace:*",
+    "@moscowcss/typescript-config": "workspace:*",
+    "eslint": "10.6.0",
+    "typescript": "6.0.3",
+    "vitest": "5.0.5"
+  }
+}

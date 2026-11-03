@@ -15,10 +15,12 @@
     "@moscowcss/design-system": "workspace:*",
     "@moscowcss/fonts": "workspace:*",
     "@moscowcss/icons": "workspace:*",
+    "@moscowcss/og": "workspace:*",
     "@moscowcss/ui": "workspace:*",
     "@vanilla-extract/css": "1.21.1",
     "@vanilla-extract/vite-plugin": "5.2.3",
-    "astro": "7.0.6"
+    "astro": "7.0.6",
+    "sharp": "0.35.5"
   },
   "devDependencies": {
     "@moscowcss/eslint-config": "workspace:*",
