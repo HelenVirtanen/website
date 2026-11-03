@@ -1,10 +1,12 @@
 ---
 import LinkList from '@moscowcss/ui/components/LinkList';
+import Paragraph from '@moscowcss/ui/components/Paragraph';
 import type { CollectionEntry } from 'astro:content';
 import { slugOf } from '../content/catalog';
 import { eventDateParts, fillTemplate } from '../content/format';
 import { localizePath, useTranslations, type Locale } from '../i18n';
-import { section, inner } from './PastEventsSection.css';
+import { feedPath } from '../rss/feed';
+import { section, inner, feedLink } from './PastEventsSection.css';
 
 interface Props {
   // Прошедшие митапы языка страницы, новые выше
@@ -27,6 +29,9 @@ const items = events.map((event) => ({
     <section class={section} id="events">
       <div class={inner}>
         <LinkList title={t('events.past')} items={items} />
+        <Paragraph>
+          <a class={feedLink} href={feedPath(locale)} type="application/rss+xml">{t('rss.subscribe')}</a>
+        </Paragraph>
       </div>
     </section>
   )

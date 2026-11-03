@@ -15,6 +15,7 @@ import {
 } from '../i18n';
 import { loadCatalog } from '../content/catalog';
 import { CARD_TYPE, OG_SIZE, OG_TYPE, cardMetaOf } from '../seo/og';
+import { feedPath } from '../rss/feed';
 import { jsonLdOf, serializeJsonLd } from '../seo/jsonld';
 import { publicPagesOf } from '../seo/pages';
 
@@ -125,6 +126,7 @@ const localeOptions = locales.map((code) => ({
       )
     }
     {xDefault && <link rel="alternate" hreflang="x-default" href={absolute(xDefault.path)} />}
+    <link rel="alternate" type="application/rss+xml" title={t('rss.title')} href={absolute(feedPath(lang))} />
     {jsonLd && <script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />}
   </head>
   <body>

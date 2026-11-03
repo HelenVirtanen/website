@@ -14,7 +14,7 @@ const png = (width, height) => {
   return bytes;
 };
 
-const page = ({ lang = 'ru', path, alternates = [], noindex = false, omit = [], ogWidth = 1200, ogHeight = 630, ogLocale = lang === 'en' ? 'en_US' : 'ru_RU' }) => {
+const page = ({ lang = 'ru', path, alternates = [], noindex = false, omit = [], ogWidth = 1200, ogHeight = 630, ogLocale = lang === 'en' ? 'en_US' : 'ru_RU', links = '' }) => {
   const url = `${SITE}${path}`;
   const img = `${SITE}/og${path.endsWith('/') ? `${path}index` : path}`;
   const tags = [
@@ -42,7 +42,7 @@ const page = ({ lang = 'ru', path, alternates = [], noindex = false, omit = [], 
   const alts = alternates.map(([l, h]) => `<link rel="alternate" hreflang="${l}" href="${h}">`).join('\n');
   return noindex
     ? `<!doctype html><html lang="${lang}"><head><title>t</title><meta name="robots" content="noindex, follow"></head><body></body></html>`
-    : `<!doctype html><html lang="${lang}"><head><title>t</title>\n${tags}\n<link rel="canonical" href="${url}">\n${alts}</head><body></body></html>`;
+    : `<!doctype html><html lang="${lang}"><head><title>t</title>\n${tags}\n<link rel="canonical" href="${url}">\n${alts}${links}</head><body></body></html>`;
 };
 
 let dist;
@@ -170,5 +170,50 @@ describe('checkDist', () => {
     await put('index.html', page({ path: '/', alternates: [...pair, ['en', `${SITE}/en/nope/`]] }));
     const { errors } = await checkDist(dist, SITE);
     expect(errors.some((e) => e.includes('нет такой страницы'))).toBe(true);
+  });
+
+  describe('RSS', () => {
+    const feedLink = (href, title = 'Митапы') =>
+      `<link rel="alternate" type="application/rss+xml"${title ? ` title="${title}"` : ''} href="${href}">`;
+    const feed = (...links) => feedIn('ru', ...links);
+    const feedIn = (language, ...links) =>
+      `<rss><channel><link>${SITE}/</link><language>${language}-XX</language>${links.map((l) => `<item><link>${l}</link></item>`).join('')}</channel></rss>`;
+
+    it('ссылка на ленту сборки и записи на её страницы — проходит', async () => {
+      await validSite();
+      await put('index.html', page({ path: '/', alternates: pair, links: feedLink(`${SITE}/rss.xml`) }));
+      await put('rss.xml', feed(`${SITE}/`));
+      await put('en/rss.xml', feedIn('en', `${SITE}/en/`));
+      expect((await checkDist(dist, SITE)).errors).toEqual([]);
+    });
+
+    it.each([
+      ['без title', feedLink(`${SITE}/rss.xml`, ''), 'index.html: RSS https://css.moscow/rss.xml: нет title'],
+      ['на несуществующую ленту', feedLink(`${SITE}/en/rss.xml`), 'index.html: RSS /en/rss.xml: в сборке нет такой ленты'],
+      ['на HTML вместо ленты', feedLink(`${SITE}/en/`), 'index.html: RSS /en/: в сборке нет такой ленты'],
+    ])('ссылка %s — ошибка', async (_name, links, error) => {
+      await validSite();
+      await put('index.html', page({ path: '/', alternates: pair, links }));
+      await put('rss.xml', feed());
+      expect((await checkDist(dist, SITE)).errors).toEqual([error]);
+    });
+
+    it('запись ленты без слэша или на несуществующую страницу — ошибка', async () => {
+      await validSite();
+      await put('en/rss.xml', feedIn('en', `${SITE}/en`, `${SITE}/en/events/99/`));
+      expect((await checkDist(dist, SITE)).errors).toEqual([
+        'en/rss.xml: ссылка https://css.moscow/en: нет такой страницы в сборке',
+        'en/rss.xml: ссылка https://css.moscow/en/events/99/: нет такой страницы в сборке',
+      ]);
+    });
+
+    it('английская лента с русским языком и русскими записями — ошибка', async () => {
+      await validSite();
+      await put('en/rss.xml', feedIn('ru', `${SITE}/`));
+      expect((await checkDist(dist, SITE)).errors).toEqual([
+        'en/rss.xml: <language>ru-XX</language>, ожидался en',
+        'en/rss.xml: ссылка https://css.moscow/: страница языка ru в ленте en',
+      ]);
+    });
   });
 });

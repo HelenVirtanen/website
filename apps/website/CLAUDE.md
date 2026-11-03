@@ -19,10 +19,12 @@ src/
 ├── seo/        # pages.ts (public pages), og.ts (card input), jsonld.ts (schema.org), sitemap.ts (sitemap + robots)
 ├── layouts/    # BaseLayout: canonical, hreflang, og/twitter tags
 ├── pages/      # [...locale]/ (home, events, talks, speakers, search), og/ and avatars/ (images),
-│               # 404.astro (one bilingual page for GitHub Pages), sitemap.xml.ts, robots.txt.ts
+│               # 404.astro (one bilingual page for GitHub Pages), sitemap.xml.ts, robots.txt.ts,
+│               # [...locale]/rss.xml.ts (feed)
 ├── sections/   # homepage sections
 ├── components/ # page-level pieces that are not reusable UI
 ├── search/     # Pagefind client
+├── rss/        # feed.ts: per-language meetup feed (/rss.xml, /en/rss.xml)
 └── test/       # fixtures for tests
 scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* generator)
 ```
@@ -71,6 +73,11 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
 - Structured data is built in `src/seo/jsonld.ts` from the same catalog as the
   page: `Organization` + `WebSite` on home, `Event` on a meetup, `Person` on a
   speaker. Event times are written in Moscow time with `+03:00`.
+- **RSS** is one feed per language (`/rss.xml`, `/en/rss.xml`), like the blog:
+  one item per published meetup, newest first, `pubDate` = meetup start. The
+  feed route takes its language from the URL, not from `props` (Astro gives an
+  extension endpoint under `[...locale]` the first path's props). `check:seo`
+  checks the head links, the feed language and that every item link is a page.
 - Tests are vitest (`vitest.config.ts` uses `getViteConfig`, so they see the same
   plugins as the build); `astro:content` is mocked with `vi.mock`.
 - Theme is **colour-only** and driven by `data-theme` (`<html data-theme="…">`) /

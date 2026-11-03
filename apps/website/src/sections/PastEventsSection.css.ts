@@ -10,4 +10,21 @@ export const section = style([
   },
 ]);
 
-export const inner = layoutInner;
+export const inner = style([
+  layoutInner,
+  {
+    display: vars.display.flex,
+    flexDirection: vars.flexDirection.column,
+    gap: vars.layout.gap.l,
+  },
+]);
+
+export const feedLink = style({
+  color: vars.color.text,
+  selectors: {
+    '&:focus-visible': {
+      outline: `${vars.border.width.thick} ${vars.border.style.solid} ${vars.color.focus}`,
+      outlineOffset: vars.spacing.xs,
+    },
+  },
+});

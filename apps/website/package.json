@@ -12,6 +12,7 @@
     "check:seo": "node scripts/check-seo.mjs"
   },
   "dependencies": {
+    "@astrojs/rss": "4.0.19",
     "@moscowcss/content": "workspace:*",
     "@moscowcss/design-system": "workspace:*",
     "@moscowcss/fonts": "workspace:*",

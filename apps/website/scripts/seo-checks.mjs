@@ -1,11 +1,13 @@
 // Проверки собранного сайта: библиотека для CLI scripts/check-seo.mjs и тестов.
 // Для каждой индексируемой страницы (без noindex) требуются теги карточки и ссылок,
-// картинки лежат в dist и имеют заявленный размер, hreflang взаимен.
+// картинки лежат в dist и имеют заявленный размер, hreflang взаимен, RSS-ленты существуют
+// и ведут на страницы сборки.
 import { readFile, readdir } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
 import { parse } from 'parse5';
 
 const LOCALES = new Set(['ru', 'en']);
+const DEFAULT_LOCALE = 'ru';
 const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 
 const OG_SIZE = { width: 1200, height: 630 };
@@ -159,6 +161,38 @@ async function checkPage(ctx, where, url, doc) {
   }
 }
 
+// Ссылка на ленту в <head> ведёт на RSS-файл сборки (а не на HTML или 404) и подписана для читалки.
+async function checkFeedLinks(ctx, where, url, doc) {
+  for (const link of doc.links('alternate').filter((l) => attr(l, 'type') === 'application/rss+xml')) {
+    const href = attr(link, 'href');
+    if (!attr(link, 'title')) ctx.fail(where, `RSS ${href}: нет title`);
+    const target = checkAbsolute(ctx, where, url, href, 'RSS');
+    if (!target) continue;
+    const bytes = await ctx.readPublic(target.pathname);
+    if (!bytes || !/<rss[\s>]/.test(bytes.toString('utf8'))) ctx.fail(where, `RSS ${target.pathname}: в сборке нет такой ленты`);
+  }
+}
+
+// Каждая <link> ленты — страница этой сборки по точному адресу: без слэша хостинг ответит редиректом.
+// Язык ленты — по её папке (`en/rss.xml`; без папки — ru): `<language>` и записи того же языка,
+// иначе подписчик английской ленты получит русские митапы.
+function checkFeeds(ctx, feeds, pages) {
+  for (const { where, xml } of feeds) {
+    const [head] = where.split('/');
+    const locale = LOCALES.has(head) && head !== DEFAULT_LOCALE ? head : DEFAULT_LOCALE;
+    const language = /<language>([^<]*)<\/language>/.exec(xml)?.[1];
+    if (language?.split('-')[0] !== locale) ctx.fail(where, `<language>${language ?? ''}</language>, ожидался ${locale}`);
+    for (const [, link] of xml.matchAll(/<item>[\s\S]*?<link>([^<]*)<\/link>/g)) {
+      const prefix = new URL(link, ctx.site).pathname.split('/')[1];
+      const linkLocale = LOCALES.has(prefix) && prefix !== DEFAULT_LOCALE ? prefix : DEFAULT_LOCALE;
+      if (linkLocale !== locale) ctx.fail(where, `ссылка ${link}: страница языка ${linkLocale} в ленте ${locale}`);
+    }
+    for (const [, link] of xml.matchAll(/<link>([^<]*)<\/link>/g)) {
+      if (!pages.has(link)) ctx.fail(where, `ссылка ${link}: нет такой страницы в сборке`);
+    }
+  }
+}
+
 function alternatesOf(doc) {
   return new Map(doc.links('alternate').filter((l) => attr(l, 'hreflang')).map((l) => [attr(l, 'hreflang'), attr(l, 'href')]));
 }
@@ -189,7 +223,8 @@ function checkHreflang(ctx, pages) {
 /** Проверяет собранный `dist`: `{ errors, htmlCount, indexableCount }`. */
 export async function checkDist(dist, siteUrl) {
   const ctx = createContext(dist, siteUrl);
-  const files = (await listFiles(dist)).filter((f) => f.endsWith('.html')).sort();
+  const all = await listFiles(dist);
+  const files = all.filter((f) => f.endsWith('.html')).sort();
   const pages = new Map();
 
   for (const file of files) {
@@ -203,8 +238,15 @@ export async function checkDist(dist, siteUrl) {
     if (!page.indexable) continue;
     indexableCount += 1;
     await checkPage(ctx, page.where, url, page.doc);
+    await checkFeedLinks(ctx, page.where, url, page.doc);
   }
   checkHreflang(ctx, pages);
+  const feeds = await Promise.all(
+    all
+      .filter((f) => f.endsWith('rss.xml'))
+      .map(async (f) => ({ where: relPosix(dist, f), xml: await readFile(f, 'utf8') })),
+  );
+  checkFeeds(ctx, feeds, pages);
   // Пустой dist или noindex на всех страницах — тоже провал: иначе гейт зелёный, ничего не проверив.
   if (indexableCount === 0) ctx.fail(relPosix(process.cwd(), dist) || dist, 'нет ни одной индексируемой страницы');
 
