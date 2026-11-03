@@ -18,6 +18,8 @@ export interface CatalogEntry<D> {
   filePath?: string | undefined;
   /** Markdown-тело файла; у записей без тела — пусто */
   body?: string | undefined;
+  /** Результат рендера тела; нет при ошибке рендера (её загрузчик Astro только логирует) */
+  rendered?: { html: string } | undefined;
   data: D;
 }
 
@@ -72,10 +74,6 @@ const INVARIANTS = {
 // Тело обязательно там, где оно и есть содержание страницы или карточки.
 const BODY_REQUIRED = ['pages', 'talks', 'faq'] as const;
 
-// Контент — только Markdown: сырой HTML и `javascript:` попали бы в страницу как есть (XSS).
-// Комментарии `<!-- … -->` и автоссылки `<https://…>` под это правило не попадают.
-const RAW_HTML = /<\/?[a-zA-Z][a-zA-Z0-9-]*(?:\s[^>]*)?\/?>/;
-const SCRIPT_LINK = /\]\(\s*(?:javascript|data|vbscript):/i;
 
 /** Язык записи: первый сегмент id. */
 export const localeOf = (entry: { id: string }): string => entry.id.split('/')[0] ?? '';
@@ -144,7 +142,10 @@ function checkTranslations<D>(
  * Проверяет связи и переводы. Бросает `CatalogError`, в каждой строке которого путь файла и
  * поле: ошибка контента должна ронять сборку, а не терять страницу молча.
  */
-export function validateCatalog(catalog: Catalog): void {
+export function validateCatalog(
+  catalog: Catalog,
+  { requireRendered = false }: { requireRendered?: boolean } = {},
+): void {
   const problems: string[] = [];
   const events = new Map(catalog.events.map((entry) => [entry.id, entry]));
   const speakers = new Map(catalog.speakers.map((entry) => [entry.id, entry]));
@@ -206,11 +207,10 @@ export function validateCatalog(catalog: Catalog): void {
       if ((BODY_REQUIRED as readonly string[]).includes(collection) && body.trim() === '') {
         problems.push(`${whereOf(entry)}: текст файла пуст — у ${collection} он обязателен`);
       }
-      if (RAW_HTML.test(body)) {
-        problems.push(`${whereOf(entry)}: в тексте HTML-тег — пишите Markdown`);
-      }
-      if (SCRIPT_LINK.test(body)) {
-        problems.push(`${whereOf(entry)}: ссылка со схемой javascript:/data: — разрешены только обычные адреса`);
+      // Ошибка рендера (например, небезопасная ссылка) у загрузчика — только [ERROR] в логе, а из
+      // кэша следующей сборки запись приходит без тела. Текст есть, а HTML нет — значит, он потерян.
+      if (requireRendered && body.trim() !== '' && !entry.rendered?.html) {
+        problems.push(`${whereOf(entry)}: текст файла не отрендерился — см. [ERROR] выше в логе сборки`);
       }
     }
   }
@@ -232,7 +232,7 @@ export async function loadCatalog(): Promise<Catalog> {
     getCollection('faq'),
   ]);
   const catalog = { events, talks, speakers, partners, pages, faq };
-  validateCatalog(catalog);
+  validateCatalog(catalog, { requireRendered: true });
   return catalog;
 }
 

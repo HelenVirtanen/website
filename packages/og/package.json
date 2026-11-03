@@ -9,7 +9,7 @@
   },
   "scripts": {
     "lint": "eslint . --fix",
-    "test": "vitest run"
+    "test": "tsc --noEmit && vitest run"
   },
   "dependencies": {
     "@moscowcss/design-system": "workspace:*",

@@ -58,7 +58,9 @@ export async function search(
   if (query === '') return { query, hits: [], indexAvailable: true };
   try {
     return { query, hits: await searchPages(await load(), query), indexAvailable: true };
-  } catch {
+  } catch (error) {
+    // Без следа в консоли отказ на проде (404 индекса, wasm, CSP) неотличим от пустой выдачи.
+    console.error('Pagefind: поиск недоступен', error);
     return { query, hits: [], indexAvailable: false };
   }
 }

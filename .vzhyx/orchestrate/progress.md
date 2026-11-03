@@ -51,3 +51,11 @@ Deferred: фото спикеров обычным <img> — sharp не уста
 - 12 check-seo: done (attempt 1) — check:seo по dist: OK 18 HTML / 16 индексируемых; без карточки → exit 1 с путём страницы; 83 теста.
 - 13 scaffolding: done (attempt 1 + conductor fix) — pnpm new:event|talk|speaker|partner|faq → черновики ru/en из packages/content/templates, конфликт → exit 1 без записи, plop-заглушки страниц убраны; заглушка фото спикера копируется из templates/placeholder-photo.jpg.
 Ruling: conductor добавил draft в PartnerSchema и FaqSchema (+фильтр FAQ на главной, ошибка «опубликованный митап → партнёр-черновик», шаблоны с draft: true, README) — без этого `pnpm new:faq` + пуш выкатывал карточку-плейсхолдер на прод; 103 теста.
+- review checkpoint 3 (09–12): Block → исправлено conductor-ом:
+  [HIGH] XSS-фильтр Markdown обходился 4 формами (сноска, <javascript:>, [x](<javascript:>), &#106;avascript:) → hast-плагин satteri (интеграция markdownSafety): сырой HTML и href/src не https/mailto после разрешения URL роняют сборку; нарушения копятся и роняют build в astro:build:done (загрузчик контента ловит ошибку рендера и пишет только [ERROR]); loadCatalog требует rendered.html у непустых тел — иначе повторная сборка из кэша проходила с потерянным текстом. Проверено: все 5 форм → build 1 дважды подряд; `<dialog>` в коде проходит.
+  [MED] ложное срабатывание RAW_HTML на коде — регулярки по исходнику удалены;
+  [MED] описание в выдаче поиска: data-pagefind-meta="description[content]" на meta description (проверено по фрагментам индекса);
+  [MED] сбой поиска: console.error + «поиск временно недоступен» на проде, текст про dev — только в DEV;
+  [MED] check:seo: пустой dist / всё noindex → ошибка; og:locale сверяется с <html lang>;
+  [MED] @moscowcss/og: ошибка типов satori исправлена, tsc --noEmit входит в test пакета.
+Deferred (MED): несуществующая дата (2026-02-30) молча уезжает на соседний день — YAML разбирает дату до схемы; вне спеки, отметить в итоге. Minor: search.ts ищет input[name="q"] без учёта пропа name.

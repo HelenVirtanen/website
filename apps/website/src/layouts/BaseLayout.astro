@@ -82,7 +82,8 @@ const localeOptions = locales.map((code) => ({
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
-    <meta name="description" content={description} />
+    {/* Pagefind берёт описание для выдачи поиска из этого же тега */}
+    <meta name="description" content={description} data-pagefind-meta="description[content]" />
     {noindex && <meta name="robots" content="noindex, follow" />}
     {canonical && <link rel="canonical" href={canonical} />}
     {

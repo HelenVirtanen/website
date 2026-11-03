@@ -151,6 +151,13 @@ async function checkPage(ctx, where, url, doc) {
 
   await checkImage(ctx, where, url, doc, { tag: 'og:image', key: 'property', expected: OG_SIZE, declared: true });
   await checkImage(ctx, where, url, doc, { tag: 'twitter:image', key: 'name', expected: TWITTER_SIZE });
+
+  // og:locale (`ru_RU`) обязан совпадать с языком страницы (`<html lang="ru">`).
+  const lang = attr(doc.els.find((e) => e.tagName === 'html'), 'lang');
+  const ogLocale = attr(doc.meta('property', 'og:locale'), 'content');
+  if (lang && ogLocale && ogLocale.split('_')[0] !== lang) {
+    ctx.fail(where, `og:locale ${ogLocale} не соответствует <html lang="${lang}">`);
+  }
 }
 
 function alternatesOf(doc) {
@@ -199,6 +206,8 @@ export async function checkDist(dist, siteUrl) {
     await checkPage(ctx, page.where, url, page.doc);
   }
   checkHreflang(ctx, pages);
+  // Пустой dist или noindex на всех страницах — тоже провал: иначе гейт зелёный, ничего не проверив.
+  if (indexableCount === 0) ctx.fail(relPosix(process.cwd(), dist) || dist, 'нет ни одной индексируемой страницы');
 
   return { errors: ctx.errors, htmlCount: files.length, indexableCount };
 }

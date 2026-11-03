@@ -113,7 +113,8 @@ function card({ title, kicker, meta, size }: CardInput): Node {
 /** Рисует PNG-карточку страницы в светлой теме дизайн-системы. */
 export async function renderCard(input: CardInput): Promise<Buffer> {
   const { width, height } = CARD_SIZES[input.size];
-  const svg = await satori(card(input), {
+  // satori ждёт ReactNode, но принимает и простые объекты {type, props} без React — их и строим.
+  const svg = await satori(card(input) as unknown as Parameters<typeof satori>[0], {
     width,
     height,
     fonts: await loadFonts(),

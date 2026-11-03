@@ -38,7 +38,7 @@ const alternates = locales.map((code) => ({ locale: code, path: localizePath(cod
         placeholder={t('search.placeholder')}
       />
       <SearchResults
-        note={t('search.noIndex')}
+        note={import.meta.env.DEV ? t('search.noIndex') : t('search.unavailable')}
         data-search
         data-empty={t('search.empty')}
         data-no-results={t('search.noResults')}

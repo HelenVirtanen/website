@@ -34,17 +34,14 @@ describe('validateCatalog', () => {
     expect(messageOf(() => validateCatalog(catalog))).toContain('talks/ru/css-nesting.md: текст файла пуст');
   });
 
-  it('сырой HTML и javascript:-ссылка в теле — ошибки, комментарий и автоссылка — нет', () => {
+  it('текст есть, а рендера нет (ошибка рендера из кэша) — ошибка с путём', () => {
     const catalog = twoMeetupsCatalog();
-    catalog.talks[0] = { ...catalog.talks[0]!, body: 'Текст <img src=x onerror=alert(1)>' };
-    catalog.talks[1] = { ...catalog.talks[1]!, body: '[жми](javascript:alert(1))' };
-    const message = messageOf(() => validateCatalog(catalog));
-    expect(message).toContain('talks/ru/css-nesting.md: в тексте HTML-тег');
-    expect(message).toContain('talks/ru/anchor-positioning.md: ссылка со схемой javascript:');
-
-    const clean = twoMeetupsCatalog();
-    clean.talks[0] = { ...clean.talks[0]!, body: '<!-- подсказка -->\nСм. <https://example.com>' };
-    expect(() => validateCatalog(clean)).not.toThrow();
+    for (const entry of catalog.talks) entry.rendered = { html: '<p>Описание доклада.</p>' };
+    expect(() => validateCatalog(catalog, { requireRendered: true })).not.toThrow();
+    catalog.talks[0] = { ...catalog.talks[0]!, rendered: undefined };
+    expect(messageOf(() => validateCatalog(catalog, { requireRendered: true }))).toContain(
+      'talks/ru/css-nesting.md: текст файла не отрендерился',
+    );
   });
 
   it('опубликованный митап ссылается на партнёра-черновика', () => {

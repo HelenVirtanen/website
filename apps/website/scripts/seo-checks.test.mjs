@@ -14,7 +14,7 @@ const png = (width, height) => {
   return bytes;
 };
 
-const page = ({ lang = 'ru', path, alternates = [], noindex = false, omit = [], ogWidth = 1200, ogHeight = 630 }) => {
+const page = ({ lang = 'ru', path, alternates = [], noindex = false, omit = [], ogWidth = 1200, ogHeight = 630, ogLocale = lang === 'en' ? 'en_US' : 'ru_RU' }) => {
   const url = `${SITE}${path}`;
   const img = `${SITE}/og${path.endsWith('/') ? `${path}index` : path}`;
   const tags = [
@@ -23,7 +23,7 @@ const page = ({ lang = 'ru', path, alternates = [], noindex = false, omit = [], 
     ['property', 'og:description', 'D'],
     ['property', 'og:type', 'website'],
     ['property', 'og:url', url],
-    ['property', 'og:locale', 'ru_RU'],
+    ['property', 'og:locale', ogLocale],
     ['property', 'og:site_name', 'S'],
     ['property', 'og:image', `${img}.png`],
     ['property', 'og:image:type', 'image/png'],
@@ -137,6 +137,19 @@ describe('checkDist', () => {
     await put('index.html', html);
     const { errors } = await checkDist(dist, SITE);
     expect(errors.some((e) => e.includes('не абсолютный адрес'))).toBe(true);
+  });
+
+  it('пустой dist — провал, а не зелёный гейт', async () => {
+    const { errors, indexableCount } = await checkDist(dist, SITE);
+    expect(indexableCount).toBe(0);
+    expect(errors.some((e) => e.includes('нет ни одной индексируемой страницы'))).toBe(true);
+  });
+
+  it('ловит og:locale, не совпадающий с <html lang>', async () => {
+    await validSite();
+    await put('en/index.html', page({ lang: 'en', path: '/en/', alternates: enPair, ogLocale: 'ru_RU' }));
+    const { errors } = await checkDist(dist, SITE);
+    expect(errors.some((e) => e.startsWith('en/index.html') && e.includes('og:locale ru_RU'))).toBe(true);
   });
 
   it('noindex-страница не проверяется', async () => {

@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
+import { markdownSafety } from './src/content/markdown-safety.ts';
 
 // Прод: https://css.moscow/ (custom domain на GitHub Pages).
 export default defineConfig({
@@ -14,6 +15,8 @@ export default defineConfig({
     locales: ['ru', 'en'],
     routing: { prefixDefaultLocale: false },
   },
+  // Сырой HTML и ссылки не на https/mailto в контенте роняют сборку (XSS через Markdown).
+  integrations: [markdownSafety],
   vite: {
     plugins: [vanillaExtractPlugin()],
   },
