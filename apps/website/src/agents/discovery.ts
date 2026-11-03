@@ -10,6 +10,7 @@ import { markdownPathOf } from './paths';
 // Описывают только то, что сайт действительно отдаёт: у него нет API, MCP-сервера и входа.
 
 export const LLMS_PATH = '/llms.txt';
+export const LLMS_FULL_PATH = '/llms-full.txt';
 export const SKILL_NAME = 'moscowcss';
 export const SKILL_PATH = `/.well-known/agent-skills/${SKILL_NAME}/SKILL.md`;
 export const SKILLS_INDEX_PATH = '/.well-known/agent-skills/index.json';
@@ -70,7 +71,7 @@ export function skillMarkdown(site: URL): string {
     '',
     '## List everything',
     '',
-    `- ${abs(LLMS_PATH)} lists every meetup, talk, speaker and page in both languages.`,
+    `- ${abs(LLMS_PATH)} lists every meetup and page in both languages; ${abs(LLMS_FULL_PATH)} adds every talk and speaker.`,
     `- ${abs('/sitemap.xml')} lists every indexable URL.`,
     '- RSS feeds of meetups, newest first:',
     ...locales.map((locale) => `  - ${localeNames[locale]}: ${abs(feedPath(locale))}`),
@@ -191,11 +192,22 @@ export function aiCatalog(site: URL): AiCatalog {
 const line = (text: string): string => text.replace(/\s+/g, ' ').trim();
 const KIND_ORDER: Record<PublicPage['kind'], number> = { home: 0, document: 1, event: 2, talk: 3, speaker: 4 };
 
+// В оглавлении — главная, документы и митапы; доклады и спикеры только в полном списке: вместе с ними
+// llms.txt выходит за 30 000 знаков, которые сканеры считают пределом для оглавления.
+const INDEX_KINDS: ReadonlySet<PublicPage['kind']> = new Set(['home', 'document', 'event']);
+
 /**
  * llms.txt (llmstxt.org): H1, цитата-резюме, раздел «When to use», затем страницы по языкам — каждая
- * ссылкой на свою Markdown-версию. Строится из того же списка публичных страниц, что sitemap.
+ * ссылкой на свою Markdown-версию. `scope: 'index'` — оглавление `/llms.txt`, `'full'` — `/llms-full.txt`
+ * со всеми страницами. Строится из того же списка публичных страниц, что sitemap.
  */
-export function llmsTxt(pages: readonly PublicPage[], catalog: Pick<Catalog, 'events'>, site: URL, now: Date): string {
+export function llmsTxt(
+  pages: readonly PublicPage[],
+  catalog: Pick<Catalog, 'events'>,
+  site: URL,
+  now: Date,
+  scope: 'index' | 'full' = 'index',
+): string {
   const abs = absOf(site);
   const t = useTranslations('en');
   const next = upcomingEvent(
@@ -235,7 +247,7 @@ export function llmsTxt(pages: readonly PublicPage[], catalog: Pick<Catalog, 'ev
   };
   const byLocale = (locale: Locale) =>
     pages
-      .filter((page) => page.locale === locale)
+      .filter((page) => page.locale === locale && (scope === 'full' || INDEX_KINDS.has(page.kind)))
       .toSorted(
         (a, b) =>
           KIND_ORDER[a.kind] - KIND_ORDER[b.kind] ||
@@ -250,6 +262,9 @@ export function llmsTxt(pages: readonly PublicPage[], catalog: Pick<Catalog, 'ev
     `> MoscowCSS is a free community meetup about CSS, layout and frontend in Moscow, held since 2017, offline and online. css.moscow has every meetup with its programme, talks, speakers and recordings, in Russian (default) and English.`,
     '',
     'Every link below is the Markdown version of a page (`index.md`); drop `index.md` to get the HTML page.',
+    scope === 'index'
+      ? `Talks and speakers of every meetup are listed in [llms-full.txt](${abs(LLMS_FULL_PATH)}).`
+      : `This is the full list; [llms.txt](${abs(LLMS_PATH)}) is the short index.`,
     next
       ? `${next.past ? 'Latest' : 'Next'} meetup: [${line(next.event.data.tagline)}](${abs(markdownPathOf(localizePath('en', `events/${slugOf(next.event)}`)))}).`
       : undefined,
@@ -265,6 +280,7 @@ export function llmsTxt(pages: readonly PublicPage[], catalog: Pick<Catalog, 'ev
     ...locales.flatMap((locale) => [`## ${localeNames[locale]}`, '', ...byLocale(locale).map(item), '']),
     '## Optional',
     '',
+    scope === 'index' ? `- [Full list](${abs(LLMS_FULL_PATH)}): every talk and speaker of every meetup` : undefined,
     `- [Agent skill](${abs(SKILL_PATH)}): how to read css.moscow`,
     ...locales.map((locale) => `- [RSS, ${localeNames[locale]}](${abs(feedPath(locale))})`),
     `- [Sitemap](${abs('/sitemap.xml')})`,

@@ -135,7 +135,7 @@ const localeOptions = locales.map((code) => ({
     {xDefault && <link rel="alternate" hreflang="x-default" href={absolute(xDefault.path)} />}
     <link rel="alternate" type="application/rss+xml" title={t('rss.title')} href={absolute(feedPath(lang))} />
     {publicPage && <link rel="alternate" type="text/markdown" href={absolute(markdownPathOf(publicPage.path))} />}
-    <link rel="privacy-policy" href={absolute(localizePath(lang, 'personal-data'))} />
+    <link rel="privacy-policy" href={absolute(localizePath(lang, 'privacy'))} />
     <link rel="ai-catalog" href={absolute(AI_CATALOG_PATH)} />
     <link rel="ard" href={absolute(ARD_PATH)} />
     {jsonLd && <script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />}

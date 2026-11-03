@@ -203,11 +203,12 @@ async function checkAgentFiles(ctx) {
   };
   const exists = async (path) => Boolean(await ctx.readPublic(path.endsWith('/') ? `${path}index.html` : path));
 
-  const llms = await ctx.readPublic('/llms.txt');
-  if (llms) {
+  for (const name of ['llms.txt', 'llms-full.txt']) {
+    const llms = await ctx.readPublic(`/${name}`);
+    if (!llms) continue;
     for (const [, href] of llms.toString('utf8').matchAll(/\]\((https?:\/\/[^)]+)\)/g)) {
       const path = pathOf(href);
-      if (path && !(await exists(path))) ctx.fail('llms.txt', `ссылка ${href}: файла нет в dist`);
+      if (path && !(await exists(path))) ctx.fail(name, `ссылка ${href}: файла нет в dist`);
     }
   }
 

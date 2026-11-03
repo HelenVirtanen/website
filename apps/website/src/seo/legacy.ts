@@ -7,7 +7,10 @@ export const LEGACY_REDIRECTS = {
   '28.html': '/events/28/',
   '29.html': '/events/29/',
   '30.html': '/events/30/',
-  'personal-data.html': '/personal-data/',
+  'personal-data.html': '/privacy/',
+  // Политика жила на /personal-data/ до переноса на /privacy/: этот адрес ищут агенты.
+  'personal-data/index.html': '/privacy/',
+  'en/personal-data/index.html': '/en/privacy/',
 } as const;
 
 export type LegacyName = keyof typeof LEGACY_REDIRECTS;
@@ -36,6 +39,7 @@ export const legacyRoute =
   (name: LegacyName): APIRoute =>
   ({ site }) => {
     if (!site) throw new Error(`${name}: в astro.config не задан site`);
-    const html = legacyStubOf(LEGACY_REDIRECTS[name], site, useTranslations(defaultLocale)('site.name'), defaultLocale);
+    const lang = name.startsWith('en/') ? 'en' : defaultLocale;
+    const html = legacyStubOf(LEGACY_REDIRECTS[name], site, useTranslations(lang)('site.name'), lang);
     return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
   };

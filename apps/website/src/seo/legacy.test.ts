@@ -25,7 +25,9 @@ describe('LEGACY_REDIRECTS', () => {
       '28.html': '/events/28/',
       '29.html': '/events/29/',
       '30.html': '/events/30/',
-      'personal-data.html': '/personal-data/',
+      'personal-data.html': '/privacy/',
+      'personal-data/index.html': '/privacy/',
+      'en/personal-data/index.html': '/en/privacy/',
     });
   });
 });
