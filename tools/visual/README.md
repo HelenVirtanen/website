@@ -61,10 +61,12 @@ single pixel: 0.1% of a 1920×2800 capture is ~5,000 pixels, enough to hide a fu
 
 ## Determinism notes
 
-- `window.ResizeObserver` is replaced with a no-op in the capture browser. Swiper (the card
-  slider) otherwise re-measures in a loop and changes element heights by a fraction of a pixel on
-  every frame, so Playwright never sees the element as stable and captures differ between runs.
-  The same no-op applies to the baseline and to every later capture, so comparisons stay fair.
+- `window.ResizeObserver` is replaced with a no-op in the capture browser. Captures before
+  2026-11-03 needed it: the card slider equalised slide heights from a resize handler, which woke
+  Swiper's ResizeObserver again and moved everything below the FAQ by a fraction of a pixel on every
+  frame. The slider now leaves heights to CSS, but the no-op stays so new captures remain comparable
+  with the old baselines. Captures of FAQ taken with old code at 1440px and wider are 19px shorter
+  than the real page: with the observer off, the old code measured the slides too early.
 - Fonts (`document.fonts.ready`), lazy images and async server-rendered stories are awaited
   before every screenshot.
 - A full run takes several minutes (stories x widths). Failures do not stop the run: all of them
