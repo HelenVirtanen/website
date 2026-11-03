@@ -18,30 +18,29 @@ import {
 const Tag = 'nav';
 const MENU_ID = 'nav-menu';
 
-const NAV_LINKS = [
-  { href: '#registration', label: 'Регистрация' },
-  { href: '#program', label: 'Программа' },
-  // { href: '#speakers', label: 'Спикеры' },
-  // { href: '#organizers', label: 'Орги' },
-  { href: '#partners', label: 'Партнеры' },
-  { href: '#address', label: 'Адрес' },
-] as const;
-
 interface Props extends HTMLAttributes<typeof Tag> {
+  /** Пункты навигации: якорь и подпись */
+  links: { href: string; label: string }[];
   /** URL канала или чата в Telegram */
   telegramHref: string;
+  /** Доступное имя ссылки на Telegram */
+  telegramLabel: string;
+  /** Доступное имя кнопки открытия меню */
+  menuLabel: string;
+  /** Доступное имя кнопки закрытия меню */
+  closeLabel: string;
 }
 
-const { telegramHref, class: className, ...attrs } = Astro.props;
-
+const { links: navLinks, telegramHref, telegramLabel, menuLabel, closeLabel, class: className, ...attrs } =
+  Astro.props;
 ---
 
 <Tag class:list={[root, className]} data-navbar {...attrs}>
   <div class={burger}>
-    <BurgerButton controls={MENU_ID} />
+    <BurgerButton controls={MENU_ID} aria-label={menuLabel} />
   </div>
   <ul class={links}>
-    {NAV_LINKS.map((item) => (
+    {navLinks.map((item) => (
       <li>
         <a class={link} href={item.href}>
           {item.label}
@@ -49,18 +48,19 @@ const { telegramHref, class: className, ...attrs } = Astro.props;
       </li>
     ))}
   </ul>
+  {Astro.slots.has('locale') && <slot name="locale" />}
   <TgLinkButton
     href={telegramHref}
-    aria-label="Telegram Moscow CSS"
+    aria-label={telegramLabel}
     target="_blank"
     rel="noopener noreferrer"
   />
   <div id={MENU_ID} class={overlay} data-nav-menu hidden>
-    <button type="button" class={overlayClose} aria-label="Закрыть меню" data-nav-close>
+    <button type="button" class={overlayClose} aria-label={closeLabel} data-nav-close>
       <Close class={overlayCloseIcon} />
     </button>
     <ul class={overlayLinks} data-nav-links>
-      {NAV_LINKS.map((item) => (
+      {navLinks.map((item) => (
         <li>
           <a class={overlayLink} href={item.href}>
             {item.label}

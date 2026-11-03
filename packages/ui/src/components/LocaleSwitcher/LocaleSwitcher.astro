@@ -1,0 +1,50 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { root, list, link } from './LocaleSwitcher.css';
+
+const Tag = 'nav';
+
+/** Один язык в переключателе. */
+export interface LocaleOption {
+  /** BCP-47 код языка; уходит в `lang` и `hreflang` ссылки */
+  code: string;
+  /** Самоназвание языка: видимый текст ссылки */
+  label: string;
+  /** Адрес версии страницы на этом языке */
+  href: string;
+  /** Доступная подпись-действие на языке самой опции («Switch to the English version») */
+  hint: string;
+  /** Язык текущей страницы: помечается `aria-current="page"` */
+  current: boolean;
+}
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Языки по порядку; у одного `current: true` */
+  options: LocaleOption[];
+  /** Доступное имя навигации по языкам на языке страницы */
+  label: string;
+}
+
+const { options, label, class: className, ...attrs } = Astro.props;
+---
+
+<Tag class:list={[root, className]} aria-label={label} {...attrs}>
+  <ul class={list}>
+    {
+      options.map((option) => (
+        <li>
+          <a
+            class={link}
+            href={option.href}
+            lang={option.code}
+            hreflang={option.code}
+            aria-current={option.current ? 'page' : undefined}
+            aria-label={option.current ? undefined : `${option.label}, ${option.hint}`}
+          >
+            {option.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Tag>

@@ -1,0 +1,96 @@
+---
+import '@moscowcss/fonts';
+import '@moscowcss/design-system';
+import '../styles/global.css';
+import NavBar from '@moscowcss/ui/components/NavBar';
+import LocaleSwitcher from '@moscowcss/ui/components/LocaleSwitcher';
+import {
+  defaultLocale,
+  locales,
+  localeNames,
+  localeSwitchHints,
+  localizePath,
+  useTranslations,
+  type Locale,
+} from '../i18n';
+
+interface Alternate {
+  /** Язык версии страницы */
+  locale: Locale;
+  /** Адрес версии от корня сайта, с хвостовым слэшем */
+  path: string;
+}
+
+interface Props {
+  /** Заголовок страницы: `<title>` */
+  title: string;
+  /** Описание страницы: meta description */
+  description: string;
+  /** Язык страницы: `<html lang>` и язык подписей интерфейса */
+  lang: Locale;
+  /** Версии этой страницы на всех языках: hreflang и переключатель языка */
+  alternates: Alternate[];
+  /** Закрыть страницу от индексации; canonical у такой страницы не ставится */
+  noindex?: boolean;
+  /** Карточка для Open Graph (картинка и alt); отрисовка добавляется вместе с генератором карточек */
+  card?: { image: string; alt: string };
+}
+
+const { title, description, lang, alternates, noindex = false } = Astro.props;
+const t = useTranslations(lang);
+
+const TELEGRAM_HREF = 'https://t.me/moscowcss';
+
+const site = Astro.site;
+const absolute = (path: string) => (site ? new URL(path, site).href : path);
+// У noindex-страницы canonical нет: «не индексируй» и «вот каноническая версия» противоречат друг другу.
+const canonical = noindex ? undefined : absolute(Astro.url.pathname);
+const xDefault = alternates.find((alternate) => alternate.locale === defaultLocale);
+
+const navLinks = [
+  { href: '#registration', label: t('nav.registration') },
+  { href: '#program', label: t('nav.program') },
+  { href: '#partners', label: t('nav.partners') },
+  { href: '#address', label: t('nav.address') },
+];
+
+const localeOptions = locales.map((code) => ({
+  code,
+  label: localeNames[code],
+  href: alternates.find((alternate) => alternate.locale === code)?.path ?? localizePath(code),
+  hint: localeSwitchHints[code],
+  current: code === lang,
+}));
+---
+
+<html lang={lang} data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    {
+      alternates.map((alternate) => (
+        <link rel="alternate" hreflang={alternate.locale} href={absolute(alternate.path)} />
+      ))
+    }
+    {xDefault && <link rel="alternate" hreflang="x-default" href={absolute(xDefault.path)} />}
+  </head>
+  <body>
+    <NavBar
+      links={navLinks}
+      telegramHref={TELEGRAM_HREF}
+      telegramLabel={t('nav.telegram')}
+      menuLabel={t('nav.menu')}
+      closeLabel={t('nav.closeMenu')}
+      data-visual="navbar"
+    >
+      <Fragment slot="locale">
+        <LocaleSwitcher label={t('locale.label')} options={localeOptions} />
+      </Fragment>
+    </NavBar>
+    <slot />
+  </body>
+</html>
