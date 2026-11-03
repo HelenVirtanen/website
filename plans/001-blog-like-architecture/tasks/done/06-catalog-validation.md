@@ -3,7 +3,7 @@ id: "06"
 title: catalog-validation-and-relations
 spec: "001"
 criteria: ["AC-4", "AC-5", "AC-6", "AC-7", "AC-12"]
-status: pending
+status: done
 depends_on: ["05"]
 owns: ["apps/website/src/content/**", "apps/website/src/test/**", "apps/website/vitest.config.ts", "apps/website/package.json", "pnpm-lock.yaml", "packages/content/src/schema.ts"]
 model: sonnet

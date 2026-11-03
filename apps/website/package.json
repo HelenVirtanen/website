@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "test": "vitest run"
   },
   "dependencies": {
     "@moscowcss/content": "workspace:*",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@moscowcss/eslint-config": "workspace:*",
-    "@moscowcss/typescript-config": "workspace:*"
+    "@moscowcss/typescript-config": "workspace:*",
+    "vitest": "5.0.5"
   }
 }

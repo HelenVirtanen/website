@@ -8,6 +8,10 @@ import ProgramSection from '../sections/ProgramSection.astro';
 import PartnerSection from '../sections/PartnerSection.astro';
 import FAQSection from '../sections/FAQSection.astro';
 import JoinSection from '../sections/JoinSection.astro';
+import { loadCatalog } from '../content/catalog';
+
+// Каталог проверяется на сборке: битая ссылка или разошедшийся перевод роняют build.
+await loadCatalog();
 
 const telegramHref = 'https://t.me/moscowcss';
 ---
