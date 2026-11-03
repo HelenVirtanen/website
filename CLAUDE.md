@@ -88,20 +88,22 @@ Workspace package names use the `@moscowcss/*` scope: `@moscowcss/content`,
    student project" shortcuts. Always the current best-practice setup.
 8. **`pnpm lint`, `pnpm test` and `pnpm build` must pass** before you consider a
    task done.
-9. **Commit your own work; the user drives everything that leaves the machine.**
+9. **Agents own git end to end: commit, push, merge.**
    - Commit as you go, one coherent change per commit: a finished task or a
      self-contained step of it, never a half-done state. The checks that the
      change touches (`pnpm lint`, `pnpm build`, `pnpm test`) pass before the
      commit; the husky `pre-commit` hook re-runs lint and build.
-   - Never commit straight to `master`. Work on a feature branch (create one if
-     you are on `master`); merging into `master` is the user's call.
+   - Branch for multi-step work so `master` stays deployable (every push to
+     `master` deploys the site); push, open a PR or merge into `master` when the
+     work is done and green. Prefer a squash merge when the branch has commits
+     that are broken on their own.
    - Message in English, Conventional Commits (`feat:`, `fix:`, `chore:`,
      `refactor:`, `docs:`, `test:`, `ci:`), subject says what changed, body says
      why. Stage files explicitly — no `git add -A` that sweeps in stray files.
    - Never commit secrets, `.env` files, build output or generated artefacts
      (`dist/`, `packages/icons/src/generated/`, `.visual/`).
-   - **Never `git push`**, force-push, rewrite published history or delete
-     branches unless the user asks for it explicitly.
+   - No force-push and no rewriting of history that is already pushed: others
+     may have built on it.
 
 ---
 
@@ -616,7 +618,8 @@ screenshots with `tools/visual`.
 - ❌ raw hex/px/breakpoints inside components — go through tokens.
 - ❌ referencing the primitive palette from a component (semantic layer only).
 - ❌ duplicating ESLint/TS rules in a package instead of extending the shared config.
-- ❌ hand-creating component or content files — use the `new:*` generators.
+- ❌ skipping what the `new:*` generators guarantee (story, JSDoc, draft flag,
+  both languages) when you create a component or a content file by hand.
 - ❌ user-facing text literals in `.astro` files — dictionary or content.
 - ❌ raw HTML or non-`https` links in content Markdown; `.mdx`/`.yml`/`.json` content.
 - ❌ writing a relation in both directions, or making a required content field

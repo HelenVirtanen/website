@@ -30,8 +30,9 @@ demoed in `apps/storybook`.
   slots; the website feeds them from the i18n dictionary or from content, so the
   same component serves `ru` and `en`.
 - **One folder per component** under `src/components/<Name>/`: `<Name>.astro`,
-  `<Name>.css.ts` (vanilla-extract), `index.ts`. **Create with
-  `pnpm new:component`** — never hand-create the files.
+  `<Name>.css.ts` (vanilla-extract), `index.ts`. `pnpm new:component`
+  scaffolds all of it plus the story; by hand is fine if the result has the same
+  shape (story and JSDoc included).
 - **Props extend the native element with a single-source tag:**
   `const Tag = 'button'` + `interface Props extends HTMLAttributes<typeof Tag>`,
   rendered `<Tag>` with `class:list={[…, className]}` + `{...attrs}`. Declare only

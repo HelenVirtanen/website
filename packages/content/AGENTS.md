@@ -39,9 +39,9 @@ Decision record: `adr/001-content-model-md-relations.md`.
   bodies of pages, talks and FAQ are errors.
 - **`draft: true`** keeps an entry off the site. A published meetup cannot
   reference a draft partner. The `new:*` templates start as drafts.
-- **New entries come from `pnpm new:event | new:talk | new:speaker | new:partner |
-  new:faq`** (templates in `templates/`, outside `src/`, so they are not content).
-  Never hand-create them.
+- **New entries:** `pnpm new:event | new:talk | new:speaker | new:partner | new:faq`
+  writes drafts in both languages from `templates/` (outside `src/`, so they are
+  not content). Hand-made files are fine if they pass the same schema.
 - **Russian text is the source of truth.** Do not edit Russian wording while
   moving content; the English text is a translation of the Russian meaning,
   names are transliterated.

@@ -66,10 +66,10 @@ semantic vars + scale tables + layout/typography tokens + breakpoints), `icons`
   config included, uses Russian comments.
 - **`pnpm lint`, `pnpm test` and `pnpm build` must pass** before a task is done
   (`pnpm --filter website check:seo` after the build when pages or content changed).
-- **Commit your own work, never push.** One coherent change per commit on a
-  feature branch (never straight to `master`), after the touched checks pass;
-  English Conventional Commits; no secrets or build output. `git push`, merges
-  into `master` and history rewrites are the user's call (see `CLAUDE.md` §2.9).
+- **Agents own git: commit, push, merge.** One coherent change per commit after
+  the touched checks pass; branch for multi-step work (every push to `master`
+  deploys); English Conventional Commits; no secrets or build output; no
+  force-push or rewriting pushed history (see `CLAUDE.md` §2.9).
 
 ## Everyday commands (from repo root)
 
