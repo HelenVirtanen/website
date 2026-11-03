@@ -11,6 +11,7 @@ const HOME_SECTIONS: readonly { anchor: string; label: UiKey }[] = [
   { anchor: 'program', label: 'nav.program' },
   { anchor: 'partners', label: 'nav.partners' },
   { anchor: 'address', label: 'nav.address' },
+  { anchor: 'events', label: 'nav.history' },
 ];
 
 /**

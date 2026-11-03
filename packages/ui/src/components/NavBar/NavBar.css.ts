@@ -27,11 +27,12 @@ export const root = style({
   },
 });
 
+// Пункты строкой не помещаются уже ниже 1440px (их шесть, шрифт крупный): до `wide` — меню за кнопкой.
 export const burger = style({
-  display: vars.display.none,
+  display: vars.display.block,
   '@media': {
-    [media.mobile]: {
-      display: vars.display.block,
+    [media.wide]: {
+      display: vars.display.none,
     },
   },
 });
@@ -42,6 +43,8 @@ export const home = style({
   width: vars.size.navLogo,
   height: vars.size.navLogo,
   color: vars.color.focus,
+  // Пока пункты спрятаны в меню, знак держится у кнопки меню, а не посередине шапки.
+  marginInlineEnd: 'auto',
   selectors: {
     '&:focus-visible': {
       outline: `${vars.border.width.medium} ${vars.border.style.solid} ${vars.color.focus}`,
@@ -52,6 +55,10 @@ export const home = style({
     [media.mobile]: {
       width: vars.size.navLogoCompact,
       height: vars.size.navLogoCompact,
+      marginInlineEnd: 0,
+    },
+    [media.wide]: {
+      marginInlineEnd: 0,
     },
   },
 });
@@ -63,15 +70,15 @@ export const homeLogo = style({
 });
 
 export const links = style({
-  display: vars.display.flex,
+  display: vars.display.none,
   alignItems: vars.alignItems.center,
   gap: vars.layout.gap.xxl,
   margin: '0 auto',
   padding: 0,
   listStyle: 'none',
   '@media': {
-    [media.mobile]: {
-      display: vars.display.none,
+    [media.wide]: {
+      display: vars.display.flex,
     },
   },
 });

@@ -6,6 +6,8 @@ export const breakpoints = {
   tablet: '48rem', // 768px
   laptop: '64rem', // 1024px
   desktop: '80rem', // 1280px
+  // Шапка со всеми пунктами строкой помещается только отсюда; ниже — меню за кнопкой.
+  wide: '90rem', // 1440px
   desktopLarge: '120rem', // 1920px
 } as const;
 
@@ -16,5 +18,6 @@ export const media = {
   tablet: 'screen and (min-width: 48rem)',
   laptop: 'screen and (min-width: 64rem)',
   desktop: 'screen and (min-width: 80rem)',
+  wide: 'screen and (min-width: 90rem)',
   desktopLarge: 'screen and (min-width: 120rem)',
 } as const;
