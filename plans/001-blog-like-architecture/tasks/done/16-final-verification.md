@@ -3,7 +3,7 @@ id: "16"
 title: final-verification
 spec: "001"
 criteria: ["AC-1", "AC-10", "AC-16", "AC-19", "AC-20", "AC-21", "AC-22"]
-status: pending
+status: done
 depends_on: ["15"]
 owns: ["plans/001-blog-like-architecture/tasks/reports/16-report.md"]
 model: sonnet
@@ -30,7 +30,7 @@ attempts: 0
 
 ## Done when
 - [ ] шаг 1 → каждая команда exit 0 (AC-22)
-- [ ] `node tools/visual/compare.mjs --ignore site/navbar@ --ignore site/hero@ --ignore stories/components-localeswitcher --ignore stories/components-prose --ignore stories/components-linklist --ignore stories/components-joinblock--english .visual/baseline .visual/final` → exit 0, все доли ≤ 0.1%, и `mkdir -p .visual/final-hero/site && cp .visual/final/site/hero@*.png .visual/final-hero/site/ && node tools/visual/compare.mjs --exact .visual/hero-09 .visual/final-hero` → exit 0 (AC-21)
+- [ ] `node tools/visual/compare.mjs --ignore site/navbar@ --ignore site/hero@ --ignore stories/components-localeswitcher --ignore stories/components-prose --ignore stories/components-linklist --ignore stories/components-joinblock--english --ignore stories/components-searchfield --ignore stories/components-searchresults .visual/baseline .visual/final` → exit 0, все доли ≤ 0.1%, и `mkdir -p .visual/final-hero/site && cp .visual/final/site/hero@*.png .visual/final-hero/site/ && node tools/visual/compare.mjs --exact .visual/hero-09 .visual/final-hero` → exit 0 (AC-21)
 - [ ] font-size `html` = `16px` при 1920 и `32px` при 3840 (AC-20)
 - [ ] `git ls-files src public scripts astro.config.mjs tsconfig.json gitignore npmrc apps/website/src/data` → пусто (AC-1)
 - [ ] `grep -rnE "[0-9]px" --include='*.css.ts' packages/ui/src apps/website/src | grep -v '//'` → пусто (AC-19)

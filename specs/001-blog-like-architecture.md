@@ -1,7 +1,7 @@
 ---
 id: "001"
 title: Архитектура сайта по образцу блога — языки, контент-пакет, OG-карточки, адаптив
-status: sliced
+status: done
 created: 2026-11-03
 updated: 2026-11-03
 supersedes: []
