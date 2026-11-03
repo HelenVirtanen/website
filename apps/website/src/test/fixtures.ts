@@ -1,6 +1,8 @@
 import type {
   EventData,
   EventEntry,
+  FaqEntry,
+  PageEntry,
   PartnerEntry,
   SpeakerData,
   SpeakerEntry,
@@ -17,6 +19,7 @@ export function event(id: string, data: Partial<EventData> = {}): EventEntry {
     filePath: filePathOf('events', id),
     data: {
       date: new Date('2026-07-09T18:00:00+03:00'),
+      time: '18:00',
       tagline: 'Митап',
       venue: { name: 'Звук', address: 'Москва' },
       modes: ['оффлайн'],
@@ -32,6 +35,7 @@ export function talk(id: string, data: Partial<TalkData> = {}): TalkEntry {
   return {
     id,
     filePath: filePathOf('talks', id),
+    body: 'Описание доклада.',
     data: {
       event: '31',
       speakers: ['daria-egorova'],
@@ -88,5 +92,7 @@ export function twoMeetupsCatalog() {
     ],
     speakers: [speaker('ru/daria-egorova'), speaker('en/daria-egorova')],
     partners: [] as PartnerEntry[],
+    pages: [] as PageEntry[],
+    faq: [] as FaqEntry[],
   };
 }

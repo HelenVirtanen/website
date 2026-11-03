@@ -16,6 +16,8 @@ export interface CatalogEntry<D> {
   id: string;
   /** Путь файла для сообщений об ошибках; в тестах может отсутствовать */
   filePath?: string | undefined;
+  /** Markdown-тело файла; у записей без тела — пусто */
+  body?: string | undefined;
   data: D;
 }
 
@@ -23,17 +25,23 @@ export type EventData = z.output<typeof EventSchema>;
 export type TalkData = z.output<typeof TalkSchema>;
 export type SpeakerData = z.output<ReturnType<typeof createSpeakerSchema>>;
 export type PartnerData = z.output<typeof PartnerSchema>;
+export type PageData = z.output<typeof PageSchema>;
+export type FaqData = z.output<typeof FaqSchema>;
 
 export type EventEntry = CatalogEntry<EventData>;
 export type TalkEntry = CatalogEntry<TalkData>;
 export type SpeakerEntry = CatalogEntry<SpeakerData>;
 export type PartnerEntry = CatalogEntry<PartnerData>;
+export type PageEntry = CatalogEntry<PageData>;
+export type FaqEntry = CatalogEntry<FaqData>;
 
 export interface Catalog {
   events: EventEntry[];
   talks: TalkEntry[];
   speakers: SpeakerEntry[];
   partners: PartnerEntry[];
+  pages: PageEntry[];
+  faq: FaqEntry[];
 }
 
 // Язык-источник: перевод сверяется с ним (ADR 001).
@@ -43,6 +51,8 @@ const SOURCE_LOCALE = 'ru';
 const INVARIANTS = {
   events: [
     'date',
+    'time',
+    'passportRequired',
     'venue.mapUrl',
     'venue.coordinates',
     'registrationUrl',
@@ -54,7 +64,18 @@ const INVARIANTS = {
   ],
   talks: ['event', 'speakers', 'time', 'slidesUrl', 'videoUrl'],
   speakers: ['photo', 'links'],
+  partners: ['url', 'handle'],
+  faq: ['order'],
+  pages: ['telegramUrl'],
 } as const;
+
+// Тело обязательно там, где оно и есть содержание страницы или карточки.
+const BODY_REQUIRED = ['pages', 'talks', 'faq'] as const;
+
+// Контент — только Markdown: сырой HTML и `javascript:` попали бы в страницу как есть (XSS).
+// Комментарии `<!-- … -->` и автоссылки `<https://…>` под это правило не попадают.
+const RAW_HTML = /<\/?[a-zA-Z][a-zA-Z0-9-]*(?:\s[^>]*)?\/?>/;
+const SCRIPT_LINK = /\]\(\s*(?:javascript|data|vbscript):/i;
 
 /** Язык записи: первый сегмент id. */
 export const localeOf = (entry: { id: string }): string => entry.id.split('/')[0] ?? '';
@@ -163,6 +184,32 @@ export function validateCatalog(catalog: Catalog): void {
   checkTranslations('events', catalog.events, problems);
   checkTranslations('talks', catalog.talks, problems);
   checkTranslations('speakers', catalog.speakers, problems);
+  checkTranslations('partners', catalog.partners, problems);
+  checkTranslations('faq', catalog.faq, problems);
+  checkTranslations('pages', catalog.pages, problems);
+
+  const bodies: [string, readonly CatalogEntry<unknown>[]][] = [
+    ['pages', catalog.pages],
+    ['events', catalog.events],
+    ['talks', catalog.talks],
+    ['speakers', catalog.speakers],
+    ['partners', catalog.partners],
+    ['faq', catalog.faq],
+  ];
+  for (const [collection, entries] of bodies) {
+    for (const entry of entries) {
+      const body = entry.body ?? '';
+      if ((BODY_REQUIRED as readonly string[]).includes(collection) && body.trim() === '') {
+        problems.push(`${whereOf(entry)}: текст файла пуст — у ${collection} он обязателен`);
+      }
+      if (RAW_HTML.test(body)) {
+        problems.push(`${whereOf(entry)}: в тексте HTML-тег — пишите Markdown`);
+      }
+      if (SCRIPT_LINK.test(body)) {
+        problems.push(`${whereOf(entry)}: ссылка со схемой javascript:/data: — разрешены только обычные адреса`);
+      }
+    }
+  }
 
   if (problems.length > 0) throw new CatalogError(problems);
 }
@@ -171,12 +218,7 @@ export function validateCatalog(catalog: Catalog): void {
  * Весь контент с проверенными связями. Единственное место с `getCollection`: ошибка схемы
  * приходит от Astro (с путём файла), ошибка связей и переводов — от `validateCatalog`.
  */
-export async function loadCatalog(): Promise<
-  Catalog & {
-    pages: CatalogEntry<z.output<typeof PageSchema>>[];
-    faq: CatalogEntry<z.output<typeof FaqSchema>>[];
-  }
-> {
+export async function loadCatalog(): Promise<Catalog> {
   const [pages, events, talks, speakers, partners, faq] = await Promise.all([
     getCollection('pages'),
     getCollection('events'),
@@ -185,9 +227,9 @@ export async function loadCatalog(): Promise<
     getCollection('partners'),
     getCollection('faq'),
   ]);
-  const catalog = { events, talks, speakers, partners };
+  const catalog = { events, talks, speakers, partners, pages, faq };
   validateCatalog(catalog);
-  return { ...catalog, pages, faq };
+  return catalog;
 }
 
 // Начало интервала: `19:40—20:00` → `19:40`, `19:10` → `19:10`.
@@ -256,17 +298,23 @@ export function talksOfSpeaker<T extends TalkEntry, E extends EventEntry>(
 const byDateAsc = (a: EventEntry, b: EventEntry): number =>
   a.data.date.getTime() - b.data.date.getTime();
 
+// Митап считается идущим ещё столько после начала: пуш во время митапа (ссылка на трансляцию)
+// не должен пометить его прошедшим.
+export const EVENT_DURATION_MS = 4 * 60 * 60 * 1000;
+
+const endOf = (event: EventEntry): number => event.data.date.getTime() + EVENT_DURATION_MS;
+
 /**
- * Митап для главной: ближайший с датой не раньше `now`; будущих нет — последний прошедший с
- * `past: true`. Черновики не участвуют. `now` приходит аргументом, чтобы результат не зависел
- * от часов. Список — одного языка.
+ * Митап для главной: ближайший, который ещё не закончился (начало + `EVENT_DURATION_MS` не раньше
+ * `now`); таких нет — последний прошедший с `past: true`. Черновики не участвуют. `now` приходит
+ * аргументом, чтобы результат не зависел от часов. Список — одного языка.
  */
 export function upcomingEvent<E extends EventEntry>(
   events: readonly E[],
   now: Date,
 ): { event: E; past: boolean } | undefined {
   const published = events.filter(isPublished).sort(byDateAsc);
-  const next = published.find((event) => event.data.date.getTime() >= now.getTime());
+  const next = published.find((event) => endOf(event) >= now.getTime());
   if (next) return { event: next, past: false };
   const last = published.at(-1);
   return last ? { event: last, past: true } : undefined;
@@ -275,6 +323,6 @@ export function upcomingEvent<E extends EventEntry>(
 /** Прошедшие опубликованные митапы, новые выше. */
 export function pastEvents<E extends EventEntry>(events: readonly E[], now: Date): E[] {
   return events
-    .filter((event) => isPublished(event) && event.data.date.getTime() < now.getTime())
+    .filter((event) => isPublished(event) && endOf(event) < now.getTime())
     .sort((a, b) => byDateAsc(b, a));
 }

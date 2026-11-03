@@ -9,17 +9,40 @@ const slug = z
   .string()
   .regex(SLUG_PATTERN, 'слаг: латиница в нижнем регистре, цифры и дефисы, например daria-egorova');
 
+const HH_MM = '(?:[01]\\d|2[0-3]):[0-5]\\d';
+
 // Начало: `19:10`; перерыв и активность — интервал `19:40—20:00` (дефис, en- или em-dash).
-const clockTime = z.string().regex(/^\d{2}:\d{2}$/, 'время в формате ЧЧ:ММ, например 19:10');
+const clockTime = z
+  .string()
+  .regex(new RegExp(`^${HH_MM}$`), 'время в формате ЧЧ:ММ от 00:00 до 23:59, например 19:10');
 const timeRange = z
   .string()
-  .regex(/^\d{2}:\d{2}(?:[—–-]\d{2}:\d{2})?$/, 'время ЧЧ:ММ или интервал ЧЧ:ММ—ЧЧ:ММ');
+  .regex(new RegExp(`^${HH_MM}(?:[—–-]${HH_MM})?$`), 'время ЧЧ:ММ или интервал ЧЧ:ММ—ЧЧ:ММ')
+  .refine((value) => {
+    const [start, end] = value.split(/[—–-]/);
+    return end === undefined || (start ?? '') < end;
+  }, 'интервал должен заканчиваться позже, чем начинается');
 
-const url = z.string().url();
+// Только https: адрес уходит в href, а `javascript:` и `data:` там исполнились бы.
+const url = z
+  .string()
+  .url()
+  .refine((value) => new URL(value).protocol === 'https:', 'ссылка должна начинаться с https://');
+
+// Митапы проходят в Москве: время пишется местным, пояс фиксирован (+03:00, в России нет
+// перехода на летнее время с 2014 года). Дата и время — разные поля: YAML читает время без пояса
+// как UTC молча, и после разбора уже не понять, был пояс указан или нет.
+const MOSCOW_UTC_OFFSET_HOURS = 3;
+const day = z.coerce
+  .date()
+  .refine(
+    (value) => value.getUTCHours() === 0 && value.getUTCMinutes() === 0,
+    'date — только день ГГГГ-ММ-ДД; время начала пишется в поле time',
+  );
 
 export const PageSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().min(1),
+  title: z.string().min(1).max(70),
+  description: z.string().min(50).max(160),
   telegramUrl: url,
 });
 
@@ -29,9 +52,10 @@ const ScheduleItemSchema = z.object({
   kind: z.enum(['break', 'activity']),
 });
 
-export const EventSchema = z.object({
-  // Дата, время и смещение: `2026-07-09T18:00:00+03:00`.
-  date: z.coerce.date(),
+const EventFields = z.object({
+  // День митапа `2026-07-09` и начало по Москве `"18:00"`; на выходе `date` — момент начала.
+  date: day,
+  time: clockTime,
   tagline: z.string().min(1),
   venue: z.object({
     name: z.string().min(1),
@@ -55,6 +79,23 @@ export const EventSchema = z.object({
   // Перерывы и активности без спикера: у них нет своей страницы, доклады идут отдельными файлами.
   schedule: z.array(ScheduleItemSchema).default([]),
   draft: z.boolean().default(false),
+});
+
+export const EventSchema = EventFields.transform((event) => {
+  const [hours = 0, minutes = 0] = event.time.split(':').map(Number);
+  const { date } = event;
+  return {
+    ...event,
+    date: new Date(
+      Date.UTC(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        hours - MOSCOW_UTC_OFFSET_HOURS,
+        minutes,
+      ),
+    ),
+  };
 });
 
 export const TalkSchema = z.object({

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { event, partner, speaker, talk, twoMeetupsCatalog } from '../test/fixtures';
 import {
   CatalogError,
+  EVENT_DURATION_MS,
   pastEvents,
   scheduleOf,
   talksOfEvent,
@@ -25,6 +26,31 @@ const messageOf = (run: () => void): string => {
 describe('validateCatalog', () => {
   it('пропускает согласованный каталог', () => {
     expect(() => validateCatalog(twoMeetupsCatalog())).not.toThrow();
+  });
+
+  it('пустое тело доклада: путь файла в сообщении', () => {
+    const catalog = twoMeetupsCatalog();
+    catalog.talks[0] = { ...catalog.talks[0]!, body: '  \n' };
+    expect(messageOf(() => validateCatalog(catalog))).toContain('talks/ru/css-nesting.md: текст файла пуст');
+  });
+
+  it('сырой HTML и javascript:-ссылка в теле — ошибки, комментарий и автоссылка — нет', () => {
+    const catalog = twoMeetupsCatalog();
+    catalog.talks[0] = { ...catalog.talks[0]!, body: 'Текст <img src=x onerror=alert(1)>' };
+    catalog.talks[1] = { ...catalog.talks[1]!, body: '[жми](javascript:alert(1))' };
+    const message = messageOf(() => validateCatalog(catalog));
+    expect(message).toContain('talks/ru/css-nesting.md: в тексте HTML-тег');
+    expect(message).toContain('talks/ru/anchor-positioning.md: ссылка со схемой javascript:');
+
+    const clean = twoMeetupsCatalog();
+    clean.talks[0] = { ...clean.talks[0]!, body: '<!-- подсказка -->\nСм. <https://example.com>' };
+    expect(() => validateCatalog(clean)).not.toThrow();
+  });
+
+  it('расхождение passportRequired в переводе митапа', () => {
+    const catalog = twoMeetupsCatalog();
+    catalog.events[2] = event('en/10', { date: new Date('2024-03-14T18:00:00+03:00'), passportRequired: true });
+    expect(messageOf(() => validateCatalog(catalog))).toContain('events/en/10.md: поле passportRequired');
   });
 
   it('несуществующий спикер: путь файла доклада и имя в сообщении', () => {
@@ -190,6 +216,14 @@ describe('связи', () => {
 });
 
 describe('upcomingEvent / pastEvents', () => {
+  it('идущий митап (меньше EVENT_DURATION_MS после начала) ещё не прошедший', () => {
+    const live = event('ru/31');
+    const start = live.data.date.getTime();
+    expect(upcomingEvent([live], new Date(start + 60 * 60 * 1000))).toEqual({ event: live, past: false });
+    expect(pastEvents([live], new Date(start + 60 * 60 * 1000))).toEqual([]);
+    expect(upcomingEvent([live], new Date(start + EVENT_DURATION_MS + 1))?.past).toBe(true);
+  });
+
   const e10 = event('ru/10', { date: new Date('2024-03-14T15:00:00Z') });
   const e15 = event('ru/15', { date: new Date('2025-02-20T15:00:00Z') });
   const e20 = event('ru/20', { date: new Date('2026-06-01T15:00:00Z') });
