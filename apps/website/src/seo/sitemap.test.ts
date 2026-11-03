@@ -39,7 +39,22 @@ describe('xml', () => {
 });
 
 describe('robotsOf', () => {
-  it('открывает сайт и ведёт на карту по абсолютному адресу', () => {
-    expect(robotsOf(site)).toBe('User-agent: *\nAllow: /\n\nSitemap: https://css.moscow/sitemap.xml\n');
+  const text = robotsOf(site, '/.well-known/ai-catalog.json');
+  const groups = text.split('\n\n').filter((block) => block.includes('User-agent:'));
+
+  it('обучающие боты закрыты, поисковые и остальные открыты', () => {
+    expect(groups[0]).toContain('User-agent: GPTBot');
+    expect(groups[0]).toContain('Disallow: /');
+    expect(groups[1]).toContain('User-agent: ChatGPT-User');
+    expect(groups[2]).toMatch(/^User-agent: \*\nAllow: \//);
+  });
+
+  it('Content-Signal в каждой группе: бот с именованной группой группу «*» не читает', () => {
+    for (const block of groups) expect(block).toContain('Content-Signal: search=yes, ai-input=yes, ai-train=no');
+  });
+
+  it('карта сайта и Agentmap — абсолютными адресами', () => {
+    expect(text).toContain('Sitemap: https://css.moscow/sitemap.xml\n');
+    expect(text).toContain('Agentmap: https://css.moscow/.well-known/ai-catalog.json\n');
   });
 });

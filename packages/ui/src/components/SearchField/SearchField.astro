@@ -16,6 +16,8 @@ interface Props extends HTMLAttributes<typeof Tag> {
   value?: string;
   /** Подсказка внутри пустого поля */
   placeholder?: string;
+  /** Описание поля для агента браузера (WebMCP `toolparamdescription`); имя инструмента — атрибут `toolname` формы */
+  toolParamDescription?: string;
 }
 
 const {
@@ -24,11 +26,12 @@ const {
   name = 'q',
   value,
   placeholder,
+  toolParamDescription,
   class: className,
   ...attrs
 } = Astro.props;
 ---
 <Tag class:list={[root, className]} role="search" {...attrs}>
-  <input class={input} type="search" name={name} value={value} placeholder={placeholder} aria-label={labelText} data-search-input />
+  <input class={input} type="search" name={name} value={value} placeholder={placeholder} aria-label={labelText} toolparamdescription={toolParamDescription} data-search-input />
   <button class={submit} type="submit">{submitLabel}</button>
 </Tag>

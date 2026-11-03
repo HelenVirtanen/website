@@ -29,6 +29,44 @@ ${urls.join('\n')}
 `;
 }
 
-/** robots.txt: сайт открыт всем роботам, карта сайта — по абсолютному адресу. */
-export const robotsOf = (site: URL): string =>
-  `User-agent: *\nAllow: /\n\nSitemap: ${new URL('/sitemap.xml', site).href}\n`;
+// Группы роботов как в блоге: обучение моделей закрыто, поиск и ответы со ссылкой на источник открыты.
+// Content-Signal повторён в каждой группе: по RFC 9309 бот с именованной группой группу «*» не читает.
+const CONTENT_SIGNAL = 'Content-Signal: search=yes, ai-input=yes, ai-train=no';
+const TRAINING_BOTS = [
+  'GPTBot',
+  'ClaudeBot',
+  'Google-Extended',
+  'Applebot-Extended',
+  'CCBot',
+  'Meta-ExternalAgent',
+  'Bytespider',
+  'Amazonbot',
+];
+const SEARCH_BOTS = [
+  'OAI-SearchBot',
+  'ChatGPT-User',
+  'Claude-SearchBot',
+  'Claude-User',
+  'PerplexityBot',
+  'Perplexity-User',
+  'Googlebot',
+  'Applebot',
+  'Bingbot',
+  'YandexBot',
+  'YandexAdditional',
+  'YandexAdditionalBot',
+];
+
+const group = (agents: readonly string[], rule: string): string =>
+  [...agents.map((agent) => `User-agent: ${agent}`), rule, CONTENT_SIGNAL].join('\n');
+
+/** robots.txt: группы роботов с Content-Signal, карта сайта и каталог ресурсов для агентов (Agentmap, ARD §6.1). */
+export const robotsOf = (site: URL, agentmapPath: string): string =>
+  [
+    '# Обучение моделей — нет; поиск и ответы со ссылкой на источник — да.',
+    group(TRAINING_BOTS, 'Disallow: /'),
+    group(SEARCH_BOTS, 'Allow: /'),
+    group(['*'], 'Allow: /'),
+    `Sitemap: ${new URL('/sitemap.xml', site).href}`,
+    `Agentmap: ${new URL(agentmapPath, site).href}`,
+  ].join('\n\n') + '\n';

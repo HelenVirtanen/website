@@ -22,6 +22,7 @@ const context: JsonLdContext = {
   site: new URL('https://css.moscow'),
   siteName: 'MoscowCSS Meetup',
   telegramUrl: 'https://t.me/moscowcss',
+  siteDescription: 'Митапы фронтендеров в Москве',
   image: 'https://css.moscow/og/events/10.png',
 };
 
@@ -48,7 +49,10 @@ describe('jsonLdOf', () => {
     expect(org).toMatchObject({
       '@type': 'Organization',
       '@id': 'https://css.moscow/#organization',
-      sameAs: ['https://t.me/moscowcss'],
+      sameAs: ['https://t.me/moscowcss', 'https://www.youtube.com/@Moscowcss'],
+      description: 'Митапы фронтендеров в Москве',
+      logo: 'https://css.moscow/web-app-manifest-512x512.png',
+      contactPoint: { '@type': 'ContactPoint', contactType: 'community', url: 'https://t.me/moscowcss' },
     });
     expect(site).toMatchObject({
       '@type': 'WebSite',

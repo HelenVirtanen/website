@@ -15,6 +15,8 @@ import {
 } from '../i18n';
 import { loadCatalog } from '../content/catalog';
 import { CARD_TYPE, OG_SIZE, OG_TYPE, cardMetaOf } from '../seo/og';
+import { AI_CATALOG_PATH, ARD_PATH } from '../agents/discovery';
+import { markdownPathOf } from '../agents/paths';
 import { feedPath } from '../rss/feed';
 import { navLinksOf } from './nav';
 import { jsonLdOf, serializeJsonLd } from '../seo/jsonld';
@@ -63,7 +65,13 @@ const twitterImage = card && absolute(card.twitterImage);
 const jsonLd =
   publicPage &&
   site &&
-  jsonLdOf(publicPage, catalog, { site, siteName: t('site.name'), telegramUrl: telegramHref, image: ogImage });
+  jsonLdOf(publicPage, catalog, {
+    site,
+    siteName: t('site.name'),
+    siteDescription: t('site.description'),
+    telegramUrl: telegramHref,
+    image: ogImage,
+  });
 const ogLocale: Record<Locale, string> = { ru: 'ru_RU', en: 'en_US' };
 const xDefault = alternates.find((alternate) => alternate.locale === defaultLocale);
 
@@ -126,6 +134,10 @@ const localeOptions = locales.map((code) => ({
     }
     {xDefault && <link rel="alternate" hreflang="x-default" href={absolute(xDefault.path)} />}
     <link rel="alternate" type="application/rss+xml" title={t('rss.title')} href={absolute(feedPath(lang))} />
+    {publicPage && <link rel="alternate" type="text/markdown" href={absolute(markdownPathOf(publicPage.path))} />}
+    <link rel="privacy-policy" href={absolute(localizePath(lang, 'personal-data'))} />
+    <link rel="ai-catalog" href={absolute(AI_CATALOG_PATH)} />
+    <link rel="ard" href={absolute(ARD_PATH)} />
     {jsonLd && <script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />}
   </head>
   <body>
@@ -146,3 +158,20 @@ const localeOptions = locales.map((code) => ({
     <slot />
   </body>
 </html>
+
+<script>
+  import { registerSiteTools, type ModelContext } from '../agents/webmcp';
+
+  // Индекс Pagefind появляется только после сборки, поэтому путь не отдаём сборщику на разрешение.
+  const PAGEFIND = '/pagefind/pagefind.js';
+  const context =
+    (document as Document & { modelContext?: ModelContext }).modelContext ??
+    (navigator as Navigator & { modelContext?: ModelContext }).modelContext;
+  void registerSiteTools(context, {
+    location: new URL(window.location.href),
+    fetch: (url) => fetch(url),
+    loadPagefind: () => import(/* @vite-ignore */ PAGEFIND),
+  }).catch((error: unknown) => {
+    console.error('WebMCP: инструменты не зарегистрированы', error);
+  });
+</script>

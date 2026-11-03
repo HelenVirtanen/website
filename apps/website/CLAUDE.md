@@ -25,6 +25,7 @@ src/
 ├── components/ # page-level pieces that are not reusable UI
 ├── search/     # Pagefind client
 ├── rss/        # feed.ts: per-language meetup feed (/rss.xml, /en/rss.xml)
+├── agents/     # markdown.ts (index.md of every page), discovery.ts (llms.txt, skill, ARD), webmcp.ts
 └── test/       # fixtures for tests
 scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* generator)
 ```
@@ -90,6 +91,19 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
 - **Icons** (`favicon.ico`/`.svg`, `apple-touch-icon.png`, manifest + 192/512) are
   drawn at build time from the MoscowCSS star in the brand red (`color.focus`,
   as the Hero star): `src/seo/icons.ts` lists them, `@moscowcss/og` renders them.
+- **Agent access** (spec 003). Every public page has a Markdown twin
+  `<path>/index.md` (`pages/[...path]/index.md.ts`, built by `src/agents/markdown.ts`
+  from the same catalog as the HTML) and links it with
+  `rel="alternate" type="text/markdown"`. `/llms.txt`, the skill
+  (`/.well-known/agent-skills/`), the ARD catalog (`ai-catalog.json`, `ard.json`)
+  and `robots.txt` (`Content-Signal`, `Agentmap`) come from `src/agents/discovery.ts`
+  and `src/seo/sitemap.ts`. Every page registers WebMCP tools `search_site` and
+  `get_page_markdown` (`src/agents/webmcp.ts`); the search form is the
+  declarative tool `search_page`. GitHub Pages cannot set headers, so there is no
+  `Accept: text/markdown` negotiation, no `Vary`/`Link` headers and no Markdown
+  404. The Pages upload keeps `/.well-known/` only with `include-hidden-files: true`
+  in `deploy.yml`. `check:seo` checks the Markdown links, the `llms.txt` and catalog
+  links and the skill digest.
 - Tests are vitest (`vitest.config.ts` uses `getViteConfig`, so they see the same
   plugins as the build); `astro:content` is mocked with `vi.mock`.
 - Theme is **colour-only** and driven by `data-theme` (`<html data-theme="…">`) /

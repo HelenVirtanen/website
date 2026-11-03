@@ -1,5 +1,6 @@
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
+import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { checkDist, pngSize } from './seo-checks.mjs';
@@ -237,6 +238,44 @@ describe('checkDist', () => {
         'index.html: apple-touch-icon /apple-touch-icon.png: файла нет в dist',
         'index.html: manifest /site.webmanifest: файла нет в dist',
       ]);
+    });
+  });
+
+  describe('агенты', () => {
+    it('Markdown-версия из <head>: есть — проходит, нет — ошибка', async () => {
+      await validSite();
+      const links = `<link rel="alternate" type="text/markdown" href="${SITE}/index.md">`;
+      await put('index.html', page({ path: '/', alternates: pair, links }));
+      expect((await checkDist(dist, SITE)).errors).toEqual(['index.html: Markdown /index.md: файла нет или это не Markdown']);
+      await put('index.md', '# Главная\n');
+      expect((await checkDist(dist, SITE)).errors).toEqual([]);
+    });
+
+    it('llms.txt: ссылка на несуществующий файл — ошибка', async () => {
+      await validSite();
+      await put('llms.txt', `# MoscowCSS\n\n- [Главная](${SITE}/)\n- [Митап](${SITE}/events/9/index.md)\n`);
+      expect((await checkDist(dist, SITE)).errors).toEqual([`llms.txt: ссылка ${SITE}/events/9/index.md: файла нет в dist`]);
+    });
+
+    it('digest навыка сверяется с байтами SKILL.md', async () => {
+      await validSite();
+      const skill = '---\nname: moscowcss\n---\n';
+      const digest = (text) => `sha256:${createHash('sha256').update(text).digest('hex')}`;
+      await put('.well-known/agent-skills/moscowcss/SKILL.md', skill);
+      const index = (value) =>
+        JSON.stringify({ skills: [{ name: 'moscowcss', url: `${SITE}/.well-known/agent-skills/moscowcss/SKILL.md`, digest: value }] });
+      await put('.well-known/agent-skills/index.json', index(digest(skill)));
+      expect((await checkDist(dist, SITE)).errors).toEqual([]);
+      await put('.well-known/agent-skills/index.json', index(digest('другой текст')));
+      expect((await checkDist(dist, SITE)).errors).toEqual([
+        `agent-skills/index.json: moscowcss: digest не совпадает с ${SITE}/.well-known/agent-skills/moscowcss/SKILL.md`,
+      ]);
+    });
+
+    it('каталог ARD: адрес записи без файла — ошибка', async () => {
+      await validSite();
+      await put('.well-known/ai-catalog.json', JSON.stringify({ entries: [{ identifier: 'urn:air:css.moscow:feed:rss', url: `${SITE}/rss.xml` }] }));
+      expect((await checkDist(dist, SITE)).errors).toEqual([`ai-catalog.json: urn:air:css.moscow:feed:rss: файла ${SITE}/rss.xml нет в dist`]);
     });
   });
 });

@@ -14,6 +14,8 @@ export interface JsonLdContext {
   siteName: string;
   /** Канал сообщества из контента главной */
   telegramUrl: string;
+  /** Описание сообщества из словаря интерфейса */
+  siteDescription: string;
   /** Абсолютный адрес OpenGraph-карточки страницы */
   image: string | undefined;
 }
@@ -29,13 +31,27 @@ export function moscowIso(date: Date): string {
 
 const organizationId = (site: URL): string => new URL('/#organization', site).href;
 
+// Канал с записями докладов: те же ссылки стоят на страницах докладов.
+const YOUTUBE_CHANNEL = 'https://www.youtube.com/@Moscowcss';
+// Иконка манифеста: квадратная, достаточно крупная для карточки организации в выдаче.
+const LOGO_PATH = '/web-app-manifest-512x512.png';
+
 function organization(context: JsonLdContext): Thing {
   return {
     '@type': 'Organization',
     '@id': organizationId(context.site),
     name: context.siteName,
+    description: context.siteDescription,
     url: new URL('/', context.site).href,
-    sameAs: [context.telegramUrl],
+    logo: new URL(LOGO_PATH, context.site).href,
+    sameAs: [context.telegramUrl, YOUTUBE_CHANNEL],
+    // Адреса и телефона у сообщества нет; связь — только публичный канал (решение владельца, spec 003).
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'community',
+      url: context.telegramUrl,
+      availableLanguage: ['ru', 'en'],
+    },
   };
 }
 
