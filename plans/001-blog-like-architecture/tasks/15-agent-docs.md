@@ -25,6 +25,15 @@ attempts: 0
 - Источник правды по решениям: `specs/001-blog-like-architecture.md`, `adr/001-*.md`, `adr/002-*.md`,
   `plans/001-blog-like-architecture/plan.md`. `packages/fonts/README.md` — упомянуть TTF для og и их источник.
 - Markdown — по-английски (корневой `CLAUDE.md` §14).
+- Решения прогона, которые должны попасть в правила (источник — `.vzhyx/orchestrate/progress.md`, строки `Ruling:`
+  и разборы ревью): дата митапа = `date` (день) + `time` (Москва); ссылки в контенте только https, тела —
+  только Markdown, проверку делает hast-плагин `apps/website/src/content/markdown-safety.ts` (интеграция в
+  `astro.config.mjs`); `BUILD_NOW` — только для снимков, входит в env turbo; сборка website не кэшируется
+  (`apps/website/turbo.json`); визуальный тулинг `tools/visual` (`--exact`, `--ignore`, манифест, эталон
+  `.visual/baseline` с dad0413 и `.visual/hero-09`); `pnpm new:*` заменили plop-генераторы страниц;
+  `check:seo`; OG-карточки `@moscowcss/og` (шрифты TTF из `@moscowcss/fonts`); коммиты — по правилу §2.9.
+- В `apps/website/CLAUDE.md` устарели «Content pages … `pnpm new:speaker | new:event | new:report` … stubs»
+  и список зависимостей; в `packages/ui/CLAUDE.md` — «spacing → vars.padding/vars.spacing» без layout.
 
 ## Steps
 1. Прочитать текущий текст каждого раздела, затем править; ссылки на ADR/спеку вместо пересказа.
