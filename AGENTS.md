@@ -15,13 +15,16 @@ Guidance for Cursor and any other AI agent working in this repository.
 
 ## What this repo is
 
-A Turborepo monorepo (pnpm workspaces): an **Astro** marketing/community site
-(`apps/website`), a **Storybook** (`apps/storybook`, `@storybook-astro/framework`),
-and shared packages under the `@moscowcss/*` scope — `ui` (Astro components +
+A Turborepo monorepo (pnpm workspaces): an **Astro** community site in two
+languages (`apps/website`: `ru` at `/`, `en` at `/en/`), a **Storybook**
+(`apps/storybook`, `@storybook-astro/framework`), and shared packages under the
+`@moscowcss/*` scope — `content` (all site content as Markdown files + zod
+schema), `og` (build-time OpenGraph/Twitter PNG cards), `ui` (Astro components +
 vanilla-extract styles), `design-system` (the design-token system: palette +
-semantic vars + spacing + typography tokens + breakpoints), `icons` (SVGO →
-generated `.astro`), `fonts` (font *loading*), `eslint-config`,
-`typescript-config`.
+semantic vars + scale tables + layout/typography tokens + breakpoints), `icons`
+(SVGO → generated `.astro`), `fonts` (font *loading*), `eslint-config`,
+`typescript-config`. Decisions: `specs/001-blog-like-architecture.md`,
+`adr/001-*.md` (content model), `adr/002-*.md` (responsive scale).
 
 ## Non-negotiables (full detail in `CLAUDE.md`)
 
@@ -35,9 +38,17 @@ generated `.astro`), `fonts` (font *loading*), `eslint-config`,
   `@moscowcss/design-system`.
 - **Shared config extends, never forks** — ESLint/TS rules live in
   `packages/eslint-config` and `packages/typescript-config`.
-- **Use the generators** — `pnpm new:component` / `new:speaker` / `new:event` /
-  `new:report`. Never hand-create component or content-page files. Never edit
+- **Use the generators** — `pnpm new:component`, and for content `pnpm new:event` /
+  `new:talk` / `new:speaker` / `new:partner` / `new:faq` (drafts in `ru` and `en`,
+  never overwrite). Never hand-create component or content files. Never edit
   `packages/icons/src/generated/**` — regenerate it.
+- **Content is Markdown in `@moscowcss/content`**, `src/<collection>/<lang>/<name>.md`;
+  relations live in the talk only; links `https` only, no raw HTML (the build
+  fails otherwise). No user-facing text literals in `.astro` files: UI strings
+  come from `apps/website/src/i18n`, the rest from content.
+- **Sizes in `rem`, no `px`.** Values live in `scale.ts` tables; component inner
+  padding is constant (`vars.padding`/`vars.spacing`), only `vars.layout.*` grows
+  with width; `@media` in a component changes structure, not sizes.
 - **Props extend the native element, tag is single source of truth.** A
   component's `Props` MUST be `interface Props extends HTMLAttributes<typeof Tag>`
   where `const Tag = 'div'` (from `astro/types`), rendered as `<Tag>` and spread
@@ -53,7 +64,8 @@ generated `.astro`), `fonts` (font *loading*), `eslint-config`,
 - **Comments** — otherwise only the *why* of genuinely non-obvious spots, short
   and in Russian. Only Markdown docs (`*.md`) stay English; every other file,
   config included, uses Russian comments.
-- **`pnpm lint` and `pnpm build` must pass** before a task is done.
+- **`pnpm lint`, `pnpm test` and `pnpm build` must pass** before a task is done
+  (`pnpm --filter website check:seo` after the build when pages or content changed).
 - **Commit your own work, never push.** One coherent change per commit on a
   feature branch (never straight to `master`), after the touched checks pass;
   English Conventional Commits; no secrets or build output. `git push`, merges
@@ -65,10 +77,14 @@ generated `.astro`), `fonts` (font *loading*), `eslint-config`,
 | --- | --- |
 | `pnpm dev` | website dev server (Astro) |
 | `pnpm storybook` | Storybook for the UI components |
-| `pnpm build` | production build of the website |
+| `pnpm build` | production build of the website (+ Pagefind index) |
 | `pnpm build:storybook` | static Storybook build |
 | `pnpm lint` | ESLint with `--fix` across all packages |
-| `pnpm new:component` | scaffold a UI component (plop) |
+| `pnpm test` | all vitest suites (turbo) |
+| `pnpm --filter website check:seo` | SEO gate over the built `dist` |
+| `pnpm new:component` | scaffold a UI component and its story (plop) |
+| `pnpm new:event <n>` / `new:talk` / `new:speaker` / `new:partner` / `new:faq <name>` | draft content files, `ru` + `en` |
 
-For anything not covered here — dependency policy, theming/token layers,
-icon pipeline, Storybook setup — **read `CLAUDE.md`.**
+For anything not covered here — dependency policy, theming/token layers and the
+root font size, content and i18n rules, OG cards, CI/deploy, visual regression
+(`tools/visual`), icon pipeline, Storybook setup — **read `CLAUDE.md`.**

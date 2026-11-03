@@ -15,33 +15,52 @@ package/app file governs local detail; this root file wins on conflict.
 
 ## 1. What this repo is
 
-A Turborepo monorepo (pnpm workspaces) hosting a small marketing/community
-website built with **Astro**, plus a component library, a Storybook, and shared
-tooling. Styling is done with **vanilla-extract** on top of a two-layer,
-theme-aware design-token system.
+A Turborepo monorepo (pnpm workspaces) hosting the MoscowCSS community website
+built with **Astro**: two languages (`ru` at `/`, `en` at `/en/`), content as
+Markdown files in a dedicated package, build-time OpenGraph cards, search, plus
+a component library, a Storybook, and shared tooling. Styling is done with
+**vanilla-extract** on top of a two-layer, theme-aware design-token system.
+
+Decision records: spec `specs/001-blog-like-architecture.md`,
+`adr/001-content-model-md-relations.md` (content model),
+`adr/002-adaptive-scale-and-root-size.md` (responsive scale). Read them before
+changing the architecture they describe.
 
 ```
 .
 ├── apps/
 │   ├── website/          # the site itself (Astro)
+│   │   ├── src/i18n/     #   locales, UI dictionary (ru is the source), URL helpers
+│   │   ├── src/seo/      #   public page list, OG card input, meta tags
+│   │   ├── src/content/  #   catalog (relations + validation), Markdown safety plugin
+│   │   ├── src/layouts/  #   BaseLayout: canonical, hreflang, og/twitter tags
+│   │   ├── src/pages/    #   [...locale]/ routes (home, events, talks, speakers, search), og/ cards
+│   │   ├── src/sections/ #   homepage sections
+│   │   └── scripts/      #   check-seo (gate over dist), new-entry (new:* content generator)
 │   └── storybook/        # component demo (@storybook-astro/framework)
 ├── packages/
+│   ├── content/          # all site content: .md files per collection and language + zod schema
+│   ├── og/               # build-time OG/Twitter PNG cards (satori + sharp)
 │   ├── ui/               # Astro components + their vanilla-extract styles
-│   ├── design-system/    # the design-token system: palette + semantic vars + spacing + typography tokens + breakpoints
+│   ├── design-system/    # the design-token system: palette + semantic vars + scale tables + layout/typography tokens + breakpoints
 │   ├── icons/            # source SVGs -> SVGO-cleaned, generated .astro icon components
 │   ├── fonts/            # @font-face css + font files (font *loading*, not the font tokens)
 │   ├── eslint-config/    # shared flat ESLint config (single source of truth)
 │   └── typescript-config/# shared tsconfig bases (single source of truth)
-├── plop-templates/       # generators used by new:* scripts
+├── tools/visual/         # screenshot capture/compare for visual regression (not a workspace package)
+├── adr/, specs/, plans/  # decision records, specs, task queues
+├── docs/deploy.md        # one-off GitHub Pages and DNS setup
+├── .github/workflows/    # deploy.yml: every check on push/PR, Pages deploy
+├── plop-templates/       # generator for new:component
 ├── turbo.json
 ├── pnpm-workspace.yaml
 ├── .npmrc
 └── package.json
 ```
 
-Workspace package names use the `@moscowcss/*` scope: `@moscowcss/ui`,
-`@moscowcss/design-system`, `@moscowcss/icons`, `@moscowcss/fonts`,
-`@moscowcss/eslint-config`, `@moscowcss/typescript-config`.
+Workspace package names use the `@moscowcss/*` scope: `@moscowcss/content`,
+`@moscowcss/og`, `@moscowcss/ui`, `@moscowcss/design-system`, `@moscowcss/icons`,
+`@moscowcss/fonts`, `@moscowcss/eslint-config`, `@moscowcss/typescript-config`.
 
 ---
 
@@ -67,7 +86,8 @@ Workspace package names use the `@moscowcss/*` scope: `@moscowcss/ui`,
    Only add local overrides when something is genuinely unique to that package.
 7. **Never downgrade the recommendation.** No "this is just a demo / MVP /
    student project" shortcuts. Always the current best-practice setup.
-8. **`pnpm lint` and `pnpm build` must pass** before you consider a task done.
+8. **`pnpm lint`, `pnpm test` and `pnpm build` must pass** before you consider a
+   task done.
 9. **Commit your own work; the user drives everything that leaves the machine.**
    - Commit as you go, one coherent change per commit: a finished task or a
      self-contained step of it, never a half-done state. The checks that the
@@ -125,13 +145,17 @@ Node & pnpm:
 | --------------------- | ------------------------------------------------------------------- |
 | `pnpm dev`            | Runs the **website** dev server (Astro).                            |
 | `pnpm storybook`      | Runs **Storybook** for the UI components.                           |
-| `pnpm build`          | Production build of the **website**.                                |
+| `pnpm build`          | Production build of the **website** (`astro build` + Pagefind index). |
 | `pnpm build:storybook`| Static Storybook build (for deploy).                                |
 | `pnpm lint`           | Lints **and** applies safe autofixes across all packages.           |
-| `pnpm new:component`  | Scaffolds a new component in `packages/ui` (plop).                  |
-| `pnpm new:speaker`    | Scaffolds a speaker content page in the website (stub).             |
-| `pnpm new:event`      | Scaffolds an event content page in the website (stub).              |
-| `pnpm new:report`     | Scaffolds a report content page in the website (stub).             |
+| `pnpm test`           | Runs every package's vitest suite through turbo.                    |
+| `pnpm --filter website check:seo` | Gate over the built `dist` (run after `pnpm build`). |
+| `pnpm new:component`  | Scaffolds a new component in `packages/ui` + its story (plop).      |
+| `pnpm new:event <number>` | Draft event files in `packages/content`, `ru` and `en`.         |
+| `pnpm new:talk <name>`    | Draft talk files, `ru` and `en`.                                |
+| `pnpm new:speaker <name>` | Draft speaker files (+ placeholder photo), `ru` and `en`.       |
+| `pnpm new:partner <name>` | Draft partner files, `ru` and `en`.                             |
+| `pnpm new:faq <name>`     | Draft FAQ entry files, `ru` and `en`.                           |
 
 Notes:
 
@@ -143,6 +167,19 @@ Notes:
   picked up live by the website's and Storybook's Vite dev servers.
 - `@moscowcss/icons` **does** have a build step (SVG → generated `.astro`), so the
   website/storybook `build` depends on it topologically via `^build`.
+- `@moscowcss/content` and `@moscowcss/og` are source-only too. `og` has a `test`
+  script (`tsc --noEmit && vitest run`); `content` is validated by the website
+  build and tests.
+- The `new:*` content generators are `apps/website/scripts/new-entry.mjs`, fed by
+  templates in `packages/content/templates`. They never overwrite: an existing
+  file means exit code 1 and nothing is written. New files are drafts
+  (`draft: true`); editors fill them in and flip the flag.
+- **The website build is never cached** (`apps/website/turbo.json`): it depends on
+  the current date (which meetup is "next"), so a cached `dist` would be stale.
+- `BUILD_NOW` (an ISO date, e.g. `2026-07-01`) pins "now" for the homepage. It is
+  for visual snapshots only, never set it for a real build. It is declared in
+  `turbo.json` `build.env`, otherwise turbo's strict env mode drops it.
+- `pnpm lint` does not cover `tools/visual`; keep that tooling readable by hand.
 
 ---
 
@@ -152,6 +189,7 @@ Tokens live in the dedicated **`@moscowcss/design-system`** package
 (`packages/design-system/src`) and are the *only* place values are defined.
 Components never contain raw hex colours, raw pixel sizes, or literal
 breakpoints. `@moscowcss/ui` **consumes** these tokens; it does not define them.
+The responsive model is recorded in `adr/002-adaptive-scale-and-root-size.md`.
 
 ### Two layers
 
@@ -169,11 +207,19 @@ expose a single theme-independent `values`), then assembled into one theme:
 
 - **palette** (`palette.ts`) — the primitives.
 - **semantic colours** (`colors.ts`) — `vars.color.*` mapped from the palette.
-- **spacing** (`spacing.ts`) — a t-shirt scale (`xs`/`s`/`m`/`l`/`xl`/`xxl`) split
-  into two semantic groups over the same values: `vars.padding.*` (inner padding)
-  and `vars.spacing.*` (gaps/margins between elements), plus `vars.radius.*`.
-  The scale is responsive — `themes/spacing.css.ts` bumps `m`/`l`/`xxl` on wide
-  screens, so any component using those rungs scales up automatically.
+- **scale** (`scale.ts`) — the single source of the numbers: "base + overrides
+  per breakpoint" tables in `rem` (`typeScale`, `space`, `layoutSpace`) and a
+  resolver, covered by `scale.test.ts`. The themes generate their CSS variables
+  and `:root` media queries from these tables.
+- **spacing** (`spacing.ts`) — a t-shirt scale (`xs`…`4xl`) split into two
+  semantic groups over the same values: `vars.padding.*` (inner padding) and
+  `vars.spacing.*` (gaps/margins between elements), plus `vars.radius.*`. These
+  steps are **constant at every width**: a component's inner padding never
+  changes with the window.
+- **layout** (`layout.ts`) — `vars.layout.inset.*` and `vars.layout.gap.*`: the
+  ladders that *do* grow with width (the former responsive `m`/`l`/`xxl`). Use
+  them only where the design says the value grows; everything else uses
+  `padding`/`spacing`.
 - **typography** (`typography.ts`) — `vars.font.*` **tokens** (the font
   shorthands). These are *not* the font *loading*: `@font-face` + files live in
   `@moscowcss/fonts`. The family names here must match that package.
@@ -182,8 +228,15 @@ expose a single theme-independent `values`), then assembled into one theme:
 `themes/` apply them — colour per theme, padding/radius/typography once on
 `:root`. **Each concern applies its own tokens *and* owns its adaptive** in its
 own file (`themes/colors.css.ts`, `themes/spacing.css.ts`,
-`themes/typography.css.ts`), so no single theme file bloats with every concern's
-responsive rules; `themes/index.css.ts` imports the three.
+`themes/layout.css.ts`, `themes/typography.css.ts`, …), so no single theme file
+bloats with every concern's responsive rules; `themes/index.css.ts` imports them
+all.
+
+**Root font size.** All sizes are `rem` (no `px` in `.css.ts`). `themes/root.css.ts`
+sets `html { font-size: max(100%, 100vw / 120) }`: up to 1920px it equals the
+browser setting (16px by default), above that the whole interface scales in
+proportion to the window (32px at 3840px). `@media` thresholds are in `rem` of the
+browser font, so they do not move with the root size.
 
 ### Tooling choice
 
@@ -197,7 +250,8 @@ mapper turns the token path into the variable name (`padding.l` →
 typography are theme-independent — `themes/spacing.css.ts` and
 `themes/typography.css.ts` set them **once** on `:root` via
 `createGlobalTheme(':root', vars.padding | vars.radius | vars.font, …)`. Do
-**not** re-emit them per theme.
+**not** re-emit them per theme. Width-driven changes (font sizes, `layout.*`)
+come from the scale tables as `:root` media overrides, never from the theme.
 
 Colour is the only slice with a light/dark distinction:
 
@@ -224,6 +278,12 @@ contract.
 media-query strings for those names. In components use **`media`** as the
 `@media` key — don't hand-write `(min-width: …)`.
 
+**`@media` in a component is for structure only** (direction, columns,
+visibility, swapping one token step for another). Sizes, gaps and fonts are
+never literals inside it: a value that has to change with width becomes an entry
+in a `scale.ts` table (or a `vars.size.*` token) and the component references
+the var.
+
 ### Typography is responsive by var-indirection
 
 `fonts.ts` holds the family/weight primitives (`fontFamily.{display,sans,mono}`,
@@ -235,8 +295,9 @@ sets `font: vars.font.shorthand.h1` (+ optional `letterSpacing`). Roles:
 
 The trick: each `shorthand` embeds its **size var** (`… var(--font-size-h1) …`),
 so `themes/typography.css.ts` makes type responsive by overriding **only** the
-size vars per breakpoint (`globalStyle(':root', { '@media': { [media.laptop]: { vars: { [vars.font.size.h1]: '…' } } } })`)
-— the shorthands follow automatically. Never redefine a whole shorthand per breakpoint.
+size vars per breakpoint — the overrides are generated from `typeScale` in
+`scale.ts`, the shorthands follow automatically. Never redefine a whole
+shorthand per breakpoint.
 
 ### The rule for components
 
@@ -248,7 +309,7 @@ export const card = style({
   gap: vars.spacing.m,
   color: vars.color.success,
   font: vars.font.shorthand.caption,
-  '@media': { [media.laptop]: { padding: vars.padding.xxl } },
+  '@media': { [media.laptop]: { flexDirection: vars.flexDirection.row } },
 });
 
 // ❌ forbidden in a component
@@ -256,23 +317,26 @@ export const card = style({ padding: '16px', color: '#00FF00' }); // raw values
 export const card = style({ color: vars.palette.green });         // primitive layer
 ```
 
-File layout in `packages/design-system/src`:
+File layout in `packages/design-system/src` (the package's own `CLAUDE.md` has
+the annotated tree, including the non-colour slices `border`, `dimensions`,
+`zIndex`):
 
 ```
 src/
 ├── palette.ts        # primitives: brand colours + neutrals  (raw values, no vars)
 ├── fonts.ts          # primitives: fontFamily {display,sans,mono} + fontWeight (NOT @font-face)
 ├── colors.ts         # semantic colour tokens: contract slice + light/dark (from palette)
-├── spacing.ts        # spacing tokens: t-shirt scale (xs…xxl) as padding + spacing groups + radius; contract slice + values
+├── scale.ts          # scale tables (base + overrides per breakpoint, rem) + resolver; scale.test.ts
+├── spacing.ts        # constant padding/spacing steps (xs…4xl) + radius + size tokens
+├── layout.ts         # layout.inset / layout.gap ladders (grow with width) + display/position helpers
 ├── typography.ts     # font tokens: size / shorthand / letterSpacing (shorthand refs size vars)
 ├── contract.ts       # createGlobalThemeContract -> `vars` (assembles the slices)
 ├── themes/           # per-concern appliers: each writes to :root and owns its adaptive
-│   ├── colors.css.ts     # colour = light base + dark (prefers-color-scheme + data-theme)
-│   ├── spacing.css.ts    # padding/spacing/radius once on :root + responsive scale overrides (m/l/xxl) per breakpoint
-│   ├── typography.css.ts # font once on :root + responsive font-size overrides per breakpoint
-│   └── index.css.ts      # imports the three appliers — the theme entry point
+│   ├── colors.css.ts, spacing.css.ts, layout.css.ts, typography.css.ts, …
+│   ├── root.css.ts       # html font-size: max(100%, 100vw / 120)
+│   └── index.css.ts      # imports the appliers — the theme entry point
 ├── breakpoints.ts    # mobile/tablet/laptop/desktop/desktopLarge (rem) + `media` query strings
-└── index.ts          # re-exports { vars, breakpoints, media, palette } + type Breakpoint
+└── index.ts          # applies the theme; re-exports { vars, breakpoints, media, palette, dimensions }
 ```
 
 ---
@@ -282,15 +346,22 @@ src/
 - Components are **Astro components** (`.astro`).
 - Each component gets its own folder under `src/components/`:
   `src/components/Button/Button.astro`, `Button.css.ts` (vanilla-extract),
-  `Button.stories.ts`, `index.ts`. Consumers import a component by folder:
+  `index.ts` (the story lives in `apps/storybook/stories/Button.stories.ts`). Consumers import a component by folder:
   `import Button from '@moscowcss/ui/components/Button'` (see the `exports` map,
   `./components/*`).
 - Import styles from the colocated `.css.ts`; import tokens from
   `@moscowcss/design-system`. No inline `style="..."` with literal values.
+- Inner padding comes from `vars.padding.*` and gaps from `vars.spacing.*`
+  (constant); `vars.layout.inset|gap.*` only where the design grows the value
+  with width. No `px` literals in `.css.ts`, and no literal sizes inside `@media`.
+- User-facing text is never a literal in a component or section: it comes from
+  props (fed by the i18n dictionary or by content), so one component serves both
+  languages.
 - vanilla-extract runs via `@vanilla-extract/vite-plugin`, wired into both the
   website's `astro.config.mjs` and Storybook's Vite config.
 - Add a new component with `pnpm new:component` — do not create the files by
-  hand, so structure stays uniform.
+  hand, so structure stays uniform. It also creates the story in
+  `apps/storybook/stories/`.
 
 ### Props always extend the native element (mandatory)
 
@@ -416,16 +487,75 @@ regenerate rather than edit).
 - Consumers `import '@moscowcss/fonts'` (or `@moscowcss/fonts/index.css`) once, at the app
   root. Font *family names* referenced by the design tokens must match the
   `@font-face` `font-family` values here.
+- Montserrat Regular/SemiBold/Bold also ship as **TTF**, exported from
+  `package.json`, for `@moscowcss/og`: satori cannot read WOFF2. They come from
+  the official Montserrat repository under the same OFL (see
+  `packages/fonts/README.md`). Do not copy them elsewhere.
 
 ---
 
-## 9. `apps/website`
+## 9. `apps/website`, `packages/content`, `packages/og`
 
-- Astro site. Depends on `@moscowcss/ui`, `@moscowcss/icons`, `@moscowcss/fonts`.
-- `astro.config.mjs` registers the vanilla-extract Vite plugin.
-- Content pages (speakers / events / reports) are scaffolded via `new:*`
-  scripts and are currently **stubs** — placeholder frontmatter + minimal
-  markup, ready to be filled in later.
+- Astro site, **static output**. Depends on `@moscowcss/content`, `@moscowcss/og`,
+  `@moscowcss/ui`, `@moscowcss/icons`, `@moscowcss/fonts` and
+  `@moscowcss/design-system`. `astro.config.mjs` registers the vanilla-extract
+  Vite plugin and the `markdownSafety` integration, sets `site:
+  'https://css.moscow'`, `trailingSlash: 'always'` and the i18n routing.
+- **Languages.** `ru` is the default and has no URL prefix; `en` lives under
+  `/en/`. The list of locales is in `src/i18n/config.ts` and in
+  `astro.config.mjs` — keep them in sync. UI strings live in the dictionary
+  `src/i18n/ui.ts` (`ru` is the source, other locales must cover every key);
+  everything else comes from content. No literal user-facing text in `.astro`
+  files. Every page gets a language switcher to the same page in the other
+  language and absolute `hreflang` links (`ru`, `en`, `x-default`) from
+  `BaseLayout`.
+- **Content is a package.** All text is `.md` (frontmatter + Markdown body) in
+  `@moscowcss/content`, one folder per language: `src/<collection>/<lang>/<name>.md`.
+  Collections: `pages`, `events`, `talks`, `speakers`, `partners`, `faq`.
+  Relations live only in the talk (`event`, `speakers`); reverse lists and the
+  event schedule are built at build time in `apps/website/src/content/catalog.ts`.
+  Language-independent fields are duplicated in the translation and checked
+  against `ru`. The build fails with the file and the field. Details:
+  `adr/001-content-model-md-relations.md` and the package README (for editors).
+- **Content rules** enforced at build time: a meetup's date is `date` (a day,
+  `2026-07-09`) plus `time` (`"18:00"`, Moscow time); links in content are
+  `https` only; bodies are Markdown only. The check is a hast plugin,
+  `src/content/markdown-safety.ts`, wired in through `astro.config.mjs`: raw
+  HTML and any `href`/`src` that is not `https:`/`mailto:` after URL resolution
+  fail the build. Do not weaken it with regexes over the source text. Drafts
+  (`draft: true`) are excluded from the site.
+- **Pages.** Home (`/`, `/en/`: nearest future meetup, or the last past one
+  without registration; list of past meetups), `/events/<n>/`, `/talks/<name>/`,
+  `/speakers/<name>/`, `/search/` (Pagefind, `noindex`). The list of public
+  pages for SEO is `src/seo/pages.ts`.
+- **SEO and OG.** `BaseLayout` writes `description`, `canonical`, `hreflang`,
+  16 `og:*`/`twitter:*` tags. Cards come from `@moscowcss/og`
+  (`renderCard({ title, kicker, meta, size })`: 1200×630 for OpenGraph,
+  1200×600 for Twitter) and are served from `pages/og/[...path].ts`; what goes
+  on a card is decided in `src/seo/og.ts`. `pnpm --filter website check:seo`
+  checks the built `dist` (tags, image files and their sizes, `og:locale` vs
+  `<html lang>`) and exits 1 on the first violation.
+- **Search.** `pnpm build` runs `astro build && pagefind --site dist`. The index
+  is per language; there is no index in dev mode.
+- **Tests.** vitest, `pnpm test` from the root (also `pnpm --filter website test`).
+  Logic you add — content validation, relations, nearest meetup, i18n coverage,
+  SEO checks, scale resolver, card generator — needs tests; the repo does not
+  accept untested logic as the norm. Content tests use fixtures from
+  `src/test/fixtures.ts`, not the real content.
+- **CI and deploy.** `.github/workflows/deploy.yml` runs lint, test, build,
+  `check:seo` and `build:storybook` on push to `master` and on pull requests;
+  deploy to GitHub Pages happens only outside pull requests. pnpm and Node
+  versions come from `packageManager` and `.nvmrc`, not from the YAML. One-off
+  GitHub/DNS setup: `docs/deploy.md`. The husky `pre-commit` hook runs
+  `pnpm lint && pnpm test && pnpm build`.
+- **Visual regression.** `tools/visual` (not a workspace package) captures the
+  homepage sections and every Storybook story at five widths into `.visual/`
+  (git-ignored) and compares two captures. Use `compare.mjs --exact` for
+  refactors that must not move a pixel, `--ignore <prefix>` for snapshots whose
+  change is intended. A reference capture is `.visual/baseline` (taken from
+  `dad0413`, before the architecture change; its `manifest.json` says which code
+  it came from) and `.visual/hero-09`. Capture with `BUILD_NOW` pinned.
+  See `tools/visual/README.md`.
 
 ---
 
@@ -437,8 +567,8 @@ regenerate rather than edit).
 - `.storybook/main.ts` sets `framework: { name: '@storybook-astro/framework' }`
   and, in `viteFinal`, adds the **vanilla-extract Vite plugin** so component
   styles resolve identically to the website.
-- Stories live next to components in `@moscowcss/ui` (`*.stories.ts`); Storybook's
-  `stories` glob points into that package.
+- Stories live in `apps/storybook/stories/*.stories.ts` (created by
+  `pnpm new:component`); Storybook's `stories` glob points there.
 - `npm create storybook` does **not** recognise Astro — set it up manually per
   the framework docs. Install with `pnpm add`, latest versions.
 
@@ -464,13 +594,17 @@ Before declaring any task complete:
 ```bash
 pnpm install        # if deps changed — lockfile updated, exact versions
 pnpm lint           # zero errors (warnings acceptable if agreed)
-pnpm build          # website builds
+pnpm test           # every vitest suite
+pnpm build          # website builds, content validates, Pagefind index is built
+pnpm --filter website check:seo  # after the build, if you touched pages, layouts, content or og
 pnpm build:storybook  # if you touched components/stories
 ```
 
 Then sanity-check the token rule: search your diff for raw hex colours
-(`#`), literal `px` in `.css.ts`, and any use of the primitive palette inside a
-component. All three are red flags.
+(`#`), literal `px` in `.css.ts`, literal sizes inside a component's `@media`,
+and any use of the primitive palette inside a component. All are red flags.
+If you changed how a component or section looks (or touched the scale), compare
+screenshots with `tools/visual`.
 
 ---
 
@@ -481,7 +615,12 @@ component. All three are red flags.
 - ❌ raw hex/px/breakpoints inside components — go through tokens.
 - ❌ referencing the primitive palette from a component (semantic layer only).
 - ❌ duplicating ESLint/TS rules in a package instead of extending the shared config.
-- ❌ hand-creating component or content-page files — use the `new:*` generators.
+- ❌ hand-creating component or content files — use the `new:*` generators.
+- ❌ user-facing text literals in `.astro` files — dictionary or content.
+- ❌ raw HTML or non-`https` links in content Markdown; `.mdx`/`.yml`/`.json` content.
+- ❌ writing a relation in both directions, or making a required content field
+  optional to "ease editing".
+- ❌ setting `BUILD_NOW` for a real build, or caching the website build.
 - ❌ editing `packages/icons/src/generated/**` — regenerate it.
 - ❌ downgrading a recommendation for being "just a demo".
 - ❌ useless/obvious comments (see §14).

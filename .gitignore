@@ -14,3 +14,4 @@ temp
 # снимки визуального тулинга (tools/visual)
 .visual/
 !docs/
+!CLAUDE.md

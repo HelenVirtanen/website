@@ -33,7 +33,10 @@ src/
 ├── fonts.ts        # primitives: fontFamily {display,sans,mono} + fontWeight (NOT @font-face)
 ├── colors.ts       # semantic colours: contract slice + light/dark (from palette)
 ├── scale.ts        # scale tables ("base + steps per breakpoint", rem) + resolver; tested in scale.test.ts
-├── spacing.ts      # t-shirt scale (xs…4xl, constant) as padding + spacing groups + radius: contract slice + values
+├── spacing.ts      # t-shirt scale (xs…4xl, constant) as padding + spacing groups + radius + size: contract slice + values
+├── layout.ts       # layout.inset / layout.gap ladders (grow with width) + display/position/flex helpers
+├── border.ts, dimensions.ts, zIndex.ts  # border widths, aspect-ratio constants, z-index layers
+├── theme-colors.ts # raw light-theme colours as pure TS (no .css import) — for @moscowcss/og and tests
 ├── typography.ts   # font tokens: size / shorthand / letterSpacing (shorthand refs size vars)
 ├── contract.ts     # createGlobalThemeContract -> `vars`  (assembles the slices)
 ├── themes/         # per-concern appliers: each writes to :root and owns its adaptive
@@ -92,6 +95,7 @@ Source-only package (no build step). From the repo root:
 
 ```bash
 pnpm lint
+pnpm --filter @moscowcss/design-system test   # scale resolver (scale.test.ts)
 pnpm build            # website — proves the :root token vars emit
 pnpm build:storybook  # if components/stories are affected
 ```

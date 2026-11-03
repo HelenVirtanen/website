@@ -29,7 +29,19 @@ Decision record: `adr/001-content-model-md-relations.md`.
   names without the language (`event: "31"`, `speakers: [daria-egorova]`). Reverse
   lists are built at build time. Never write both directions.
 - **Language-independent fields are duplicated in the translation** and checked
-  against `ru` at build time (see `plans/001-blog-like-architecture`, task 06).
+  against `ru` at build time (`apps/website/src/content/catalog.ts`, tests next to
+  it). A mismatch fails the build with the file path and the field name.
+- **Meetup date and time:** `date` is a day (`2026-07-09`, no time), `time` is the
+  start in Moscow time (`"18:00"`, quoted). A date with a time is rejected: YAML
+  would read it as UTC.
+- **Links are `https` only**; bodies are Markdown only (raw HTML or a non-`https`
+  link fails the build — `apps/website/src/content/markdown-safety.ts`). Empty
+  bodies of pages, talks and FAQ are errors.
+- **`draft: true`** keeps an entry off the site. A published meetup cannot
+  reference a draft partner. The `new:*` templates start as drafts.
+- **New entries come from `pnpm new:event | new:talk | new:speaker | new:partner |
+  new:faq`** (templates in `templates/`, outside `src/`, so they are not content).
+  Never hand-create them.
 - **Russian text is the source of truth.** Do not edit Russian wording while
   moving content; the English text is a translation of the Russian meaning,
   names are transliterated.
@@ -41,5 +53,6 @@ Decision record: `adr/001-content-model-md-relations.md`.
 
 ```bash
 pnpm lint            # from repo root
+pnpm test            # catalog, schema and generator tests (they live in apps/website)
 pnpm build           # website build loads every collection and validates it
 ```

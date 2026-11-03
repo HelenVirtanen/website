@@ -9,6 +9,8 @@ conflict. Below is only what's specific to this package.
 
 Font **loading** — `@font-face` declarations in `index.css` plus the `woff2`
 files (in `inter/`, `montserrat/`, `jetbrains/`). No build step, no lint script.
+Montserrat Regular/SemiBold/Bold are also stored as **TTF** and exported from
+`package.json` for `@moscowcss/og`.
 
 ## Rules
 
@@ -21,6 +23,11 @@ files (in `inter/`, `montserrat/`, `jetbrains/`). No build step, no lint script.
   `src` (`local(...), url("./…woff2") format("woff2")`) with `font-display: swap`.
 - When adding a weight, add the `woff2` to the right subfolder and a matching
   `@font-face` with the correct numeric `font-weight`.
+- **TTF are for OG cards only.** satori cannot read WOFF2, so `@moscowcss/og` reads
+  `montserrat/Montserrat-{Regular,SemiBold,Bold}.ttf` through the exports
+  (`./montserrat-regular.ttf` …). The browser never loads them (no `@font-face`).
+  Source and licence: `README.md`. Do not copy them into `og` and do not download
+  fonts at build time.
 
 ## Validate
 

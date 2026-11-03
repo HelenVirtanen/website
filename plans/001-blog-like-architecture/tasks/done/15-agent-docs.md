@@ -3,7 +3,7 @@ id: "15"
 title: update-agent-and-package-docs
 spec: "001"
 criteria: ["AC-2"]
-status: pending
+status: done
 depends_on: ["14"]
 owns: ["CLAUDE.md", "AGENTS.md", "apps/*/CLAUDE.md", "apps/*/AGENTS.md", "packages/*/CLAUDE.md", "packages/*/AGENTS.md", "packages/fonts/README.md"]
 model: sonnet

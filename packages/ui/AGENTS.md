@@ -19,7 +19,16 @@ demoed in `apps/storybook`.
   `px`/`rem` size, a literal breakpoint, or reference the primitive `palette`.
   Colour → `vars.color.*`, spacing → `vars.padding.*` (inner) / `vars.spacing.*`
   (gaps/margins) / `vars.radius.*`, type →
-  `vars.font.shorthand.*`, media queries → `media.*`.
+  `vars.font.shorthand.*`, media queries → `media.*`, fixed component sizes →
+  `vars.size.*`.
+- **Padding and gaps are constant; only `vars.layout.inset|gap.*` grow with width**
+  (ADR-002). Use `layout.*` only where the design grows the value. Inside a
+  component's `@media` change structure (direction, columns, visibility) or swap one
+  token step for another; never put a literal size there. If a size must change
+  with width, add it to the scale tables in `@moscowcss/design-system`.
+- **No user-facing text literals.** A component takes its text through props or
+  slots; the website feeds them from the i18n dictionary or from content, so the
+  same component serves `ru` and `en`.
 - **One folder per component** under `src/components/<Name>/`: `<Name>.astro`,
   `<Name>.css.ts` (vanilla-extract), `index.ts`. **Create with
   `pnpm new:component`** — never hand-create the files.
@@ -30,7 +39,8 @@ demoed in `apps/storybook`.
   autodocs reads it). Never a bare DOM type like `HTMLButtonElement['type']`.
 - **Styles live only in the colocated `.css.ts`** — no inline `style="…"` with
   literal values.
-- **Stories live in `apps/storybook/stories/`**, not here.
+- **Stories live in `apps/storybook/stories/`**, not here (`pnpm new:component`
+  creates the story with the component).
 - Source-only: Vite/Astro pick up changes live; nothing to build here.
 
 ## Validate
