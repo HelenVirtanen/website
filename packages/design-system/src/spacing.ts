@@ -21,6 +21,8 @@ const contract = {
     tgLinkButtonIconCompact: null,
     burgerIcon: null,
     burgerIconCompact: null,
+    navLogo: null,
+    navLogoCompact: null,
     cardWidthMobile: null,
     cardWidthLaptop: null,
     cardPaddingBlock: null,
@@ -59,6 +61,9 @@ const values = {
     tgLinkButtonIconCompact: '1.375rem', // 22px
     burgerIcon: '1.5rem', // 24px
     burgerIconCompact: '0.875rem', // 14px
+    // Знак в шапке — в квадрат кнопки Telegram на другом краю.
+    navLogo: '3.75rem', // 60px
+    navLogoCompact: '2.0625rem', // 33px
     cardWidthMobile: '19.0625rem', // 305px
     cardWidthLaptop: '26.5625rem', // 425px
     cardPaddingBlock: '2.5rem', // 40px

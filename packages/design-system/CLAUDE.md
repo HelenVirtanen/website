@@ -46,7 +46,7 @@ src/
 │   ├── typography.css.ts # font once on :root + font-size overrides generated from `typeScale`
 │   ├── root.css.ts       # html font-size: max(100%, 100vw / 120) — the UI grows above 1920px (ADR-002)
 │   └── index.css.ts      # imports all appliers — the theme entry point
-├── breakpoints.ts  # mobile/tablet/laptop/desktop/desktopLarge (rem) + `media` query strings (NOT css vars)
+├── breakpoints.ts  # mobile/tablet/laptop/desktop/wide/desktopLarge (rem) + `media` query strings (NOT css vars)
 └── index.ts        # side-effect: applies the theme; re-exports { vars, breakpoints, media, palette }
 ```
 

@@ -277,7 +277,7 @@ runtime CSS variable from the contract. Do not try to put breakpoints in the
 contract.
 
 `breakpoints.ts` exports named breakpoints (`mobile` / `tablet` / `laptop` /
-`desktop` / `desktopLarge`, in `rem`) and a **`media`** map of ready-made
+`desktop` / `wide` / `desktopLarge`, in `rem`; `wide` = 1440px is where the full header fits on one line) and a **`media`** map of ready-made
 media-query strings for those names. In components use **`media`** as the
 `@media` key — don't hand-write `(min-width: …)`.
 
@@ -338,7 +338,7 @@ src/
 │   ├── colors.css.ts, spacing.css.ts, layout.css.ts, typography.css.ts, …
 │   ├── root.css.ts       # html font-size: max(100%, 100vw / 120)
 │   └── index.css.ts      # imports the appliers — the theme entry point
-├── breakpoints.ts    # mobile/tablet/laptop/desktop/desktopLarge (rem) + `media` query strings
+├── breakpoints.ts    # mobile/tablet/laptop/desktop/wide/desktopLarge (rem) + `media` query strings
 └── index.ts          # applies the theme; re-exports { vars, breakpoints, media, palette, dimensions }
 ```
 

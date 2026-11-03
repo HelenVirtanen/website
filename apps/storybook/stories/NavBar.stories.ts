@@ -18,6 +18,8 @@ export const Default = {
     telegramLabel: 'Telegram Moscow CSS',
     menuLabel: 'Меню',
     closeLabel: 'Закрыть меню',
+    homeHref: '/',
+    homeLabel: 'Moscow CSS: на главную',
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     canvasElement.querySelectorAll<HTMLElement>('[data-navbar]').forEach(setupNavBar);
