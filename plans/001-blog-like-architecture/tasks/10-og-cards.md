@@ -29,6 +29,9 @@ attempts: 0
   `@moscowcss/design-system` из Node — он тянет `.css.ts`.
 - Логотип: `packages/icons/src/svg/Logo.svg` (viewBox 0 0 80 77) — вписать пути константами в `logo.ts`.
 - Список страниц: `apps/website/src/seo/pages.ts` (`publicPages()`, задача 09).
+- Хвост ревью: `BaseLayout.astro` берёт ссылку на Telegram из константы `TELEGRAM_HREF`, а в контенте есть
+  обязательное `pages/<lang>/index.md` → `telegramUrl`. Брать ссылку из контента (каталог/`pages` по языку
+  страницы), константу убрать.
 
 ## Steps
 1. `packages/fonts/package.json` exports: `"./montserrat-regular.ttf"`, `"./montserrat-semibold.ttf"`,
