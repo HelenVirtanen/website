@@ -61,3 +61,11 @@ Ruling: conductor добавил draft в PartnerSchema и FaqSchema (+филь�
 Deferred (MED): несуществующая дата (2026-02-30) молча уезжает на соседний день — YAML разбирает дату до схемы; вне спеки, отметить в итоге. Minor: search.ts ищет input[name="q"] без учёта пропа name.
 - 14 ci-deploy: done (attempt 1) — deploy.yml: push master/PR/dispatch, lint+test+build+check:seo+build:storybook, деплой Pages только не в PR, версии pnpm/Node из packageManager/.nvmrc (26 = LTS по nodejs.org/dist/index.json 2026-11-03), actions последних мажоров; docs/deploy.md (репо moscowcss-meetup/website, css.moscow, DNS); pre-commit + test; docs/ исключён из глобального gitignore.
 - 15 agent-docs: done (attempt 1 + conductor fix) — корневые и пакетные CLAUDE/AGENTS под новую архитектуру, пары побайтно равны; conductor: !CLAUDE.md в .gitignore (глобальный ~/.gitignore_global прятал CLAUDE.md новых пакетов content и og). new:speaker в доках остаётся — команда существует.
+- review checkpoint 4 (13–15 + вся ветка): Block → исправлено conductor-ом:
+  [HIGH] заготовки new:* роняли build: подсказки <!-- --> в телах шаблонов — это raw HTML для плагина безопасности → подсказки перенесены в YAML-комментарии `#` во frontmatter, README исправлен; проверено: все 5 типов заготовок → build 0, 0 [ERROR].
+  [MED] тест генератора разбирает каждую заготовку схемой (js-yaml + схемы контента), проверяет draft и отсутствие HTML в теле; 114 тестов.
+  [MED] engines.node >=22.12 (Astro 7/Vite 8), CLAUDE.md исправлен.
+  [MED] деплой и загрузка артефакта только из refs/heads/master; deploy в общей группе concurrency `pages`, проверки — по ref.
+  [MED] генератор откатывает уже записанные файлы при сбое посреди записи.
+  Ревьюер прогнал чистый клон в TZ=UTC CI=true: install/lint/test/build/check:seo/build:storybook = 0; права GITHUB_TOKEN минимальны; PR из форков не деплоят; merge-tree с master без конфликтов.
+Open (вне спеки): первый прогон CI на Node 26 не проверен локально (локально 24) — запустить workflow_dispatch до первого пуша в master; шаблон доклада ссылается на 31/daria-egorova.

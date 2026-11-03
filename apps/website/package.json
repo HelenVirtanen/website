@@ -26,6 +26,7 @@
   "devDependencies": {
     "@moscowcss/eslint-config": "workspace:*",
     "@moscowcss/typescript-config": "workspace:*",
+    "js-yaml": "5.5.0",
     "pagefind": "1.6.0",
     "parse5": "8.1.0",
     "vitest": "5.0.5"

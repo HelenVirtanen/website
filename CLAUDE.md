@@ -132,8 +132,9 @@ pnpm --filter website add @moscowcss/ui@workspace:*
 
 Node & pnpm:
 
-- Node: use the **current LTS** (hard floor is **>= 20.16**, required by
-  `@storybook-astro/framework`). `engines.node` enforces the floor.
+- Node: use the **current LTS** (pinned for CI in `.nvmrc`). The hard floor is
+  **>= 22.12**, the strictest `engines` among the installed tools (Astro 7, Vite 8);
+  root `engines.node` states it.
 - Pin pnpm via Corepack — run `corepack use pnpm@latest` once; it writes the
   `packageManager` field. Do not guess/pin a pnpm version by hand.
 

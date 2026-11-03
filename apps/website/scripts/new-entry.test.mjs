@@ -3,7 +3,25 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { locales } from '../src/i18n/config';
+import { load as parseYaml } from 'js-yaml';
+import { z } from 'astro/zod';
+import {
+  EventSchema,
+  FaqSchema,
+  PartnerSchema,
+  TalkSchema,
+  createSpeakerSchema,
+} from '@moscowcss/content/schema';
 import { DEFAULT_DIRS, isoDate, KINDS, LOCALES, planEntry, runNewEntry } from './new-entry.mjs';
+
+// Схема коллекции по типу заготовки; фото спикера в схеме — `image()`, здесь достаточно строки пути.
+const SCHEMAS = {
+  event: EventSchema,
+  talk: TalkSchema,
+  speaker: createSpeakerSchema(() => z.string()),
+  partner: PartnerSchema,
+  faq: FaqSchema,
+};
 
 // Шаблоны настоящие (packages/content/templates), контент во временной папке: тест ловит и поломку
 // шаблона, и поломку скрипта, не трогая реальный контент.
@@ -73,6 +91,19 @@ describe('new-entry', () => {
     expect(runNewEntry([kind, 'some-name'], { today, dirs, ...quiet })).toBe(0);
     for (const locale of LOCALES) {
       expect(existsSync(join(content, KINDS[kind].collection, locale, 'some-name.md'))).toBe(true);
+    }
+  });
+
+  it.each(Object.keys(SCHEMAS))('%s — заготовка проходит схему, тело без HTML, это черновик', (kind) => {
+    const name = kind === 'event' ? '99' : 'some-name';
+    expect(runNewEntry([kind, name], { today, dirs, ...quiet })).toBe(0);
+    for (const locale of LOCALES) {
+      const text = read(KINDS[kind].collection, locale, `${name}.md`);
+      const [, frontmatter = '', body = ''] = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(text) ?? [];
+      const data = SCHEMAS[kind].parse(parseYaml(frontmatter));
+      expect(data.draft, `${kind}/${locale}`).toBe(true);
+      // Сырой HTML (включая <!-- -->) сборка отклоняет — в заготовке его быть не должно.
+      expect(body, `${kind}/${locale}`).not.toMatch(/</);
     }
   });
 

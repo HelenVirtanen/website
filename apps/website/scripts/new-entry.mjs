@@ -9,7 +9,7 @@
 // Шаблоны лежат вне src/, поэтому на сайт не попадают. Существующие файлы скрипт не перезаписывает:
 // при любом конфликте он ничего не создаёт.
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -76,13 +76,22 @@ export function runNewEntry(argv, { today = new Date(), dirs = DEFAULT_DIRS, log
     error(`new-entry: ${err.message}`);
     return 1;
   }
-  for (const file of files) {
-    mkdirSync(dirname(file.path), { recursive: true });
-    const data = file.source === undefined ? file.content : readFileSync(file.source);
-    writeFileSync(file.path, data, { flag: 'wx' });
-    log(`создан ${file.path}`);
+  const written = [];
+  try {
+    for (const file of files) {
+      mkdirSync(dirname(file.path), { recursive: true });
+      const data = file.source === undefined ? file.content : readFileSync(file.source);
+      writeFileSync(file.path, data, { flag: 'wx' });
+      written.push(file.path);
+    }
+  } catch (err) {
+    // Сбой посреди записи (гонка, права, место) — убираем уже созданное: «ничего не создано» должно быть правдой.
+    for (const path of written) rmSync(path, { force: true });
+    error(`new-entry: ${err.message}. Ничего не создано`);
+    return 1;
   }
-  log('Заготовки заполните по packages/content/README.md; у митапа, доклада и спикера поставлен draft: true.');
+  for (const path of written) log(`создан ${path}`);
+  log('Заготовки — черновики (draft: true); заполните их по packages/content/README.md.');
   return 0;
 }
 
