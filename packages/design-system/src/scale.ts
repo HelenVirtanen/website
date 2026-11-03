@@ -105,7 +105,7 @@ export const typeScale = {
     laptop: '1.25rem', // 20px
     desktop: '1.375rem',
   },
-  body: { base: '1rem', desktop: '1.125rem' }, // 16px
+  body: { base: '1rem', desktop: '1.125rem' }, // 16px → 18px
   navLink: { base: '1.75rem' }, // 28px
   caption: { base: '0.875rem' }, // 14px
   ui: { base: '0.875rem' }, // 14px
@@ -119,11 +119,11 @@ export const typeScale = {
   featureCardFootnote: { base: '1.125rem' }, // 18px
   partnerAddress: { base: '2.5rem' }, // 40px
   partnerDirectionsHint: { base: '1.375rem' }, // 22px
-  heroTitle: { base: '4.5rem', desktop: '10.625rem' }, // 72px
+  heroTitle: { base: '4.5rem', desktop: '10.625rem' }, // 72px → 170px
   heroLightLabel: { base: '1.375rem' }, // 22px
   heroMeetupLine: { base: '1.75rem' }, // 28px
-  heroInfoLine: { base: '1.375rem', desktop: '2.5rem' }, // 22px
-  heroCtaLabel: { base: '2rem', desktop: '3rem' }, // 32px
+  heroInfoLine: { base: '1.375rem', desktop: '2.5rem' }, // 22px → 40px
+  heroCtaLabel: { base: '2rem', desktop: '3rem' }, // 32px → 48px
 } as const satisfies Record<string, Steps>;
 
 export type FontRole = keyof typeof typeScale;
@@ -146,9 +146,9 @@ export type SpaceStep = keyof typeof space;
 // Раскладочные токены: бывшие растущие ступени m/l/xxl шкалы отступов. `inset` —
 // внутренние поля, `gap` — промежутки между элементами; значения у групп общие.
 const inset = {
-  m: { base: '0.75rem', desktop: '1rem' }, // 12px
-  l: { base: '1rem', desktop: '1.5rem' }, // 16px
-  xxl: { base: '1.5rem', desktop: '2rem', desktopLarge: '2.5rem' }, // 24px
+  m: { base: '0.75rem', desktop: '1rem' }, // 12px → 16px
+  l: { base: '1rem', desktop: '1.5rem' }, // 16px → 24px
+  xxl: { base: '1.5rem', desktop: '2rem', desktopLarge: '2.5rem' }, // 24px → 32px → 40px
 } as const satisfies Record<string, Steps>;
 
 export const layoutSpace = {

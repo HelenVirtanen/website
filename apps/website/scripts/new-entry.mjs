@@ -2,7 +2,7 @@
 //
 //   pnpm new:event 32            → events/{ru,en}/32.md
 //   pnpm new:talk <имя>          → talks/{ru,en}/<имя>.md
-//   pnpm new:speaker <имя>       → speakers/{ru,en}/<имя>.md и общее фото-заглушка speakers/assets/<имя>.jpg
+//   pnpm new:speaker <имя>       → speakers/{ru,en}/<имя>.md
 //   pnpm new:partner <имя>       → partners/{ru,en}/<имя>.md
 //   pnpm new:faq <имя>           → faq/{ru,en}/<имя>.md
 //

@@ -1,4 +1,4 @@
-// CLI гейта: проверяет собранный dist и роняет сборку на любом нарушении.
+// CLI гейта: проверяет собранный dist, при нарушениях выходит с кодом 1.
 //   node scripts/check-seo.mjs [dist-dir]
 import { fileURLToPath } from 'node:url';
 import { checkDist } from './seo-checks.mjs';

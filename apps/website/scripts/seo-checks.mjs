@@ -8,7 +8,6 @@ import { parse } from 'parse5';
 const LOCALES = new Set(['ru', 'en']);
 const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 
-// Размеры карточек: og:image — 1200×630, twitter:image — 1200×600.
 const OG_SIZE = { width: 1200, height: 630 };
 const TWITTER_SIZE = { width: 1200, height: 600 };
 

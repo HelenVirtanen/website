@@ -1,8 +1,7 @@
-// Генераторы для скриптов new:*. Установка (latest): pnpm add -Dw plop
+// Генератор для pnpm new:component; заготовки контента делает apps/website/scripts/new-entry.mjs.
 export default function (plop) {
   plop.setHelper('pascal', (t) => plop.getHelper('properCase')(t));
 
-  // pnpm new:component
   plop.setGenerator('component', {
     description: 'New Astro component in packages/ui',
     prompts: [{ type: 'input', name: 'name', message: 'Component name (PascalCase):' }],
@@ -18,7 +17,6 @@ export default function (plop) {
         templateFile: 'plop-templates/component/component.css.ts.hbs',
       },
       {
-        // Стори живут в приложении storybook, а не в пакете ui
         type: 'add',
         path: 'apps/storybook/stories/{{pascalCase name}}.stories.ts',
         templateFile: 'plop-templates/component/component.stories.ts.hbs',

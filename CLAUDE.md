@@ -156,7 +156,7 @@ Node & pnpm:
 | `pnpm new:component`  | Scaffolds a new component in `packages/ui` + its story (plop).      |
 | `pnpm new:event <number>` | Draft event files in `packages/content`, `ru` and `en`.         |
 | `pnpm new:talk <name>`    | Draft talk files, `ru` and `en`.                                |
-| `pnpm new:speaker <name>` | Draft speaker files (+ placeholder photo), `ru` and `en`.       |
+| `pnpm new:speaker <name>` | Draft speaker files, `ru` and `en`; no photo means an initials avatar. |
 | `pnpm new:partner <name>` | Draft partner files, `ru` and `en`.                             |
 | `pnpm new:faq <name>`     | Draft FAQ entry files, `ru` and `en`.                           |
 

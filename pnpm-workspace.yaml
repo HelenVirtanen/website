@@ -9,7 +9,7 @@ saveExact: true
 savePrefix: ""
 
 # Зависимости, которым разрешено выполнять install/build-скрипты (pnpm 11 по
-# умолчанию их блокирует). esbuild качает свой платформенный бинарник в build-скрипте.
+# умолчанию их блокирует): esbuild и sharp скачивают платформенные бинарники.
 allowBuilds:
   esbuild: true
   sharp: true
