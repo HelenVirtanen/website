@@ -67,7 +67,7 @@ semantic vars + scale tables + layout/typography tokens + breakpoints), `icons`
 - **`pnpm lint`, `pnpm test` and `pnpm build` must pass** before a task is done
   (`pnpm --filter website check:seo` after the build when pages or content changed).
 - **Agents own git: commit, push, merge.** One coherent change per commit after
-  the touched checks pass; branch for multi-step work (every push to `master`
+  the touched checks pass; branch for multi-step work (every push to `main`
   deploys); English Conventional Commits; no secrets or build output; no
   force-push or rewriting pushed history (see `CLAUDE.md` §2.9).
 

@@ -2,7 +2,7 @@ name: Check and deploy website to GitHub Pages (css.moscow)
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -51,15 +51,15 @@ jobs:
         run: pnpm build:storybook
 
       - name: Upload Pages artifact
-        # Прод собирается только из master: ручной запуск с другой ветки проверяет, но не выкатывает
-        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+        # Прод собирается только из main: ручной запуск с другой ветки проверяет, но не выкатывает
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
         with:
           path: apps/website/dist
 
   deploy:
     needs: check
-    if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     # Один выкат Pages за раз для всех запусков; недоделанный выкат не отменяем — он хуже запоздавшего
     concurrency:

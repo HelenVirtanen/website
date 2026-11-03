@@ -93,8 +93,8 @@ Workspace package names use the `@moscowcss/*` scope: `@moscowcss/content`,
      self-contained step of it, never a half-done state. The checks that the
      change touches (`pnpm lint`, `pnpm build`, `pnpm test`) pass before the
      commit; the husky `pre-commit` hook re-runs lint and build.
-   - Branch for multi-step work so `master` stays deployable (every push to
-     `master` deploys the site); push, open a PR or merge into `master` when the
+   - Branch for multi-step work so `main` stays deployable (every push to
+     `main` deploys the site); push, open a PR or merge into `main` when the
      work is done and green. Prefer a squash merge when the branch has commits
      that are broken on their own.
    - Message in English, Conventional Commits (`feat:`, `fix:`, `chore:`,
@@ -546,7 +546,7 @@ regenerate rather than edit).
   accept untested logic as the norm. Content tests use fixtures from
   `src/test/fixtures.ts`, not the real content.
 - **CI and deploy.** `.github/workflows/deploy.yml` runs lint, test, build,
-  `check:seo` and `build:storybook` on push to `master` and on pull requests;
+  `check:seo` and `build:storybook` on push to `main` and on pull requests;
   deploy to GitHub Pages happens only outside pull requests. pnpm and Node
   versions come from `packageManager` and `.nvmrc`, not from the YAML. One-off
   GitHub/DNS setup: `docs/deploy.md`. The husky `pre-commit` hook runs
