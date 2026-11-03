@@ -8,18 +8,18 @@ import { z } from 'astro/zod';
 import {
   EventSchema,
   FaqSchema,
-  PartnerSchema,
+  createPartnerSchema,
   TalkSchema,
   createSpeakerSchema,
 } from '@moscowcss/content/schema';
 import { DEFAULT_DIRS, isoDate, KINDS, LOCALES, planEntry, runNewEntry } from './new-entry.mjs';
 
-// Схема коллекции по типу заготовки; фото спикера в схеме — `image()`, здесь достаточно строки пути.
+// Схема коллекции по типу заготовки; картинки в схеме — `image()`, здесь достаточно строки пути.
 const SCHEMAS = {
   event: EventSchema,
   talk: TalkSchema,
   speaker: createSpeakerSchema(() => z.string()),
-  partner: PartnerSchema,
+  partner: createPartnerSchema(() => z.string()),
   faq: FaqSchema,
 };
 

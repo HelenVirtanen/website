@@ -66,10 +66,12 @@ export const brandLogo = style({
   },
 });
 
-globalStyle(`${brandLogo} svg`, {
-  display: vars.display.block,
-  width: '100%',
-  height: '100%',
+// Партнёр без логотипа: название крупным кеглем на месте логотипа.
+export const brandName = style({
+  margin: 0,
+  font: vars.font.shorthand.partnerAddress,
+  letterSpacing: vars.font.letterSpacing.figmaWide,
+  textTransform: 'uppercase',
 });
 
 export const handle = style({
@@ -86,18 +88,19 @@ export const tagline = style({
   letterSpacing: vars.font.letterSpacing.figmaWide,
 });
 
+// QR — тёмные модули на светлой подложке: инверсный код читают не все камеры.
+export const qrBackground = style({ fill: vars.color.white });
+export const qrModules = style({ fill: vars.color.blackText });
+
 export const qr = style({
   display: vars.display.block,
+  // Код квадратный: сторона — ширина из токена, высота равна ей.
   width: vars.size.partnerQrCodeWidth,
-  height: vars.size.partnerQrCodeHeight,
+  height: vars.size.partnerQrCodeWidth,
   marginInline: 'auto',
 });
 
-globalStyle(`${qr} svg`, {
-  display: vars.display.block,
-  width: '100%',
-  height: '100%',
-});
+
 
 export const cardsRow = style({
   position: vars.position.relative,

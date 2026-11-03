@@ -93,6 +93,8 @@ src/
 | `name` | да | Название. |
 | `handle` | да | Адрес в телеграме, `@ZVUK_JOBS`. |
 | `url` | нет | Ссылка на партнёра. |
+| `logo` | нет | Логотип: `../assets/<имя>.svg` (или `.png`) в `partners/assets/`. Без него выводится название. |
+| `qrUrl` | нет | Адрес для QR-кода под логотипом (`https://…`). QR сайт рисует сам. |
 | `tagline` | да | Короткое описание. |
 | `features` | да | Карточки: `title`, `description` — обязательные, `footnote` (сноска) — нет. |
 | `draft` | нет | `true` — черновик. |
@@ -133,7 +135,7 @@ HTML: пояснения пишите в frontmatter строкой с `#`.
   `streamUrl`, `recordingUrl`, `partner`, время и `kind` в `schedule`;
 - доклад: `event`, `speakers`, `time`, `slidesUrl`, `videoUrl`;
 - спикер: `photo`, `links`;
-- партнёр: `url`, `handle`;
+- партнёр: `url`, `handle`, `logo`, `qrUrl`;
 - вопрос FAQ: `order`;
 - главная: `telegramUrl`.
 

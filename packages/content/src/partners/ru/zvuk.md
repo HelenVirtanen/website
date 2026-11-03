@@ -1,6 +1,8 @@
 ---
 name: "Звук"
 handle: "@ZVUK_JOBS"
+logo: ../assets/zvuk.svg
+qrUrl: "https://t.me/zvuk_jobs"
 tagline: "Вакансии, митапы и внутрянка команды Звук"
 features:
   - title: "СОЗДАЁМ МУЗЫКАЛЬНЫЙ СЕРВИС"

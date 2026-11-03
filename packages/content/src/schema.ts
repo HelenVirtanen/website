@@ -1,5 +1,5 @@
-import { z } from 'astro/zod';
-import type { ImageFunction } from 'astro/content/config';
+import { z } from "astro/zod";
+import type { ImageFunction } from "astro/content/config";
 
 // Слаг — короткое имя файла без языка и расширения: `31`, `daria-egorova`.
 // Связи пишутся слагом, а не полным id, чтобы их было удобно набирать с телефона.
@@ -7,27 +7,39 @@ export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 const slug = z
   .string()
-  .regex(SLUG_PATTERN, 'слаг: латиница в нижнем регистре, цифры и дефисы, например daria-egorova');
+  .regex(
+    SLUG_PATTERN,
+    "слаг: латиница в нижнем регистре, цифры и дефисы, например daria-egorova",
+  );
 
-const HH_MM = '(?:[01]\\d|2[0-3]):[0-5]\\d';
+const HH_MM = "(?:[01]\\d|2[0-3]):[0-5]\\d";
 
 // Начало: `19:10`; перерыв и активность — интервал `19:40—20:00` (дефис, en- или em-dash).
 const clockTime = z
   .string()
-  .regex(new RegExp(`^${HH_MM}$`), 'время в формате ЧЧ:ММ от 00:00 до 23:59, например 19:10');
+  .regex(
+    new RegExp(`^${HH_MM}$`),
+    "время в формате ЧЧ:ММ от 00:00 до 23:59, например 19:10",
+  );
 const timeRange = z
   .string()
-  .regex(new RegExp(`^${HH_MM}(?:[—–-]${HH_MM})?$`), 'время ЧЧ:ММ или интервал ЧЧ:ММ—ЧЧ:ММ')
+  .regex(
+    new RegExp(`^${HH_MM}(?:[—–-]${HH_MM})?$`),
+    "время ЧЧ:ММ или интервал ЧЧ:ММ—ЧЧ:ММ",
+  )
   .refine((value) => {
     const [start, end] = value.split(/[—–-]/);
-    return end === undefined || (start ?? '') < end;
-  }, 'интервал должен заканчиваться позже, чем начинается');
+    return end === undefined || (start ?? "") < end;
+  }, "интервал должен заканчиваться позже, чем начинается");
 
 // Только https: адрес уходит в href, а `javascript:` и `data:` там исполнились бы.
 const url = z
   .string()
   .url()
-  .refine((value) => new URL(value).protocol === 'https:', 'ссылка должна начинаться с https://');
+  .refine(
+    (value) => new URL(value).protocol === "https:",
+    "ссылка должна начинаться с https://",
+  );
 
 // Митапы проходят в Москве: время пишется местным, пояс фиксирован (+03:00, в России нет
 // перехода на летнее время с 2014 года). Дата и время — разные поля: YAML читает время без пояса
@@ -37,7 +49,7 @@ const day = z.coerce
   .date()
   .refine(
     (value) => value.getUTCHours() === 0 && value.getUTCMinutes() === 0,
-    'date — только день ГГГГ-ММ-ДД; время начала пишется в поле time',
+    "date — только день ГГГГ-ММ-ДД; время начала пишется в поле time",
   );
 
 export const PageSchema = z.object({
@@ -49,7 +61,7 @@ export const PageSchema = z.object({
 const ScheduleItemSchema = z.object({
   time: timeRange,
   title: z.string().min(1),
-  kind: z.enum(['break', 'activity']),
+  kind: z.enum(["break", "activity"]),
 });
 
 const EventFields = z.object({
@@ -82,7 +94,7 @@ const EventFields = z.object({
 });
 
 export const EventSchema = EventFields.transform((event) => {
-  const [hours = 0, minutes = 0] = event.time.split(':').map(Number);
+  const [hours = 0, minutes = 0] = event.time.split(":").map(Number);
   const { date } = event;
   return {
     ...event,
@@ -110,35 +122,47 @@ export const TalkSchema = z.object({
 
 // `image()` доступна только в схеме-функции, поэтому схема спикера — фабрика.
 export const createSpeakerSchema = (image: ImageFunction) =>
+  z
+    .object({
+      name: z.string().min(1),
+      role: z.string().min(1),
+      // Фото необязательно: без него сайт рисует аватар с инициалами на сборке.
+      photo: image().optional(),
+      photoAlt: z.string().min(1).optional(),
+      links: z.array(z.object({ label: z.string().min(1), url })).optional(),
+      draft: z.boolean().default(false),
+    })
+    .refine(
+      (speaker) =>
+        speaker.photo === undefined || speaker.photoAlt !== undefined,
+      {
+        message: "у фото нужно описание photoAlt: что на нём видно",
+        path: ["photoAlt"],
+      },
+    );
+
+// Логотип и QR у каждого партнёра свои: логотип — файл в partners/assets, QR сайт рисует из qrUrl.
+export const createPartnerSchema = (image: ImageFunction) =>
   z.object({
     name: z.string().min(1),
-    role: z.string().min(1),
-    // Фото необязательно: без него сайт рисует аватар с инициалами на сборке.
-    photo: image().optional(),
-    photoAlt: z.string().min(1).optional(),
-    links: z.array(z.object({ label: z.string().min(1), url })).optional(),
+    handle: z.string().min(1),
+    url: url.optional(),
+    // Без логотипа на месте логотипа выводится название партнёра.
+    logo: image().optional(),
+    // Адрес, который кодирует QR-код под логотипом; без него QR не показывается.
+    qrUrl: url.optional(),
+    tagline: z.string().min(1),
+    features: z
+      .array(
+        z.object({
+          title: z.string().min(1),
+          description: z.string().min(1),
+          footnote: z.string().min(1).optional(),
+        }),
+      )
+      .min(1),
     draft: z.boolean().default(false),
-  }).refine((speaker) => speaker.photo === undefined || speaker.photoAlt !== undefined, {
-    message: 'у фото нужно описание photoAlt: что на нём видно',
-    path: ['photoAlt'],
   });
-
-export const PartnerSchema = z.object({
-  name: z.string().min(1),
-  handle: z.string().min(1),
-  url: url.optional(),
-  tagline: z.string().min(1),
-  features: z
-    .array(
-      z.object({
-        title: z.string().min(1),
-        description: z.string().min(1),
-        footnote: z.string().min(1).optional(),
-      }),
-    )
-    .min(1),
-  draft: z.boolean().default(false),
-});
 
 export const FaqSchema = z.object({
   title: z.string().min(1),

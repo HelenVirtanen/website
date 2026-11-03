@@ -1,6 +1,8 @@
 ---
 name: "Zvuk"
 handle: "@ZVUK_JOBS"
+logo: ../assets/zvuk.svg
+qrUrl: "https://t.me/zvuk_jobs"
 tagline: "Jobs, meetups and the inside story of the Zvuk team"
 features:
   - title: "WE BUILD A MUSIC SERVICE"

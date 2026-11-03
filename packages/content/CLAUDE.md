@@ -37,6 +37,10 @@ Decision record: `adr/001-content-model-md-relations.md`.
 - **Links are `https` only**; bodies are Markdown only (raw HTML or a non-`https`
   link fails the build — `apps/website/src/content/markdown-safety.ts`). Empty
   bodies of pages, talks and FAQ are errors.
+- **Partner logo and QR are per partner:** `logo` is a file in `partners/assets/`
+  (optional — the name is shown without it), `qrUrl` is the address the QR code
+  encodes; the site draws the QR at build time. A speaker `photo` is optional too:
+  without it the site generates an initials avatar (`@moscowcss/og`).
 - **`draft: true`** keeps an entry off the site. A published meetup cannot
   reference a draft partner. The `new:*` templates start as drafts.
 - **New entries:** `pnpm new:event | new:talk | new:speaker | new:partner | new:faq`

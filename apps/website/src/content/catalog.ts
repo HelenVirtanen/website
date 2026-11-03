@@ -4,7 +4,7 @@ import type {
   EventSchema,
   FaqSchema,
   PageSchema,
-  PartnerSchema,
+  createPartnerSchema,
   TalkSchema,
   createSpeakerSchema,
 } from '@moscowcss/content/schema';
@@ -26,7 +26,7 @@ export interface CatalogEntry<D> {
 export type EventData = z.output<typeof EventSchema>;
 export type TalkData = z.output<typeof TalkSchema>;
 export type SpeakerData = z.output<ReturnType<typeof createSpeakerSchema>>;
-export type PartnerData = z.output<typeof PartnerSchema>;
+export type PartnerData = z.output<ReturnType<typeof createPartnerSchema>>;
 export type PageData = z.output<typeof PageSchema>;
 export type FaqData = z.output<typeof FaqSchema>;
 
@@ -66,7 +66,7 @@ const INVARIANTS = {
   ],
   talks: ['event', 'speakers', 'time', 'slidesUrl', 'videoUrl'],
   speakers: ['photo', 'links'],
-  partners: ['url', 'handle'],
+  partners: ['url', 'handle', 'logo', 'qrUrl'],
   faq: ['order'],
   pages: ['telegramUrl'],
 } as const;
