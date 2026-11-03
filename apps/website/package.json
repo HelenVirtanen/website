@@ -10,6 +10,7 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
+    "@moscowcss/content": "workspace:*",
     "@moscowcss/design-system": "workspace:*",
     "@moscowcss/fonts": "workspace:*",
     "@moscowcss/icons": "workspace:*",

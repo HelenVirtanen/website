@@ -3,7 +3,7 @@ id: "05"
 title: content-package-schema-and-migration
 spec: "001"
 criteria: ["AC-2", "AC-3", "AC-9"]
-status: pending
+status: done
 depends_on: ["04"]
 owns: ["packages/content/**", "apps/website/src/content.config.ts", "apps/website/package.json", "pnpm-lock.yaml", "apps/website/public/assets/*.jpg"]
 model: sonnet

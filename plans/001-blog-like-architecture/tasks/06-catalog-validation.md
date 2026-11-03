@@ -24,7 +24,8 @@ attempts: 0
   `data`, `body`, `collection`.
 - Инварианты переводов (сверка `en` с `ru` по одинаковому пути без языка): event — `date`,
   `venue.mapUrl`, `registrationUrl`, `streamUrl`, `recordingUrl`, `partner`, `schedule[].time`,
-  `schedule[].kind`; talk — `event`, `speakers`, `time`, `slidesUrl`, `videoUrl`; speaker — `photo`, `links`.
+  `schedule[].kind`; talk — `event`, `speakers`, `time`, `slidesUrl`, `videoUrl`; speaker — `photo`, `links`. Плюс `venue.coordinates` (добавлено в задаче 05 для карты).
+- Время в `schedule[]` митапа — диапазон `HH:MM—HH:MM` (длинное тире), у доклада — `HH:MM`; сортировка расписания — по началу (первые `HH:MM`).
 - ADR `adr/001-content-model-md-relations.md` — почему связи только в докладе и инварианты дублируются.
 
 ## Steps

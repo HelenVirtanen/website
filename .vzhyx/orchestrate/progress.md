@@ -15,3 +15,7 @@ Ruling: отчёты исполнителей пишутся в scratchpad и п
 - 03 scale-tables: done (attempt 1) — scale.ts + 12 тестов, корень max(100%,100vw/120), layout.inset/gap; визуал на desktop временно сдвинут до 04.
 - 04 components-on-tokens: done (attempt 1 + conductor fix) — 49 замен на layout.inset/gap, size-токены колонок программы и аватара; снимки 160/160 = 0%.
 Ruling: conductor сам заменил `--spacing-l` → `--layout-gap-l` в packages/ui/src/components/Card/CardSlider.client.ts:58 (вне owns 04, рантайм-чтение CSS-переменной по имени, план его не увидел) — правка в 1 строку, без перенарезки — цена: если таких чтений больше, их поймают снимки (grep '--spacing-|--padding-' пуст).
+- 05 content-package: done (attempt 1 + conductor fixes) — @moscowcss/content: 6 коллекций ru/en на .md, схема zod, README для редакторов; en и «о митапе» написаны агентом — на вычитку.
+Ruling: копии фото спикеров возвращены в apps/website/public/assets до задачи 08 — секции ещё читают /assets/*.jpg, без копий промежуточные коммиты дают 404 — conductor удалит копии после 08.
+Ruling: подсказка «#вопросспикеру» убрана из тел events/{ru,en}/31.md conductor-ом — она общая для всех митапов, место ей в словаре (задача 08) — owns 08 не покрывает packages/content.
+Ruling: venue.coordinates добавлено исполнителем 05 в схему (карта) — включено в инварианты перевода задачи 06.
