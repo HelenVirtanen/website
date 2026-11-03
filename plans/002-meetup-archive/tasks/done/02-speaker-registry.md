@@ -3,7 +3,7 @@ id: "02"
 title: speaker-registry
 spec: "002"
 criteria: ["AC-3", "AC-10"]
-status: pending
+status: done
 depends_on: ["01"]
 owns: ["packages/content/src/speakers/ru/**", "packages/content/src/speakers/en/**", "plans/002-meetup-archive/speakers.csv"]
 model: sonnet
