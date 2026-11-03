@@ -1,0 +1,25 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { root, status, note, list, item, link, description } from './SearchResults.css';
+
+const Tag = 'div';
+
+// Разметку выдачи заполняет клиентский скрипт страницы: он находит узлы по data-атрибутам.
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Заметка, когда поискового индекса нет (dev-сервер): выдача пуста не из-за запроса */
+  note: string;
+}
+
+const { note: noteText, class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[root, className]} {...attrs}>
+  <p class={status} role="status" data-search-status></p>
+  <p class={note} data-search-note hidden>{noteText}</p>
+  <ul class={list} data-search-list></ul>
+  <template data-search-item>
+    <li class={item}>
+      <a class={link} href="/" data-title>…</a>
+      <p class={description} data-desc></p>
+    </li>
+  </template>
+</Tag>

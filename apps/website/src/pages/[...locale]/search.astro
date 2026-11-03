@@ -1,0 +1,56 @@
+---
+import type { GetStaticPaths } from 'astro';
+import H1 from '@moscowcss/ui/components/H1';
+import SearchField from '@moscowcss/ui/components/SearchField';
+import SearchResults from '@moscowcss/ui/components/SearchResults';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { main, inner } from '../../components/SearchPage.css';
+import { locales, localizePath, useTranslations, type Locale } from '../../i18n';
+import { localeParam } from '../../seo/pages';
+
+// Страница закрыта от индексации и сама в индекс Pagefind не попадает: у неё нет `data-pagefind-body`.
+export const getStaticPaths = (() =>
+  locales.map((locale) => ({
+    params: { locale: localeParam(locale) },
+    props: { locale },
+  }))) satisfies GetStaticPaths;
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+const alternates = locales.map((code) => ({ locale: code, path: localizePath(code, 'search') }));
+---
+
+<BaseLayout
+  title={`${t('search.title')} — ${t('site.name')}`}
+  description={t('search.description')}
+  lang={locale}
+  alternates={alternates}
+  noindex
+>
+  <main class={main}>
+    <div class={inner}>
+      <H1>{t('search.title')}</H1>
+      <SearchField
+        action={localizePath(locale, 'search')}
+        method="get"
+        label={t('search.label')}
+        submitLabel={t('search.submit')}
+        placeholder={t('search.placeholder')}
+      />
+      <SearchResults
+        note={t('search.noIndex')}
+        data-search
+        data-empty={t('search.empty')}
+        data-no-results={t('search.noResults')}
+      />
+    </div>
+  </main>
+</BaseLayout>
+
+<script is:inline>
+  window.loadPagefind = () => import('/pagefind/pagefind.js');
+</script>
+
+<script>
+  import '../../search/search';
+</script>

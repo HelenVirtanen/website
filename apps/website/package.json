@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "lint": "eslint . --fix",
     "test": "vitest run"
@@ -25,6 +25,7 @@
   "devDependencies": {
     "@moscowcss/eslint-config": "workspace:*",
     "@moscowcss/typescript-config": "workspace:*",
+    "pagefind": "1.6.0",
     "vitest": "5.0.5"
   }
 }

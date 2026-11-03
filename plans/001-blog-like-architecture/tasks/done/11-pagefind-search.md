@@ -3,7 +3,7 @@ id: "11"
 title: pagefind-search
 spec: "001"
 criteria: ["AC-15"]
-status: pending
+status: done
 depends_on: ["10"]
 owns: ["apps/website/src/search/**", "apps/website/src/pages/[...locale]/search.astro", "apps/website/src/components/**", "apps/website/src/i18n/ui.ts", "apps/website/src/layouts/BaseLayout.astro", "apps/website/package.json", "pnpm-lock.yaml", "packages/ui/src/components/**", "packages/ui/src/index.ts", "apps/storybook/stories/**"]
 model: sonnet

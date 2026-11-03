@@ -1,0 +1,34 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { root, input, submit } from './SearchField.css';
+
+const Tag = 'form';
+
+// `action`, `method` и остальное приходят из HTMLAttributes<typeof Tag>: форма уходит обычным GET.
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Доступное имя поля поиска (aria-label: видимой подписи у поля нет) */
+  label: string;
+  /** Подпись кнопки отправки */
+  submitLabel: string;
+  /** Имя параметра запроса в адресе */
+  name?: string;
+  /** Текущий запрос в поле */
+  value?: string;
+  /** Подсказка внутри пустого поля */
+  placeholder?: string;
+}
+
+const {
+  label: labelText,
+  submitLabel,
+  name = 'q',
+  value,
+  placeholder,
+  class: className,
+  ...attrs
+} = Astro.props;
+---
+<Tag class:list={[root, className]} role="search" {...attrs}>
+  <input class={input} type="search" name={name} value={value} placeholder={placeholder} aria-label={labelText} />
+  <button class={submit} type="submit">{submitLabel}</button>
+</Tag>
