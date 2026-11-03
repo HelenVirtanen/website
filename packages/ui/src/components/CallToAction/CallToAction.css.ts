@@ -65,7 +65,7 @@ export const face = style({
   width: '45rem',
   height: '11rem',
   paddingBlock: vars.padding.xl,
-  paddingInline: `calc(${vars.padding.xxl} * 2)`,
+  paddingInline: `calc(${vars.layout.inset.xxl} * 2)`,
   color: vars.color.onAction,
   font: vars.font.shorthand.registration,
   letterSpacing: vars.font.letterSpacing.registration,

@@ -7,7 +7,7 @@ export const row = style({
   flexDirection: vars.flexDirection.column,
   flexWrap: 'wrap',
   alignItems: vars.alignItems.stretch,
-  gap: vars.spacing.l,
+  gap: vars.layout.gap.l,
 
   '@media': {
     [media.tablet]: {
@@ -49,7 +49,7 @@ export const root = style({
 export const header = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.m,
+  gap: vars.layout.gap.m,
 });
 
 export const title = style({
@@ -67,7 +67,7 @@ export const subtitle = style({
 
 export const content = style({
   margin: 0,
-  marginTop: vars.spacing.m,
+  marginTop: vars.layout.gap.m,
   color: vars.color.text,
   font: vars.font.shorthand.body,
   flex: '1 1 auto',

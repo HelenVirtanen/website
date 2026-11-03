@@ -28,20 +28,20 @@ export { inner };
 export const header = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.l,
+  gap: vars.layout.gap.l,
   '@media': {
     [media.laptop]: {
       flexDirection: 'row',
       alignItems: 'flex-start',
       justifyContent: vars.justifyContent.spaceBetween,
-      gap: vars.spacing.xxl,
+      gap: vars.layout.gap.xxl,
     },
   },
 });
 
 export const hint = style({
   margin: 0,
-  maxWidth: '36rem',
+  maxWidth: vars.size.programHintMaxWidth,
   color: vars.color.text,
   font: vars.font.shorthand.programDescription,
   letterSpacing: vars.font.letterSpacing.figmaWide,
@@ -59,14 +59,14 @@ export const list = style({
 export const row = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.l,
-  paddingBlock: vars.padding.xxl,
+  gap: vars.layout.gap.l,
+  paddingBlock: vars.layout.inset.xxl,
   borderTop: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.divider}`,
   '@media': {
     [media.laptop]: {
       display: 'grid',
-      gridTemplateColumns: '12.5rem minmax(16rem, 26rem) minmax(24rem, 1fr)',
-      columnGap: vars.spacing.xxl,
+      gridTemplateColumns: `${vars.size.programTimeColumn} minmax(${vars.size.programTitleColumnMin}, ${vars.size.programTitleColumnMax}) minmax(${vars.size.programDescriptionColumnMin}, 1fr)`,
+      columnGap: vars.layout.gap.xxl,
       alignItems: 'start',
     },
   },
@@ -75,7 +75,7 @@ export const row = style({
 export const portraitColumn = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.m,
+  gap: vars.layout.gap.m,
   alignItems: vars.alignItems.center,
   width: 'fit-content',
 });
@@ -91,7 +91,7 @@ export const time = style({
 export const talkMain = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.m,
+  gap: vars.layout.gap.m,
   minWidth: 0,
 });
 
@@ -125,14 +125,14 @@ export const description = style({
 export const activityRow = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.m,
-  paddingBlock: vars.padding.xxl,
+  gap: vars.layout.gap.m,
+  paddingBlock: vars.layout.inset.xxl,
   borderTop: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.divider}`,
   '@media': {
     [media.laptop]: {
       display: 'grid',
-      gridTemplateColumns: '12.5rem 1fr',
-      columnGap: vars.spacing.xxl,
+      gridTemplateColumns: `${vars.size.programTimeColumn} 1fr`,
+      columnGap: vars.layout.gap.xxl,
       alignItems: 'center',
     },
   },

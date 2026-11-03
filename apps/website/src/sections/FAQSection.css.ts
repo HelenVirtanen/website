@@ -28,13 +28,13 @@ export { inner };
 export const header = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.l,
+  gap: vars.layout.gap.l,
   '@media': {
     [media.laptop]: {
       flexDirection: 'row',
       alignItems: 'flex-start',
       justifyContent: vars.justifyContent.spaceBetween,
-      gap: vars.spacing.xxl,
+      gap: vars.layout.gap.xxl,
     },
   },
 });

@@ -8,14 +8,14 @@ const octagon =
 export const frame = style({
   position: vars.position.relative,
   flexShrink: 0,
-  width: '10.5rem',
-  height: '10.5rem',
+  width: vars.size.speakerAvatar,
+  height: vars.size.speakerAvatar,
   background: vars.color.danger,
   clipPath: octagon,
   '@media': {
     [media.laptop]: {
-      width: '12.5rem',
-      height: '12.5rem',
+      width: vars.size.speakerAvatarLaptop,
+      height: vars.size.speakerAvatarLaptop,
     },
   },
 });

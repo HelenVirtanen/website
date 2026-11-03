@@ -26,6 +26,13 @@ const contract = {
     cardPaddingBlock: null,
     cardPaddingInline: null,
     cardSliderArrow: null,
+    speakerAvatar: null,
+    speakerAvatarLaptop: null,
+    programTimeColumn: null,
+    programTitleColumnMin: null,
+    programTitleColumnMax: null,
+    programDescriptionColumnMin: null,
+    programHintMaxWidth: null,
   },
 } as const;
 
@@ -49,6 +56,13 @@ const values = {
     cardPaddingBlock: '2.5rem', // 40px
     cardPaddingInline: '1.75rem', // 28px
     cardSliderArrow: '3.9375rem', // 63px — ширина arrow-right в навигации слайдера
+    speakerAvatar: '10.5rem', // 168px
+    speakerAvatarLaptop: '12.5rem', // 200px
+    programTimeColumn: '12.5rem', // 200px
+    programTitleColumnMin: '16rem', // 256px
+    programTitleColumnMax: '26rem', // 416px
+    programDescriptionColumnMin: '24rem', // 384px
+    programHintMaxWidth: '36rem', // 576px
   },
 };
 

@@ -5,9 +5,9 @@ export const card = style({
   position: vars.position.relative,
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.l,
+  gap: vars.layout.gap.l,
   minHeight: '28rem',
-  padding: vars.padding.xxl,
+  padding: vars.layout.inset.xxl,
   paddingBottom: vars.padding['4xl'],
   overflow: 'hidden',
   color: vars.color.blackText,
@@ -19,7 +19,7 @@ export const content = style({
   zIndex: 1,
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.l,
+  gap: vars.layout.gap.l,
   flex: 1,
 });
 

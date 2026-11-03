@@ -33,7 +33,7 @@ export const inner = style([
 export const intro = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.xxl,
+  gap: vars.layout.gap.xxl,
   width: '100%',
 });
 
@@ -41,7 +41,7 @@ export const introHead = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
   alignItems: vars.alignItems.center,
-  gap: vars.spacing.l,
+  gap: vars.layout.gap.l,
   textAlign: 'center',
 });
 
@@ -98,14 +98,14 @@ export const modeItem = style({
 export const footer = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.xxl,
+  gap: vars.layout.gap.xxl,
   width: '100%',
   '@media': {
     [media.laptop]: {
       flexDirection: 'row',
       alignItems: 'flex-end',
       justifyContent: vars.justifyContent.spaceBetween,
-      gap: vars.spacing.xxl,
+      gap: vars.layout.gap.xxl,
     },
   },
 });
@@ -113,7 +113,7 @@ export const footer = style({
 export const details = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.m,
+  gap: vars.layout.gap.m,
   alignSelf: 'flex-start',
   width: '100%',
   maxWidth: '100%',
@@ -143,7 +143,7 @@ export const passportNote = style([
 export const ctaColumn = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.m,
+  gap: vars.layout.gap.m,
   alignItems: 'flex-start',
   width: '100%',
   '@media': {
@@ -166,7 +166,7 @@ globalStyle(`${ctaButton} span`, {
   maxWidth: dimensions.heroCtaButton.width,
   height: dimensions.heroCtaButton.height,
   paddingBlock: 0,
-  paddingInline: vars.padding.l,
+  paddingInline: vars.layout.inset.l,
   font: vars.font.shorthand.heroCtaLabel,
   letterSpacing: vars.font.letterSpacing.registration,
   textAlign: 'center',

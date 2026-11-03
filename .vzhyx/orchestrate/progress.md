@@ -13,3 +13,5 @@ Ruling: no CI cron (former AC-14) — user — past meetup shown as upcoming unt
 Ruling: отчёты исполнителей пишутся в scratchpad и переносятся conductor-ом — owns-guard не пускает reports/ вне owns, а правка owns сделала бы согласие устаревшим — цена: один cp на задачу.
 - 02 root-cleanup: done (attempt 1) — 20 файлов старой раскладки удалены.
 - 03 scale-tables: done (attempt 1) — scale.ts + 12 тестов, корень max(100%,100vw/120), layout.inset/gap; визуал на desktop временно сдвинут до 04.
+- 04 components-on-tokens: done (attempt 1 + conductor fix) — 49 замен на layout.inset/gap, size-токены колонок программы и аватара; снимки 160/160 = 0%.
+Ruling: conductor сам заменил `--spacing-l` → `--layout-gap-l` в packages/ui/src/components/Card/CardSlider.client.ts:58 (вне owns 04, рантайм-чтение CSS-переменной по имени, план его не увидел) — правка в 1 строку, без перенарезки — цена: если таких чтений больше, их поймают снимки (grep '--spacing-|--padding-' пуст).

@@ -4,14 +4,14 @@ import { vars } from '@moscowcss/design-system';
 export const root = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.l,
+  gap: vars.layout.gap.l,
   width: '100%',
 });
 
 export const nav = style({
   display: vars.display.flex,
   justifyContent: vars.justifyContent.flexStart,
-  gap: vars.spacing.m,
+  gap: vars.layout.gap.m,
 });
 
 export const navButton = style({

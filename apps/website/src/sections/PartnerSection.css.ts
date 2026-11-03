@@ -46,7 +46,7 @@ export const inner = style([
 export const partnerHeader = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.l,
+  gap: vars.layout.gap.l,
   alignItems: vars.alignItems.center,
   textAlign: 'center',
 });
@@ -108,7 +108,7 @@ export const cardsGrid = style({
   position: vars.position.relative,
   zIndex: 1,
   display: vars.display.grid,
-  gap: vars.spacing.m,
+  gap: vars.layout.gap.m,
   gridTemplateColumns: '1fr',
   alignItems: 'stretch',
   '@media': {
@@ -124,7 +124,7 @@ export const cardsGrid = style({
 export const directionsBlock = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.xxl,
+  gap: vars.layout.gap.xxl,
 });
 
 export const address = style({
@@ -138,7 +138,7 @@ export const hints = style({
   flexDirection: vars.flexDirection.column,
   gap: vars.spacing.s,
   margin: 0,
-  paddingLeft: vars.padding.l,
+  paddingLeft: vars.layout.inset.l,
   font: vars.font.shorthand.partnerDirectionsHint,
   letterSpacing: vars.font.letterSpacing.figmaWide,
 });
@@ -151,7 +151,7 @@ export const mediaTitle = style({
 
 export const mediaRow = style({
   display: vars.display.grid,
-  gap: vars.spacing.m,
+  gap: vars.layout.gap.m,
   gridTemplateColumns: '1fr',
   '@media': {
     [media.tablet]: {

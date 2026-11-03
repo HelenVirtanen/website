@@ -3,10 +3,10 @@ import { breakpoints, vars, media } from '@moscowcss/design-system';
 
 export const sectionPadding = style({
   paddingBlock: vars.padding['4xl'],
-  paddingInline: vars.padding.xxl,
+  paddingInline: vars.layout.inset.xxl,
   '@media': {
     [media.mobile]: {
-      paddingInline: vars.padding.l,
+      paddingInline: vars.layout.inset.l,
     },
   },
 });
@@ -16,7 +16,7 @@ export const inner = style({
   zIndex: 1,
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.spacing.xxl,
+  gap: vars.layout.gap.xxl,
   width: '100%',
   maxWidth: breakpoints.desktop,
   marginInline: 'auto',

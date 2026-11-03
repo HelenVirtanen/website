@@ -3,7 +3,7 @@ id: "04"
 title: migrate-component-styles-to-scale-tokens
 spec: "001"
 criteria: ["AC-19", "AC-21"]
-status: pending
+status: done
 depends_on: ["03"]
 owns: ["packages/ui/src/components/**/*.css.ts", "apps/website/src/sections/*.css.ts", "packages/design-system/src/spacing.ts"]
 model: sonnet

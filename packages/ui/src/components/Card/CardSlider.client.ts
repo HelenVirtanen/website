@@ -55,7 +55,7 @@ export function setupCardSlider(root: HTMLElement) {
   const next = root.querySelector<HTMLButtonElement>('[data-card-slider-next]');
   if (!container || !prev || !next) return;
 
-  const spaceBetween = cssVarToPx('--spacing-l');
+  const spaceBetween = cssVarToPx('--layout-gap-l');
   const laptop = laptopMinWidthPx();
   const desktop = desktopMinWidthPx();
 

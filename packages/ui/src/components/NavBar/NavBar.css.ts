@@ -8,11 +8,11 @@ export const root = style({
   display: vars.display.flex,
   alignItems: vars.alignItems.center,
   justifyContent: vars.justifyContent.spaceBetween,
-  gap: vars.spacing.m,
+  gap: vars.layout.gap.m,
   boxSizing: 'border-box',
   width: '100%',
   paddingBlock: vars.padding.s,
-  paddingInline: vars.padding.xxl,
+  paddingInline: vars.layout.inset.xxl,
   background: vars.color.background,
   borderBottom: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.divider}`,
 
@@ -20,8 +20,8 @@ export const root = style({
     [media.mobile]: {
       justifyContent: vars.justifyContent.spaceBetween,
       gap: 0,
-      paddingBlock: vars.padding.m,
-      paddingInline: vars.padding.l,
+      paddingBlock: vars.layout.inset.m,
+      paddingInline: vars.layout.inset.l,
       borderBottom: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.divider}`,
     },
   },
@@ -39,7 +39,7 @@ export const burger = style({
 export const links = style({
   display: vars.display.flex,
   alignItems: vars.alignItems.center,
-  gap: vars.spacing.xxl,
+  gap: vars.layout.gap.xxl,
   margin: '0 auto',
   padding: 0,
   listStyle: 'none',
@@ -86,8 +86,8 @@ export const overlay = style({
 
 export const overlayClose = style({
   position: vars.position.absolute,
-  top: vars.padding.m,
-  left: vars.padding.l,
+  top: vars.layout.inset.m,
+  left: vars.layout.inset.l,
   boxSizing: 'border-box',
   display: vars.display.inlineFlex,
   alignItems: vars.alignItems.center,
@@ -129,13 +129,13 @@ export const overlayLinks = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
   alignItems: vars.alignItems.stretch,
-  gap: vars.spacing.l,
+  gap: vars.layout.gap.l,
   margin: 0,
   padding: 0,
   listStyle: 'none',
   '@media': {
     [media.mobile]: {
-      marginTop: `calc(${vars.size.tgLinkButtonCompact} + ${vars.spacing.l})`,
+      marginTop: `calc(${vars.size.tgLinkButtonCompact} + ${vars.layout.gap.l})`,
       paddingInline: vars.padding['4xl'],
     },
   },
@@ -145,7 +145,7 @@ export const overlayLink = style([
   link,
   {
     display: vars.display.block,
-    paddingBlock: vars.padding.m,
+    paddingBlock: vars.layout.inset.m,
     paddingInline: vars.padding.s,
   },
 ]);

@@ -2,7 +2,7 @@ import { style } from '@vanilla-extract/css';
 import { vars, media } from '@moscowcss/design-system';
 
 export const button = style({
-  padding: vars.padding.l,
+  padding: vars.layout.inset.l,
   borderRadius: vars.radius.medium,
   background: vars.color.success,
   color: vars.color.background,
@@ -11,7 +11,7 @@ export const button = style({
   cursor: 'pointer',
   '@media': {
     [media.tablet]: {
-      padding: vars.padding.xxl,
+      padding: vars.layout.inset.xxl,
     },
   },
 });
