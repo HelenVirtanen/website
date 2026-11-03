@@ -3,7 +3,7 @@ id: "01"
 title: visual-regression-tooling-and-baseline
 spec: "001"
 criteria: ["AC-21"]
-status: pending
+status: done
 depends_on: []
 owns: ["tools/visual/**", "package.json", "pnpm-lock.yaml", ".gitignore", "apps/website/src/sections/*.astro", "apps/website/src/pages/index.astro"]
 model: sonnet

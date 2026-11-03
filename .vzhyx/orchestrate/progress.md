@@ -9,3 +9,5 @@ Ruling: plans/ committed via !plans/ in repo .gitignore — user chose at Gate 3
 Ruling: no CI cron (former AC-14) — user — past meetup shown as upcoming until next push.
 
 ## Tasks
+- 01 visual-baseline: done (attempt 1) — 160 снимков, повтор 0%; concerns: ResizeObserver заглушён в capture (дрожь Swiper), чужие origin блокируются (карта пустая), стори mediatile placeholder высотой 1px.
+Ruling: отчёты исполнителей пишутся в scratchpad и переносятся conductor-ом — owns-guard не пускает reports/ вне owns, а правка owns сделала бы согласие устаревшим — цена: один cp на задачу.

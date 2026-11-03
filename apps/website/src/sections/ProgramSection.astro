@@ -30,7 +30,7 @@ const { id = 'program' } = Astro.props;
 const isTalk = (item: (typeof scheduleItems)[number]): item is ScheduleTalk => item.type === 'talk';
 ---
 
-<section class={section} id={id}>
+<section class={section} id={id} data-visual="program">
   <div class={inner}>
     <div class={header}>
       <BlockTitle>Программа</BlockTitle>

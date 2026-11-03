@@ -11,3 +11,5 @@ packages/icons/src/generated/
 temp
 # Спеки, ADR и очереди задач — часть истории проекта (глобальный ~/.gitignore_global игнорирует plans/)
 !plans/
+# снимки визуального тулинга (tools/visual)
+.visual/
