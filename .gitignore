@@ -9,3 +9,5 @@ packages/icons/src/generated/
 *.log
 .DS_Store
 temp
+# Спеки, ADR и очереди задач — часть истории проекта (глобальный ~/.gitignore_global игнорирует plans/)
+!plans/
