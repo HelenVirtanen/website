@@ -1,31 +1,36 @@
-# Task 03 (meetups 1-6, 2017): BLOCKED
+# Task 03 (meetups 1-6, 2017): DONE
 
-contract: e9668572
+contract: 8e4298e3
 
-No files were written (no events, talks or videos.csv changes).
+## Result
+12 event files (1..6 x ru/en), 36 talk files (18 talks x ru/en), 15 rows in `plans/002-meetup-archive/videos.csv`.
+Done-when: check-batch rc 0; `build`, `check:seo`, `test` rc 0; all 12 event pages exist in dist.
 
-## Why blocked
-`time` ("HH:MM", Moscow) is required for every meetup, and no source gives a start time for any of meetups 1-6.
+## Sources per meetup
+Date, venue, talks, descriptions: `sheet.csv` only (Telegram starts 05.02.2018; the old site covers only 28-30). Videos: `youtube.json`, matched by speaker and topic.
 
-Checked:
-- `sheet.csv`: columns are only Митап, Тема, Докладчик(и), Описание, Дата проведения, Площадка. Date and venue only, no time.
-- `telegram.json`: 617 messages, 05.02.2018 onward (first real post, id 1, is the 2018 return announcement). No mention of 2017 and no retrospective post naming a 2017 start time. The earliest posts are about meetup 7 (6 March 2018, Rambler&Co).
-- `youtube.json`: 53 titles, no times or dates.
-- `old-site/`: only 28.html, 29.html, 30.html. Nothing on 2017.
-- `telegram-export/messages.html`: no 2017 dates.
-- `speakers.csv`: all 16 speakers of meetups 1-6 exist (not an obstacle).
+| # | Date | Venue |
+|---|------|-------|
+| 1 | 2017-03-02 | Yandex |
+| 2 | 2017-04-06 | Rambler |
+| 3 | 2017-05-18 | Tinkoff ("Тинькоф" typo fixed to "Тинькофф" in ru) |
+| 4 | 2017-09-07 | Odin |
+| 5 | 2017-10-31 | Tutu |
+| 6 | 2017-12-07 | Yandex |
 
-## Meetups without time (all six)
-| # | Date | Venue | Talks (sheet rows) |
-|---|------|-------|-----|
-| 1 | 2017-03-02 | Яндекс | 3 |
-| 2 | 2017-04-06 | Рамблер | 3 |
-| 3 | 2017-05-18 | Тинькоф (sic; typo for Тинькофф) | 3 |
-| 4 | 2017-09-07 | Odin | 3 |
-| 5 | 2017-10-31 | Tutu | 3 |
-| 6 | 2017-12-07 | Яндекс | 3 |
+## Omitted facts (no source)
+`time`, `venue.address`, `venue.mapUrl`, coordinates, `registrationUrl`, `recordingUrl`, `photosUrl` for all six meetups; talk `time`; speaker roles. No full-meetup recording and no photo album exist in any source (AC-5: none found). `modes` = offline, `passportRequired: false`, per the owner's decision. Event bodies are empty.
 
-Sheet has no address, Timepad link or photo album for these; Telegram has none either (channel starts 2018). No venue address/mapUrl source exists.
+## Discrepancies / notes
+- Talk 6/Vinogradov: the sheet description is "-"; the body is "—" in both languages (body must be non-empty).
+- Sheet text kept verbatim (including "Сanvas" with a Latin/Cyrillic mix in talk 1/Popov Arseniy).
+- Meetup 6 talks (Ermolenko, Rozov, Vinogradov): no video in `youtube.json`.
+- Taglines are written in the pattern of event 31 ("N митап сообщества фронтендеров, площадка — X").
 
-## Needed from the owner
-Start time per meetup (or one agreed time for all six, plus permission to use it), and optionally venue addresses and Timepad/photo links if they exist elsewhere. Once given, the content is ready to write: sheet rows map 1:1 to talks, all speakers in registry, YouTube has a video for each of the 18 talks (titles match the sheet topics); no full-meetup recordings found.
+## Videos (all 15 in videos.csv, kind talk)
+1: 1BS4V5r_HQQ css-features-you-might-not-know; 1VM-vEItVeA css-methodologies-a-to-b; RdwdaHiBxxY vector-graphics-on-the-web
+2: fIAokeTWgGU undocumented-css-tricks; GdG6Mv-HDLs time-to-snort-grid-layout; 67ZnhTpsH-Y watching-over-css
+3: Y63XbOM6Kzw top-15-css-mistakes; MyPU8bqvDzY atomic-css-in-the-wild; o39tg3BgABw fontend-optimization
+4: Z1v9IWKh7aU ui-kit-downside; KmMWxnqVYYM css-and-html-are-a-programming-language; Lj68Ite2DOc games-without-javascript
+5: R3FbcemvoEo webp-what-it-is-and-how-to-use-it; M3BKdrBgmYU responsive-svg; y7Aba5Nppio markup-developer-legacy
+6: none
