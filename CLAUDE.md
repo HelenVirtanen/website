@@ -68,10 +68,20 @@ Workspace package names use the `@moscowcss/*` scope: `@moscowcss/ui`,
 7. **Never downgrade the recommendation.** No "this is just a demo / MVP /
    student project" shortcuts. Always the current best-practice setup.
 8. **`pnpm lint` and `pnpm build` must pass** before you consider a task done.
-9. **The user always decides when and what to commit.** Never `git commit` or
-   `git push` on your own initiative — not at the end of a task, not "to be
-   helpful". Do it only when the user explicitly asks, and commit exactly what
-   they specify. When work is done, report status and let the user drive git.
+9. **Commit your own work; the user drives everything that leaves the machine.**
+   - Commit as you go, one coherent change per commit: a finished task or a
+     self-contained step of it, never a half-done state. The checks that the
+     change touches (`pnpm lint`, `pnpm build`, `pnpm test`) pass before the
+     commit; the husky `pre-commit` hook re-runs lint and build.
+   - Never commit straight to `master`. Work on a feature branch (create one if
+     you are on `master`); merging into `master` is the user's call.
+   - Message in English, Conventional Commits (`feat:`, `fix:`, `chore:`,
+     `refactor:`, `docs:`, `test:`, `ci:`), subject says what changed, body says
+     why. Stage files explicitly — no `git add -A` that sweeps in stray files.
+   - Never commit secrets, `.env` files, build output or generated artefacts
+     (`dist/`, `packages/icons/src/generated/`, `.visual/`).
+   - **Never `git push`**, force-push, rewrite published history or delete
+     branches unless the user asks for it explicitly.
 
 ---
 

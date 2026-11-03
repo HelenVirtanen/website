@@ -54,7 +54,10 @@ generated `.astro`), `fonts` (font *loading*), `eslint-config`,
   and in Russian. Only Markdown docs (`*.md`) stay English; every other file,
   config included, uses Russian comments.
 - **`pnpm lint` and `pnpm build` must pass** before a task is done.
-- **The user drives git.** Never `git commit`/`git push` on your own initiative.
+- **Commit your own work, never push.** One coherent change per commit on a
+  feature branch (never straight to `master`), after the touched checks pass;
+  English Conventional Commits; no secrets or build output. `git push`, merges
+  into `master` and history rewrites are the user's call (see `CLAUDE.md` §2.9).
 
 ## Everyday commands (from repo root)
 
