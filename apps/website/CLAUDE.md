@@ -63,6 +63,15 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   computed at build time; a meetup stays "upcoming" for 4 hours after its start.
   `BUILD_NOW=<ISO date>` pins "now" for **visual snapshots only**; it is in
   `turbo.json` `build.env` and must never be set for a real build.
+- **Documents** (`documents` collection) render at `/<name>/` via
+  `pages/[...locale]/[document].astro` and are public pages in `src/seo/pages.ts`
+  (kind `document`, no JSON-LD). The meetup page hides the registration link once
+  the meetup is past (`src/content/event-links.ts`, "now" from `src/content/now.ts`).
+- **Legacy addresses** of the old site (`/28.html`, `/29.html`, `/30.html`,
+  `/personal-data.html`) are noindex stub pages with a meta refresh to the new
+  address: one `pages/<name>.html.ts` per address, table and HTML in
+  `src/seo/legacy.ts`. Not a `[legacy].html` dynamic route: Astro 7 loses its
+  param.
 - **The build is not cached** (`turbo.json` here: `build.cache=false`) because it
   depends on the current date.
 - Every indexable page needs the full SEO set; `pnpm check:seo` verifies the

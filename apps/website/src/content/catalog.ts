@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { getCollection } from 'astro:content';
 import type { z } from 'astro/zod';
 import type {
+  DocumentSchema,
   EventSchema,
   FaqSchema,
   PageSchema,
@@ -31,6 +32,7 @@ export type SpeakerData = z.output<ReturnType<typeof createSpeakerSchema>>;
 export type PartnerData = z.output<ReturnType<typeof createPartnerSchema>>;
 export type PageData = z.output<typeof PageSchema>;
 export type FaqData = z.output<typeof FaqSchema>;
+export type DocumentData = z.output<typeof DocumentSchema>;
 
 export type EventEntry = CatalogEntry<EventData>;
 export type TalkEntry = CatalogEntry<TalkData>;
@@ -38,6 +40,7 @@ export type SpeakerEntry = CatalogEntry<SpeakerData>;
 export type PartnerEntry = CatalogEntry<PartnerData>;
 export type PageEntry = CatalogEntry<PageData>;
 export type FaqEntry = CatalogEntry<FaqData>;
+export type DocumentEntry = CatalogEntry<DocumentData>;
 
 export interface Catalog {
   events: EventEntry[];
@@ -46,6 +49,7 @@ export interface Catalog {
   partners: PartnerEntry[];
   pages: PageEntry[];
   faq: FaqEntry[];
+  documents: DocumentEntry[];
 }
 
 // Язык-источник: перевод сверяется с ним (ADR 001).
@@ -62,6 +66,7 @@ const INVARIANTS = {
     'registrationUrl',
     'streamUrl',
     'recordingUrl',
+    'photosUrl',
     'partner',
     'schedule[].time',
     'schedule[].kind',
@@ -70,11 +75,12 @@ const INVARIANTS = {
   speakers: ['photo', 'links'],
   partners: ['url', 'handle', 'logo', 'qrUrl'],
   faq: ['order'],
+  documents: [],
   pages: ['telegramUrl', 'questionTag'],
 } as const;
 
 // Тело обязательно там, где оно и есть содержание страницы или карточки.
-const BODY_REQUIRED = ['pages', 'talks', 'faq'] as const;
+const BODY_REQUIRED = ['pages', 'talks', 'faq', 'documents'] as const;
 
 
 /** Язык записи: первый сегмент id. */
@@ -206,6 +212,7 @@ export function validateCatalog(
   checkTranslations('partners', catalog.partners, problems);
   checkTranslations('faq', catalog.faq, problems);
   checkTranslations('pages', catalog.pages, problems);
+  checkTranslations('documents', catalog.documents, problems);
 
   const bodies: [string, readonly CatalogEntry<unknown>[]][] = [
     ['pages', catalog.pages],
@@ -214,6 +221,7 @@ export function validateCatalog(
     ['speakers', catalog.speakers],
     ['partners', catalog.partners],
     ['faq', catalog.faq],
+    ['documents', catalog.documents],
   ];
   for (const [collection, entries] of bodies) {
     for (const entry of entries) {
@@ -294,15 +302,16 @@ export function checkEventDays(
  * приходит от Astro (с путём файла), ошибка связей и переводов — от `validateCatalog`.
  */
 export async function loadCatalog(): Promise<Catalog> {
-  const [pages, events, talks, speakers, partners, faq] = await Promise.all([
+  const [pages, events, talks, speakers, partners, faq, documents] = await Promise.all([
     getCollection('pages'),
     getCollection('events'),
     getCollection('talks'),
     getCollection('speakers'),
     getCollection('partners'),
     getCollection('faq'),
+    getCollection('documents'),
   ]);
-  const catalog = { events, talks, speakers, partners, pages, faq };
+  const catalog = { events, talks, speakers, partners, pages, faq, documents };
   validateCatalog(catalog, {
     requireRendered: true,
     // filePath у записей Astro — относительно корня проекта, а сборка идёт из него же.
@@ -314,6 +323,17 @@ export async function loadCatalog(): Promise<Catalog> {
 // Начало интервала: `19:40—20:00` → `19:40`, `19:10` → `19:10`.
 const startOf = (time: string): string => time.slice(0, 5);
 
+// Время начала: отсутствующее (архивный митап) считается позже любого. Сентинел-строкой это не
+// сделать: localeCompare ставит знаки препинания раньше цифр.
+const compareTimes = (a: string | undefined, b: string | undefined): number => {
+  if (a === undefined || b === undefined) return Number(a === undefined) - Number(b === undefined);
+  return a.localeCompare(b);
+};
+
+// Между докладами без времени порядок — по имени файла, чтобы он не зависел от порядка загрузчика.
+const byTime = (a: TalkEntry, b: TalkEntry): number =>
+  compareTimes(a.data.time, b.data.time) || slugOf(a).localeCompare(slugOf(b));
+
 /** Опубликованные доклады митапа в его языке, по времени начала. */
 export function talksOfEvent<T extends TalkEntry>(event: EventEntry, talks: readonly T[]): T[] {
   return talks
@@ -321,11 +341,11 @@ export function talksOfEvent<T extends TalkEntry>(event: EventEntry, talks: read
       (talk) =>
         localeOf(talk) === localeOf(event) && talk.data.event === slugOf(event) && isPublished(talk),
     )
-    .sort((a, b) => a.data.time.localeCompare(b.data.time));
+    .sort(byTime);
 }
 
 export type ScheduleItem<T extends TalkEntry = TalkEntry> =
-  | { kind: 'talk'; time: string; title: string; talk: T }
+  | { kind: 'talk'; time: string | undefined; title: string; talk: T }
   | { kind: 'break' | 'activity'; time: string; title: string };
 
 /** Расписание митапа: доклады и перерывы с активностями вперемешку по началу. */
@@ -342,7 +362,9 @@ export function scheduleOf<T extends TalkEntry>(
     ),
   ];
   // sort стабилен: при равном начале доклады остаются выше остального.
-  return items.sort((a, b) => startOf(a.time).localeCompare(startOf(b.time)));
+  return items.sort((a, b) =>
+    compareTimes(a.time && startOf(a.time), b.time && startOf(b.time)),
+  );
 }
 
 /** Доклады спикера на всех опубликованных митапах его языка, новые митапы выше. */
@@ -369,8 +391,7 @@ export function talksOfSpeaker<T extends TalkEntry, E extends EventEntry>(
   }
   return result.sort(
     (a, b) =>
-      b.event.data.date.getTime() - a.event.data.date.getTime() ||
-      a.talk.data.time.localeCompare(b.talk.data.time),
+      b.event.data.date.getTime() - a.event.data.date.getTime() || byTime(a.talk, b.talk),
   );
 }
 
@@ -382,6 +403,9 @@ const byDateAsc = (a: EventEntry, b: EventEntry): number =>
 export const EVENT_DURATION_MS = 4 * 60 * 60 * 1000;
 
 const endOf = (event: EventEntry): number => event.data.date.getTime() + EVENT_DURATION_MS;
+
+/** Митап закончился: начало + `EVENT_DURATION_MS` раньше `now`. */
+export const isPastEvent = (event: EventEntry, now: Date): boolean => endOf(event) < now.getTime();
 
 /**
  * Митап для главной: ближайший, который ещё не закончился (начало + `EVENT_DURATION_MS` не раньше
@@ -402,6 +426,6 @@ export function upcomingEvent<E extends EventEntry>(
 /** Прошедшие опубликованные митапы, новые выше. */
 export function pastEvents<E extends EventEntry>(events: readonly E[], now: Date): E[] {
   return events
-    .filter((event) => isPublished(event) && endOf(event) < now.getTime())
+    .filter((event) => isPublished(event) && isPastEvent(event, now))
     .sort((a, b) => byDateAsc(b, a));
 }

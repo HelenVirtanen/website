@@ -42,7 +42,7 @@ const image = await speakerImage(entry);
 
 <BaseLayout
   title={`${name} — ${t('site.name')}`}
-  description={role}
+  description={role ?? name}
   lang={locale}
   alternates={alternates}
 >
@@ -50,7 +50,7 @@ const image = await speakerImage(entry);
     <div class={header}>
       <img class={photo} src={image.src} width={image.width} height={image.height} alt={image.alt} decoding="async" />
       <H1>{name}</H1>
-      <Paragraph>{role}</Paragraph>
+      {role && <Paragraph>{role}</Paragraph>}
     </div>
     <Prose class={body}>
       <Content />

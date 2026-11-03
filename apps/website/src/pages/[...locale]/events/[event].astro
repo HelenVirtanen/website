@@ -11,6 +11,8 @@ import EventSchedule from '../../../components/EventSchedule.astro';
 import { body, header } from '../../../components/EntityPage.css';
 import { loadCatalog, localeOf, scheduleOf, type EventEntry } from '../../../content/catalog';
 import { eventDateParts, fillTemplate } from '../../../content/format';
+import { eventLinksOf } from '../../../content/event-links';
+import { buildNow } from '../../../content/now';
 import { useTranslations } from '../../../i18n';
 import { localeParam, pagesOfKind, publicPagesOf, type PublicPage } from '../../../seo/pages';
 
@@ -32,18 +34,19 @@ const inLocale = <T extends { id: string }>(entries: T[]): T[] =>
 const speakers = inLocale(catalog.speakers);
 const schedule = scheduleOf(entry as EventEntry, inLocale(catalog.talks));
 
-const { tagline, venue, date, registrationUrl, streamUrl, recordingUrl } = entry.data;
+const { tagline, venue, date } = entry.data;
 const dateTime = fillTemplate(t('hero.dateTime'), eventDateParts(date, locale));
 const place = `${venue.name}, ${venue.address}`;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const { Content } = await render(entry as any);
 
-const links = [
-  registrationUrl && { href: registrationUrl, label: t('event.registration') },
-  streamUrl && { href: streamUrl, label: t('event.stream') },
-  recordingUrl && { href: recordingUrl, label: t('event.recording') },
-  venue.mapUrl && { href: venue.mapUrl, label: t('event.map') },
-].filter((item): item is { href: string; label: string } => Boolean(item));
+const links = eventLinksOf(entry, buildNow(), {
+  registration: t('event.registration'),
+  stream: t('event.stream'),
+  recording: t('event.recording'),
+  photos: t('event.photos'),
+  map: t('event.map'),
+});
 ---
 
 <BaseLayout

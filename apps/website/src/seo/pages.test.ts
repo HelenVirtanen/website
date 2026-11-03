@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { event, speaker, talk, twoMeetupsCatalog } from '../test/fixtures';
+import { document, event, speaker, talk, twoMeetupsCatalog } from '../test/fixtures';
 import { pagesOfKind, publicPagesOf, trimTrailingSlashes } from './pages';
 
 vi.mock('astro:content', () => ({ getCollection: vi.fn() }));
@@ -34,6 +34,26 @@ describe('publicPagesOf', () => {
         '/en/speakers/daria-egorova/',
       ].sort(),
     );
+  });
+
+  it('документ живёт прямо под языком, без папки раздела; черновик не публичен', () => {
+    const pages = publicPagesOf({
+      ...catalog(),
+      documents: [
+        document('ru/personal-data'),
+        document('en/personal-data'),
+        document('ru/hidden', { draft: true }),
+      ],
+    });
+    const documents = pagesOfKind(pages, 'document');
+    expect(documents.map((page) => [page.locale, page.path, page.slugParam])).toEqual([
+      ['ru', '/personal-data/', 'personal-data'],
+      ['en', '/en/personal-data/', 'personal-data'],
+    ]);
+    expect(documents[0]?.alternates.map((alternate) => alternate.path)).toEqual([
+      '/personal-data/',
+      '/en/personal-data/',
+    ]);
   });
 
   it('английские страницы лежат под /en/, русские без префикса', () => {

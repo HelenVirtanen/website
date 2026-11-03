@@ -1,0 +1,36 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import H1 from '@moscowcss/ui/components/H1';
+import Prose from '@moscowcss/ui/components/Prose';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EntityPage from '../../components/EntityPage.astro';
+import { body, header } from '../../components/EntityPage.css';
+import { loadCatalog } from '../../content/catalog';
+import { localeParam, pagesOfKind, publicPagesOf, type PublicPage } from '../../seo/pages';
+
+export const getStaticPaths = (async () => {
+  const catalog = await loadCatalog();
+  return pagesOfKind(publicPagesOf(catalog), 'document').map((page) => ({
+    params: { locale: localeParam(page.locale), document: page.slugParam },
+    props: { page },
+  }));
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props as { page: Extract<PublicPage, { kind: 'document' }> };
+const { locale, entry, alternates } = page;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const { Content } = await render(entry as any);
+const { title, description } = entry.data;
+---
+
+<BaseLayout title={title} description={description} lang={locale} alternates={alternates}>
+  <EntityPage>
+    <div class={header}>
+      <H1>{title}</H1>
+    </div>
+    <Prose class={body}>
+      <Content />
+    </Prose>
+  </EntityPage>
+</BaseLayout>

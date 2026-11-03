@@ -1,0 +1,41 @@
+import type { APIRoute } from 'astro';
+import { defaultLocale, useTranslations } from '../i18n';
+
+// Адреса старого сайта (`/28.html`) ведут на новые страницы. GitHub Pages не умеет редиректы,
+// поэтому каждый старый адрес — страница-заглушка с мгновенным переходом.
+export const LEGACY_REDIRECTS = {
+  '28.html': '/events/28/',
+  '29.html': '/events/29/',
+  '30.html': '/events/30/',
+  'personal-data.html': '/personal-data/',
+} as const;
+
+export type LegacyName = keyof typeof LEGACY_REDIRECTS;
+
+/** HTML-заглушка: переход, canonical на новый адрес, noindex и видимая ссылка. */
+export function legacyStubOf(target: string, site: URL, siteName: string, lang: string): string {
+  const canonical = new URL(target, site).href;
+  return `<!doctype html>
+<html lang="${lang}">
+<head>
+<meta charset="utf-8">
+<title>${siteName}</title>
+<meta http-equiv="refresh" content="0; url=${target}">
+<link rel="canonical" href="${canonical}">
+<meta name="robots" content="noindex">
+</head>
+<body>
+<p><a href="${target}">${target}</a></p>
+</body>
+</html>
+`;
+}
+
+/** Эндпоинт одного старого адреса. Файл на адрес, а не `[legacy].html`: у динамического сегмента с расширением Astro 7 теряет параметр. */
+export const legacyRoute =
+  (name: LegacyName): APIRoute =>
+  ({ site }) => {
+    if (!site) throw new Error(`${name}: в astro.config не задан site`);
+    const html = legacyStubOf(LEGACY_REDIRECTS[name], site, useTranslations(defaultLocale)('site.name'), defaultLocale);
+    return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+  };

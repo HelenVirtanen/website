@@ -2,8 +2,8 @@
 import Prose from '@moscowcss/ui/components/Prose';
 import type { CollectionEntry } from 'astro:content';
 import { render } from 'astro:content';
-import { useTranslations, type Locale } from '../i18n';
-import { section, inner, title, body } from './AboutSection.css';
+import { localizePath, useTranslations, type Locale } from '../i18n';
+import { section, inner, title, body, privacy, privacyLink } from './AboutSection.css';
 
 interface Props {
   // Страница «о митапе» языка страницы
@@ -22,5 +22,8 @@ const { Content } = await render(page);
     <Prose class={body}>
       <Content />
     </Prose>
+    <p class={privacy}>
+      <a class={privacyLink} href={localizePath(locale, 'personal-data')}>{t('about.privacy')}</a>
+    </p>
   </div>
 </section>

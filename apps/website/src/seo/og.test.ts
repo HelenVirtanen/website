@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { event, speaker, talk, twoMeetupsCatalog } from '../test/fixtures';
+import { document, event, speaker, talk, twoMeetupsCatalog } from '../test/fixtures';
 import { cardInputOf, cardParam, cardPath, sizeOfParam } from './og';
 import { publicPagesOf } from './pages';
 
@@ -41,6 +41,23 @@ describe('адреса карточек', () => {
   it('адреса всех карточек уникальны', () => {
     const all = pages.flatMap((page) => [cardPath(page, 'og'), cardPath(page, 'twitter')]);
     expect(new Set(all).size).toBe(all.length);
+  });
+});
+
+describe('cardInputOf: документ и спикер без должности', () => {
+  it('документ: заголовок и описание, адрес карточки по адресу страницы', () => {
+    const data = { ...catalog, documents: [document('ru/personal-data', { title: 'Политика' })] };
+    const [page] = publicPagesOf(data).filter((item) => item.kind === 'document');
+    expect(page && cardPath(page, 'og')).toBe('/og/personal-data.png');
+    expect(page && cardInputOf(page, data)).toMatchObject({ title: 'Политика', kicker: 'Документ' });
+  });
+
+  it('спикер без должности: пустая строка, не undefined', () => {
+    const bare = speaker('ru/daria-egorova');
+    delete bare.data.role;
+    const data = { ...catalog, speakers: [bare] };
+    const page = publicPagesOf(data).find((item) => item.kind === 'speaker');
+    expect(page && cardInputOf(page, data).meta).toBe('');
   });
 });
 

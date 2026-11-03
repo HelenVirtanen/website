@@ -43,6 +43,12 @@ const t = useTranslations(locale);
 
 const speakerBySlug = new Map(speakers.map((speaker) => [slugOf(speaker), speaker]));
 
+const roles = (people: { role?: string | undefined }[]): string =>
+  people
+    .map((person) => person.role)
+    .filter(Boolean)
+    .join(' · ');
+
 const items = await Promise.all(
   scheduleOf(event, talks).map(async (item) => {
     if (item.kind !== 'talk') return item;
@@ -79,7 +85,7 @@ const items = await Promise.all(
               <div class={talkMain}>
                 <h3 class={talkTitle}>{item.title}</h3>
                 <p class={speakerName}>{item.people.map((person) => person.name).join(', ')}</p>
-                <p class={speakerRole}>{item.people.map((person) => person.role).join(' · ')}</p>
+                {roles(item.people) && <p class={speakerRole}>{roles(item.people)}</p>}
               </div>
               <div class={description}>
                 <Prose>

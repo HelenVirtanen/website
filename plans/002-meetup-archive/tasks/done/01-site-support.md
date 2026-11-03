@@ -3,7 +3,7 @@ id: "01"
 title: site-support-for-archive
 spec: "002"
 criteria: ["AC-5", "AC-6", "AC-8", "AC-9", "AC-10"]
-status: pending
+status: done
 depends_on: []
 owns: ["packages/content/src/schema.ts", "packages/content/src/collections.ts", "packages/content/src/documents/**", "packages/content/README.md", "packages/content/CLAUDE.md", "packages/content/AGENTS.md", "packages/content/templates/**", "apps/website/src/**", "apps/website/scripts/**", "apps/website/CLAUDE.md", "apps/website/AGENTS.md"]
 model: sonnet

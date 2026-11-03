@@ -22,3 +22,18 @@ export const body = style({
   maxWidth: '48rem',
   font: vars.font.shorthand.body,
 });
+
+export const privacy = style({
+  margin: 0,
+  font: vars.font.shorthand.caption,
+});
+
+export const privacyLink = style({
+  color: vars.color.text,
+  selectors: {
+    '&:focus-visible': {
+      outline: `${vars.border.width.thick} ${vars.border.style.solid} ${vars.color.focus}`,
+      outlineOffset: vars.spacing.xs,
+    },
+  },
+});

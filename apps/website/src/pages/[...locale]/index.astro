@@ -9,6 +9,7 @@ import FAQSection from '../../sections/FAQSection.astro';
 import PastEventsSection from '../../sections/PastEventsSection.astro';
 import JoinSection from '../../sections/JoinSection.astro';
 import { loadCatalog, localeOf, pastEvents, upcomingEvent } from '../../content/catalog';
+import { buildNow } from '../../content/now';
 import { defaultLocale, localizePath, locales, type Locale } from '../../i18n';
 
 // Маршрут `[...locale]`: у языка по умолчанию параметр пустой, поэтому ru живёт в `/`, en в `/en/`.
@@ -20,12 +21,7 @@ export const getStaticPaths = (() =>
 
 const { locale } = Astro.props as { locale: Locale };
 
-// BUILD_NOW — только для визуальных снимков: фиксирует «сейчас», чтобы главная не зависела от часов.
-const buildNow = process.env['BUILD_NOW'];
-const now = buildNow === undefined || buildNow === '' ? new Date() : new Date(buildNow);
-if (Number.isNaN(now.getTime())) {
-  throw new Error(`BUILD_NOW="${buildNow ?? ''}": expected an ISO date, e.g. 2026-07-01`);
-}
+const now = buildNow();
 
 // Каталог проверяется на сборке: битая ссылка или разошедшийся перевод роняют build.
 const catalog = await loadCatalog();

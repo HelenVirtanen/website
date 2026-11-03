@@ -1,4 +1,5 @@
 import type {
+  DocumentEntry,
   EventData,
   EventEntry,
   FaqEntry,
@@ -90,6 +91,20 @@ export function page(id: string, body = 'О митапе.'): PageEntry {
   };
 }
 
+export function document(id: string, data: Partial<DocumentEntry['data']> = {}): DocumentEntry {
+  return {
+    id,
+    filePath: filePathOf('documents', id),
+    body: 'Текст документа.',
+    data: {
+      title: 'Политика',
+      description: 'Описание документа, которое достаточно длинное для схемы: не меньше пятидесяти знаков.',
+      draft: false,
+      ...data,
+    },
+  };
+}
+
 export function faq(id: string, body: string): FaqEntry {
   return { id, filePath: filePathOf('faq', id), body, data: { title: 'Вопросы', order: 1, draft: false } };
 }
@@ -113,5 +128,6 @@ export function twoMeetupsCatalog() {
     partners: [] as PartnerEntry[],
     pages: [] as PageEntry[],
     faq: [] as FaqEntry[],
+    documents: [] as DocumentEntry[],
   };
 }

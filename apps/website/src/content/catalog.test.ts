@@ -52,6 +52,15 @@ describe('validateCatalog', () => {
     expect(messageOf(() => validateCatalog(catalog))).toContain('партнёр «zvuk» — черновик');
   });
 
+  it('расхождение photosUrl в переводе митапа', () => {
+    const catalog = twoMeetupsCatalog();
+    catalog.events[0] = event('ru/10', {
+      date: new Date('2024-03-14T18:00:00+03:00'),
+      photosUrl: 'https://example.com/photos',
+    });
+    expect(messageOf(() => validateCatalog(catalog))).toContain('events/en/10.md: поле photosUrl');
+  });
+
   it('расхождение passportRequired в переводе митапа', () => {
     const catalog = twoMeetupsCatalog();
     catalog.events[2] = event('en/10', { date: new Date('2024-03-14T18:00:00+03:00'), passportRequired: true });
@@ -214,6 +223,46 @@ describe('связи', () => {
       talk('ru/hidden', { event: '10', draft: true }),
     ];
     expect(talksOfEvent(meetup10, talks).map((t) => t.id)).toEqual(['ru/early', 'ru/late']);
+  });
+
+  it('talksOfEvent: доклады без времени идут после докладов со временем, между собой по имени файла', () => {
+    const untimed = (id: string) => {
+      const entry = talk(id, { event: '10' });
+      delete entry.data.time;
+      return entry;
+    };
+    const talks = [
+      untimed('ru/b-untimed'),
+      talk('ru/late', { event: '10', time: '21:00' }),
+      untimed('ru/a-untimed'),
+      talk('ru/early', { event: '10', time: '19:10' }),
+    ];
+    expect(talksOfEvent(meetup10, talks).map((t) => t.id)).toEqual([
+      'ru/early',
+      'ru/late',
+      'ru/a-untimed',
+      'ru/b-untimed',
+    ]);
+  });
+
+  it('scheduleOf: доклад без времени идёт после перерывов и докладов со временем', () => {
+    const untimed = talk('ru/untimed', { event: '10', title: 'Без времени' });
+    delete untimed.data.time;
+    const withBreak = event('ru/10', { schedule: [{ time: '20:00—20:15', title: 'ПЕРЕРЫВ', kind: 'break' }] });
+    const talks = [untimed, talk('ru/timed', { event: '10', time: '19:10', title: 'Со временем' })];
+    expect(scheduleOf(withBreak, talks).map((item) => item.title)).toEqual([
+      'Со временем',
+      'ПЕРЕРЫВ',
+      'Без времени',
+    ]);
+  });
+
+  it('talksOfSpeaker: на одном митапе доклады без времени идут после докладов со временем', () => {
+    const untimed = talk('ru/a-untimed', { event: '10' });
+    delete untimed.data.time;
+    const talks = [untimed, talk('ru/timed', { event: '10', time: '19:10' })];
+    const result = talksOfSpeaker(catalog.speakers[0]!, talks, [event('ru/10')]);
+    expect(result.map((r) => r.talk.id)).toEqual(['ru/timed', 'ru/a-untimed']);
   });
 
   it('talksOfSpeaker: доклады на митапах 10 и 15, каждый со своим митапом', () => {

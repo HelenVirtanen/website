@@ -91,6 +91,8 @@ const EventFields = z.object({
   registrationUrl: url.optional(),
   streamUrl: url.optional(),
   recordingUrl: url.optional(),
+  // Альбом с фотографиями митапа (VK, Яндекс Диск): сами фотографии на сайт не копируются.
+  photosUrl: url.optional(),
   partner: slug.optional(),
   // Перерывы и активности без спикера: у них нет своей страницы, доклады идут отдельными файлами.
   schedule: z.array(ScheduleItemSchema).default([]),
@@ -117,7 +119,8 @@ export const EventSchema = EventFields.transform((event) => {
 export const TalkSchema = z.object({
   event: slug,
   speakers: z.array(slug).min(1),
-  time: clockTime,
+  // Необязательно только потому, что у архивных митапов (до 31-го) время докладов не сохранилось.
+  time: clockTime.optional(),
   title: z.string().min(1),
   slidesUrl: url.optional(),
   videoUrl: url.optional(),
@@ -129,7 +132,8 @@ export const createSpeakerSchema = (image: ImageFunction) =>
   z
     .object({
       name: z.string().min(1),
-      role: z.string().min(1),
+      // Необязательна только потому, что у спикеров первых митапов должность не сохранилась.
+      role: z.string().min(1).optional(),
       // Фото необязательно: без него сайт рисует аватар с инициалами на сборке.
       photo: image().optional(),
       photoAlt: z.string().min(1).optional(),
@@ -172,5 +176,12 @@ export const FaqSchema = z.object({
   title: z.string().min(1),
   // Порядок карточек: меньше — левее.
   order: z.number().int().nonnegative(),
+  draft: z.boolean().default(false),
+});
+
+// Служебный документ без привязки к митапам: политика обработки персональных данных.
+export const DocumentSchema = z.object({
+  title: z.string().min(1).max(70),
+  description: z.string().min(50).max(160),
   draft: z.boolean().default(false),
 });

@@ -4,6 +4,7 @@ import {
   slugOf,
   type Catalog,
   type CatalogEntry,
+  type DocumentEntry,
   type EventEntry,
   type SpeakerEntry,
   type TalkEntry,
@@ -35,11 +36,13 @@ export type PublicPage =
   | (Base & { kind: 'home'; entry: PageEntry })
   | (Base & { kind: 'event'; entry: EventEntry })
   | (Base & { kind: 'talk'; entry: TalkEntry })
-  | (Base & { kind: 'speaker'; entry: SpeakerEntry });
+  | (Base & { kind: 'speaker'; entry: SpeakerEntry })
+  | (Base & { kind: 'document'; entry: DocumentEntry });
 
 type Kind = PublicPage['kind'];
 
-const SECTION: Record<Exclude<Kind, 'home'>, string> = {
+// Документ живёт прямо под языком, без папки раздела: `/personal-data/`.
+const SECTION: Record<Exclude<Kind, 'home' | 'document'>, string> = {
   event: 'events',
   talk: 'talks',
   speaker: 'speakers',
@@ -57,22 +60,25 @@ export function trimTrailingSlashes(path: string): string {
 }
 
 const pathOf = (kind: Kind, locale: Locale, slug: string): string =>
-  kind === 'home' ? localizePath(locale) : localizePath(locale, `${SECTION[kind]}/${slug}`);
+  kind === 'home'
+    ? localizePath(locale)
+    : localizePath(locale, kind === 'document' ? slug : `${SECTION[kind]}/${slug}`);
 
 /**
- * Публичные страницы по готовому каталогу: главная, митапы, доклады и спикеры каждого
+ * Публичные страницы по готовому каталогу: главная, митапы, доклады, спикеры и документы каждого
  * включённого языка, без черновиков. Чистая функция — тестируется без `astro:content`.
  */
 export function publicPagesOf(
-  catalog: Pick<Catalog, 'events' | 'talks' | 'speakers'> & { pages: PageEntry[] },
+  catalog: Pick<Catalog, 'events' | 'talks' | 'speakers'> & { pages: PageEntry[]; documents?: DocumentEntry[] },
 ): PublicPage[] {
-  const raw: { kind: Kind; entry: PageEntry | EventEntry | TalkEntry | SpeakerEntry }[] = [
+  const raw: { kind: Kind; entry: PageEntry | EventEntry | TalkEntry | SpeakerEntry | DocumentEntry }[] = [
     ...catalog.pages
       .filter((entry) => slugOf(entry) === 'index')
       .map((entry) => ({ kind: 'home' as const, entry })),
     ...catalog.events.filter(isPublished).map((entry) => ({ kind: 'event' as const, entry })),
     ...catalog.talks.filter(isPublished).map((entry) => ({ kind: 'talk' as const, entry })),
     ...catalog.speakers.filter(isPublished).map((entry) => ({ kind: 'speaker' as const, entry })),
+    ...(catalog.documents ?? []).filter(isPublished).map((entry) => ({ kind: 'document' as const, entry })),
   ].filter(({ entry }) => isEnabled(entry));
 
   // Переводы одной страницы делят вид и имя файла.

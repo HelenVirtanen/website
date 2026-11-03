@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import {
+  DocumentSchema,
   EventSchema,
   FaqSchema,
   PageSchema,
@@ -32,4 +33,5 @@ export const collections = {
     schema: ({ image }) => createPartnerSchema(image),
   }),
   faq: defineCollection({ loader: localized('faq'), schema: FaqSchema }),
+  documents: defineCollection({ loader: localized('documents'), schema: DocumentSchema }),
 };

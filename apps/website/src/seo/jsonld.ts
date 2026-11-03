@@ -112,12 +112,13 @@ export function jsonLdOf(
         '@type': 'Person',
         ...base,
         name,
-        description: role,
+        ...(role && { description: role }),
         ...(links.length > 0 && { sameAs: links.map((link) => link.url) }),
       };
     }
 
     case 'talk':
+    case 'document':
       return undefined;
   }
 }

@@ -35,6 +35,7 @@ const ru = {
   'hero.pastNote': 'Митап уже прошёл',
   'date.long': '{day} {year}',
   'about.title': 'О митапе',
+  'about.privacy': 'Политика обработки персональных данных',
   'program.title': 'Программа',
   'program.hint':
     'Задай вопрос спикеру на митапе в чате MoscowCSS, обязательно укажи тег {tag}',
@@ -71,6 +72,7 @@ const ru = {
   'event.registration': 'Регистрация',
   'event.stream': 'Трансляция',
   'event.recording': 'Запись митапа',
+  'event.photos': 'Фотографии',
   'event.map': 'Показать на карте',
   'notFound.title': 'Страница не найдена',
   'notFound.text': 'По этому адресу ничего нет: страницу перенесли или в ссылке опечатка.',
@@ -89,6 +91,7 @@ const ru = {
   'og.kind.home': 'Сообщество фронтендеров',
   'og.kind.talk': 'Доклад',
   'og.kind.speaker': 'Спикер',
+  'og.kind.document': 'Документ',
   'og.kicker.event': 'Митап № {slug}',
   'og.home.meta': 'Митапы фронтендеров в Москве',
 } as const;
@@ -128,6 +131,7 @@ const en = {
   'hero.pastNote': 'This meetup has already taken place',
   'date.long': '{day}, {year}',
   'about.title': 'About the meetup',
+  'about.privacy': 'Personal data processing policy',
   'program.title': 'Program',
   'program.hint':
     'Ask the speaker a question at the meetup in the MoscowCSS chat and be sure to include the tag {tag}',
@@ -164,6 +168,7 @@ const en = {
   'event.registration': 'Registration',
   'event.stream': 'Broadcast',
   'event.recording': 'Meetup recording',
+  'event.photos': 'Photos',
   'event.map': 'Show on the map',
   'notFound.title': 'Page not found',
   'notFound.text': 'There is nothing at this address: the page has moved or the link has a typo.',
@@ -182,6 +187,7 @@ const en = {
   'og.kind.home': 'Frontend community',
   'og.kind.talk': 'Talk',
   'og.kind.speaker': 'Speaker',
+  'og.kind.document': 'Document',
   'og.kicker.event': 'Meetup #{slug}',
   'og.home.meta': 'Frontend meetups in Moscow',
 } satisfies Record<UiKey, string>;

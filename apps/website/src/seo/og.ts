@@ -24,6 +24,7 @@ export const OG_TYPE: Record<Kind, 'website' | 'article' | 'profile'> = {
   event: 'website',
   talk: 'article',
   speaker: 'profile',
+  document: 'article',
 };
 
 /** Параметр маршрута `/og/[...path].png`: адрес без слэшей по краям, у Twitter с суффиксом. */
@@ -87,6 +88,8 @@ export function cardInputOf(
       };
     }
     case 'speaker':
-      return { title: page.entry.data.name, kicker: t('og.kind.speaker'), meta: page.entry.data.role };
+      return { title: page.entry.data.name, kicker: t('og.kind.speaker'), meta: page.entry.data.role ?? '' };
+    case 'document':
+      return { title: page.entry.data.title, kicker: t('og.kind.document'), meta: page.entry.data.description };
   }
 }
