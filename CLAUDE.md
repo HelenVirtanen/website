@@ -50,7 +50,7 @@ changing the architecture they describe.
 ├── tools/visual/         # screenshot capture/compare for visual regression + check-targets.mjs, the hit-area gate (not a workspace package)
 ├── adr/, specs/, plans/  # decision records, specs, task queues
 ├── docs/deploy.md        # one-off GitHub Pages and DNS setup
-├── .github/workflows/    # deploy.yml: every check on push/PR, Pages deploy
+├── .github/workflows/    # deploy.yml: every check on push/PR, Pages deploy, nightly rebuild
 ├── plop-templates/       # generator for new:component
 ├── turbo.json
 ├── pnpm-workspace.yaml
@@ -601,8 +601,9 @@ regenerate rather than edit).
   accept untested logic as the norm. Content tests use fixtures from
   `src/test/fixtures.ts`, not the real content.
 - **CI and deploy.** `.github/workflows/deploy.yml` runs lint, test, build,
-  `check:seo` and `build:storybook` on push to `main` and on pull requests;
-  deploy to GitHub Pages happens only outside pull requests. pnpm and Node
+  `check:seo` and `build:storybook` on push to `main`, on pull requests and every
+  night; deploy to GitHub Pages happens only outside pull requests. The nightly run
+  exists because the next meetup is decided at build time. pnpm and Node
   versions come from `packageManager` and `.nvmrc`, not from the YAML. One-off
   GitHub/DNS setup: `docs/deploy.md`. The husky `pre-commit` hook runs
   `pnpm lint && pnpm test && pnpm build`.

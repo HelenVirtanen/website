@@ -7,6 +7,10 @@ The site is deployed to GitHub Pages by `.github/workflows/deploy.yml`.
 - Every push to `main` runs the full check (`pnpm lint`, `pnpm test`, `pnpm build`,
   `pnpm --filter website check:seo`, `pnpm build:storybook`) and, if it passes, deploys
   `apps/website/dist`. Pull requests run the same checks without deploying.
+- Every night at 00:00 Moscow time the same workflow rebuilds and deploys `main` without a push. Which
+  meetup is next is decided at build time, so otherwise a finished meetup stays on the home page as
+  upcoming, with its registration button, until somebody pushes. GitHub disables scheduled runs after
+  60 days without repository activity; re-enable them in the Actions tab.
 - Node comes from `.nvmrc`; pnpm comes from the `packageManager` field in `package.json`.
 
 ## One-time GitHub setup (done by a human)
