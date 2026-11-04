@@ -36,6 +36,13 @@ export const videoLink = style({
   height: '100%',
   color: 'inherit',
   textDecoration: 'none',
+  selectors: {
+    // Кадр обрезает всё снаружи, поэтому контур рисуем внутрь.
+    '&:focus-visible': {
+      outline: `${vars.border.width.thick} ${vars.border.style.solid} ${vars.color.focus}`,
+      outlineOffset: `calc(-1 * ${vars.border.width.thick})`,
+    },
+  },
 });
 
 export const play = style({

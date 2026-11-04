@@ -108,3 +108,4 @@ Ruling: два токена дополнительно к таблице (slider
 - 06 header-and-menu: done, contract e65351fb, verified grep, lint/test/build/check:seo/storybook
 - 07 hero-and-tag-pile: done, contract e65351fb, verified pile tests, grep, BUILD_NOW проверил исполнитель, gates зелёные; визуально в задаче 11
 - 08 organizer-card: done, contract e65351fb, verified dist grep/order, tests, gates; фото перенесено в organizers/assets
+- 09 motion-and-targets-sweep: done, contract e65351fb, verified grep, размеры в браузере на 1440, gates зелёные; исполнитель запускал скрипт с отключённой песочницей из-за локального порта

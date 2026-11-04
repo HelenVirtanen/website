@@ -18,6 +18,7 @@ export const input = style({
   boxSizing: 'border-box',
   flex: '1 1 auto',
   minWidth: 0,
+  minHeight: vars.size.hitTarget,
   padding: vars.layout.inset.l,
   border: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.divider}`,
   borderRadius: vars.radius.medium,
@@ -31,6 +32,9 @@ export const input = style({
 });
 
 export const submit = style({
+  boxSizing: 'border-box',
+  minWidth: vars.size.hitTarget,
+  minHeight: vars.size.hitTarget,
   padding: vars.layout.inset.l,
   border: 'none',
   borderRadius: vars.radius.medium,

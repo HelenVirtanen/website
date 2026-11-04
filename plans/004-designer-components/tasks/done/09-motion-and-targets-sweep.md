@@ -3,7 +3,7 @@ id: "09"
 title: motion-and-targets-sweep
 spec: "004"
 criteria: ["AC-2", "AC-3"]
-status: pending
+status: done
 depends_on: ["03", "04", "05", "06", "07", "08"]
 owns: ["packages/ui/src/components/LinkList/**", "packages/ui/src/components/SearchField/**", "packages/ui/src/components/SearchResults/**", "packages/ui/src/components/JoinBlock/**", "packages/ui/src/components/MediaTile/**", "packages/ui/src/components/MapPlaceholder/**", "packages/ui/src/components/SpeakerAvatar/**", "apps/website/src/sections/AboutSection.css.ts", "apps/website/src/sections/JoinSection.css.ts", "apps/website/src/sections/PartnerSection.css.ts", "apps/website/src/sections/PastEventsSection.css.ts", "apps/website/src/sections/ProgramSection.css.ts", "tools/visual/check-targets.mjs"]
 model: sonnet

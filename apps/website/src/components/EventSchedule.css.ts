@@ -58,6 +58,8 @@ export const people = style({
 });
 
 export const link = style({
+  // У строчной ссылки поля не двигают строку, но увеличивают зону нажатия.
+  paddingBlock: `calc((${vars.size.hitTarget} - 1lh) / 2)`,
   color: vars.color.text,
   selectors: {
     '&:focus-visible': {

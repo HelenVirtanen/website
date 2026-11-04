@@ -1,6 +1,9 @@
 import { style } from '@vanilla-extract/css';
 import { vars } from '@moscowcss/design-system';
 
+// Зона нажатия до hitTarget за счёт полей с компенсирующим отрицательным отступом: вёрстка не едет.
+const hitInset = `max(calc(${vars.size.hitTarget} * 0), calc((${vars.size.hitTarget} - 1lh) / 2))`;
+
 export const frame = style({
   display: vars.display.block,
   width: '100%',
@@ -34,9 +37,19 @@ export const label = style({
 });
 
 export const link = style({
-  display: vars.display.block,
-  marginTop: vars.spacing.s,
+  display: vars.display.inlineFlex,
+  alignItems: vars.alignItems.center,
+  minWidth: vars.size.hitTarget,
+  paddingBlock: hitInset,
+  marginTop: `calc(${vars.spacing.s} - ${hitInset})`,
+  marginBottom: `calc(-1 * ${hitInset})`,
   color: vars.color.info,
   font: vars.font.shorthand.caption,
   textDecoration: 'underline',
+  selectors: {
+    '&:focus-visible': {
+      outline: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.focus}`,
+      outlineOffset: vars.spacing.xs,
+    },
+  },
 });
