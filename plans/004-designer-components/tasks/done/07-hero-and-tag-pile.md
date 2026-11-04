@@ -3,7 +3,7 @@ id: "07"
 title: hero-and-tag-pile
 spec: "004"
 criteria: ["AC-5", "AC-9", "AC-10"]
-status: pending
+status: done
 depends_on: ["01", "02", "04", "06"]
 owns: ["packages/ui/src/components/TagPile/**", "packages/ui/package.json", "packages/ui/src/index.ts", "apps/storybook/stories/TagPile.stories.ts", "apps/website/src/sections/HeroSection.astro", "apps/website/src/sections/HeroSection.css.ts", "apps/website/src/pages/[...locale]/index.astro", "packages/content/src/schema.ts", "packages/content/src/events/ru/31.md", "packages/content/src/events/en/31.md", "packages/content/README.md"]
 model: sonnet

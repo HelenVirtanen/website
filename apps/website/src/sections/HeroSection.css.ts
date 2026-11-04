@@ -1,70 +1,109 @@
-import { globalStyle, style } from '@vanilla-extract/css';
+import { style } from '@vanilla-extract/css';
 import { vars, media } from '@moscowcss/design-system';
-import { inner as layoutInner, sectionPadding } from './sectionLayout.css';
 
-export const section = style([
-  sectionPadding,
-  {
-    position: vars.position.relative,
-    color: vars.color.text,
-    background: vars.color.background,
-    overflow: 'hidden',
-    selectors: {
-      '&::before': {
-        content: '""',
-        position: vars.position.absolute,
-        inset: vars.inset.zero,
-        opacity: 0.08,
-        backgroundImage: `radial-gradient(circle at 15% 20%, ${vars.color.divider} 0, transparent 40%),
-        radial-gradient(circle at 85% 75%, ${vars.color.divider} 0, transparent 35%)`,
-        pointerEvents: 'none',
-      },
-    },
-  },
-]);
+export const section = style({
+  boxSizing: 'border-box',
+  position: vars.position.relative,
+  paddingBlockStart: vars.adaptive.heroPaddingTop,
+  paddingBlockEnd: vars.adaptive.heroPaddingBottom,
+  paddingInline: vars.adaptive.heroPaddingInline,
+  color: vars.color.text,
+  background: vars.color.background,
+  overflow: 'hidden',
+});
 
-export const inner = style([
-  layoutInner,
-  {
-    gap: vars.spacing['4xl'],
-  },
-]);
-
-export const intro = style({
+export const inner = style({
+  position: vars.position.relative,
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.layout.gap.xxl,
+  gap: vars.adaptive.heroGap,
   width: '100%',
 });
 
-export const introHead = style({
+export const group = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  alignItems: vars.alignItems.center,
-  gap: vars.layout.gap.l,
-  textAlign: 'center',
+  gap: vars.adaptive.heroGroupGap,
 });
 
-export const star = style({
-  display: vars.display.block,
-  width: '8rem',
-  height: 'auto',
-  color: vars.color.focus,
+export const stage = style({
+  position: vars.position.relative,
+  display: vars.display.flex,
+  flexDirection: vars.flexDirection.column,
+  gap: vars.adaptive.heroGroupGap,
+});
+
+export const pile = style({
   '@media': {
-    [media.desktop]: {
-      width: vars.size.heroLogoWidth,
-      height: vars.size.heroLogoHeight,
+    [media.tablet]: {
+      pointerEvents: 'none',
     },
   },
+});
+
+export const metaRow = style({
+  display: vars.display.flex,
+  alignItems: 'end',
+  justifyContent: vars.justifyContent.spaceBetween,
+  gap: vars.spacing.m,
+  '@media': {
+    [media.tablet]: {
+      position: vars.position.absolute,
+      insetInline: 0,
+      insetBlockEnd: 0,
+    },
+  },
+});
+
+export const chip = style({
+  boxSizing: 'border-box',
+  paddingBlock: vars.adaptive.heroChipPaddingBlock,
+  paddingInline: vars.adaptive.heroChipPaddingInline,
+  border: `${vars.border.width.thin} ${vars.border.style.dashed} ${vars.color.border}`,
+  borderRadius: vars.adaptive.heroChipRadius,
+  font: vars.font.shorthand.heroChip,
+  letterSpacing: vars.font.letterSpacing.heroChip,
+  textTransform: 'uppercase',
+  whiteSpace: 'nowrap',
+});
+
+export const date = style({
+  display: vars.display.flex,
+  flexDirection: vars.flexDirection.column,
+  alignItems: 'end',
+  gap: vars.adaptive.heroDateGap,
+  margin: 0,
+  marginInlineStart: 'auto',
+  textAlign: 'right',
+});
+
+export const pastNote = style({
+  margin: 0,
+  color: vars.color.pastNote,
+  font: vars.font.shorthand.navMeta,
+});
+
+export const day = style({
+  margin: 0,
+  color: vars.color.link,
+  font: vars.font.shorthand.heroDate,
+});
+
+export const time = style({
+  margin: 0,
+  font: vars.font.shorthand.navMono,
 });
 
 export const title = style({
   margin: 0,
-  font: vars.font.shorthand.heroTitle,
-  letterSpacing: vars.font.letterSpacing.figmaHeroTitle,
+  font: vars.font.shorthand.heroDisplay,
+  letterSpacing: vars.font.letterSpacing.heroDisplay,
   textTransform: 'uppercase',
+  // На мобильном заголовок складывается в два слова столбиком, от планшета идёт одной строкой.
+  width: 'min-content',
   '@media': {
-    [media.laptop]: {
+    [media.tablet]: {
+      width: 'auto',
       whiteSpace: 'nowrap',
     },
   },
@@ -73,121 +112,54 @@ export const title = style({
 export const modes = style({
   display: vars.display.flex,
   flexWrap: 'wrap',
-  gap: vars.spacing.s,
-  alignItems: vars.alignItems.center,
-  justifyContent: 'flex-start',
-  width: '100%',
+  columnGap: vars.adaptive.heroMetaGap,
+  rowGap: vars.spacing.xs,
   margin: 0,
   padding: 0,
   listStyle: 'none',
-  font: vars.font.shorthand.heroLightLabel,
-  letterSpacing: vars.font.letterSpacing.figmaWide,
+  font: vars.font.shorthand.heroMeta,
 });
 
 export const modeItem = style({
-  display: vars.display.flex,
-  gap: vars.spacing.s,
-  alignItems: vars.alignItems.center,
   selectors: {
-    '& + &::before': {
-      content: "'/'",
+    '&::before': {
+      content: '"/ "',
     },
   },
 });
 
-export const footer = style({
+export const about = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.layout.gap.xxl,
-  width: '100%',
+  gap: vars.adaptive.heroAboutGap,
+  // Справа на мобильном стоит закреплённая кнопка: текст не заходит под неё.
+  paddingInlineEnd: `calc(${vars.adaptive.ctaSize} + ${vars.spacing.l})`,
   '@media': {
-    [media.laptop]: {
-      flexDirection: 'row',
-      alignItems: 'flex-end',
-      justifyContent: vars.justifyContent.spaceBetween,
-      gap: vars.layout.gap.xxl,
+    [media.tablet]: {
+      paddingInlineEnd: 0,
+    },
+    [media.wide]: {
+      maxWidth: vars.adaptive.heroAboutWidth,
     },
   },
 });
 
-export const details = style({
-  display: vars.display.flex,
-  flexDirection: vars.flexDirection.column,
-  gap: vars.layout.gap.m,
-  alignSelf: 'flex-start',
-  width: '100%',
-  maxWidth: '100%',
-  textAlign: 'left',
-});
-
-export const infoLine = style({
+export const lead = style({
   margin: 0,
-  font: vars.font.shorthand.heroInfoLine,
-  letterSpacing: vars.font.letterSpacing.figmaWide,
+  font: vars.font.shorthand.heroLead,
+  letterSpacing: vars.font.letterSpacing.heroText,
 });
 
-export const meetupLine = style([
-  infoLine,
-  {
-    textTransform: 'uppercase',
-  },
-]);
-
-export const passportNote = style([
-  infoLine,
-  {
-    color: vars.color.focus,
-  },
-]);
-
-export const ctaColumn = style({
-  display: vars.display.flex,
-  flexDirection: vars.flexDirection.column,
-  gap: vars.layout.gap.m,
-  alignItems: 'flex-start',
-  width: '100%',
-  '@media': {
-    [media.laptop]: {
-      alignItems: 'flex-end',
-      alignSelf: 'flex-end',
-      width: 'auto',
-    },
-  },
-});
-
-export const ctaButton = style({});
-
-globalStyle(`${ctaButton} span`, {
-  boxSizing: 'border-box',
-  display: vars.display.inlineFlex,
-  alignItems: vars.alignItems.center,
-  justifyContent: vars.justifyContent.center,
-  width: '100%',
-  maxWidth: vars.size.heroCtaWidth,
-  height: vars.size.heroCtaHeight,
-  paddingBlock: 0,
-  paddingInline: vars.layout.inset.l,
-  font: vars.font.shorthand.heroCtaLabel,
-  letterSpacing: vars.font.letterSpacing.registration,
-  textAlign: 'center',
-  '@media': {
-    [media.laptop]: {
-      width: vars.size.heroCtaWidth,
-    },
-  },
-});
-
-export const onlineNote = style({
+export const body = style({
   margin: 0,
-  font: vars.font.shorthand.heroLightLabel,
-  letterSpacing: vars.font.letterSpacing.figmaWide,
-  textAlign: 'left',
-  '@media': {
-    [media.laptop]: {
-      alignSelf: 'flex-end',
-      maxWidth: 'none',
-      whiteSpace: 'nowrap',
-      textAlign: 'right',
-    },
-  },
+  font: vars.font.shorthand.heroBody,
+  letterSpacing: vars.font.letterSpacing.heroText,
+});
+
+export const dim = style({
+  opacity: 0.7,
+});
+
+export const link = style({
+  color: vars.color.link,
 });

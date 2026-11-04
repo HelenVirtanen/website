@@ -1,103 +1,97 @@
 ---
-import CallToAction from '@moscowcss/ui/components/CallToAction';
-import { Logo } from '@moscowcss/icons';
+import TagPile from '@moscowcss/ui/components/TagPile';
 import type { CollectionEntry } from 'astro:content';
-import { eventWhen, fillTemplate } from '../content/format';
+import { slugOf } from '../content/catalog';
+import { eventDateParts, fillTemplate } from '../content/format';
 import { useTranslations, type Locale } from '../i18n';
 import {
   section,
   inner,
-  intro,
-  introHead,
-  star,
+  group,
+  stage,
+  pile,
+  metaRow,
+  chip,
+  date,
+  pastNote,
+  day,
+  time,
   title,
   modes,
   modeItem,
-  footer,
-  details,
-  meetupLine,
-  infoLine,
-  passportNote,
-  ctaColumn,
-  ctaButton,
-  onlineNote,
+  about,
+  lead,
+  body,
+  dim,
+  link,
 } from './HeroSection.css';
 
 interface Props {
   // Митап, который показывает блок
   event: CollectionEntry<'events'>;
   locale: Locale;
-  // Митап уже прошёл: вместо регистрации — пометка и ссылка на запись
+  // Митап уже прошёл: вместо ссылки на трансляцию — пометка и ссылка на запись
   past: boolean;
   id?: string;
 }
 
 const { event, locale, past, id = 'registration' } = Astro.props;
 const t = useTranslations(locale);
-const { tagline, venue, modes: eventModes, passportRequired, registrationUrl, streamUrl, recordingUrl } =
-  event.data;
-const dateTime = eventWhen(event.data, locale, { withTime: t('hero.dateTime'), dateOnly: t('date.long') });
+const { tagline, venue, modes: eventModes, tags, passportRequired, streamUrl, recordingUrl } = event.data;
+const parts = eventDateParts(event.data.date, locale);
+const slug = slugOf(event);
+// Чип с номером только у пронумерованных митапов; `online-2021` его не получает
+const number = /^\d+$/.test(slug) ? slug : undefined;
 ---
 
 <section class={section} id={id} data-visual="hero">
   <div class={inner}>
-    <div class={intro}>
-      <div class={introHead}>
-        <Logo class={star} aria-hidden="true" />
-        <h1 class={title}>{t('hero.title')}</h1>
+    <div class={group}>
+      <div class={stage}>
+        {tags.length > 0 && <TagPile class={pile} tags={tags} label={t('hero.tags')} />}
+        <div class={metaRow}>
+          {number !== undefined && <span class={chip}>{fillTemplate(t('hero.meetupNumber'), { number })}</span>}
+          <p class={date}>
+            {past && <span class={pastNote}>{t('hero.pastNote')}</span>}
+            <span class={day}>{fillTemplate(t('date.long'), parts)}</span>
+            {event.data.time !== undefined && <span class={time}>{parts.time}</span>}
+          </p>
+        </div>
       </div>
+      <h1 class={title}>{t('hero.title')}</h1>
       <ul class={modes}>
-        {
-          eventModes.map((mode) => (
-            <li class={modeItem}>{mode}</li>
-          ))
-        }
+        {eventModes.map((mode) => <li class={modeItem}>{mode}</li>)}
       </ul>
     </div>
 
-    <div class={footer}>
-      <div class={details}>
-        <p class={meetupLine}>{tagline}</p>
-        <p class={infoLine}>{dateTime}</p>
-        {venue.address && <p class={infoLine}>{fillTemplate(t('hero.address'), { address: venue.address })}</p>}
-        {passportRequired && <p class={passportNote}>{t('hero.passport')}</p>}
-      </div>
-      <div class={ctaColumn}>
-        {
-          past ? (
-            <>
-              <p class={onlineNote}>{t('hero.pastNote')}</p>
-              {recordingUrl && (
-                <p class={onlineNote}>
-                  <a href={recordingUrl} target="_blank" rel="noopener noreferrer">
-                    {t('hero.watchRecording')}
-                  </a>
-                </p>
-              )}
-            </>
-          ) : (
-            <>
-              {registrationUrl && (
-                <CallToAction class={ctaButton} href={registrationUrl}>
-                  {t('hero.registration')}
-                </CallToAction>
-              )}
-              <p class={onlineNote}>
-                {t('hero.onlineNote')}
-                <br />
-                {/* Без адреса трансляции ссылка была бы пустой — показываем текст без ссылки */}
-                {streamUrl ? (
-                  <a href={streamUrl} target="_blank" rel="noopener noreferrer">
-                    {t('hero.watchStream')}
-                  </a>
-                ) : (
-                  <span>{t('hero.watchStream')}</span>
-                )}
-              </p>
-            </>
+    <div class={about}>
+      <p class={lead}>{tagline}</p>
+      {venue.address && <p class:list={[body, dim]}>{fillTemplate(t('hero.address'), { address: venue.address })}</p>}
+      {passportRequired && <p class:list={[body, dim]}>{t('hero.passport')}</p>}
+      {
+        past ? (
+          recordingUrl && (
+            <p class={body}>
+              <a class={link} href={recordingUrl} target="_blank" rel="noopener noreferrer">
+                {t('hero.watchRecording')}
+              </a>
+            </p>
           )
-        }
-      </div>
+        ) : (
+          <p class={body}>
+            {t('hero.onlineNote')}
+            <br />
+            {/* Без адреса трансляции ссылка была бы пустой — показываем текст без ссылки */}
+            {streamUrl ? (
+              <a class={link} href={streamUrl} target="_blank" rel="noopener noreferrer">
+                {t('hero.watchStream')}
+              </a>
+            ) : (
+              <span>{t('hero.watchStream')}</span>
+            )}
+          </p>
+        )
+      }
     </div>
   </div>
 </section>

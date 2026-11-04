@@ -12,7 +12,8 @@
     "./components/*": "./src/components/*/index.ts"
   },
   "scripts": {
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "test": "vitest run"
   },
   "dependencies": {
     "@moscowcss/design-system": "workspace:*",
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@moscowcss/eslint-config": "workspace:*",
     "@moscowcss/typescript-config": "workspace:*",
-    "astro": "7.0.6"
+    "astro": "7.0.6",
+    "vitest": "5.0.5"
   }
 }

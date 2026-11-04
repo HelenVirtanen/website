@@ -206,6 +206,7 @@ export const adaptiveScale = {
   heroDateGap: { base: px(2), wide: px(4) },
   heroMetaGap: { base: px(16), wide: px(64), desktopLarge: px(69) },
   heroAboutGap: { base: px(8), wide: px(12), desktopLarge: px(16) },
+  heroAboutWidth: { base: px(620), desktopLarge: px(709) },
   ctaSize: { base: px(112), wide: px(132), desktopLarge: px(231) },
   ctaOffsetInline: { base: px(16), tablet: px(24), wide: px(56), desktopLarge: px(80) },
   ctaOffsetBlock: { base: px(16), wide: px(40), desktopLarge: px(48) },

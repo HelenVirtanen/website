@@ -1,5 +1,6 @@
 ---
 import type { GetStaticPaths } from 'astro';
+import CallToAction from '@moscowcss/ui/components/CallToAction';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import AboutSection from '../../sections/AboutSection.astro';
 import HeroSection from '../../sections/HeroSection.astro';
@@ -10,7 +11,7 @@ import PastEventsSection from '../../sections/PastEventsSection.astro';
 import JoinSection from '../../sections/JoinSection.astro';
 import { loadCatalog, localeOf, pastEvents, upcomingEvent } from '../../content/catalog';
 import { buildNow } from '../../content/now';
-import { defaultLocale, localizePath, locales, type Locale } from '../../i18n';
+import { defaultLocale, localizePath, locales, useTranslations, type Locale } from '../../i18n';
 
 // Маршрут `[...locale]`: у языка по умолчанию параметр пустой, поэтому ru живёт в `/`, en в `/en/`.
 export const getStaticPaths = (() =>
@@ -20,6 +21,7 @@ export const getStaticPaths = (() =>
   }))) satisfies GetStaticPaths;
 
 const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
 
 const now = buildNow();
 
@@ -64,5 +66,12 @@ const alternates = locales.map((code) => ({ locale: code, path: localizePath(cod
     <JoinSection locale={locale} />
     <AboutSection page={page} locale={locale} />
     <PastEventsSection events={pastEvents(events, now)} locale={locale} />
+    {
+      featured && !featured.past && featured.event.data.registrationUrl && (
+        <CallToAction href={featured.event.data.registrationUrl} aria-label={t('hero.registerLabel')}>
+          {t('hero.register')}
+        </CallToAction>
+      )
+    }
   </main>
 </BaseLayout>

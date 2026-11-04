@@ -90,6 +90,8 @@ const EventFields = z.object({
       .optional(),
   }),
   modes: z.array(z.string().min(1)).min(1),
+  // Темы митапа для плашек в Hero. Переводятся вместе с текстом, поэтому не сверяются с `ru`.
+  tags: z.array(z.string().min(1)).default([]),
   passportRequired: z.boolean(),
   registrationUrl: url.optional(),
   streamUrl: url.optional(),

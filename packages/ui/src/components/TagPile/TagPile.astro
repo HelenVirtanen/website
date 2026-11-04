@@ -1,0 +1,37 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { root, tag, tones } from './TagPile.css';
+
+const Tag = 'ul';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Темы на плашках в исходном порядке */
+  tags: string[];
+  /** Доступное имя списка тем */
+  label: string;
+}
+
+const { tags, label, class: className, ...attrs } = Astro.props;
+---
+
+<Tag
+  class:list={[root, className]}
+  aria-label={label}
+  data-tag-pile
+  data-tones={JSON.stringify(tones)}
+  {...attrs}
+>
+  {
+    tags.map((name, index) => (
+      <li class:list={[tag, tones[index % tones.length]]} data-tag-pile-item>
+        {name}
+      </li>
+    ))
+  }
+</Tag>
+
+<script>
+  import { setupTagPile } from './TagPile.client';
+
+  document.querySelectorAll<HTMLElement>('[data-tag-pile]').forEach(setupTagPile);
+</script>
