@@ -16,11 +16,6 @@ const fallDown = keyframes({
   to: { transform: 'translateY(115vh)' },
 });
 
-const spinAroundAxis = keyframes({
-  from: { transform: 'rotateY(0deg)' },
-  to: { transform: 'rotateY(360deg)' },
-});
-
 const spinFlat = keyframes({
   from: { transform: 'rotate(0deg)' },
   to: { transform: 'rotate(360deg)' },
@@ -41,21 +36,26 @@ const shapeBase = {
   transitionProperty: 'color, opacity',
   transitionDuration: vars.motion.duration.base,
   transitionTimingFunction: vars.motion.easing.standard,
+} as const;
+
+const svgMotion = {
+  display: vars.display.block,
   animationTimingFunction: vars.motion.easing.linear,
   animationIterationCount: 'infinite',
   willChange: 'transform',
 } as const;
 
+// Края окна просмотра растворяются, чтобы витки не обрывались резко.
 export const spring = style({
   ...shapeBase,
-  animationName: spinAroundAxis,
   height: vars.adaptive.decorSpringHeight,
+  overflow: 'hidden',
+  maskImage: `linear-gradient(to bottom, transparent, ${vars.color.text} 12%, ${vars.color.text} 88%, transparent)`,
 });
 
 globalStyle(`${spring} svg`, {
-  display: vars.display.block,
-  width: 'auto',
-  height: '100%',
+  ...svgMotion,
+  width: '100%',
   overflow: 'visible',
 });
 
@@ -65,15 +65,40 @@ globalStyle(`${spring} path`, {
   vectorEffect: 'non-scaling-stroke',
 });
 
+// Плоскую спираль нельзя повернуть в 3D: на ребре она схлопывается в полоску. У настоящего винта при
+// вращении витки бегут вдоль оси, поэтому длинная спираль едет за окном ровно на один виток и начинает
+// заново: шов не виден, все витки одинаковые. Числа — размеры файла: width — ширина, visible — высота окна из макета,
+// pitch — шаг витка, total — вся высота SVG; первые два витка неполные, окно начинается после них.
+const screwShape = ({ width, visible, pitch, total }: { width: number; visible: number; pitch: number; total: number }) => {
+  const start = 2 * pitch;
+  const screw = keyframes({
+    from: { transform: `translateY(${String((-start / total) * 100)}%)` },
+    to: { transform: `translateY(${String((-(start + pitch) / total) * 100)}%)` },
+  });
+  const shape = style({ aspectRatio: `${String(width)} / ${String(visible)}` });
+  globalStyle(`${shape} svg`, {
+    height: `${String((total / visible) * 100)}%`,
+    animationName: screw,
+  });
+  return shape;
+};
+
+// Порядок совпадает с формами в FallingDecor.astro.
+export const springShapes = [
+  screwShape({ width: 102, visible: 197, pitch: 25.144, total: 329 }),
+  screwShape({ width: 54, visible: 143, pitch: 18.181, total: 239 }),
+  screwShape({ width: 181, visible: 493, pitch: 63.311, total: 826 }),
+];
+
 export const snow = style({
   ...shapeBase,
-  animationName: spinFlat,
   width: vars.adaptive.decorSnowSize,
   height: vars.adaptive.decorSnowSize,
 });
 
 globalStyle(`${snow} svg`, {
-  display: vars.display.block,
+  ...svgMotion,
+  animationName: spinFlat,
   width: '100%',
   height: '100%',
 });

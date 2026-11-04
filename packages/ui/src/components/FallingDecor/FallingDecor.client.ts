@@ -11,6 +11,7 @@ const CHECK_INTERVAL_MS = 150;
 interface DecorClasses {
   fall: string;
   spring: string;
+  springShapes: string[];
   snow: string;
   muted: string;
   springTones: string[];
@@ -86,12 +87,15 @@ export function setupFallingDecor(root: HTMLElement) {
       // У пружинки цвет закреплён за формой, как в макете; снежинка красится в любой цвет палитры.
       const shapeIndex = Math.floor(item.pick * shapes.length);
       const toneIndex = isSnow ? Math.floor(item.pick * tones.length) : shapeIndex;
-      spin.className = [isSnow ? classes.snow : classes.spring, tones[toneIndex] ?? ''].join(' ');
-      spin.style.animationDuration = `${String(item.spinMs)}ms`;
+      const base = isSnow ? [classes.snow] : [classes.spring, classes.springShapes[shapeIndex] ?? ''];
+      spin.className = [...base, tones[toneIndex] ?? ''].join(' ');
       spin.style.scale = String(item.scale);
 
-      const shape = shapes[shapeIndex];
-      if (shape) spin.append(shape.cloneNode(true));
+      const shape = shapes[shapeIndex]?.cloneNode(true) as SVGElement | undefined;
+      if (shape) {
+        shape.style.animationDuration = `${String(item.spinMs)}ms`;
+        spin.append(shape);
+      }
       fall.append(spin);
       root.append(fall);
     }

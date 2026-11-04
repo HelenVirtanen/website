@@ -41,7 +41,7 @@ export interface FallingItem {
   fallMs: number;
   /** Отрицательная задержка: фигуры с первой секунды уже разбросаны по высоте */
   delayMs: number;
-  /** Время одного оборота вокруг своей оси, мс */
+  /** Время одного оборота: у пружинки витки за это время сдвигаются на один шаг, мс */
   spinMs: number;
   /** Масштаб фигуры */
   scale: number;
@@ -59,7 +59,7 @@ export function fallingItems(count: number, random: Random): FallingItem[] {
       leftPercent: ((index + random()) / count) * 100,
       fallMs,
       delayMs: -random() * fallMs,
-      spinMs: between(8000, 16000, random),
+      spinMs: between(2000, 4000, random),
       scale: between(0.7, 1.2, random),
       pick: random(),
     };
