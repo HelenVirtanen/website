@@ -14,8 +14,7 @@ export const root = style({
   background: vars.color.surfaceDark,
 });
 
-// Подложка с восьмигранным срезом отдельным слоем: контур фото уже вырезан в самом файле,
-// и обрезка по подложке сдвинула бы его.
+// Подложка отдельным слоем: фото лежит поверх неё, и оба обрезаны одной фигурой.
 export const photo = style({
   position: vars.position.relative,
   flex: '0 0 auto',
@@ -34,6 +33,7 @@ export const photo = style({
 
 globalStyle(`${photo} img`, {
   position: vars.position.relative,
+  clipPath: dimensions.octagon,
   display: vars.display.block,
   width: '100%',
   height: '100%',

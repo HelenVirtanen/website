@@ -18,11 +18,21 @@ interface Props extends HTMLAttributes<typeof Tag> {
   prevLabel: string;
   /** Подпись кнопки «вперёд» для скринридера */
   nextLabel: string;
+  /** Листать самому через столько миллисекунд, по кругу; без значения лента листается только стрелками */
+  autoplayMs?: number;
+  /** Перемешать карточки при загрузке */
+  shuffle?: boolean;
 }
 
-const { prevLabel, nextLabel, class: className, ...attrs } = Astro.props;
+const { prevLabel, nextLabel, autoplayMs, shuffle = false, class: className, ...attrs } = Astro.props;
 ---
-<Tag class:list={[root, className]} data-card-slider {...attrs}>
+<Tag
+  class:list={[root, className]}
+  data-card-slider
+  data-card-slider-autoplay={autoplayMs}
+  data-card-slider-shuffle={shuffle || undefined}
+  {...attrs}
+>
   <div class={head}>
     <slot name="header" />
     <div class={nav}>

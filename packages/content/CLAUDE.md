@@ -47,11 +47,11 @@ Decision record: `adr/001-content-model-md-relations.md`.
   reference a draft partner. The `new:*` templates start as drafts.
 - **Organizers** (`organizers/<lang>/<name>.md`, photos in `organizers/assets/`):
   `status: current | past` is required and, like `contacts`, must match `ru`
-  (the build fails with the file and the field). `contacts.telegram | github |
-  website` are optional `https` URLs, not a free list: the card prints only the
+  (the build fails with the file and the field). `contacts.telegram | channel |
+  github | website` are optional `https` URLs, not a free list: the card prints only the
   filled ones in that order, with a short text taken from the URL. `photo` is
   optional and needs `photoAlt`. There is no order field: organizers are equal, so
-  the home page shuffles the cards in the browser on every load. It shows
+  the home page shows them in a self-playing looped slider, shuffled on every load. It shows
   `current` entries only; `past` ones are for a future about-page. Never invent
   data for people whose details are not provided.
 - **Meetup `tags`:** optional list of topics shown as falling tags in the Hero,

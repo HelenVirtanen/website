@@ -1,9 +1,12 @@
 import { media, vars } from '@moscowcss/design-system';
 import Swiper from 'swiper';
-import { Navigation } from 'swiper/modules';
+import { Autoplay, Navigation } from 'swiper/modules';
 import 'swiper/css';
+import { loopSetCount, shuffled } from './sliderOrder';
 
 const INITIALIZED = 'data-card-slider-initialized';
+// Swiper закольцовывает ленту, только когда карточек больше, чем видно на экране; на широком окне видно до четырёх.
+const MIN_LOOP_SLIDES = 8;
 
 // Имя переменной берём из контракта, а не строкой: при переименовании токена сломается сборка, а не слайдер.
 const GAP_VAR = /^var\((--[^,)]+)/.exec(vars.adaptive.sliderGap)?.[1];
@@ -18,6 +21,22 @@ function cssVarToPx(name: string): number {
   return parseFloat(raw) || 0;
 }
 
+// Копии нужны только для кольца: скринридер и Tab проходят исходные карточки один раз.
+function addLoopCopies(wrapper: Element) {
+  const originals = Array.from(wrapper.children);
+  const copies = loopSetCount(originals.length, MIN_LOOP_SLIDES) - 1;
+  for (let set = 0; set < copies; set += 1) {
+    for (const original of originals) {
+      const copy = original.cloneNode(true) as HTMLElement;
+      copy.setAttribute('aria-hidden', 'true');
+      copy.querySelectorAll('a, button').forEach((control) => {
+        control.setAttribute('tabindex', '-1');
+      });
+      wrapper.append(copy);
+    }
+  }
+}
+
 export function setupCardSlider(root: HTMLElement) {
   if (root.hasAttribute(INITIALIZED)) return;
   root.setAttribute(INITIALIZED, '');
@@ -25,14 +44,28 @@ export function setupCardSlider(root: HTMLElement) {
   const container = root.querySelector<HTMLElement>('[data-card-slider-container]');
   const prev = root.querySelector<HTMLButtonElement>('[data-card-slider-prev]');
   const next = root.querySelector<HTMLButtonElement>('[data-card-slider-next]');
-  if (!container || !prev || !next) return;
+  const wrapper = root.querySelector('.swiper-wrapper');
+  if (!container || !prev || !next || !wrapper) return;
+
+  if (root.hasAttribute('data-card-slider-shuffle')) {
+    wrapper.append(...shuffled(Array.from(wrapper.children), Math.random));
+  }
+
+  const autoplayMs = Number(root.dataset['cardSliderAutoplay']) || 0;
+  const looped = autoplayMs > 0 && wrapper.children.length > 1;
+  if (looped) addLoopCopies(wrapper);
+  const autoplays = looped && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Отступ между слайдами меняется на этих ступенях; ширину слайда задаёт CSS (adaptive.cardWidth).
   // matchMedia — только внутри setupCardSlider: модуль импортируется и при серверном рендере.
   const gapQueries = [window.matchMedia(media.tablet), window.matchMedia(media.wide)];
 
   const swiper = new Swiper(container, {
-    modules: [Navigation],
+    modules: [Navigation, Autoplay],
+    loop: looped,
+    autoplay: autoplays
+      ? { delay: autoplayMs, disableOnInteraction: false, pauseOnMouseEnter: true }
+      : false,
     direction: 'horizontal',
     slidesPerView: 'auto',
     slidesPerGroup: 1,
@@ -60,5 +93,15 @@ export function setupCardSlider(root: HTMLElement) {
   };
 
   swiper.on('resize', sync);
+
+  // Пока человек читает карточку с клавиатуры, она не должна уезжать из-под фокуса.
+  if (autoplays) {
+    root.addEventListener('focusin', () => {
+      swiper.autoplay.pause();
+    });
+    root.addEventListener('focusout', () => {
+      swiper.autoplay.resume();
+    });
+  }
   gapQueries.forEach((query) => query.addEventListener('change', sync));
 }

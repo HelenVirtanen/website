@@ -173,6 +173,11 @@ export const createOrganizerSchema = (image: ImageFunction) =>
               message: "контакт Telegram: https://t.me/<имя>",
             })
             .optional(),
+          channel: url
+            .refine((value) => /^https:\/\/t\.me\/\w+\/?$/.test(value), {
+              message: "контакт канал Telegram: https://t.me/<имя>",
+            })
+            .optional(),
           github: url
             .refine((value) => /^https:\/\/github\.com\/[\w-]+\/?$/.test(value), {
               message: "контакт GitHub: https://github.com/<имя>",

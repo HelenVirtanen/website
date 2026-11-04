@@ -7,3 +7,8 @@ export function shuffled<T>(items: readonly T[], random: () => number): T[] {
   }
   return result;
 }
+
+/** Сколько раз повторить набор карточек, чтобы в нём было не меньше `minimum`. */
+export function loopSetCount(count: number, minimum: number): number {
+  return count > 0 ? Math.ceil(minimum / count) : 0;
+}

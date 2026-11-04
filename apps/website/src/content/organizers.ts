@@ -3,7 +3,7 @@ import type { OrganizerEntry } from './catalog';
 
 export type OrganizerStatus = OrganizerEntry['data']['status'];
 
-export type ContactKind = 'telegram' | 'github' | 'website';
+export type ContactKind = 'telegram' | 'channel' | 'github' | 'website';
 
 export interface Contact {
   kind: ContactKind;
@@ -14,6 +14,7 @@ export interface Contact {
 
 export interface OrganizerContacts {
   telegram?: string | undefined;
+  channel?: string | undefined;
   github?: string | undefined;
   website?: string | undefined;
 }
@@ -35,6 +36,7 @@ const pathOf = (url: URL): string => url.pathname.replace(/^\/+|\/+$/g, '');
 
 const TEXT_OF: Record<ContactKind, (url: URL) => string> = {
   telegram: (url) => `@${pathOf(url)}`,
+  channel: (url) => `@${pathOf(url)}`,
   github: pathOf,
   // Для показа: URL хранит кириллицу как punycode и percent-кодирование.
   website: (url) =>
@@ -42,9 +44,9 @@ const TEXT_OF: Record<ContactKind, (url: URL) => string> = {
 };
 
 // Порядок вывода на карточке.
-const KINDS: readonly ContactKind[] = ['telegram', 'github', 'website'];
+const KINDS: readonly ContactKind[] = ['telegram', 'channel', 'github', 'website'];
 
-/** Заполненные контакты в порядке telegram, github, website; без контактов — пустой список. */
+/** Заполненные контакты в порядке telegram, channel, github, website; без контактов — пустой список. */
 export function contactsOf(contacts: OrganizerContacts | undefined): Contact[] {
   const result: Contact[] = [];
   for (const kind of KINDS) {

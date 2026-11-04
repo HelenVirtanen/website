@@ -52,6 +52,16 @@ describe('contactsOf', () => {
     ]);
   });
 
+  it('канал идёт сразу под личным телеграмом', () => {
+    const contacts = contactsOf({
+      website: 'https://vzhyx.io',
+      channel: 'https://t.me/frtvt',
+      telegram: 'https://t.me/antytoto',
+    });
+    expect(contacts.map((contact) => contact.kind)).toEqual(['telegram', 'channel', 'website']);
+    expect(contacts[1]?.text).toBe('@frtvt');
+  });
+
   it('часть контактов: как у Романа — телеграм и сайт, без GitHub', () => {
     const contacts = contactsOf({ telegram: 'https://t.me/DreamShaded', website: 'https://vzhyx.io' });
     expect(contacts.map((contact) => contact.kind)).toEqual(['telegram', 'website']);

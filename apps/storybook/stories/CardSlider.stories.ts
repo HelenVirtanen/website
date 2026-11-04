@@ -20,6 +20,11 @@ async function clickNext(canvasElement: HTMLElement, times: number) {
 // Начало ленты: «назад» недоступна (серая, not-allowed), «вперёд» активна (чёрная, при наведении синяя).
 export const Slider = {};
 
+// Сама листается раз в две секунды и идёт по кругу, как организаторы на главной.
+export const SliderAutoplay = {
+  args: { autoplayMs: 2000 },
+};
+
 // Середина ленты: обе стрелки активны.
 export const SliderMiddle = {
   play: ({ canvasElement }: PlayContext) => clickNext(canvasElement, 1),

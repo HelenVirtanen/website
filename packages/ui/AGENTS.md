@@ -58,7 +58,7 @@ demoed in `apps/storybook`.
   in an octagon, name, text from Markdown in the default slot, contacts; the contacts list may be empty),
   `CallToAction` (floating registration button, `position: fixed`,
   `mix-blend-mode: difference`), `Button` (link or button, `default` and `nav`
-  sizes), `CardSlider`/`Card`/`BlockTitle` (FAQ block), `NavBar` (header and the
+  sizes), `CardSlider`/`Card`/`BlockTitle` (FAQ block; `autoplayMs` makes the slider self-playing and looped, paused on hover, on focus and under reduced motion, `shuffle` randomises the cards: both used by the organizers), `NavBar` (header and the
   full-screen menu).
 - **Styles live only in the colocated `.css.ts`** — no inline `style="…"` with
   literal values.

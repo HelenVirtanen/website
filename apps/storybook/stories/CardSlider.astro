@@ -6,9 +6,11 @@ import { CardSlider, CardSlide } from '@moscowcss/ui/components/Card';
 interface Props {
   /** Сколько карточек показать: при малом числе обе стрелки недоступны */
   count?: number;
+  /** Листать самому через столько миллисекунд, по кругу */
+  autoplayMs?: number;
 }
 
-const { count = 5 } = Astro.props;
+const { count = 5, autoplayMs } = Astro.props;
 
 const cards = [
   { title: 'ХОЧУ СТАТЬ СПИКЕРОМ НА МИТАПЕ', links: true },
@@ -19,7 +21,7 @@ const cards = [
 ].slice(0, count);
 ---
 
-<CardSlider prevLabel="Предыдущая карточка" nextLabel="Следующая карточка">
+<CardSlider prevLabel="Предыдущая карточка" nextLabel="Следующая карточка" autoplayMs={autoplayMs}>
   <BlockTitle slot="header">ЧАВО</BlockTitle>
   {
     cards.map((card) => (
