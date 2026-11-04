@@ -1,4 +1,4 @@
-import { style } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 import { media, vars } from '@moscowcss/design-system';
 
 // Ряд карточек: на мобиле — колонка, с tablet — в строку; stretch выравнивает высоту.
@@ -21,20 +21,18 @@ export const root = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
   flex: '1 1 0',
+  gap: vars.adaptive.cardGap,
   width: '100%',
   minWidth: 0,
-  maxWidth: vars.size.cardWidthMobile,
-  paddingBlock: vars.size.cardPaddingBlock,
-  paddingInline: vars.size.cardPaddingInline,
+  maxWidth: vars.adaptive.cardWidth,
+  paddingBlock: vars.adaptive.cardPaddingBlock,
+  paddingInline: vars.adaptive.cardPaddingInline,
   background: vars.color.background,
   border: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.border}`,
 
   '@media': {
     [media.mobile]: {
       flex: '0 0 auto',
-    },
-    [media.laptop]: {
-      maxWidth: vars.size.cardWidthLaptop,
     },
   },
 
@@ -49,14 +47,17 @@ export const root = style({
 export const header = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
-  gap: vars.layout.gap.m,
+  gap: vars.spacing.s,
 });
 
 export const title = style({
   margin: 0,
   color: vars.color.text,
-  font: vars.font.shorthand.h3,
+  font: vars.font.shorthand.cardTitle,
+  lineHeight: vars.adaptive.cardTitleLine,
   letterSpacing: vars.font.letterSpacing.heading,
+  textTransform: 'uppercase',
+  overflowWrap: 'anywhere',
 });
 
 export const subtitle = style({
@@ -67,8 +68,16 @@ export const subtitle = style({
 
 export const content = style({
   margin: 0,
-  marginTop: vars.layout.gap.m,
+  minWidth: 0,
   color: vars.color.text,
-  font: vars.font.shorthand.body,
+  font: vars.font.shorthand.cardBody,
+  lineHeight: vars.adaptive.cardBodyLine,
+  overflowWrap: 'anywhere',
   flex: '1 1 auto',
+});
+
+// :where() обнуляет специфичность: класс ссылки в месте использования (например, в JoinBlock) выигрывает.
+globalStyle(`:where(${content} a)`, {
+  color: vars.color.link,
+  textDecoration: 'underline',
 });

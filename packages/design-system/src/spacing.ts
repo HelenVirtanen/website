@@ -45,6 +45,7 @@ const contract = {
     partnerLogoOffsetTop: null,
     programHintMaxWidth: null,
     hitTarget: null,
+    sliderHeadWidth: null,
     organizerPhoto: null,
     organizerPadding: null,
   },
@@ -90,6 +91,7 @@ const values = {
     partnerLogoOffsetTop: '10.146875rem',
     programHintMaxWidth: '36rem', // 576px
     hitTarget: '2.625rem', // 42px — минимальная зона нажатия
+    sliderHeadWidth: '26.5625rem', // 425px
     organizerPhoto: '15.577rem', // 249.23px
     organizerPadding: '2rem', // 32px
   },

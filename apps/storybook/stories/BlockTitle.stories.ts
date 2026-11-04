@@ -30,3 +30,10 @@ export const Inverse = {
     backgrounds: { default: 'dark' },
   },
 };
+
+// Длинный заголовок не выходит за край и переносится внутри рамки.
+export const LongTitle = {
+  args: {
+    slots: { default: 'Часто задаваемые вопросы про митап' },
+  },
+};

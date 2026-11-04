@@ -221,6 +221,7 @@ export const adaptiveScale = {
   cardBodyLine: { base: px(28), tablet: px(32) },
   sliderGap: { base: px(10), tablet: px(20) },
   sliderHeaderGap: { base: px(16), tablet: px(40), wide: px(20) },
+  sliderHeadGap: { base: px(32), wide: px(40) },
   organizerGap: { base: px(24), tablet: px(19), wide: px(24) },
 } as const satisfies Record<string, Steps>;
 

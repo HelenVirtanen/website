@@ -4,7 +4,7 @@ import Card, { CardSlider, CardSlide } from '@moscowcss/ui/components/Card';
 import Prose from '@moscowcss/ui/components/Prose';
 import { render, type CollectionEntry } from 'astro:content';
 import { useTranslations, type Locale } from '../i18n';
-import { section, inner, header, slider } from './FAQSection.css';
+import { section, inner, slider } from './FAQSection.css';
 
 interface Props {
   // Вопросы языка страницы
@@ -27,11 +27,8 @@ const cards = await Promise.all(
 
 <section class={section} data-visual="faq">
   <div class={inner}>
-    <div class={header}>
-      <BlockTitle>{t('faq.title')}</BlockTitle>
-    </div>
-
-    <CardSlider class={slider}>
+    <CardSlider class={slider} prevLabel={t('slider.prev')} nextLabel={t('slider.next')}>
+      <BlockTitle slot="header">{t('faq.title')}</BlockTitle>
       {
         cards.map(({ title, Content }) => (
           <CardSlide>

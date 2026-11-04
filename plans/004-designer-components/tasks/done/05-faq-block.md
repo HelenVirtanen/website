@@ -3,7 +3,7 @@ id: "05"
 title: faq-block
 spec: "004"
 criteria: ["AC-6", "AC-11", "AC-12", "AC-13"]
-status: pending
+status: done
 depends_on: ["01"]
 owns: ["packages/ui/src/components/Card/**", "packages/ui/src/components/BlockTitle/**", "apps/storybook/stories/Card.stories.ts", "apps/storybook/stories/CardSlider.stories.ts", "apps/storybook/stories/CardSlider.astro", "apps/storybook/stories/BlockTitle.stories.ts", "apps/website/src/sections/FAQSection.astro", "apps/website/src/sections/FAQSection.css.ts", "packages/content/src/faq/**"]
 model: sonnet

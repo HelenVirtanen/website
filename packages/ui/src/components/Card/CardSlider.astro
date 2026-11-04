@@ -1,29 +1,38 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
-import { ArrowRight } from '@moscowcss/icons';
+import { ArrowLong } from '@moscowcss/icons';
 import {
+  head,
   nav,
   navButton,
   navButtonIcon,
-  navButtonPrev,
+  navButtonIconPrev,
   root,
   swiper,
 } from './CardSlider.css';
 
 const Tag = 'div';
 
-interface Props extends HTMLAttributes<typeof Tag> {}
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Подпись кнопки «назад» для скринридера */
+  prevLabel: string;
+  /** Подпись кнопки «вперёд» для скринридера */
+  nextLabel: string;
+}
 
-const { class: className, ...attrs } = Astro.props;
+const { prevLabel, nextLabel, class: className, ...attrs } = Astro.props;
 ---
 <Tag class:list={[root, className]} data-card-slider {...attrs}>
-  <div class={nav}>
-    <button type="button" class:list={[navButton, navButtonPrev]} data-card-slider-prev aria-label="Предыдущий слайд">
-      <ArrowRight class={navButtonIcon} aria-hidden="true" />
-    </button>
-    <button type="button" class={navButton} data-card-slider-next aria-label="Следующий слайд">
-      <ArrowRight class={navButtonIcon} aria-hidden="true" />
-    </button>
+  <div class={head}>
+    <slot name="header" />
+    <div class={nav}>
+      <button type="button" class={navButton} data-card-slider-prev aria-label={prevLabel}>
+        <ArrowLong class:list={[navButtonIcon, navButtonIconPrev]} preserveAspectRatio="none" aria-hidden="true" />
+      </button>
+      <button type="button" class={navButton} data-card-slider-next aria-label={nextLabel}>
+        <ArrowLong class={navButtonIcon} preserveAspectRatio="none" aria-hidden="true" />
+      </button>
+    </div>
   </div>
   <div class:list={[swiper, 'swiper']} data-card-slider-container>
     <div class="swiper-wrapper">

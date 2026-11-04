@@ -1,51 +1,50 @@
 ---
 import Card from '@moscowcss/ui/components/Card';
+import BlockTitle from '@moscowcss/ui/components/BlockTitle';
 import { CardSlider, CardSlide } from '@moscowcss/ui/components/Card';
+
+interface Props {
+  /** Сколько карточек показать: при малом числе обе стрелки недоступны */
+  count?: number;
+}
+
+const { count = 5 } = Astro.props;
+
+const cards = [
+  { title: 'ХОЧУ СТАТЬ СПИКЕРОМ НА МИТАПЕ', links: true },
+  { title: 'А ПИВО?', text: 'AfterParty в PIVBAR\n1-я Тверская-Ямская ул., 2, стр. 1, Москва, 125047' },
+  { title: 'ВОПРОСЫ', text: 'Задавайте вопросы спикерам в чате трансляции или заранее в канале с тегом #moscowcss_questions' },
+  { title: 'А ГДЕ ТЕЛЕГА?', text: 'Канал и чат митапа в Telegram' },
+  { title: 'СКОЛЬКО ИДЕТ?', text: 'с 18:00 до 22:00*\n*не забудь запланировать часа полтора-два на AfterParty' },
+].slice(0, count);
 ---
 
-<CardSlider>
-  <CardSlide>
-    <Card title="ХОЧУ СТАТЬ СПИКЕРОМ НА МИТАПЕ">
-   	  {' 1. Посмотри'} <a href="https://gist.github.com/LenaVladi/5f196be72b5a2bca9a4c5869cf2b2088" target="_blank" rel="noopener noreferrer">{' памятку'}</a> 
-      <br />
-      {' 2. Напиши оргам '}
-      <a href="https://t.me/RinaPa" target="_blank" rel="noopener noreferrer">@RinaPa</a>
-      {', '}
-      <a href="https://t.me/DreamShaded" target="_blank" rel="noopener noreferrer">@DreamShaded</a>
-      {', '}
-      <a href="https://t.me/Ppppst" target="_blank" rel="noopener noreferrer">@Ppppst</a>
-    </Card>
-  </CardSlide>
-  <CardSlide>
-    <Card title="А ПИВО?">
-      Афтапати запланировано в баре:
-      <br />
-      название
-      <br />
-      Адрес (ссылка на Я.карты)
-    </Card>
-  </CardSlide>
-  <CardSlide>
-    <Card title="ВОПРОСЫ">
-      Задавайте вопросы спикерам в чате трансляции
-      <br />
-      {'или заранее в '} <a href="https://t.me/@moscowcss" target="_blank" rel="noopener noreferrer">@moscowcss</a>
-      <br />
-      с тегом #moscowcss_questions
-    </Card>
-  </CardSlide>
-  <CardSlide>
-    <Card title="А ГДЕ ТЕЛЕГА?">
-      {'Канал:'} <a href="https://t.me/moscowcss" target="_blank" rel="noopener noreferrer">@moscowcss</a>
-      <br />
-      {'Чат: '} <a href="https://t.me/moscowcss_chat" target="_blank" rel="noopener noreferrer">@moscowcss_chat</a> 
-    </Card>
-  </CardSlide>
-  <CardSlide>
-    <Card title="СКОЛЬКО ИДЕТ?">
-      с 18:00 до 22:00*
-      <br />
-      *не забудь запланировать часа полтора-два на афтапати 
-    </Card>
-  </CardSlide>
+<CardSlider prevLabel="Предыдущая карточка" nextLabel="Следующая карточка">
+  <BlockTitle slot="header">ЧАВО</BlockTitle>
+  {
+    cards.map((card) => (
+      <CardSlide>
+        <Card title={card.title}>
+          {card.links ? (
+            <>
+              {'1. Посмотри '}
+              <a href="https://gist.github.com/LenaVladi/5f196be72b5a2bca9a4c5869cf2b2088" target="_blank" rel="noopener noreferrer">памятку</a>
+              <br />
+              {'2. Напиши оргам '}
+              <a href="https://t.me/RinaPa" target="_blank" rel="noopener noreferrer">@RinaPa</a>
+              {', '}
+              <a href="https://t.me/DreamShaded" target="_blank" rel="noopener noreferrer">@DreamShaded</a>
+            </>
+          ) : (
+            card.text?.split('\n').map((line, index) => (
+              <>
+                {index > 0 && <br />}
+                {line}
+              </>
+            ))
+          )}
+        </Card>
+      </CardSlide>
+    ))
+  }
 </CardSlider>

@@ -101,3 +101,7 @@ Ruling: один ревью-проход в конце очереди вмест
 - 02 local-fonts: done, contract e65351fb, verified grep/ls/lockfile/build; файлы LICENSE.txt, отчёт вне owns записан дирижёром
 - 01 foundation-tokens: done, contract e65351fb, verified scale test 1439/1440, root.css unchanged, motion file, lint/test/build
 Ruling: каталог отчётов не добавлен в owns, отчёт отдельным файлом только если замок пропустил, иначе текстом дирижёру — правка owns сделала бы согласие устаревшим — цена: дирижёр дописывает отчёт сам
+- 03 button: done, contract e65351fb, verified grep, lint/test/build
+- 04 floating-cta: done, contract e65351fb, verified grep, lint/test/build; визуально в задаче 11
+Ruling: два токена дополнительно к таблице (sliderHeadGap, sliderHeadWidth) добавлены дирижёром, исполнитель взял чужие токены с тем же значением — эти токены удалялись в задаче 10 — цена: нет
+- 05 faq-block: done, contract e65351fb, verified grep, lint/test/build
