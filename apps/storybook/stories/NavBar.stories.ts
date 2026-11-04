@@ -1,9 +1,13 @@
 import NavBar from '@moscowcss/ui/components/NavBar';
 import { setupNavBar } from '../../../packages/ui/src/components/NavBar/NavBar.client';
+// Стили вложенной кнопки в серверном рендере Storybook сами не подключаются.
+import '../../../packages/ui/src/components/Button/Button.css';
 
 export default {
   title: 'Components/NavBar',
   component: NavBar,
+  // Панель меню закреплена на весь экран: поля канваса сдвинули бы шапку относительно неё.
+  parameters: { layout: 'fullscreen' },
 };
 
 const args = {
