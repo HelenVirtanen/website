@@ -9,6 +9,11 @@ globalStyle(':focus-visible', {
   borderRadius: vars.radius.large,
 });
 
+// Цель ссылки пропуска получает фокус только программно: кольцо вокруг всей страницы ничего не сообщает.
+globalStyle('main:focus-visible', {
+  outline: 'none',
+});
+
 globalStyle('::selection', {
   color: vars.color.onButtonHover,
   background: vars.color.buttonHover,

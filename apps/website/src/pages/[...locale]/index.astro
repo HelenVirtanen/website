@@ -51,7 +51,7 @@ const alternates = locales.map((code) => ({ locale: code, path: localizePath(cod
   lang={locale}
   alternates={alternates}
 >
-  <main id="main">
+  <main id="main" tabindex="-1">
     {featured && <HeroSection event={featured.event} locale={locale} past={featured.past} />}
     {
       featured && (

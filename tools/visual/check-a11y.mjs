@@ -138,6 +138,12 @@ async function checkKeyboard(page, where) {
     report(where, 'skip-link', 'первый Tab не ведёт на ссылку пропуска навигации');
   } else if (first.target && !(await page.evaluate((id) => Boolean(document.querySelector(id)), first.target))) {
     report(where, 'skip-link', `цель ${first.target} не найдена`);
+  } else {
+    await page.keyboard.press('Enter');
+    const moved = await page.evaluate(() => document.activeElement?.tagName === 'MAIN');
+    if (!moved) report(where, 'skip-link', 'после Enter фокус не перешёл на main');
+    await page.goto(page.url().split('#')[0], { waitUntil: 'load' });
+    await page.keyboard.press('Tab');
   }
 
   const seen = new Set();

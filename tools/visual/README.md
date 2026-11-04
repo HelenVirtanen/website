@@ -98,7 +98,7 @@ server, and exits 1 on any violation. It covers every page type in the light and
 
 - axe with the WCAG 2.0, 2.1 and 2.2 A and AA rules;
 - structure: language, title, one `h1`, heading order, one `main`;
-- keyboard: skip link first, a visible ring on every stop, nothing off screen or under the sticky header;
+- keyboard: skip link first and moving focus to `main`, a visible ring on every stop, nothing off screen or under the sticky header;
 - the phone menu: opens by keyboard, keeps Tab inside, Esc closes and returns focus;
 - reflow at 320, text at 200% and the WCAG 1.4.12 text spacing;
 - a pause control for moving content, and sliders with live animation;
