@@ -3,7 +3,7 @@ id: "02"
 title: local-fonts
 spec: "004"
 criteria: ["AC-16"]
-status: pending
+status: done
 depends_on: []
 owns: ["packages/fonts/**"]
 model: sonnet

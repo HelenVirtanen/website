@@ -8,7 +8,7 @@ conflict. Below is only what's specific to this package.
 ## What this is
 
 Font **loading** — `@font-face` declarations in `index.css` plus the `woff2`
-files (in `inter/`, `montserrat/`, `jetbrains/`). No build step, no lint script.
+files (in `inter/`, `montserrat/`, `jetbrains/`, `jost/`, `golos/`). No build step, no lint script.
 Montserrat Regular/SemiBold/Bold are also stored as **TTF** and exported from
 `package.json` for `@moscowcss/og`.
 
