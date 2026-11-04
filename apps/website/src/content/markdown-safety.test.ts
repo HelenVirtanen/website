@@ -1,9 +1,13 @@
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { isExternalUrl, isSafeUrl, markdownSafetyPlugin, MarkdownSafetyError } from './markdown-safety';
 
+// resolve: на Windows путь файла без диска не считается абсолютным.
+const filePath = resolve('/repo/packages/content/src/talks/ru/x.md');
 const set: [string, unknown][] = [];
 const ctx = {
-  fileURL: new URL('file:///repo/packages/content/src/talks/ru/x.md'),
+  fileURL: pathToFileURL(filePath),
   setProperty: (_node: unknown, key: string, value: unknown) => {
     set.push([key, value]);
   },
@@ -47,7 +51,7 @@ describe('markdownSafetyPlugin', () => {
 
   it('сырой HTML роняет сборку с путём файла', () => {
     expect(() => markdownSafetyPlugin.raw({}, ctx)).toThrow(MarkdownSafetyError);
-    expect(() => markdownSafetyPlugin.raw({}, ctx)).toThrow('/repo/packages/content/src/talks/ru/x.md');
+    expect(() => markdownSafetyPlugin.raw({}, ctx)).toThrow(filePath);
   });
 
   it('ссылка и картинка с опасной схемой роняют сборку, безопасные проходят', () => {

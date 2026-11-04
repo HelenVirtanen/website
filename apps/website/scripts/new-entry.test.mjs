@@ -98,7 +98,7 @@ describe('new-entry', () => {
     expect(runNewEntry([kind, name], { today, dirs, ...quiet })).toBe(0);
     for (const locale of LOCALES) {
       const text = read(KINDS[kind].collection, locale, `${name}.md`);
-      const [, frontmatter = '', body = ''] = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(text) ?? [];
+      const [, frontmatter = '', body = ''] = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(text) ?? [];
       const data = SCHEMAS[kind].parse(parseYaml(frontmatter));
       expect(data.draft, `${kind}/${locale}`).toBe(true);
       // Сырой HTML (включая <!-- -->) сборка отклоняет — в заготовке его быть не должно.
