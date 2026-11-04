@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { vars, media } from '@moscowcss/design-system';
+import { dimensions, vars, media } from '@moscowcss/design-system';
 
 const focusRing = {
   outline: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.focus}`,
@@ -30,7 +30,7 @@ export const bar = style({
   display: vars.display.flex,
   alignItems: vars.alignItems.center,
   justifyContent: vars.justifyContent.spaceBetween,
-  gap: vars.adaptive.navActionsGap,
+  gap: `min(${vars.adaptive.navActionsGap}, ${dimensions.fit.navGap})`,
   paddingBottom: vars.adaptive.navGap,
   borderBottom: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.dividerSoft}`,
   selectors: {
@@ -50,6 +50,7 @@ export const home = style({
   minHeight: vars.size.hitTarget,
   color: vars.color.link,
   font: vars.font.shorthand.navLogo,
+  fontSize: `min(${vars.font.size.navLogo}, ${dimensions.fit.navLogoFont})`,
   letterSpacing: vars.font.letterSpacing.navLogo,
   textDecoration: 'none',
   textTransform: 'uppercase',
@@ -96,7 +97,7 @@ export const actions = style({
   flexShrink: 0,
   display: vars.display.flex,
   alignItems: vars.alignItems.center,
-  gap: vars.adaptive.navActionsGap,
+  gap: `min(${vars.adaptive.navActionsGap}, ${dimensions.fit.navGap})`,
 });
 
 // Иконка встаёт ровно на край полей, а не глубже на половину разницы с зоной нажатия.

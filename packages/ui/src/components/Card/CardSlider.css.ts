@@ -89,6 +89,16 @@ globalStyle(`${navButtonIcon} path`, {
 export const swiper = style({
   width: '100%',
   overflow: 'hidden',
+  selectors: {
+    // Без скрипта стрелки не работают: лента листается сама, иначе карточки справа недоступны.
+    [`${root}:not([data-card-slider-initialized]) &`]: {
+      overflowX: 'auto',
+    },
+  },
+});
+
+globalStyle(`${root}:not([data-card-slider-initialized]) .swiper-wrapper`, {
+  gap: vars.adaptive.sliderGap,
 });
 
 globalStyle(`${swiper} .swiper-wrapper`, {

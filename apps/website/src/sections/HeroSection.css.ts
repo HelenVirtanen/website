@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { vars, media } from '@moscowcss/design-system';
+import { dimensions, vars, media } from '@moscowcss/design-system';
 
 export const section = style({
   boxSizing: 'border-box',
@@ -103,12 +103,15 @@ export const time = style({
 export const title = style({
   margin: 0,
   font: vars.font.shorthand.heroDisplay,
+  // Уже 375 кегль уменьшается вместе с окном, иначе слово обрезается краем экрана.
+  fontSize: `min(${vars.font.size.heroDisplay}, calc((100vw - 2 * ${vars.adaptive.heroPaddingInline}) / ${dimensions.fit.heroWordEm}))`,
   letterSpacing: vars.font.letterSpacing.heroDisplay,
   textTransform: 'uppercase',
   // На мобильном заголовок складывается в два слова столбиком, от планшета идёт одной строкой.
   width: 'min-content',
   '@media': {
     [media.tablet]: {
+      fontSize: vars.font.size.heroDisplay,
       width: 'auto',
       whiteSpace: 'nowrap',
     },

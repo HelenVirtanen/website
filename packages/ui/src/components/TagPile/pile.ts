@@ -18,6 +18,7 @@ const upperRowShare = 0.85;
 // Выше куча превращается в башню из плашек по одной.
 const maxLevels = 4;
 const fallShuffleRows = 1.5;
+const maxRiseInTags = 1.6;
 
 /** Детерминированный генератор (mulberry32): одинаковый сид даёт одинаковую кучу. */
 export function createRandom(seed: number): Random {
@@ -100,6 +101,15 @@ function rotatedBox(width: number, height: number, deg: number): { width: number
 
 function tiltLimit(row: number, rowCount: number, width: number, height: number): number {
   if (row === 0) return 0;
+  return Math.max(minTiltDeg, Math.min(rowTiltLimit(row, rowCount, width, height), overlapTiltLimit(width, height)));
+}
+
+// Длинная плашка с большим наклоном закрывает текст на соседних рядах.
+function overlapTiltLimit(width: number, height: number): number {
+  return (Math.asin(Math.min(1, (height * maxRiseInTags) / width)) * 180) / Math.PI;
+}
+
+function rowTiltLimit(row: number, rowCount: number, width: number, height: number): number {
   // Второй ряд лежит почти ровно на нижнем, как в макете: большой наклон закрывал бы соседей.
   if (row === 1 && rowCount > 2) return minTiltDeg;
   if (row < rowCount - 1) return midTiltDeg;

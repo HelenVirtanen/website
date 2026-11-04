@@ -3,6 +3,13 @@ const octagonPath =
 
 // Пропорции из макета (1280px artboard) — безразмерные, поэтому не CSS-переменные; размеры живут в vars.size.
 export const dimensions = {
+  // Подгонка под окна уже 375, куда макет не заходит: выше порога значения не срабатывают.
+  fit: {
+    // Ширина слова MOSCOW в кеглях заголовка Hero.
+    heroWordEm: '4.55',
+    navLogoFont: '5.34vw',
+    navGap: '5.34vw',
+  },
   mapFrame: {
     aspectRatio: '1280 / 583',
   },

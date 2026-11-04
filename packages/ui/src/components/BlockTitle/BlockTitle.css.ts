@@ -12,7 +12,9 @@ export const blockTitle = style({
   boxSizing: 'border-box',
   width: 'fit-content',
   maxWidth: '100%',
-  overflowWrap: 'anywhere',
+  // Длинное слово на узком экране делится по слогам, а не посреди буквы.
+  hyphens: 'auto',
+  overflowWrap: 'break-word',
 });
 
 export const blockTitleWhite = style({
