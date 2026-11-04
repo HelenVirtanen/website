@@ -7,7 +7,6 @@ const PHOTO_WIDTH = 480;
 
 export interface SpeakerImage {
   src: string;
-  alt: string;
   width: number;
   height: number;
 }
@@ -21,14 +20,13 @@ export const needsAvatar = (entry: SpeakerEntry): boolean => entry.data.photo ==
 
 /** Картинка спикера: оптимизированное фото или аватар с инициалами. */
 export async function speakerImage(entry: SpeakerEntry): Promise<SpeakerImage> {
-  const { photo, photoAlt, name } = entry.data;
+  const { photo } = entry.data;
   if (photo === undefined) {
-    return { src: avatarPath(entry), alt: name, width: AVATAR_SIZE, height: AVATAR_SIZE };
+    return { src: avatarPath(entry), width: AVATAR_SIZE, height: AVATAR_SIZE };
   }
   const optimized = await getImage({ src: photo, width: Math.min(PHOTO_WIDTH, photo.width), format: 'webp' });
   return {
     src: optimized.src,
-    alt: photoAlt ?? name,
     width: Number(optimized.attributes['width'] ?? photo.width),
     height: Number(optimized.attributes['height'] ?? photo.height),
   };

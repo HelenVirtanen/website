@@ -143,18 +143,9 @@ export const createSpeakerSchema = (image: ImageFunction) =>
       role: z.string().min(1).optional(),
       // Фото необязательно: без него сайт рисует аватар с инициалами на сборке.
       photo: image().optional(),
-      photoAlt: z.string().min(1).optional(),
       links: z.array(z.object({ label: z.string().min(1), url })).optional(),
       draft: z.boolean().default(false),
-    })
-    .refine(
-      (speaker) =>
-        speaker.photo === undefined || speaker.photoAlt !== undefined,
-      {
-        message: "у фото нужно описание photoAlt: что на нём видно",
-        path: ["photoAlt"],
-      },
-    );
+    });
 
 // Статус и контакты одинаковы во всех языках, текст переводится. Контакты — именованные поля,
 // а не список `links` как у спикеров: подпись и порядок едины для всех карточек.
@@ -165,7 +156,6 @@ export const createOrganizerSchema = (image: ImageFunction) =>
       status: z.enum(["current", "past"]),
       // Без фото блок фото на карточке не выводится.
       photo: image().optional(),
-      photoAlt: z.string().min(1).optional(),
       contacts: z
         .object({
           telegram: url
@@ -187,14 +177,7 @@ export const createOrganizerSchema = (image: ImageFunction) =>
         })
         .optional(),
       draft: z.boolean().default(false),
-    })
-    .refine(
-      (organizer) => organizer.photo === undefined || organizer.photoAlt !== undefined,
-      {
-        message: "у фото нужно описание photoAlt: что на нём видно",
-        path: ["photoAlt"],
-      },
-    );
+    });
 
 // Логотип и QR у каждого партнёра свои: логотип — файл в partners/assets, QR сайт рисует из qrUrl.
 export const createPartnerSchema = (image: ImageFunction) =>

@@ -104,10 +104,7 @@ describe('createOrganizerSchema', () => {
     expect(schema.safeParse(organizer({ contacts: { github: 'https://github.com/vzhyx/' } })).success).toBe(true);
   });
 
-  it('фото без описания отклоняется с путём photoAlt', () => {
-    const result = schema.safeParse(organizer({ photo: 'photo.png' }));
-    expect(result.success).toBe(false);
-    expect(result.error?.issues[0]?.path).toEqual(['photoAlt']);
-    expect(schema.safeParse(organizer({ photo: 'photo.png', photoAlt: 'Портрет' })).success).toBe(true);
+  it('фото не требует описания: имя стоит рядом с ним', () => {
+    expect(schema.safeParse(organizer({ photo: 'photo.png' })).success).toBe(true);
   });
 });

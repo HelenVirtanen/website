@@ -2,7 +2,6 @@
 name: "Егор Левченко"
 status: current
 photo: ../assets/egor-levchenko.png
-photoAlt: "Егор Левченко"
 contacts:
   telegram: https://t.me/antytoto
   channel: https://t.me/frtvt

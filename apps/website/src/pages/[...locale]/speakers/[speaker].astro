@@ -48,7 +48,7 @@ const image = await speakerImage(entry);
 >
   <EntityPage>
     <div class={header}>
-      <img class={photo} src={image.src} width={image.width} height={image.height} alt={image.alt} decoding="async" />
+      <img class={photo} src={image.src} width={image.width} height={image.height} alt="" decoding="async" />
       <H1>{name}</H1>
       {role && <Paragraph>{role}</Paragraph>}
     </div>

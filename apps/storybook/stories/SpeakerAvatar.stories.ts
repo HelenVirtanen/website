@@ -7,6 +7,5 @@ export default {
 
 export const Placeholder = {
   args: {
-    alt: 'Дарья Егорова',
   },
 };

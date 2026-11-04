@@ -2,7 +2,6 @@
 name: "Roman Troitsky"
 status: current
 photo: ../assets/roman-troitsky.png
-photoAlt: "Roman Troitsky"
 contacts:
   telegram: https://t.me/DreamShaded
   website: https://vzhyx.io

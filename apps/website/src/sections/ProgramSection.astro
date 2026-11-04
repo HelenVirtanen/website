@@ -80,7 +80,7 @@ const items = await Promise.all(
             <li class={row}>
               <div class={portraitColumn}>
                 <p class={time}>{item.time}</p>
-                <SpeakerAvatar src={item.portrait?.src} alt={item.portrait?.alt ?? ''} />
+                <SpeakerAvatar src={item.portrait?.src} />
               </div>
               <div class={talkMain}>
                 <h3 class={talkTitle}>{item.title}</h3>

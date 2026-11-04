@@ -5,5 +5,4 @@ links:
   - label: "Telegram"
     url: "https://t.me/anastasia_shek_site"
 photo: ../assets/anastasiya-shek.jpg
-photoAlt: "Anastasiya Shek"
 ---

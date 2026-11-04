@@ -58,7 +58,6 @@ export function speaker(id: string, data: Partial<SpeakerData> = {}): SpeakerEnt
       name: 'Дарья Егорова',
       role: 'Дизайнер',
       photo: { src: '/daria.jpg', width: 1, height: 1, format: 'jpg' },
-      photoAlt: 'Дарья Егорова',
       draft: false,
       ...data,
     },

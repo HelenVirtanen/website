@@ -573,7 +573,7 @@ regenerate rather than edit).
   against `ru`. The build fails with the file and the field. Details:
   `adr/001-content-model-md-relations.md` and the package README (for editors).
 - **Organizers.** `organizers/<lang>/<name>.md`, photos in `organizers/assets/`
-  (optional, with `photoAlt`). `status: current | past` is required and must match
+  (optional; portraits use an empty `alt`, because the name stands next to them). `status: current | past` is required and must match
   between languages; `contacts.telegram|channel|github|website` are optional `https`
   URLs and must match too. The home page shows only `current` entries after the FAQ,
   in a self-playing looped `CardSlider` shuffled on every load (`OrganizersSection`, card `OrganizerCard`); `organizersByStatus` and

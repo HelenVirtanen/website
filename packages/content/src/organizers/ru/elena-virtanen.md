@@ -2,7 +2,6 @@
 name: "Елена Виртанен"
 status: current
 photo: ../assets/elena-virtanen.png
-photoAlt: "Елена Виртанен"
 contacts:
   telegram: https://t.me/helenvirtanen
 ---

@@ -6,7 +6,7 @@ export default {
   component: OrganizerCard,
 };
 
-const photo = `<img src="${photoUrl}" alt="Роман Троицкий" width="498" height="498" />`;
+const photo = `<img src="${photoUrl}" alt="" width="498" height="498" />`;
 
 const bio = `<ul>
   <li>руководитель направления исследования данных в ПАО Сбербанк</li>

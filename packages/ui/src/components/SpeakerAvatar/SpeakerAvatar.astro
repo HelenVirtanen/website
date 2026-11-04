@@ -7,18 +7,16 @@ const Tag = 'div';
 interface Props extends HTMLAttributes<typeof Tag> {
   /** URL фото спикера; без src показывается заглушка */
   src?: string;
-  /** Подпись для img и aria-label заглушки */
-  alt: string;
 }
 
-const { src, alt, class: className, ...attrs } = Astro.props;
+const { src, class: className, ...attrs } = Astro.props;
 ---
 <Tag class:list={[frame, className]} {...attrs}>
   {
     src ? (
-      <img class={image} src={src} alt={alt} loading="lazy" decoding="async" />
+      <img class={image} src={src} alt="" loading="lazy" decoding="async" />
     ) : (
-      <span class={placeholder} aria-label={alt} role="img" />
+      <span class={placeholder} />
     )
   }
 </Tag>
