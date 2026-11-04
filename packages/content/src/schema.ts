@@ -167,8 +167,16 @@ export const createOrganizerSchema = (image: ImageFunction) =>
       regalia: z.array(z.string().min(1)).optional(),
       contacts: z
         .object({
-          telegram: url.optional(),
-          github: url.optional(),
+          telegram: url
+            .refine((value) => /^https:\/\/t\.me\/\w+\/?$/.test(value), {
+              message: "контакт Telegram: https://t.me/<имя>",
+            })
+            .optional(),
+          github: url
+            .refine((value) => /^https:\/\/github\.com\/[\w-]+\/?$/.test(value), {
+              message: "контакт GitHub: https://github.com/<имя>",
+            })
+            .optional(),
           website: url.optional(),
         })
         .optional(),

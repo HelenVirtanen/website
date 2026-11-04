@@ -44,6 +44,12 @@ export function setupTagPile(root: HTMLElement) {
 
   const place = (animate: boolean) => {
     root.setAttribute(ENHANCED, '');
+    // Идущее падение ведёт к старой раскладке: на смене размера его не должно остаться.
+    for (const item of items) {
+      item.getAnimations().forEach((animation) => {
+        animation.cancel();
+      });
+    }
     const zoneWidth = root.clientWidth;
     const zoneHeight = root.clientHeight;
     size = `${String(zoneWidth)}x${String(zoneHeight)}`;

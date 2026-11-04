@@ -95,6 +95,13 @@ describe('createOrganizerSchema', () => {
     expect(schema.safeParse(organizer({ contacts: {} })).success).toBe(true);
     expect(schema.safeParse(organizer({ contacts: { website: 'http://vzhyx.io' } })).success).toBe(false);
     expect(schema.safeParse(organizer({ contacts: { github: 'javascript:alert(1)' } })).success).toBe(false);
+    for (const telegram of ['https://t.me/', 'https://t.me/joinchat/abc', 'https://vzhyx.io']) {
+      expect(schema.safeParse(organizer({ contacts: { telegram } })).success, telegram).toBe(false);
+    }
+    for (const github of ['https://github.com', 'https://github.com/a/b', 'https://vzhyx.io/a']) {
+      expect(schema.safeParse(organizer({ contacts: { github } })).success, github).toBe(false);
+    }
+    expect(schema.safeParse(organizer({ contacts: { github: 'https://github.com/vzhyx/' } })).success).toBe(true);
   });
 
   it('фото без описания отклоняется с путём photoAlt', () => {

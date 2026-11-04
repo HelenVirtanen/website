@@ -6,7 +6,7 @@ them with SVGO and generate ready-to-import Astro components in
 
 ```astro
 ---
-import { ArrowRight } from '@moscowcss/icons';
+import { ArrowLong } from '@moscowcss/icons';
 ---
-<ArrowRight size="24" />
+<ArrowLong size="24" />
 ```

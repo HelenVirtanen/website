@@ -3,7 +3,7 @@ id: "11"
 title: visual-verification
 spec: "004"
 criteria: ["AC-1", "AC-10", "AC-18"]
-status: pending
+status: done
 depends_on: ["10"]
 owns: ["tools/visual/capture.mjs", "tools/visual/README.md"]
 model: sonnet

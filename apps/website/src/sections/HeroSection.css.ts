@@ -34,6 +34,12 @@ export const stage = style({
 });
 
 export const pile = style({
+  selectors: {
+    // Без скрипта и при сниженной анимации плашки лежат рядами: держим их между чипом и датой.
+    '&:not([data-pile])': {
+      paddingInline: vars.adaptive.heroPileInset,
+    },
+  },
   '@media': {
     [media.tablet]: {
       pointerEvents: 'none',

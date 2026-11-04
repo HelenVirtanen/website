@@ -113,4 +113,10 @@ export const contactLink = style({
   minHeight: vars.size.hitTarget,
   color: vars.color.speakerAccent,
   overflowWrap: 'anywhere',
+  selectors: {
+    '&:focus-visible': {
+      outline: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.focus}`,
+      outlineOffset: vars.spacing.xs,
+    },
+  },
 });

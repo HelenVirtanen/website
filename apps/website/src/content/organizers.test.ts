@@ -63,6 +63,11 @@ describe('contactsOf', () => {
     expect(contactsOf({})).toEqual([]);
   });
 
+  it('сайт: кириллица в адресе показывается читаемо', () => {
+    const [site] = contactsOf({ website: 'https://сайт.рф/блог' });
+    expect(site?.text).toBe('сайт.рф/блог');
+  });
+
   it('сайт: без www., без последнего слэша, путь сохраняется, запрос и якорь отбрасываются', () => {
     const text = (website: string): string | undefined => contactsOf({ website })[0]?.text;
     expect(text('https://www.vzhyx.io/')).toBe('vzhyx.io');

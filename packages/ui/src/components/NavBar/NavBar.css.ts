@@ -33,6 +33,14 @@ export const bar = style({
   gap: vars.adaptive.navActionsGap,
   paddingBottom: vars.adaptive.navGap,
   borderBottom: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.dividerSoft}`,
+  selectors: {
+    // Над прокручиваемой панелью полоса закрывает пункты вместе с верхним полем.
+    '[data-nav-open] &': {
+      marginTop: `calc(-1 * ${vars.adaptive.navPaddingTop})`,
+      paddingTop: vars.adaptive.navPaddingTop,
+      background: vars.color.background,
+    },
+  },
 });
 
 export const home = style({
@@ -200,6 +208,7 @@ export const overlay = style({
   alignItems: vars.alignItems.stretch,
   boxSizing: 'border-box',
   overflowY: 'auto',
+  overscrollBehavior: 'contain',
   paddingTop: `calc(${vars.adaptive.navPaddingTop} + ${vars.size.hitTarget} + ${vars.adaptive.navGap} + ${vars.border.width.thin})`,
   background: vars.color.background,
   selectors: {

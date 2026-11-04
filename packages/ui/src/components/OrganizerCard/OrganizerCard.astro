@@ -58,7 +58,7 @@ const { name, regalia = [], contacts = [], class: className, ...attrs } = Astro.
             contacts.map((item) => (
               <li class={contact}>
                 <span class={contactLabel}>{item.label}</span>
-                <a class={contactLink} href={item.href}>
+                <a class={contactLink} href={item.href} target="_blank" rel="noopener noreferrer">
                   {item.text}
                 </a>
               </li>

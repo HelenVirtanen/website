@@ -1,3 +1,4 @@
+import { domainToUnicode } from 'node:url';
 import type { OrganizerEntry } from './catalog';
 
 export type OrganizerStatus = OrganizerEntry['data']['status'];
@@ -35,7 +36,9 @@ const pathOf = (url: URL): string => url.pathname.replace(/^\/+|\/+$/g, '');
 const TEXT_OF: Record<ContactKind, (url: URL) => string> = {
   telegram: (url) => `@${pathOf(url)}`,
   github: pathOf,
-  website: (url) => [url.host.replace(/^www\./, ''), pathOf(url)].filter(Boolean).join('/'),
+  // Для показа: URL хранит кириллицу как punycode и percent-кодирование.
+  website: (url) =>
+    [domainToUnicode(url.host).replace(/^www\./, ''), decodeURI(pathOf(url))].filter(Boolean).join('/'),
 };
 
 // Порядок вывода на карточке.

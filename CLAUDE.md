@@ -511,9 +511,9 @@ Pipeline:
 
    ```astro
    ---
-   import { ArrowRight } from '@moscowcss/icons';
+   import { ArrowLong } from '@moscowcss/icons';
    ---
-   <ArrowRight size="24" class="text-success" />
+   <ArrowLong size="24" class="text-success" />
    ```
 
 `src/generated/` is produced output — treat it as build artifact (git-ignored;
