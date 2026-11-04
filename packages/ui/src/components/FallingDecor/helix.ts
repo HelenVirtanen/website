@@ -24,13 +24,22 @@ export const helixShapes: readonly HelixShape[] = [
 const STEPS_PER_TURN = 24;
 const MARGIN = 2;
 const TAU = Math.PI * 2;
+const STRETCH_AMPLITUDE = 0.35;
+
+/**
+ * Растяжение пружинки на фазе `bounce`: 1 — покой, меньше — сжата, больше — разжата.
+ * Вторая волна с некратной частотой: без неё колебание выглядит как ровный механический маятник.
+ */
+export function helixStretch(bounce: number): number {
+  return 1 + STRETCH_AMPLITUDE * (0.75 * Math.sin(bounce) + 0.25 * Math.sin(2.7 * bounce));
+}
 
 export interface HelixBox {
   width: number;
   height: number;
 }
 
-/** Размер кадра, в который пружинка помещается при любой фазе. */
+/** Размер кадра, в который пружинка в покое помещается при любой фазе. */
 export function helixBox({ radius, pitch, tilt, turns }: HelixShape): HelixBox {
   return {
     width: 2 * (radius + MARGIN),
@@ -45,11 +54,12 @@ export interface HelixPaths {
   back: string;
 }
 
-/** Контуры SVG для пружинки, повёрнутой на `phase` радиан вокруг своей оси. */
-export function helixPaths(shape: HelixShape, phase: number): HelixPaths {
+/** Контуры SVG для пружинки, повёрнутой на `phase` радиан вокруг своей оси и растянутой в `stretch` раз от середины. */
+export function helixPaths(shape: HelixShape, phase: number, stretch = 1): HelixPaths {
   const { radius, pitch, tilt, turns } = shape;
   const box = helixBox(shape);
   const steps = Math.ceil(turns * STEPS_PER_TURN);
+  const middle = MARGIN + tilt + (pitch * turns) / 2;
   const parts = { front: '', back: '' };
   let previous: 'front' | 'back' | undefined;
   let lastPoint = '';
@@ -58,7 +68,7 @@ export function helixPaths(shape: HelixShape, phase: number): HelixPaths {
     const turn = (step / steps) * turns;
     const angle = turn * TAU + phase;
     const x = box.width / 2 + radius * Math.cos(angle);
-    const y = MARGIN + tilt + pitch * turn + tilt * Math.sin(angle);
+    const y = middle + pitch * stretch * (turn - turns / 2) + tilt * Math.sin(angle);
     const point = `${x.toFixed(1)} ${y.toFixed(1)}`;
     const side = Math.sin(angle) >= 0 ? 'front' : 'back';
     // На смене стороны продолжаем с прошлой точки: иначе в линии виден разрыв.

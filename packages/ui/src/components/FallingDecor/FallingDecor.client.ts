@@ -1,6 +1,6 @@
 import { createRandom } from '../TagPile/pile';
 import { fallingCount, fallingItems, overlapsAny, readDecorOff, writeDecorOff, type DecorKind } from './falling';
-import { helixBox, helixPaths, helixShapes, type HelixShape } from './helix';
+import { helixBox, helixPaths, helixShapes, helixStretch, type HelixShape } from './helix';
 
 const INITIALIZED = 'data-falling-decor-initialized';
 // Шапка и открытое меню лежат выше слоя и закрывают фигуры сами, поэтому их тексты не считаем.
@@ -30,6 +30,8 @@ interface Spinner {
   back: SVGPathElement;
   radiansPerMs: number;
   phase: number;
+  bounceRadiansPerMs: number;
+  bounce: number;
   onScreen: boolean;
 }
 
@@ -43,7 +45,7 @@ function storageOf(): Storage | undefined {
 }
 
 function drawSpinner(spinner: Spinner): void {
-  const { front, back } = helixPaths(spinner.shape, spinner.phase);
+  const { front, back } = helixPaths(spinner.shape, spinner.phase, helixStretch(spinner.bounce));
   spinner.front.setAttribute('d', front);
   spinner.back.setAttribute('d', back);
 }
@@ -65,7 +67,9 @@ export function setupFallingDecor(root: HTMLElement) {
   const muteOverText = () => {
     const blocks = Array.from(document.querySelectorAll(TEXT_BLOCKS), (element) => element.getBoundingClientRect());
     root.querySelectorAll<HTMLElement>('[data-falling-item]').forEach((item) => {
-      item.firstElementChild?.classList.toggle(classes.muted, overlapsAny(item.getBoundingClientRect(), blocks));
+      // Разжатая пружинка выходит за свой кадр, поэтому меряем сам контур: над текстом она должна сереть вовремя.
+      const shape = item.querySelector('[data-spring-outline]') ?? item;
+      item.firstElementChild?.classList.toggle(classes.muted, overlapsAny(shape.getBoundingClientRect(), blocks));
     });
     for (const spinner of spinners) {
       const box = spinner.fall.getBoundingClientRect();
@@ -84,6 +88,7 @@ export function setupFallingDecor(root: HTMLElement) {
     lastFrame = now;
     for (const spinner of spinners) {
       spinner.phase = (spinner.phase + spinner.radiansPerMs * elapsed) % TAU;
+      spinner.bounce += spinner.bounceRadiansPerMs * elapsed;
       if (spinner.onScreen) drawSpinner(spinner);
     }
   };
@@ -115,7 +120,7 @@ export function setupFallingDecor(root: HTMLElement) {
 
   const isDrawn = () => root.querySelector('[data-falling-item]') !== null;
 
-  const appendSpring = (holder: HTMLElement, fall: HTMLElement, shape: HelixShape, radiansPerMs: number) => {
+  const appendSpring = (holder: HTMLElement, fall: HTMLElement, shape: HelixShape, spinMs: number, bounceMs: number) => {
     const { width, height } = helixBox(shape);
     holder.style.aspectRatio = `${String(width)} / ${String(height)}`;
 
@@ -125,10 +130,21 @@ export function setupFallingDecor(root: HTMLElement) {
     const back = document.createElementNS(SVG_NS, 'path');
     back.setAttribute('class', classes.springBack);
     const front = document.createElementNS(SVG_NS, 'path');
+    front.setAttribute('data-spring-outline', '');
     svg.append(back, front);
     holder.append(svg);
 
-    const spinner: Spinner = { fall, shape, front, back, radiansPerMs, phase: Math.random() * TAU, onScreen: true };
+    const spinner: Spinner = {
+      fall,
+      shape,
+      front,
+      back,
+      radiansPerMs: TAU / spinMs,
+      phase: Math.random() * TAU,
+      bounceRadiansPerMs: TAU / bounceMs,
+      bounce: Math.random() * TAU,
+      onScreen: true,
+    };
     drawSpinner(spinner);
     spinners.push(spinner);
   };
@@ -163,7 +179,7 @@ export function setupFallingDecor(root: HTMLElement) {
         const shapeIndex = Math.floor(item.pick * helixShapes.length);
         const shape = helixShapes[shapeIndex];
         holder.className = [classes.spring, tones[shapeIndex] ?? ''].join(' ');
-        if (shape) appendSpring(holder, fall, shape, ((item.clockwise ? 1 : -1) * TAU) / item.spinMs);
+        if (shape) appendSpring(holder, fall, shape, item.clockwise ? item.spinMs : -item.spinMs, item.bounceMs);
       }
       fall.append(holder);
       root.append(fall);

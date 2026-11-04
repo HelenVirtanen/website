@@ -45,6 +45,8 @@ export interface FallingItem {
   spinMs: number;
   /** Куда вращается */
   clockwise: boolean;
+  /** Время одного сжатия и разжатия пружинки, мс */
+  bounceMs: number;
   /** Масштаб фигуры */
   scale: number;
   /** Случайное число для выбора фигуры и цвета */
@@ -63,6 +65,7 @@ export function fallingItems(count: number, random: Random): FallingItem[] {
       delayMs: -random() * fallMs,
       spinMs: between(3000, 6000, random),
       clockwise: random() < 0.5,
+      bounceMs: between(1800, 3200, random),
       scale: between(0.7, 1.2, random),
       pick: random(),
     };

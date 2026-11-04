@@ -1,10 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { helixBox, helixPaths, helixShapes } from './helix';
+import { helixBox, helixPaths, helixShapes, helixStretch } from './helix';
 
 const pointsOf = (path: string): number[][] =>
   [...path.matchAll(/[ML](-?[\d.]+) (-?[\d.]+)/g)].map((match) => [Number(match[1]), Number(match[2])]);
 
 const shape = helixShapes[0]!;
+
+const spanOf = (stretch: number): number[] => {
+  const { front, back } = helixPaths(shape, 0, stretch);
+  const ys = pointsOf(front + back).map(([, y]) => y ?? 0);
+  return [Math.min(...ys), Math.max(...ys)];
+};
 
 describe('helixPaths', () => {
   it('при любой фазе спираль остаётся в своём кадре', () => {
@@ -42,7 +48,31 @@ describe('helixPaths', () => {
     expect(pointsOf(back).length).toBeGreaterThan(10);
   });
 
+  it('сжатие укорачивает пружинку, растяжение удлиняет, середина остаётся на месте', () => {
+    const [restTop = 0, restBottom = 0] = spanOf(1);
+    const [tightTop = 0, tightBottom = 0] = spanOf(0.7);
+    const [looseTop = 0, looseBottom = 0] = spanOf(1.3);
+    expect(tightBottom - tightTop).toBeLessThan(restBottom - restTop);
+    expect(looseBottom - looseTop).toBeGreaterThan(restBottom - restTop);
+    expect((tightTop + tightBottom) / 2).toBeCloseTo((restTop + restBottom) / 2, -1);
+    expect((looseTop + looseBottom) / 2).toBeCloseTo((restTop + restBottom) / 2, -1);
+  });
+
   it('высота кадра растёт с числом витков', () => {
     expect(helixBox({ ...shape, turns: 10 }).height).toBeGreaterThan(helixBox(shape).height);
+  });
+});
+
+describe('helixStretch', () => {
+  it('в начале пружинка в покое', () => {
+    expect(helixStretch(0)).toBe(1);
+  });
+
+  it('пружинка и сжимается, и разжимается, но не схлопывается', () => {
+    const values = Array.from({ length: 2000 }, (_, index) => helixStretch(index / 10));
+    expect(Math.min(...values)).toBeLessThan(0.8);
+    expect(Math.max(...values)).toBeGreaterThan(1.2);
+    expect(Math.min(...values)).toBeGreaterThanOrEqual(0.65);
+    expect(Math.max(...values)).toBeLessThanOrEqual(1.35);
   });
 });

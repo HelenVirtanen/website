@@ -60,6 +60,7 @@ describe('fallingItems', () => {
       expect(item.delayMs).toBeLessThanOrEqual(0);
       expect(item.delayMs).toBeGreaterThanOrEqual(-item.fallMs);
       expect(item.spinMs).toBeGreaterThan(0);
+      expect(item.bounceMs).toBeGreaterThan(0);
     });
   });
 
