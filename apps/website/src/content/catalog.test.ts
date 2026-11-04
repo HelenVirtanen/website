@@ -233,6 +233,10 @@ describe('тег вопросов спикерам', () => {
     );
   });
 
+  it('ссылка на якорь этой же страницы тегом не считается', () => {
+    expect(() => validateCatalog(withFaq('[Напиши оргам](#organizers)'))).not.toThrow();
+  });
+
   it('якорь ссылки и заголовок Markdown тегом не считаются', () => {
     const body = '## Вопросы\n\n[Регистрация](https://x.ru/event/1/#register), тег #вопрос_спикеру';
     expect(() => validateCatalog(withFaq(body))).not.toThrow();

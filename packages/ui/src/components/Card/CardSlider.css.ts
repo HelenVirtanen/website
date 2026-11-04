@@ -86,10 +86,15 @@ globalStyle(`${navButtonIcon} path`, {
   strokeWidth: vars.adaptive.arrowStroke,
 });
 
+// Справа лента уходит за край страницы, её режет секция, а слева обрезается по колонке текста.
 export const swiper = style({
   width: '100%',
   overflow: 'hidden',
   selectors: {
+    '&.swiper': {
+      overflow: 'visible',
+      clipPath: 'inset(0 -100vw 0 0)',
+    },
     // Без скрипта стрелки не работают: лента листается сама, иначе карточки справа недоступны.
     [`${root}:not([data-card-slider-initialized]) &`]: {
       overflowX: 'auto',

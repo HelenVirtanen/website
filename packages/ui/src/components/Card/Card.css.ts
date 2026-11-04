@@ -76,7 +76,7 @@ export const content = style({
   flex: '1 1 auto',
 });
 
-// :where() обнуляет специфичность: класс ссылки в месте использования (например, в JoinBlock) выигрывает.
+// :where() обнуляет специфичность: класс ссылки в месте использования выигрывает.
 globalStyle(`:where(${content} a)`, {
   color: vars.color.link,
   textDecoration: 'underline',

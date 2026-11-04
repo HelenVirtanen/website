@@ -9,7 +9,6 @@ import PartnerSection from '../../sections/PartnerSection.astro';
 import FAQSection from '../../sections/FAQSection.astro';
 import OrganizersSection from '../../sections/OrganizersSection.astro';
 import PastEventsSection from '../../sections/PastEventsSection.astro';
-import JoinSection from '../../sections/JoinSection.astro';
 import { loadCatalog, localeOf, pastEvents, upcomingEvent } from '../../content/catalog';
 import { buildNow } from '../../content/now';
 import { organizersByStatus } from '../../content/organizers';
@@ -68,7 +67,6 @@ const alternates = locales.map((code) => ({ locale: code, path: localizePath(cod
     {partner && featured && <PartnerSection partner={partner} event={featured.event} locale={locale} />}
     <FAQSection entries={inLocale(catalog.faq).filter((entry) => !entry.data.draft)} locale={locale} />
     <OrganizersSection entries={organizers} locale={locale} />
-    <JoinSection locale={locale} />
     <AboutSection page={page} locale={locale} />
     <PastEventsSection events={pastEvents(events, now)} locale={locale} />
     {

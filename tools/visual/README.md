@@ -6,7 +6,7 @@ at five widths, then compares two capture sets pixel by pixel.
 
 - `capture.mjs <out-dir>` writes PNGs:
   - `<out-dir>/site/<name>@<width>.png` for every `[data-visual]` element on the homepage
-    (`navbar`, `hero`, `program`, `partner`, `faq`, `join`);
+    (`navbar`, `hero`, `program`, `partner`, `faq`);
   - `<out-dir>/stories/<story-id>@<width>.png` for the `#storybook-root` of every story listed in
     Storybook's `index.json`.
 - `compare.mjs <base-dir> <next-dir>` compares every PNG of `base-dir` with the same-named PNG in

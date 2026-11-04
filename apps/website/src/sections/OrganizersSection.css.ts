@@ -8,6 +8,8 @@ export const section = style([
     color: vars.color.text,
     background: vars.color.background,
     overflow: 'hidden',
+    // Шапка липкая: без отступа заголовок при переходе по ссылке уезжает под неё.
+    scrollMarginTop: vars.size.hitTarget,
   },
 ]);
 
