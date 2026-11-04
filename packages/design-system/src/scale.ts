@@ -224,6 +224,7 @@ export const adaptiveScale = {
   sliderHeaderGap: { base: px(16), tablet: px(40), wide: px(20) },
   sliderHeadGap: { base: px(32), wide: px(40) },
   organizerGap: { base: px(24), tablet: px(19), wide: px(24) },
+  organizerWidth: { base: px(413), wide: px(573) },
 } as const satisfies Record<string, Steps>;
 
 export type AdaptiveToken = keyof typeof adaptiveScale;

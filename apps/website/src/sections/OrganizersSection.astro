@@ -1,0 +1,58 @@
+---
+import { Image } from 'astro:assets';
+import BlockTitle from '@moscowcss/ui/components/BlockTitle';
+import OrganizerCard from '@moscowcss/ui/components/OrganizerCard';
+import type { OrganizerEntry } from '../content/catalog';
+import { contactsOf } from '../content/organizers';
+import { useTranslations, type Locale } from '../i18n';
+import { section, inner, list, item } from './OrganizersSection.css';
+
+interface Props {
+  // Организаторы языка страницы, уже отобранные по статусу; пусто — секции нет
+  entries: OrganizerEntry[];
+  locale: Locale;
+}
+
+const { entries, locale } = Astro.props;
+const t = useTranslations(locale);
+
+// Фото в файле — 2x от размера на странице (498px при 249px)
+const PHOTO_SIZE = 498;
+---
+
+{
+  entries.length > 0 && (
+    <section class={section} data-visual="organizers">
+      <div class={inner}>
+        <BlockTitle>{t('organizers.title')}</BlockTitle>
+        <ul class={list}>
+          {entries.map(({ data }) => (
+            <li class={item}>
+              <OrganizerCard
+                name={data.name}
+                regalia={data.regalia ?? []}
+                contacts={contactsOf(data.contacts).map(({ kind, href, text }) => ({
+                  href,
+                  text,
+                  label: t(`organizer.contact.${kind}`),
+                }))}
+              >
+                {data.photo && (
+                  <Fragment slot="photo">
+                    <Image
+                      src={data.photo}
+                      alt={data.photoAlt ?? ''}
+                      width={PHOTO_SIZE}
+                      height={PHOTO_SIZE}
+                      format="png"
+                    />
+                  </Fragment>
+                )}
+              </OrganizerCard>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { event, faq, page, partner, speaker, talk, twoMeetupsCatalog } from '../test/fixtures';
+import { event, faq, organizer, page, partner, speaker, talk, twoMeetupsCatalog } from '../test/fixtures';
 import {
   CatalogError,
   checkEventDays,
@@ -140,6 +140,43 @@ describe('validateCatalog', () => {
     const message = messageOf(() => validateCatalog(catalog));
     expect(message).toContain('поле photo');
     expect(message).toContain('поле links');
+  });
+
+  it('организатор: расхождение status между языками — файл и поле в сообщении', () => {
+    const catalog = twoMeetupsCatalog();
+    catalog.organizers = [
+      organizer('ru/roman-troitsky', { status: 'current' }),
+      organizer('en/roman-troitsky', { status: 'past' }),
+    ];
+    expect(messageOf(() => validateCatalog(catalog))).toContain(
+      'organizers/en/roman-troitsky.md: поле status отличается от ru/roman-troitsky',
+    );
+  });
+
+  it('организатор: расхождение contacts между языками, порядка и фото', () => {
+    const catalog = twoMeetupsCatalog();
+    catalog.organizers = [
+      organizer('ru/roman-troitsky'),
+      organizer('en/roman-troitsky', {
+        contacts: { telegram: 'https://t.me/DreamShaded' },
+        order: 2,
+        photo: { src: '/other.png', width: 1, height: 1, format: 'png' },
+      }),
+    ];
+    const message = messageOf(() => validateCatalog(catalog));
+    expect(message).toContain('organizers/en/roman-troitsky.md: поле contacts');
+    expect(message).toContain('поле order');
+    expect(message).toContain('поле photo');
+    expect(message).not.toContain('поле status');
+  });
+
+  it('организатор: согласованные переводы и разный текст регалий — без ошибок', () => {
+    const catalog = twoMeetupsCatalog();
+    catalog.organizers = [
+      organizer('ru/roman-troitsky'),
+      organizer('en/roman-troitsky', { name: 'Roman Troitsky', regalia: ['Organizer'] }),
+    ];
+    expect(() => validateCatalog(catalog)).not.toThrow();
   });
 
   it('перевод без оригинала', () => {

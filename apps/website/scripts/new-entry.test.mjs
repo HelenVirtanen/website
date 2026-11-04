@@ -8,6 +8,7 @@ import { z } from 'astro/zod';
 import {
   EventSchema,
   FaqSchema,
+  createOrganizerSchema,
   createPartnerSchema,
   TalkSchema,
   createSpeakerSchema,
@@ -21,6 +22,7 @@ const SCHEMAS = {
   speaker: createSpeakerSchema(() => z.string()),
   partner: createPartnerSchema(() => z.string()),
   faq: FaqSchema,
+  organizer: createOrganizerSchema(() => z.string()),
 };
 
 // Шаблоны настоящие (packages/content/templates), контент во временной папке: тест ловит и поломку
@@ -86,7 +88,11 @@ describe('new-entry', () => {
     expect(read('speakers', 'ru', 'some-name.md')).not.toMatch(/^photo:/m);
   });
 
-  it.each(['partner', 'faq'])('%s — заготовка на всех языках', (kind) => {
+  it('у каждого вида заготовок есть схема для проверки: новый вид не проходит мимо теста', () => {
+    expect(Object.keys(SCHEMAS).sort()).toEqual(Object.keys(KINDS).sort());
+  });
+
+  it.each(['partner', 'faq', 'organizer'])('%s — заготовка на всех языках', (kind) => {
     expect(runNewEntry([kind, 'some-name'], { today, dirs, ...quiet })).toBe(0);
     for (const locale of LOCALES) {
       expect(existsSync(join(content, KINDS[kind].collection, locale, 'some-name.md'))).toBe(true);

@@ -3,7 +3,7 @@ id: "08"
 title: organizer-card
 spec: "004"
 criteria: ["AC-14", "AC-19"]
-status: pending
+status: done
 depends_on: ["01", "07"]
 owns: ["packages/ui/src/components/OrganizerCard/**", "packages/ui/src/index.ts", "apps/storybook/stories/OrganizerCard.stories.ts", "apps/website/src/sections/OrganizersSection.astro", "apps/website/src/sections/OrganizersSection.css.ts", "apps/website/src/pages/[...locale]/index.astro", "apps/website/src/content/catalog.ts", "apps/website/src/content/organizers.ts", "apps/website/src/content/**/*.test.ts", "apps/website/src/test/fixtures.ts", "apps/website/scripts/new-entry.mjs", "apps/website/scripts/*.test.*", "package.json", "packages/content/src/schema.ts", "packages/content/src/collections.ts", "packages/content/src/organizers/**", "packages/content/src/assets/organizer-*", "packages/content/templates/**", "packages/content/README.md"]
 model: sonnet

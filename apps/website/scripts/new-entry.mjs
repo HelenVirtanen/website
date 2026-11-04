@@ -5,6 +5,7 @@
 //   pnpm new:speaker <имя>       → speakers/{ru,en}/<имя>.md
 //   pnpm new:partner <имя>       → partners/{ru,en}/<имя>.md
 //   pnpm new:faq <имя>           → faq/{ru,en}/<имя>.md
+//   pnpm new:organizer <имя>     → organizers/{ru,en}/<имя>.md
 //
 // Шаблоны лежат вне src/, поэтому на сайт не попадают. Существующие файлы скрипт не перезаписывает:
 // при любом конфликте он ничего не создаёт.
@@ -24,6 +25,7 @@ export const KINDS = {
   speaker: { collection: 'speakers', name: SLUG, hint: 'например pnpm new:speaker daria-egorova' },
   partner: { collection: 'partners', name: SLUG, hint: 'например pnpm new:partner zvuk' },
   faq: { collection: 'faq', name: SLUG, hint: 'например pnpm new:faq afterparty' },
+  organizer: { collection: 'organizers', name: SLUG, hint: 'например pnpm new:organizer roman-troitsky' },
 };
 
 const root = fileURLToPath(new URL('../../../packages/content/', import.meta.url));

@@ -3,6 +3,8 @@ import type {
   EventData,
   EventEntry,
   FaqEntry,
+  OrganizerData,
+  OrganizerEntry,
   PageEntry,
   PartnerEntry,
   SpeakerData,
@@ -77,6 +79,22 @@ export function partner(id: string): PartnerEntry {
   };
 }
 
+export function organizer(id: string, data: Partial<OrganizerData> = {}): OrganizerEntry {
+  return {
+    id,
+    filePath: filePathOf('organizers', id),
+    data: {
+      name: 'Роман Троицкий',
+      status: 'current',
+      regalia: ['Организатор'],
+      contacts: { telegram: 'https://t.me/DreamShaded', website: 'https://vzhyx.io' },
+      order: 1,
+      draft: false,
+      ...data,
+    },
+  };
+}
+
 export function page(id: string, body = 'О митапе.'): PageEntry {
   return {
     id,
@@ -126,6 +144,7 @@ export function twoMeetupsCatalog() {
     ],
     speakers: [speaker('ru/daria-egorova'), speaker('en/daria-egorova')],
     partners: [] as PartnerEntry[],
+    organizers: [] as OrganizerEntry[],
     pages: [] as PageEntry[],
     faq: [] as FaqEntry[],
     documents: [] as DocumentEntry[],

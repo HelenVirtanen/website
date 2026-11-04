@@ -154,6 +154,36 @@ export const createSpeakerSchema = (image: ImageFunction) =>
       },
     );
 
+// Статус и контакты одинаковы во всех языках, текст переводится. Контакты — именованные поля,
+// а не список `links` как у спикеров: подпись и порядок едины для всех карточек.
+export const createOrganizerSchema = (image: ImageFunction) =>
+  z
+    .object({
+      name: z.string().min(1),
+      status: z.enum(["current", "past"]),
+      // Без фото блок фото на карточке не выводится.
+      photo: image().optional(),
+      photoAlt: z.string().min(1).optional(),
+      regalia: z.array(z.string().min(1)).optional(),
+      contacts: z
+        .object({
+          telegram: url.optional(),
+          github: url.optional(),
+          website: url.optional(),
+        })
+        .optional(),
+      // Порядок карточек: меньше — левее.
+      order: z.number().int().nonnegative().default(0),
+      draft: z.boolean().default(false),
+    })
+    .refine(
+      (organizer) => organizer.photo === undefined || organizer.photoAlt !== undefined,
+      {
+        message: "у фото нужно описание photoAlt: что на нём видно",
+        path: ["photoAlt"],
+      },
+    );
+
 // Логотип и QR у каждого партнёра свои: логотип — файл в partners/assets, QR сайт рисует из qrUrl.
 export const createPartnerSchema = (image: ImageFunction) =>
   z.object({

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { EventSchema, PageSchema, TalkSchema } from '@moscowcss/content/schema';
+import { z } from 'astro/zod';
+import { EventSchema, PageSchema, TalkSchema, createOrganizerSchema } from '@moscowcss/content/schema';
 
 const event = (patch: Record<string, unknown> = {}) => ({
   date: '2026-07-09',
@@ -69,5 +70,37 @@ describe('PageSchema', () => {
     const page = { title: 'Moscow CSS', telegramUrl: 'https://t.me/moscowcss', questionTag: '#вопрос' };
     expect(PageSchema.safeParse({ ...page, description: 'коротко' }).success).toBe(false);
     expect(PageSchema.safeParse({ ...page, description: 'д'.repeat(60) }).success).toBe(true);
+  });
+});
+
+describe('createOrganizerSchema', () => {
+  // Картинка в схеме — `image()`, здесь достаточно строки пути.
+  const schema = createOrganizerSchema(() => z.string());
+  const organizer = (patch: Record<string, unknown> = {}) => ({ name: 'Роман Троицкий', status: 'current', ...patch });
+
+  it('минимальная запись: имя и статус, остальное необязательно', () => {
+    const parsed = schema.parse(organizer());
+    expect(parsed.draft).toBe(false);
+    expect(parsed.contacts).toBeUndefined();
+  });
+
+  it('статус обязателен и принимает только current и past', () => {
+    expect(schema.safeParse({ name: 'Имя' }).success).toBe(false);
+    expect(schema.safeParse(organizer({ status: 'former' })).success).toBe(false);
+    expect(schema.safeParse(organizer({ status: 'past' })).success).toBe(true);
+  });
+
+  it('контакты: только https, любой набор полей', () => {
+    expect(schema.safeParse(organizer({ contacts: { telegram: 'https://t.me/x' } })).success).toBe(true);
+    expect(schema.safeParse(organizer({ contacts: {} })).success).toBe(true);
+    expect(schema.safeParse(organizer({ contacts: { website: 'http://vzhyx.io' } })).success).toBe(false);
+    expect(schema.safeParse(organizer({ contacts: { github: 'javascript:alert(1)' } })).success).toBe(false);
+  });
+
+  it('фото без описания отклоняется с путём photoAlt', () => {
+    const result = schema.safeParse(organizer({ photo: 'photo.png' }));
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0]?.path).toEqual(['photoAlt']);
+    expect(schema.safeParse(organizer({ photo: 'photo.png', photoAlt: 'Портрет' })).success).toBe(true);
   });
 });

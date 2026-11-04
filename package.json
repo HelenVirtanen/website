@@ -17,6 +17,7 @@
     "new:speaker": "node apps/website/scripts/new-entry.mjs speaker",
     "new:partner": "node apps/website/scripts/new-entry.mjs partner",
     "new:faq": "node apps/website/scripts/new-entry.mjs faq",
+    "new:organizer": "node apps/website/scripts/new-entry.mjs organizer",
     "prepare": "husky",
     "test": "turbo run test"
   },

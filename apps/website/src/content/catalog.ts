@@ -7,6 +7,7 @@ import type {
   EventSchema,
   FaqSchema,
   PageSchema,
+  createOrganizerSchema,
   createPartnerSchema,
   TalkSchema,
   createSpeakerSchema,
@@ -30,6 +31,7 @@ export type EventData = z.output<typeof EventSchema>;
 export type TalkData = z.output<typeof TalkSchema>;
 export type SpeakerData = z.output<ReturnType<typeof createSpeakerSchema>>;
 export type PartnerData = z.output<ReturnType<typeof createPartnerSchema>>;
+export type OrganizerData = z.output<ReturnType<typeof createOrganizerSchema>>;
 export type PageData = z.output<typeof PageSchema>;
 export type FaqData = z.output<typeof FaqSchema>;
 export type DocumentData = z.output<typeof DocumentSchema>;
@@ -38,6 +40,7 @@ export type EventEntry = CatalogEntry<EventData>;
 export type TalkEntry = CatalogEntry<TalkData>;
 export type SpeakerEntry = CatalogEntry<SpeakerData>;
 export type PartnerEntry = CatalogEntry<PartnerData>;
+export type OrganizerEntry = CatalogEntry<OrganizerData>;
 export type PageEntry = CatalogEntry<PageData>;
 export type FaqEntry = CatalogEntry<FaqData>;
 export type DocumentEntry = CatalogEntry<DocumentData>;
@@ -47,6 +50,7 @@ export interface Catalog {
   talks: TalkEntry[];
   speakers: SpeakerEntry[];
   partners: PartnerEntry[];
+  organizers: OrganizerEntry[];
   pages: PageEntry[];
   faq: FaqEntry[];
   documents: DocumentEntry[];
@@ -74,6 +78,7 @@ const INVARIANTS = {
   talks: ['event', 'speakers', 'time', 'slidesUrl', 'videoUrl'],
   speakers: ['photo', 'links'],
   partners: ['url', 'handle', 'logo', 'qrUrl'],
+  organizers: ['status', 'photo', 'contacts', 'order'],
   faq: ['order'],
   documents: [],
   pages: ['telegramUrl', 'questionTag'],
@@ -210,6 +215,7 @@ export function validateCatalog(
   checkTranslations('talks', catalog.talks, problems);
   checkTranslations('speakers', catalog.speakers, problems);
   checkTranslations('partners', catalog.partners, problems);
+  checkTranslations('organizers', catalog.organizers, problems);
   checkTranslations('faq', catalog.faq, problems);
   checkTranslations('pages', catalog.pages, problems);
   checkTranslations('documents', catalog.documents, problems);
@@ -220,6 +226,7 @@ export function validateCatalog(
     ['talks', catalog.talks],
     ['speakers', catalog.speakers],
     ['partners', catalog.partners],
+    ['organizers', catalog.organizers],
     ['faq', catalog.faq],
     ['documents', catalog.documents],
   ];
@@ -302,16 +309,17 @@ export function checkEventDays(
  * приходит от Astro (с путём файла), ошибка связей и переводов — от `validateCatalog`.
  */
 export async function loadCatalog(): Promise<Catalog> {
-  const [pages, events, talks, speakers, partners, faq, documents] = await Promise.all([
+  const [pages, events, talks, speakers, partners, organizers, faq, documents] = await Promise.all([
     getCollection('pages'),
     getCollection('events'),
     getCollection('talks'),
     getCollection('speakers'),
     getCollection('partners'),
+    getCollection('organizers'),
     getCollection('faq'),
     getCollection('documents'),
   ]);
-  const catalog = { events, talks, speakers, partners, pages, faq, documents };
+  const catalog = { events, talks, speakers, partners, organizers, pages, faq, documents };
   validateCatalog(catalog, {
     requireRendered: true,
     // filePath у записей Astro — относительно корня проекта, а сборка идёт из него же.

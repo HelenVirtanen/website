@@ -5,6 +5,7 @@ import {
   EventSchema,
   FaqSchema,
   PageSchema,
+  createOrganizerSchema,
   createPartnerSchema,
   TalkSchema,
   createSpeakerSchema,
@@ -31,6 +32,10 @@ export const collections = {
   partners: defineCollection({
     loader: localized('partners'),
     schema: ({ image }) => createPartnerSchema(image),
+  }),
+  organizers: defineCollection({
+    loader: localized('organizers'),
+    schema: ({ image }) => createOrganizerSchema(image),
   }),
   faq: defineCollection({ loader: localized('faq'), schema: FaqSchema }),
   documents: defineCollection({ loader: localized('documents'), schema: DocumentSchema }),

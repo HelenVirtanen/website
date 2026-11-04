@@ -1,0 +1,71 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import {
+  contact,
+  contactLabel,
+  contactLink,
+  contacts as contactsList,
+  content,
+  name as nameStyle,
+  photo,
+  regalia as regaliaList,
+  root,
+} from './OrganizerCard.css';
+
+const Tag = 'article';
+
+interface ContactItem {
+  /** Адрес контакта */
+  href: string;
+  /** Подпись контакта: «TG:», «GitHub:», «Сайт:» */
+  label: string;
+  /** Короткий текст ссылки: @DreamShaded, vzhyx.io */
+  text: string;
+}
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Имя организатора */
+  name: string;
+  /** Регалии списком: должность, место работы, роли в сообществах */
+  regalia?: string[];
+  /** Контакты в порядке вывода; пустой список — строки контактов нет */
+  contacts?: ContactItem[];
+}
+
+const { name, regalia = [], contacts = [], class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[root, className]} {...attrs}>
+  {
+    Astro.slots.has('photo') && (
+      <div class={photo}>
+        <slot name="photo" />
+      </div>
+    )
+  }
+  <div class={content}>
+    <h3 class={nameStyle}>{name}</h3>
+    {
+      regalia.length > 0 && (
+        <ul class={regaliaList}>
+          {regalia.map((item) => <li>{item}</li>)}
+        </ul>
+      )
+    }
+    {
+      contacts.length > 0 && (
+        <ul class={contactsList}>
+          {
+            contacts.map((item) => (
+              <li class={contact}>
+                <span class={contactLabel}>{item.label}</span>
+                <a class={contactLink} href={item.href}>
+                  {item.text}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      )
+    }
+  </div>
+</Tag>
