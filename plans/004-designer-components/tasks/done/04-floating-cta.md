@@ -3,7 +3,7 @@ id: "04"
 title: floating-cta
 spec: "004"
 criteria: ["AC-5"]
-status: pending
+status: done
 depends_on: ["01"]
 owns: ["packages/ui/src/components/CallToAction/**", "apps/storybook/stories/CallToAction.stories.ts"]
 model: sonnet
