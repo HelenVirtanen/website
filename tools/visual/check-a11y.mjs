@@ -71,6 +71,8 @@ const newPage = async (theme, width, { reducedMotion = 'reduce', height = 900 } 
     localStorage.setItem('moscowcss-theme', value);
     localStorage.setItem('moscowcss-decor-off', '1');
   }, theme);
+  // Чужие карты в проверке не нужны: сеть замедляет прогон и делает его нестабильным.
+  await context.route(/yandex\.ru\/map-widget/, (route) => route.abort());
   return { context, page: await context.newPage() };
 };
 
@@ -159,16 +161,11 @@ async function checkKeyboard(page, where) {
       const covered = onTop && !element.contains(onTop) && !onTop.contains(element);
       const visible = rect.width > 0 && rect.height > 0;
       const inView = rect.bottom > 0 && rect.top < innerHeight && rect.right > 0 && rect.left < innerWidth;
-      return { key: index, tag: element.tagName, name, ring: ring || layerRing, covered: Boolean(covered), visible, inView, coveredBy: covered ? onTop.tagName : '' };
+      return { key: index, name, ring: ring || layerRing, covered: Boolean(covered), visible, inView, coveredBy: covered ? onTop.tagName : '' };
     });
     if (state) {
       if (seen.has(state.key)) break;
       seen.add(state.key);
-      // Карта Яндекса: фокус уходит внутрь чужого фрейма, кольцо и порядок там задаёт он. Имя фрейма проверяет axe.
-      if (state.tag === 'IFRAME') {
-        await page.keyboard.press('Tab');
-        continue;
-      }
       if (!state.visible) report(where, 'focus-hidden', `фокус на невидимом элементе «${state.name}»`);
       else if (!state.inView) report(where, 'focus-offscreen', `фокус вне экрана «${state.name}»`);
       else if (state.covered) report(where, 'focus-obscured', `«${state.name}» перекрыт ${state.coveredBy}`);
@@ -275,6 +272,57 @@ async function checkLiveSlider(width) {
   await context.close();
 }
 
+// Модальное окно карты: открытие с клавиатуры, фокус, запрет фона и главное — страница не прыгает.
+async function checkMapDialog(theme, width) {
+  const where = `/ ${theme} ${width} окно карты`;
+  const { context, page } = await newPage(theme, width);
+  await open(page, '/');
+  const trigger = page.locator('[data-map-open]');
+  if ((await trigger.count()) === 0) {
+    await context.close();
+    return;
+  }
+  if ((await page.locator('[data-map-frame] iframe').count()) > 0) report(where, 'map-lazy', 'чужая карта загружена до открытия окна');
+  await trigger.scrollIntoViewIfNeeded();
+  await trigger.focus();
+  const position = () =>
+    page.evaluate(() => {
+      const box = document.querySelector('[data-map-open]').getBoundingClientRect();
+      return { scroll: Math.round(scrollY), left: box.left, top: box.top, width: document.documentElement.clientWidth };
+    });
+  const before = await position();
+  await page.keyboard.press('Enter');
+  const opened = await position();
+  const facts = await page.evaluate(() => {
+    const dialog = document.querySelector('[data-map-dialog] dialog');
+    const frame = dialog.querySelector('iframe');
+    return {
+      modal: dialog.matches(':modal'),
+      focusInside: dialog.contains(document.activeElement),
+      labelled: Boolean(document.getElementById(dialog.getAttribute('aria-labelledby'))?.textContent.trim()),
+      frameTitle: frame?.title,
+      links: dialog.querySelectorAll('a[href^="https://"]').length,
+    };
+  });
+  if (!facts.modal) report(where, 'dialog', 'окно не модальное');
+  if (!facts.focusInside) report(where, 'dialog', 'фокус не перешёл в окно');
+  if (!facts.labelled) report(where, 'dialog', 'у окна нет названия');
+  if (!facts.frameTitle) report(where, 'dialog', 'у карты нет названия');
+  if (facts.links < 3) report(where, 'dialog', `ссылок на сервисы: ${facts.links}`);
+  if (JSON.stringify(before) !== JSON.stringify(opened)) report(where, 'dialog-jump', `страница сдвинулась при открытии: ${JSON.stringify(before)} → ${JSON.stringify(opened)}`);
+  await checkAxe(page, where);
+  await page.keyboard.press('Escape');
+  const closed = await position();
+  const after = await page.evaluate(() => ({
+    open: document.querySelector('[data-map-dialog] dialog').open,
+    onTrigger: document.activeElement?.hasAttribute('data-map-open'),
+  }));
+  if (after.open) report(where, 'dialog', 'Esc не закрывает окно');
+  if (!after.onTrigger) report(where, 'dialog', 'после закрытия фокус не вернулся на кнопку');
+  if (JSON.stringify(before) !== JSON.stringify(closed)) report(where, 'dialog-jump', `страница сдвинулась при закрытии: ${JSON.stringify(before)} → ${JSON.stringify(closed)}`);
+  await context.close();
+}
+
 async function checkPauseControls() {
   const { context, page } = await newPage('light', 1440, { reducedMotion: 'no-preference' });
   await context.addInitScript(() => localStorage.removeItem('moscowcss-decor-off'));
@@ -313,7 +361,10 @@ try {
     }
   }
   await checkPauseControls();
-  for (const width of WIDTHS) await checkLiveSlider(width);
+  for (const width of WIDTHS) {
+    await checkLiveSlider(width);
+    for (const theme of THEMES) await checkMapDialog(theme, width);
+  }
 } finally {
   await browser.close();
   server.close();

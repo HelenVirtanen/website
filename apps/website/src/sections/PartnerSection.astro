@@ -1,6 +1,6 @@
 ---
 import FeatureCard from '@moscowcss/ui/components/FeatureCard';
-import MapPlaceholder from '@moscowcss/ui/components/MapPlaceholder';
+import MapDialog from '@moscowcss/ui/components/MapDialog';
 import MediaTile from '@moscowcss/ui/components/MediaTile';
 import { LineVektor } from '@moscowcss/icons';
 import Prose from '@moscowcss/ui/components/Prose';
@@ -28,7 +28,6 @@ import {
   directionsBlock,
   directionsProse,
   mediaRow,
-  mapFrame,
   mediaTileFrame,
 } from './PartnerSection.css';
 
@@ -119,15 +118,15 @@ const routeMedia = [
         </Prose>
         {
           venue.coordinates && (
-            <MapPlaceholder
-              class={mapFrame}
+            <MapDialog
               latitude={venue.coordinates.latitude}
               longitude={venue.coordinates.longitude}
               zoom={venue.coordinates.zoom}
-              caption={venue.address}
-              emptyLabel={t('map.empty')}
-              emptyHint={t('map.emptyHint')}
+              address={venue.address ?? venue.name}
               openLabel={t('map.open')}
+              closeLabel={t('map.close')}
+              providersLabel={t('map.providers')}
+              providers={{ yandex: t('map.yandex'), twoGis: t('map.twoGis'), google: t('map.google') }}
             />
           )
         }

@@ -1,0 +1,71 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { Close } from '@moscowcss/icons';
+import { mapLinks } from './mapLinks';
+import { closeButton, content, dialog, frame, head, linkList, providerLink, providersTitle, root, title, trigger } from './MapDialog.css';
+
+const Tag = 'div';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Широта точки */
+  latitude: number;
+  /** Долгота точки */
+  longitude: number;
+  /** Масштаб карты */
+  zoom?: number;
+  /** Адрес: заголовок окна и название карты для скринридера */
+  address: string;
+  /** Подпись кнопки, открывающей карту */
+  openLabel: string;
+  /** Доступное имя кнопки закрытия */
+  closeLabel: string;
+  /** Подпись над ссылками на сервисы */
+  providersLabel: string;
+  /** Названия сервисов */
+  providers: { yandex: string; twoGis: string; google: string };
+}
+
+const { latitude, longitude, zoom = 16, address, openLabel, closeLabel, providersLabel, providers, class: className, ...attrs } = Astro.props;
+
+const links = mapLinks({ latitude, longitude, zoom });
+const titleId = 'map-dialog-title';
+const external = { target: '_blank', rel: 'noopener noreferrer' } as const;
+const items = [
+  { href: links.yandex, label: providers.yandex },
+  { href: links.twoGis, label: providers.twoGis },
+  { href: links.google, label: providers.google },
+];
+---
+<Tag class:list={[root, className]} data-map-dialog {...attrs}>
+  <button type="button" class={trigger} data-map-open aria-haspopup="dialog" hidden>{openLabel}</button>
+  <a class={trigger} href={links.yandex} data-map-fallback {...external}>{openLabel}</a>
+  <dialog class={dialog} aria-labelledby={titleId}>
+    <div class={content}>
+      <div class={head}>
+        <h2 class={title} id={titleId}>{address}</h2>
+        <button type="button" class={closeButton} data-map-close aria-label={closeLabel}>
+          <Close aria-hidden="true" />
+        </button>
+      </div>
+      <div class={frame} data-map-frame data-src={links.embed} data-title={address}></div>
+      <p class={providersTitle} id={`${titleId}-providers`}>{providersLabel}</p>
+      <ul class={linkList} aria-labelledby={`${titleId}-providers`}>
+        {
+          items.map((item) => (
+            <li>
+              <a class={providerLink} href={item.href} {...external}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </dialog>
+</Tag>
+
+<script>
+  import { setupMapDialog } from './MapDialog.client';
+
+  document.querySelectorAll<HTMLElement>('[data-map-dialog]').forEach(setupMapDialog);
+</script>

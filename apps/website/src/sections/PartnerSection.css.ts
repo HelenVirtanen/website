@@ -194,12 +194,6 @@ export const mediaRow = style({
   },
 });
 
-export const mapFrame = style({
-  width: '100%',
-  aspectRatio: dimensions.mapFrame.aspectRatio,
-  border: `${vars.border.width.superThick} ${vars.border.style.solid} ${vars.color.onSurfaceDark}`,
-});
-
 export const mediaTileFrame = style({
   width: '100%',
   aspectRatio: dimensions.mediaTile.aspectRatio,

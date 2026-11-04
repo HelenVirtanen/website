@@ -17,6 +17,8 @@ const contract = {
   },
   size: {
     burgerIcon: null,
+    mapDialogWidth: null,
+    mapDialogMinHeight: null,
     cardPaddingBlock: null,
     cardSliderArrow: null,
     speakerAvatar: null,
@@ -49,6 +51,8 @@ const values = {
   },
   size: {
     burgerIcon: '1.5rem', // 24px
+    mapDialogWidth: '60rem', // 960px
+    mapDialogMinHeight: '16rem', // 256px
     cardPaddingBlock: '2.5rem', // 40px
     cardSliderArrow: '3.9375rem', // 63px
     speakerAvatar: '10.5rem', // 168px

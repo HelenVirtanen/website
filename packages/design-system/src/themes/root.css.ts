@@ -10,3 +10,7 @@ globalStyle('html', { fontSize: 'max(100%, 100vw / 120)' });
 globalStyle('html', {
   scrollPaddingBlockStart: `calc(${vars.size.hitTarget} * 2)`,
 });
+
+// Место под полосу прокрутки зарезервировано всегда: запрет прокрутки под окном не сдвигает страницу вбок.
+globalStyle('html', { scrollbarGutter: 'stable' });
+globalStyle('html:has(dialog[open])', { overflow: 'hidden' });

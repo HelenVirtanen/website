@@ -40,6 +40,7 @@ const contract = {
     pastNote: null, // пометка «митап уже прошёл»
     // Цветные плашки: подложка и текст на ней.
     decorMuted: null, // падающие фигуры поверх текста
+    backdrop: null, // затемнение под модальным окном
     tagSky: null,
     onTagSky: null,
     tagBlue: null,
@@ -88,6 +89,7 @@ const light = {
     speakerAccent: palette.pink,
     pastNote: palette.orangeDeep,
     decorMuted: palette.gray500,
+    backdrop: palette.blackA50,
     tagSky: palette.sky,
     onTagSky: palette.ink,
     tagBlue: palette.blue,

@@ -101,7 +101,8 @@ server, and exits 1 on any violation. It covers every page type in the light and
 - keyboard: skip link first, a visible ring on every stop, nothing off screen or under the sticky header;
 - the phone menu: opens by keyboard, keeps Tab inside, Esc closes and returns focus;
 - reflow at 320, text at 200% and the WCAG 1.4.12 text spacing;
-- a pause control for moving content, and sliders with live animation.
+- a pause control for moving content, and sliders with live animation;
+- the map dialog: loads the map only on open, moves focus inside, Esc returns it, the page does not jump.
 
 Automation finds only part of the problems. A screen reader run and the keyboard inside the third-party map
-frame stay manual. Build with `BUILD_NOW` set before a meetup to also check the floating button.
+frame stay manual, and the gate blocks the map frame itself to stay independent of the network. Build with `BUILD_NOW` set before a meetup to also check the floating button.

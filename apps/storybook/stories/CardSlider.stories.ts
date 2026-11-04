@@ -20,9 +20,9 @@ async function clickNext(canvasElement: HTMLElement, times: number) {
 // Начало ленты: «назад» недоступна (серая, not-allowed), «вперёд» активна (чёрная, при наведении синяя).
 export const Slider = {};
 
-// Сама листается раз в две секунды и идёт по кругу, как организаторы на главной.
+// Сама листается раз в пять секунд и идёт по кругу, как организаторы на главной.
 export const SliderAutoplay = {
-  args: { autoplayMs: 2000, autoplayLabel: 'Автопрокрутка' },
+  args: { autoplayMs: 5000, autoplayLabel: 'Автопрокрутка' },
 };
 
 // Середина ленты: обе стрелки активны.

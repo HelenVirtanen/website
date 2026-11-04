@@ -7,6 +7,7 @@ import '@moscowcss/design-system';
 import './preview.css';
 import { setupCardSlider } from '../../../packages/ui/src/components/Card/CardSlider.client';
 import { setupNavBar } from '../../../packages/ui/src/components/NavBar/NavBar.client';
+import { setupMapDialog } from '../../../packages/ui/src/components/MapDialog/MapDialog.client';
 import { setupThemeToggles } from '../../../packages/ui/src/components/ThemeToggle/ThemeToggle.client';
 
 // Astro-компонентные <script> в renderMode 'server' не попадают в канвас — инициализируем вручную.
@@ -42,6 +43,11 @@ const initThemeToggles: Decorator = (Story, { canvasElement }) => {
   return Story();
 };
 
+const initMapDialogs: Decorator = (Story, { canvasElement }) => {
+  observeCanvasInit(canvasElement, '[data-map-dialog]', setupMapDialog);
+  return Story();
+};
+
 const initCardSliders: Decorator = (Story, { canvasElement }) => {
   observeCanvasInit(canvasElement, '[data-card-slider]', setupCardSlider);
   return Story();
@@ -54,7 +60,7 @@ const applyTheme: Decorator = (story, context) => {
 };
 
 const preview = {
-  decorators: [applyTheme, initNavBars, initThemeToggles, initCardSliders],
+  decorators: [applyTheme, initNavBars, initThemeToggles, initMapDialogs, initCardSliders],
   globalTypes: {
     theme: {
       description: 'Тема',
