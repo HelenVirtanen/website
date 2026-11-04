@@ -196,7 +196,7 @@ export const adaptiveScale = {
   heroPaddingInline: { base: px(16), tablet: px(24), wide: px(56), desktopLarge: px(80) },
   heroGap: { base: px(28), wide: px(56), desktopLarge: px(76) },
   heroGroupGap: { base: px(12), wide: px(16), desktopLarge: px(20) },
-  heroTagsHeight: { base: px(200), wide: px(264), desktopLarge: px(352) },
+  heroTagsHeight: { base: px(200), tablet: px(240), wide: px(264), desktopLarge: px(352) },
   heroTagPaddingBlock: { base: px(11), tablet: px(14), wide: px(17), desktopLarge: px(29) },
   heroTagPaddingInline: { base: px(14), tablet: px(18), wide: px(24), desktopLarge: px(48) },
   heroTagRadius: { base: px(17), tablet: px(21), wide: px(26), desktopLarge: px(41) },

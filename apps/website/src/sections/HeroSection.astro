@@ -48,13 +48,13 @@ const number = /^\d+$/.test(slug) ? slug : undefined;
   <div class={inner}>
     <div class={group}>
       <div class={stage}>
-        {tags.length > 0 && <TagPile class={pile} tags={tags} label={t('hero.tags')} />}
+        <TagPile class={pile} tags={[...eventModes, ...tags]} label={t('hero.tags')} />
         <div class={metaRow}>
           {number !== undefined && <span class={chip}>{fillTemplate(t('hero.meetupNumber'), { number })}</span>}
           <p class={date}>
             {past && <span class={pastNote}>{t('hero.pastNote')}</span>}
             <span class={day}>{fillTemplate(t('date.long'), parts)}</span>
-            {event.data.time !== undefined && <span class={time}>{parts.time}</span>}
+            {event.data.time !== undefined && <span class={time}>{fillTemplate(t('hero.time'), { time: parts.time })}</span>}
           </p>
         </div>
       </div>
@@ -66,8 +66,10 @@ const number = /^\d+$/.test(slug) ? slug : undefined;
 
     <div class={about}>
       <p class={lead}>{tagline}</p>
-      {venue.address && <p class:list={[body, dim]}>{fillTemplate(t('hero.address'), { address: venue.address })}</p>}
-      {passportRequired && <p class:list={[body, dim]}>{t('hero.passport')}</p>}
+      <div>
+        {venue.address && <p class:list={[body, dim]}>{fillTemplate(t('hero.address'), { address: venue.address })}</p>}
+        {passportRequired && <p class:list={[body, dim]}>{t('hero.passport')}</p>}
+      </div>
       {
         past ? (
           recordingUrl && (

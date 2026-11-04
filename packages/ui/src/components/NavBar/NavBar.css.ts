@@ -73,7 +73,6 @@ export const link = style({
   color: vars.color.text,
   font: vars.font.shorthand.navMeta,
   textDecoration: 'none',
-  textTransform: 'uppercase',
   opacity: 0.8,
   ...fade,
   selectors: {
@@ -180,7 +179,7 @@ export const metaLink = style({
   display: vars.display.flex,
   alignItems: vars.alignItems.center,
   minHeight: vars.size.hitTarget,
-  color: vars.color.link,
+  color: vars.color.text,
   textDecoration: 'none',
   ...fade,
   selectors: {

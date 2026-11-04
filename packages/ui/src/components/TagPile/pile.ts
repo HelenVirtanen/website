@@ -12,6 +12,12 @@ const topTiltDeg = 68;
 // Отношение длины плашки к высоте: короче shortRatio наклон до topTiltDeg, длиннее longRatio — до midTiltDeg.
 const shortRatio = 2.5;
 const longRatio = 6;
+// Нижний ряд шире средней доли ширины на ряд, каждый следующий уже предыдущего.
+const baseRowShare = 1.5;
+const upperRowShare = 0.85;
+// Выше куча превращается в башню из плашек по одной.
+const maxLevels = 4;
+const fallShuffleRows = 1.5;
 
 /** Детерминированный генератор (mulberry32): одинаковый сид даёт одинаковую кучу. */
 export function createRandom(seed: number): Random {
@@ -100,8 +106,8 @@ function tiltLimit(row: number, rowCount: number, width: number, height: number)
 }
 
 /**
- * Раскладка кучи: ряды растут снизу вверх, нижний ряд ровный, верхние наклонены. Каждый ряд
- * центрируется; когда зона мала, ряды ложатся внахлёст. Ни одна плашка с поворотом не выходит
+ * Раскладка кучи: ряды растут снизу вверх и сужаются, нижний ряд ровный, верхние наклонены. Каждый
+ * ряд центрируется; когда зона мала, ряды ложатся внахлёст. Ни одна плашка с поворотом не выходит
  * за зону. Плашки ложатся в порядке списка (перемешивает вызывающий), результат выровнен по нему.
  */
 export function layoutPile(input: PileInput): PilePlacement[] {
@@ -115,13 +121,20 @@ export function layoutPile(input: PileInput): PilePlacement[] {
   const fitted = widths.map((width) => Math.min(width, zoneWidth));
   const widthOf = (index: number): number => fitted[index] ?? 0;
 
+  // Куча сужается кверху: нижний ряд шире средней доли, каждый следующий уже предыдущего.
+  const levels = Math.min(maxLevels, Math.max(1, Math.floor(zoneHeight / (tagHeight + gap))));
+  const total = fitted.reduce((sum, width) => sum + width, 0) + gap * (count - 1);
+  const baseCapacity = Math.min(zoneWidth, Math.max(Math.max(...fitted), (total / levels) * baseRowShare));
+  const capacityOf = (rowIndex: number): number =>
+    Math.max(Math.max(...fitted), baseCapacity * upperRowShare ** rowIndex);
+
   const rows: number[][] = [];
   let row: number[] = [];
   let used = 0;
   for (let index = 0; index < count; index += 1) {
     const width = widthOf(index);
     const next = row.length === 0 ? width : used + gap + width;
-    if (row.length > 0 && next > zoneWidth) {
+    if (row.length > 0 && next > capacityOf(rows.length)) {
       rows.push(row);
       row = [index];
       used = width;
@@ -135,7 +148,11 @@ export function layoutPile(input: PileInput): PilePlacement[] {
   const travel = Math.max(0, zoneHeight - tagHeight);
   const step = rows.length > 1 ? Math.min(tagHeight + gap, travel / (rows.length - 1)) : 0;
 
-  const fallOrder = rows.flatMap((members) => shuffled(members, random));
+  // В основном снизу вверх, но соседние ряды перемешаны: иначе ряды по одной плашке падают всегда одинаково.
+  const fallOrder = rows
+    .flatMap((members, rowIndex) => members.map((index) => ({ index, rank: rowIndex + random() * fallShuffleRows })))
+    .sort((a, b) => a.rank - b.rank)
+    .map(({ index }) => index);
   const span = Math.max(0, totalMs - fallMs);
   const placements: PilePlacement[] = [];
 

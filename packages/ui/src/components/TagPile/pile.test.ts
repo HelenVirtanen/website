@@ -199,4 +199,14 @@ describe('layoutPile', () => {
       expect(box.bottom).toBeLessThanOrEqual(input.zoneHeight + eps);
     });
   });
+
+  it('складывает плашки в кучу, а не вытягивает в один ряд', () => {
+    const widths = [124, 113, 145, 166, 231, 177, 242, 210, 80];
+    const placements = layoutPile({ widths, tagHeight: 52, zoneWidth: 1328, zoneHeight: 264, gap: 8, random: createRandom(7) });
+    const rows = new Set(placements.map((placement) => Math.round(placement.y / 60)));
+    expect(rows.size).toBeGreaterThan(2);
+    const bottom = placements.filter((placement) => placement.rotation === 0);
+    const left = Math.min(...bottom.map((placement) => placement.x));
+    expect(left).toBeGreaterThan(200);
+  });
 });
