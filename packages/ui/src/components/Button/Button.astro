@@ -1,17 +1,30 @@
 ---
-import type { HTMLAttributes } from "astro/types";
-import { button } from "./Button.css";
+import type { HTMLAttributes } from 'astro/types';
+import { button, nav } from './Button.css';
 
-// Тег — единственный источник правды: тип пропсов и разметка меняются вместе.
-const Tag = "button";
-
-interface Props extends HTMLAttributes<typeof Tag> {
-  // свои дополнительные пропсы
+interface OwnProps {
+  /** Размер: обычный или уменьшенный под шапку */
+  size?: 'default' | 'nav';
 }
 
-const { type = "button", class: className, ...attrs } = Astro.props;
+interface LinkProps extends HTMLAttributes<'a'>, OwnProps {
+  /** Адрес перехода — рендер как ссылка вместо кнопки */
+  href: string;
+}
+
+interface ButtonProps extends HTMLAttributes<'button'>, OwnProps {
+  href?: undefined;
+}
+
+type Props = LinkProps | ButtonProps;
+
+const props = Astro.props as Props;
+const { class: className, href, size = 'default', type = 'button', ...attrs } = props;
+const classes = [button, size === 'nav' && nav, className];
 ---
 
-<Tag type={type} class:list={[button, className]} {...attrs}>
-  <slot />
-</Tag>
+{href != null ? (
+  <a href={href} class:list={classes} {...attrs}><slot /></a>
+) : (
+  <button type={type} class:list={classes} {...attrs}><slot /></button>
+)}

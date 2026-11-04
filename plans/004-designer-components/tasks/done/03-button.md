@@ -3,7 +3,7 @@ id: "03"
 title: button
 spec: "004"
 criteria: ["AC-4"]
-status: pending
+status: done
 depends_on: ["01"]
 owns: ["packages/ui/src/components/Button/**", "apps/storybook/stories/Button.stories.ts"]
 model: sonnet
