@@ -1,7 +1,7 @@
 ---
 id: "006"
 title: Аудит доступности WCAG 2.2 AA и проверка pnpm check:a11y
-status: approved
+status: done
 created: 2026-11-04
 updated: 2026-11-04
 supersedes: []
