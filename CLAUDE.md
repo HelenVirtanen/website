@@ -139,8 +139,9 @@ commands in scripts, LF everywhere (`.gitattributes`).
 Node & pnpm:
 
 - Node: use the **current LTS** (pinned for CI in `.nvmrc`). The hard floor is
-  **>= 22.12**, the strictest `engines` among the installed tools (Astro 7, Vite 8);
-  root `engines.node` states it.
+  **>= 22.23.4**, the strictest `engines` among the installed tools (Astro 7);
+  root `engines.node` states it. Node 25+ does not ship Corepack: install it once
+  per Node version with `npm i -g corepack && corepack enable`.
 - Pin pnpm via Corepack — run `corepack use pnpm@latest` once; it writes the
   `packageManager` field. Do not guess/pin a pnpm version by hand.
 
