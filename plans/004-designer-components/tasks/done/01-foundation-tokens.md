@@ -3,7 +3,7 @@ id: "01"
 title: foundation-tokens
 spec: "004"
 criteria: ["AC-1", "AC-2"]
-status: pending
+status: done
 depends_on: []
 owns: ["packages/design-system/src/**", "packages/icons/src/svg/**", "apps/website/src/i18n/ui.ts"]
 model: sonnet

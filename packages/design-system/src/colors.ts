@@ -28,6 +28,25 @@ const contract = {
     partnerAccent: null,
     partnerBanner: null,
     surfaceDarkMuted: null,
+    dividerSoft: null, // мягкий разделитель на светлом фоне
+    link: null,
+    // Наведение на кнопку: подложка и текст на ней.
+    buttonHover: null,
+    onButtonHover: null,
+    disabled: null,
+    speakerAccent: null,
+    pastNote: null, // пометка «митап уже прошёл»
+    // Цветные плашки: подложка и текст на ней.
+    tagSky: null,
+    onTagSky: null,
+    tagBlue: null,
+    onTagBlue: null,
+    tagYellow: null,
+    onTagYellow: null,
+    tagRed: null,
+    onTagRed: null,
+    tagOrange: null,
+    onTagOrange: null,
   },
 } as const;
 
@@ -55,6 +74,23 @@ const light = {
     partnerAccent: palette.green,
     partnerBanner: palette.pink,
     surfaceDarkMuted: palette.gray700,
+    dividerSoft: palette.inkA20,
+    link: palette.blue,
+    buttonHover: palette.blue,
+    onButtonHover: palette.white,
+    disabled: palette.gray300,
+    speakerAccent: palette.pink,
+    pastNote: palette.orange,
+    tagSky: palette.sky,
+    onTagSky: palette.ink,
+    tagBlue: palette.blue,
+    onTagBlue: palette.white,
+    tagYellow: palette.yellow,
+    onTagYellow: palette.ink,
+    tagRed: palette.red,
+    onTagRed: palette.white,
+    tagOrange: palette.orange,
+    onTagOrange: palette.white,
   },
 };
 

@@ -6,4 +6,6 @@ import './typography.css';
 import './zIndex.css';
 import './layout.css';
 import './border.css';
+import './motion.css';
+import './adaptive.css';
 import './root.css';

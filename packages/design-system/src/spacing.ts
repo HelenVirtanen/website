@@ -13,6 +13,7 @@ const contract = {
   radius: {
     small: null,
     medium: null,
+    large: null,
   },
   size: {
     tgLinkButton: null,
@@ -43,6 +44,9 @@ const contract = {
     partnerLogoHeight: null,
     partnerLogoOffsetTop: null,
     programHintMaxWidth: null,
+    hitTarget: null,
+    organizerPhoto: null,
+    organizerPadding: null,
   },
 } as const;
 
@@ -53,6 +57,7 @@ const values = {
   radius: {
     small: '0.25rem', // 4px
     medium: '0.5rem', // 8px
+    large: '0.625rem', // 10px
   },
   size: {
     tgLinkButton: '3.75rem', // 60px
@@ -84,6 +89,9 @@ const values = {
     partnerLogoHeight: '14.125rem',
     partnerLogoOffsetTop: '10.146875rem',
     programHintMaxWidth: '36rem', // 576px
+    hitTarget: '2.625rem', // 42px — минимальная зона нажатия
+    organizerPhoto: '15.577rem', // 249.23px
+    organizerPadding: '2rem', // 32px
   },
 };
 

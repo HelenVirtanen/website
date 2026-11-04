@@ -5,6 +5,8 @@ import { typography } from './typography';
 import { border } from './border';
 import { zIndex } from './zIndex';
 import { layout } from './layout';
+import { motion } from './motion';
+import { adaptive } from './adaptive';
 
 // Слой 2 — семантический контракт: форма всех токенов темы, собранная из
 // отдельных групп (цвет / отступы / шрифты). Компоненты используют только `vars`.
@@ -18,6 +20,8 @@ export const vars = createGlobalThemeContract(
     ...border.contract,
     ...zIndex.contract,
     ...layout.contract,
+    ...motion.contract,
+    ...adaptive.contract,
   },
   // путь -> имя CSS-переменной (vanilla-extract добавит `--`)
   (_value, path) => path.join('-'),

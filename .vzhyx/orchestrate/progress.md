@@ -98,3 +98,6 @@ Ruling: «документы» на входе → passportRequired: true — п
 ## Spec 004 — designer components (2026-11-04)
 Consent: spec 004 layout 60919298 agents 11
 Ruling: один ревью-проход в конце очереди вместо тестировщика и ревьюера на каждую задачу с risk contract — задачи однотипные, Done when и тесты проверяет дирижёр — цена: дефект найдётся позже
+- 02 local-fonts: done, contract e65351fb, verified grep/ls/lockfile/build; файлы LICENSE.txt, отчёт вне owns записан дирижёром
+- 01 foundation-tokens: done, contract e65351fb, verified scale test 1439/1440, root.css unchanged, motion file, lint/test/build
+Ruling: каталог отчётов не добавлен в owns, отчёт отдельным файлом только если замок пропустил, иначе текстом дирижёру — правка owns сделала бы согласие устаревшим — цена: дирижёр дописывает отчёт сам

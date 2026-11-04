@@ -5,6 +5,8 @@ export const fontFamily = {
   display: '"Montserrat", system-ui, sans-serif',
   sans: '"Inter", system-ui, sans-serif',
   mono: '"JetBrains Mono", ui-monospace, monospace',
+  logo: '"Jost", system-ui, sans-serif',
+  text: '"Golos Text", system-ui, sans-serif',
 } as const;
 
 export const fontWeight = {
@@ -21,5 +23,7 @@ export const fontWeight = {
   },
   // Inter подключён только в Medium (500).
   sans: { medium: 500 },
-  mono: { regular: 400, medium: 500, semiBold: 600, bold: 700 },
+  mono: { light: 300, regular: 400, medium: 500, semiBold: 600, bold: 700 },
+  logo: { regular: 400 },
+  text: { regular: 400 },
 } as const;

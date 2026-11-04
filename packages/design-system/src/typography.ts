@@ -1,99 +1,19 @@
 import { fontFamily as ff, fontWeight as fw } from './fonts';
-import { baseValues, typeScale } from './scale';
+import { baseValues, typeScale, type AdaptiveToken, type FontRole } from './scale';
 
 // Шорткаты ссылаются на переменные размера как `var(--font-size-*)` строкой, а не
 // через `vars`, — иначе была бы циклическая зависимость с contract.ts.
-const size = (
-  k:
-    | 'blockTitle'
-    | 'registration'
-    | 'subtitle'
-    | 'navLink'
-    | 'websiteTitle'
-    | 'h1'
-    | 'h2'
-    | 'h3'
-    | 'h4'
-    | 'body'
-    | 'caption'
-    | 'ui'
-    | 'programTalkTitle'
-    | 'programSpeakerName'
-    | 'programSpeakerRole'
-    | 'programTime'
-    | 'programDescription'
-    | 'featureCardTitle'
-    | 'featureCardBody'
-    | 'featureCardFootnote'
-    | 'partnerAddress'
-    | 'partnerDirectionsHint'
-    | 'heroTitle'
-    | 'heroLightLabel'
-    | 'heroMeetupLine'
-    | 'heroInfoLine'
-    | 'heroCtaLabel',
-) => `var(--font-size-${k})`;
+const size = (k: FontRole) => `var(--font-size-${k})`;
+// Высота строки роли, заданная адаптивным токеном, а не числом.
+const line = (k: AdaptiveToken) => `var(--adaptive-${k})`;
+
+const roleKeys = () =>
+  Object.fromEntries(Object.keys(typeScale).map((k) => [k, null])) as Record<FontRole, null>;
 
 const contract = {
   font: {
-    size: {
-      blockTitle: null,
-      registration: null,
-      subtitle: null,
-      navLink: null,
-      websiteTitle: null,
-      h1: null,
-      h2: null,
-      h3: null,
-      h4: null,
-      body: null,
-      caption: null,
-      ui: null,
-      programTalkTitle: null,
-      programSpeakerName: null,
-      programSpeakerRole: null,
-      programTime: null,
-      programDescription: null,
-      featureCardTitle: null,
-      featureCardBody: null,
-      featureCardFootnote: null,
-      partnerAddress: null,
-      partnerDirectionsHint: null,
-      heroTitle: null,
-      heroLightLabel: null,
-      heroMeetupLine: null,
-      heroInfoLine: null,
-      heroCtaLabel: null,
-    },
-    shorthand: {
-      blockTitle: null,
-      registration: null,
-      subtitle: null,
-      navLink: null,
-      websiteTitle: null,
-      h1: null,
-      h2: null,
-      h3: null,
-      h4: null,
-      body: null,
-      caption: null,
-      ui: null,
-      programTalkTitle: null,
-      programSpeakerName: null,
-      programSpeakerRole: null,
-      programTime: null,
-      programDescription: null,
-      featureCardTitle: null,
-      featureCardBody: null,
-      featureCardFootnote: null,
-      partnerAddress: null,
-      partnerDirectionsHint: null,
-      heroTitle: null,
-      heroLightLabel: null,
-      heroMeetupLine: null,
-      heroInfoLine: null,
-      heroCtaLabel: null,
-    },
+    size: roleKeys(),
+    shorthand: roleKeys(),
     letterSpacing: {
       heading: null,
       registration: null,
@@ -102,6 +22,13 @@ const contract = {
       figmaWide: null,
       figmaFeatureTitle: null,
       figmaHeroTitle: null,
+      blockTitle: null,
+      navLogo: null,
+      menuLink: null,
+      heroChip: null,
+      heroDisplay: null,
+      heroText: null,
+      ctaFloating: null,
     },
   },
 } as const;
@@ -137,7 +64,22 @@ const values = {
       heroMeetupLine: `${fw.display.regular} ${size('heroMeetupLine')}/2.375rem ${ff.display}`,
       heroInfoLine: `${fw.display.regular} ${size('heroInfoLine')}/1.1 ${ff.display}`,
       heroCtaLabel: `${fw.display.bold} ${size('heroCtaLabel')}/1.2083333333 ${ff.display}`,
-    },
+      buttonLabel: `${fw.mono.medium} ${size('buttonLabel')}/0.994 ${ff.mono}`,
+      navLogo: `${fw.logo.regular} ${size('navLogo')}/1 ${ff.logo}`,
+      navMono: `${fw.mono.regular} ${size('navMono')}/1.5 ${ff.mono}`,
+      navMeta: `${fw.mono.light} ${size('navMeta')}/1.4 ${ff.mono}`,
+      menuLink: `${fw.mono.medium} ${size('menuLink')}/1.4 ${ff.mono}`,
+      heroTag: `${fw.mono.medium} ${size('heroTag')}/1 ${ff.mono}`,
+      heroChip: `${fw.logo.regular} ${size('heroChip')}/1 ${ff.logo}`,
+      heroDate: `${fw.mono.bold} ${size('heroDate')}/1.2 ${ff.mono}`,
+      heroMeta: `${fw.mono.regular} ${size('heroMeta')}/1.5 ${ff.mono}`,
+      heroDisplay: `${fw.logo.regular} ${size('heroDisplay')}/1 ${ff.logo}`,
+      heroLead: `${fw.text.regular} ${size('heroLead')}/1.55 ${ff.text}`,
+      heroBody: `${fw.text.regular} ${size('heroBody')}/1.55 ${ff.text}`,
+      ctaFloating: `${fw.mono.bold} ${size('ctaFloating')}/1.349 ${ff.mono}`,
+      cardTitle: `${fw.display.semiBold} ${size('cardTitle')}/${line('cardTitleLine')} ${ff.display}`,
+      cardBody: `${fw.display.regular} ${size('cardBody')}/${line('cardBodyLine')} ${ff.display}`,
+    } satisfies Record<FontRole, string>,
     letterSpacing: {
       heading: '-0.02em',
       registration: '0.02em',
@@ -146,6 +88,13 @@ const values = {
       figmaWide: '0.02em',
       figmaFeatureTitle: '0.015em',
       figmaHeroTitle: '0.03em',
+      blockTitle: '0.02em',
+      navLogo: '0.02em',
+      menuLink: '-0.005em',
+      heroChip: '0.04em',
+      heroDisplay: '-0.01em',
+      heroText: '0.005em',
+      ctaFloating: '0.02em',
     },
   },
 };

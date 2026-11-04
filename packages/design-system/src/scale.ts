@@ -7,7 +7,7 @@ import { breakpoints, media } from './breakpoints';
 // Ступени ширины в порядке роста порога. В этом же порядке их перебирает резолвер
 // и в этом же порядке они попадают в CSS: поздний медиазапрос перебивает ранний.
 // `mobile` и `tablet` делят порог 48rem, поэтому ступенью служит только `tablet`.
-export const widthSteps = ['tablet', 'laptop', 'desktop', 'desktopLarge'] as const;
+export const widthSteps = ['tablet', 'laptop', 'desktop', 'wide', 'desktopLarge'] as const;
 export type WidthStep = (typeof widthSteps)[number];
 
 // Значение ниже tablet (`base`) и только на тех ступенях, где оно меняется.
@@ -17,6 +17,9 @@ export type Steps = Readonly<{ base: string } & Partial<Record<WidthStep, string
 // Корневой кегль браузерный до 1920px; шире он растёт как max(100%, 100vw / 120)
 // (ADR-002), а таблицы описывают ширины до 1920, где 1rem = 16px.
 const rootFontPx = 16;
+
+// Значения макета записаны в px при кегле 16: таблицы читаются так же, как макет.
+const px = (value: number): string => `${value / rootFontPx}rem`;
 
 const remPattern = /^(\d+(?:\.\d+)?)rem$/;
 
@@ -74,7 +77,7 @@ export function mediaOverrides<K extends string>(
 
 // Кегли текстовых ролей: база (mobile-first) и ступени, где кегль меняется.
 export const typeScale = {
-  blockTitle: { base: '2.75rem' }, // 44px
+  blockTitle: { base: px(36), tablet: px(40) },
   registration: { base: '4rem' }, // 64px
   subtitle: { base: '1.75rem' }, // 28px
   websiteTitle: {
@@ -124,6 +127,21 @@ export const typeScale = {
   heroMeetupLine: { base: '1.75rem' }, // 28px
   heroInfoLine: { base: '1.375rem', desktop: '2.5rem' }, // 22px → 40px
   heroCtaLabel: { base: '2rem', desktop: '3rem' }, // 32px → 48px
+  buttonLabel: { base: px(12), wide: px(14), desktopLarge: px(18) },
+  navLogo: { base: px(20), wide: px(24), desktopLarge: px(28) },
+  navMono: { base: px(13), wide: px(16), desktopLarge: px(20) },
+  navMeta: { base: px(12), wide: px(14), desktopLarge: px(18) },
+  menuLink: { base: px(22) },
+  heroTag: { base: px(13), tablet: px(15), wide: px(18), desktopLarge: px(24) },
+  heroChip: { base: px(12), wide: px(14), desktopLarge: px(16) },
+  heroDate: { base: px(20), wide: px(26), desktopLarge: px(29) },
+  heroMeta: { base: px(13), wide: px(16), desktopLarge: px(22) },
+  heroDisplay: { base: px(75), tablet: px(106), wide: px(201), desktopLarge: px(266) },
+  heroLead: { base: px(16), wide: px(18), desktopLarge: px(24) },
+  heroBody: { base: px(14), wide: px(16), desktopLarge: px(20) },
+  ctaFloating: { base: px(12), wide: px(14), desktopLarge: px(24) },
+  cardTitle: { base: px(24), wide: px(32) },
+  cardBody: { base: px(18), tablet: px(22) },
 } as const satisfies Record<string, Steps>;
 
 export type FontRole = keyof typeof typeScale;
@@ -157,3 +175,53 @@ export const layoutSpace = {
 } as const satisfies Record<string, Record<string, Steps>>;
 
 export type LayoutStep = keyof typeof layoutSpace.inset;
+
+// Адаптивные размеры компонентов макета: отступы, габариты, радиусы, высоты строк.
+// Каждая запись — «база и ступени, где значение меняется»; пустая ячейка макета —
+// значение предыдущей ступени. Выводятся в vars.adaptive.*.
+export const adaptiveScale = {
+  buttonPaddingBlock: { base: px(12), wide: px(20) },
+  buttonPaddingInline: { base: px(15), wide: px(30) },
+  navButtonPaddingBlock: { base: px(13), wide: px(17), desktopLarge: px(20) },
+  navButtonPaddingInline: { base: px(20), wide: px(28), desktopLarge: px(36) },
+  navButtonRadius: { base: px(8), wide: px(10) },
+  navPaddingTop: { base: px(14), wide: px(28), desktopLarge: px(36) },
+  navPaddingInline: { base: px(16), wide: px(56), desktopLarge: px(80) },
+  navGap: { base: px(14), wide: px(16) },
+  navActionsGap: { base: px(20), wide: px(32), desktopLarge: px(40) },
+  navLinksGap: { base: px(32), desktopLarge: px(40) },
+  navLangGap: { base: px(6), wide: px(8), desktopLarge: px(10) },
+  heroPaddingTop: { base: px(24), wide: px(40), desktopLarge: px(52) },
+  heroPaddingBottom: { base: px(40), wide: px(72), desktopLarge: px(96) },
+  heroPaddingInline: { base: px(16), tablet: px(24), wide: px(56), desktopLarge: px(80) },
+  heroGap: { base: px(28), wide: px(56), desktopLarge: px(76) },
+  heroGroupGap: { base: px(12), wide: px(16), desktopLarge: px(20) },
+  heroTagsHeight: { base: px(200), wide: px(264), desktopLarge: px(352) },
+  heroTagPaddingBlock: { base: px(11), tablet: px(14), wide: px(17), desktopLarge: px(29) },
+  heroTagPaddingInline: { base: px(14), tablet: px(18), wide: px(24), desktopLarge: px(48) },
+  heroTagRadius: { base: px(17), tablet: px(21), wide: px(26), desktopLarge: px(41) },
+  heroChipPaddingBlock: { base: px(11), wide: px(18) },
+  heroChipPaddingInline: { base: px(14), wide: px(24), desktopLarge: px(28) },
+  heroChipRadius: { base: px(8), wide: px(10) },
+  heroDateGap: { base: px(2), wide: px(4) },
+  heroMetaGap: { base: px(16), wide: px(64), desktopLarge: px(69) },
+  heroAboutGap: { base: px(8), wide: px(12), desktopLarge: px(16) },
+  ctaSize: { base: px(112), wide: px(132), desktopLarge: px(231) },
+  ctaOffsetInline: { base: px(16), tablet: px(24), wide: px(56), desktopLarge: px(80) },
+  ctaOffsetBlock: { base: px(16), wide: px(40), desktopLarge: px(48) },
+  arrowWidth: { base: px(32), wide: px(43.5), desktopLarge: px(60) },
+  arrowHeight: { base: px(14), desktopLarge: px(22) },
+  arrowStroke: { base: px(2), desktopLarge: px(3) },
+  arrowPairGap: { base: px(4), wide: px(14), desktopLarge: px(39) },
+  cardWidth: { base: px(305), wide: px(425) },
+  cardPaddingBlock: { base: px(20), tablet: px(40) },
+  cardPaddingInline: { base: px(16), tablet: px(24) },
+  cardGap: { base: px(20), tablet: px(40) },
+  cardTitleLine: { base: px(40), wide: px(48) },
+  cardBodyLine: { base: px(28), tablet: px(32) },
+  sliderGap: { base: px(10), tablet: px(20) },
+  sliderHeaderGap: { base: px(16), tablet: px(40), wide: px(20) },
+  organizerGap: { base: px(24), tablet: px(19), wide: px(24) },
+} as const satisfies Record<string, Steps>;
+
+export type AdaptiveToken = keyof typeof adaptiveScale;

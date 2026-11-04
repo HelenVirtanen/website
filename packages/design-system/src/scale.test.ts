@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { media } from './breakpoints';
-import { baseValues, layoutSpace, mediaOverrides, remToPx, resolveAt, space, typeScale, type Steps } from './scale';
+import { adaptiveScale, baseValues, layoutSpace, mediaOverrides, remToPx, resolveAt, space, typeScale, type Steps } from './scale';
 
 describe('resolveAt', () => {
   it('берёт базу ниже первого порога и ступень на самом пороге', () => {
@@ -16,6 +16,14 @@ describe('resolveAt', () => {
     expect(resolveAt(layoutSpace.inset.l, 1280)).toBe('1.5rem');
     expect(resolveAt(layoutSpace.gap.xxl, 1919)).toBe('2rem');
     expect(resolveAt(layoutSpace.gap.xxl, 1920)).toBe('2.5rem');
+  });
+
+  it('ступень wide переключается ровно на 1439/1440', () => {
+    const steps = { base: 'a', wide: 'b' };
+    expect(resolveAt(steps, 1439)).toBe('a');
+    expect(resolveAt(steps, 1440)).toBe('b');
+    expect(resolveAt({ base: 'a', desktop: 'c', wide: 'b', desktopLarge: 'd' }, 1439)).toBe('c');
+    expect(resolveAt({ base: 'a', desktop: 'c', wide: 'b', desktopLarge: 'd' }, 1920)).toBe('d');
   });
 
   it('держит значение последней ступени, пока нет следующей', () => {
@@ -71,6 +79,7 @@ describe('значения шкалы', () => {
     const values = [
       ...Object.values(space),
       ...Object.values(typeScale).flatMap((steps) => Object.values(steps)),
+      ...Object.values(adaptiveScale).flatMap((steps) => Object.values(steps)),
       ...Object.values(layoutSpace).flatMap((group) =>
         Object.values(group).flatMap((steps) => Object.values(steps)),
       ),
@@ -81,6 +90,7 @@ describe('значения шкалы', () => {
   it('каскад медиазапросов из mediaOverrides даёт на каждой ширине то же, что resolveAt', () => {
     const tables: Record<string, Readonly<Record<string, Steps>>> = {
       typeScale,
+      adaptiveScale,
       inset: layoutSpace.inset,
       gap: layoutSpace.gap,
     };
@@ -88,7 +98,7 @@ describe('значения шкалы', () => {
       const names = Object.fromEntries(Object.keys(table).map((key) => [key, `--${key}`]));
       const base = baseValues(table);
       const overrides = mediaOverrides(names, table);
-      for (const width of [375, 767, 768, 1023, 1024, 1279, 1280, 1919, 1920, 3840]) {
+      for (const width of [375, 767, 768, 1023, 1024, 1279, 1280, 1439, 1440, 1919, 1920, 3840]) {
         // Браузер применяет подходящие запросы в порядке вывода: поздний перебивает ранний.
         const applied: Record<string, string> = Object.fromEntries(
           Object.keys(table).map((key) => [names[key], base[key]]),

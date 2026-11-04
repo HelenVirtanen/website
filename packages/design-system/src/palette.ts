@@ -13,6 +13,7 @@ export const palette = {
   blackA50: '#00000080',
   blackA30: '#0000004D',
   whiteA75: '#FFFFFFBF',
+  inkA20: '#0B040033',
 
   // Цветные
   red: '#F05133',
