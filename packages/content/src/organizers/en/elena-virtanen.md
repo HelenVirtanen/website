@@ -5,7 +5,6 @@ photo: ../assets/elena-virtanen.png
 photoAlt: "Elena Virtanen"
 contacts:
   telegram: https://t.me/helenvirtanen
-order: 2
 ---
 
 - Frontend developer at Yandex
