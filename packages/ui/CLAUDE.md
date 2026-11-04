@@ -55,7 +55,7 @@ demoed in `apps/storybook`.
   `*.client.ts` and are initialised from the component's `<script>`.
 - **Notable components:** `TagPile` (topic tags that fall into a pile; static and
   fully visible without JS or under reduced motion), `OrganizerCard` (portrait slot
-  in an octagon, name, regalia, contacts; the contacts list may be empty),
+  in an octagon, name, text from Markdown in the default slot, contacts; the contacts list may be empty),
   `CallToAction` (floating registration button, `position: fixed`,
   `mix-blend-mode: difference`), `Button` (link or button, `default` and `nav`
   sizes), `CardSlider`/`Card`/`BlockTitle` (FAQ block), `NavBar` (header and the

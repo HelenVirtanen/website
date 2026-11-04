@@ -164,7 +164,6 @@ export const createOrganizerSchema = (image: ImageFunction) =>
       // Без фото блок фото на карточке не выводится.
       photo: image().optional(),
       photoAlt: z.string().min(1).optional(),
-      regalia: z.array(z.string().min(1)).optional(),
       contacts: z
         .object({
           telegram: url

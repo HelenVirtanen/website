@@ -170,11 +170,11 @@ describe('validateCatalog', () => {
     expect(message).not.toContain('поле status');
   });
 
-  it('организатор: согласованные переводы и разный текст регалий — без ошибок', () => {
+  it('организатор: согласованные переводы и разное имя — без ошибок', () => {
     const catalog = twoMeetupsCatalog();
     catalog.organizers = [
       organizer('ru/roman-troitsky'),
-      organizer('en/roman-troitsky', { name: 'Roman Troitsky', regalia: ['Organizer'] }),
+      organizer('en/roman-troitsky', { name: 'Roman Troitsky' }),
     ];
     expect(() => validateCatalog(catalog)).not.toThrow();
   });

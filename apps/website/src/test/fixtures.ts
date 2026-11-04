@@ -86,7 +86,6 @@ export function organizer(id: string, data: Partial<OrganizerData> = {}): Organi
     data: {
       name: 'Роман Троицкий',
       status: 'current',
-      regalia: ['Организатор'],
       contacts: { telegram: 'https://t.me/DreamShaded', website: 'https://vzhyx.io' },
       order: 1,
       draft: false,

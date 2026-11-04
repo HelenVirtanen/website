@@ -1,6 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 import {
+  bio,
   contact,
   contactLabel,
   contactLink,
@@ -8,7 +9,6 @@ import {
   content,
   name as nameStyle,
   photo,
-  regalia as regaliaList,
   root,
 } from './OrganizerCard.css';
 
@@ -26,13 +26,11 @@ interface ContactItem {
 interface Props extends HTMLAttributes<typeof Tag> {
   /** Имя организатора */
   name: string;
-  /** Регалии списком: должность, место работы, роли в сообществах */
-  regalia?: string[];
   /** Контакты в порядке вывода; пустой список — строки контактов нет */
   contacts?: ContactItem[];
 }
 
-const { name, regalia = [], contacts = [], class: className, ...attrs } = Astro.props;
+const { name, contacts = [], class: className, ...attrs } = Astro.props;
 ---
 <Tag class:list={[root, className]} {...attrs}>
   {
@@ -45,10 +43,10 @@ const { name, regalia = [], contacts = [], class: className, ...attrs } = Astro.
   <div class={content}>
     <h3 class={nameStyle}>{name}</h3>
     {
-      regalia.length > 0 && (
-        <ul class={regaliaList}>
-          {regalia.map((item) => <li>{item}</li>)}
-        </ul>
+      Astro.slots.has('default') && (
+        <div class={bio}>
+          <slot />
+        </div>
       )
     }
     {

@@ -64,23 +64,47 @@ export const name = style({
   },
 });
 
-export const regalia = style({
-  margin: 0,
-  padding: 0,
-  listStyle: 'none',
+// Текст о человеке приходит из Markdown как есть: абзац, список или и то и другое.
+export const bio = style({
   font: vars.font.shorthand.cardBody,
   lineHeight: vars.adaptive.cardBodyLine,
   overflowWrap: 'anywhere',
 });
 
-globalStyle(`${regalia} li`, {
+globalStyle(`${bio} > * + *`, {
+  marginBlockStart: vars.spacing.s,
+});
+
+globalStyle(`${bio} p, ${bio} ul, ${bio} ol`, {
+  marginBlockEnd: 0,
+});
+
+globalStyle(`${bio} > :first-child`, {
+  marginBlockStart: 0,
+});
+
+globalStyle(`${bio} ul`, {
+  padding: 0,
+  listStyle: 'none',
+});
+
+globalStyle(`${bio} ul > li`, {
   display: vars.display.flex,
   gap: vars.spacing.s,
 });
 
-globalStyle(`${regalia} li::before`, {
+globalStyle(`${bio} ul > li::before`, {
   content: '">"',
   flex: '0 0 auto',
+});
+
+globalStyle(`${bio} a`, {
+  color: vars.color.speakerAccent,
+});
+
+globalStyle(`${bio} a:focus-visible`, {
+  outline: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.focus}`,
+  outlineOffset: vars.spacing.xs,
 });
 
 export const contacts = style({

@@ -1,8 +1,6 @@
 ---
 name: "Имя Фамилия"
 status: current
-regalia:
-  - "Должность и место работы"
 contacts:
   telegram: https://t.me/username
 order: 1
@@ -12,3 +10,6 @@ draft: true
 # photo: ../assets/{{name}}.png и photoAlt: "что на фото". contacts: telegram, github и
 # website, все необязательные и только https; ненужные удалите. Уберите draft: true.
 ---
+
+- Должность и место работы
+- Роль в сообществе
