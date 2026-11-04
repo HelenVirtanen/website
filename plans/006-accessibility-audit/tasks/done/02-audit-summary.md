@@ -1,11 +1,11 @@
 ---
 id: "02"
-title: report
+title: audit-summary
 spec: "006"
 criteria: ["AC-8"]
 status: done
 depends_on: ["01"]
-owns: [".visual/a11y/report.html"]
+owns: ["specs/006-accessibility-audit.md"]
 model: opus
 risk: none
 attempts: 0
