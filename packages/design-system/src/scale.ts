@@ -217,6 +217,8 @@ export const adaptiveScale = {
   sliderGap: { base: px(10), tablet: px(20) },
   sliderHeaderGap: { base: px(16), tablet: px(40), wide: px(20) },
   sliderHeadGap: { base: px(32), wide: px(40) },
+  decorSpringHeight: { base: px(72), wide: px(120), desktopLarge: px(160) },
+  decorSnowSize: { base: px(20), wide: px(32), desktopLarge: px(40) },
   blockTitlePaddingInline: { base: px(20), tablet: px(32) },
   organizerGap: { base: px(24), tablet: px(19), wide: px(24) },
   organizerWidth: { base: px(413), wide: px(573) },

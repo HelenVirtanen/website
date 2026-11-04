@@ -9,6 +9,7 @@ const contract = {
     },
     easing: {
       standard: null,
+      linear: null,
       fall: null,
     },
   },
@@ -23,6 +24,7 @@ const values = {
     },
     easing: {
       standard: 'cubic-bezier(0.2, 0, 0, 1)',
+      linear: 'linear',
       // Значение 1.3 > 1 даёт отскок при падении плашек.
       fall: 'cubic-bezier(0.33, 1.3, 0.6, 1)',
     },

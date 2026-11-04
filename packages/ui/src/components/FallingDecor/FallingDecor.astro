@@ -1,0 +1,29 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { Logo, Spring1, Spring2, Spring3 } from '@moscowcss/icons';
+import { fall, root, snow, snowTones, spring, springTones } from './FallingDecor.css';
+
+const Tag = 'div';
+
+type Props = HTMLAttributes<typeof Tag>;
+
+const { class: className, ...attrs } = Astro.props;
+
+const classes = JSON.stringify({ fall, spring, snow, springTones, snowTones });
+---
+<Tag class:list={[root, className]} data-falling-decor data-classes={classes} aria-hidden="true" {...attrs}>
+  <template data-shape="springs">
+    <Spring1 />
+    <Spring2 />
+    <Spring3 />
+  </template>
+  <template data-shape="snow">
+    <Logo />
+  </template>
+</Tag>
+
+<script>
+  import { setupFallingDecor } from './FallingDecor.client';
+
+  document.querySelectorAll<HTMLElement>('[data-falling-decor]').forEach(setupFallingDecor);
+</script>

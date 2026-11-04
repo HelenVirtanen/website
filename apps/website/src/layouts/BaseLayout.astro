@@ -2,6 +2,7 @@
 import '@moscowcss/fonts';
 import '@moscowcss/design-system';
 import '../styles/global.css';
+import FallingDecor from '@moscowcss/ui/components/FallingDecor';
 import NavBar from '@moscowcss/ui/components/NavBar';
 import LocaleSwitcher from '@moscowcss/ui/components/LocaleSwitcher';
 import {
@@ -161,6 +162,8 @@ const localeOptions = locales.map((code) => ({
       telegramButtonLabel={t('nav.telegramButton')}
       telegramText={telegramText}
       addressLine={addressLine}
+      decorOffLabel={t('decor.off')}
+      decorSnowLabel={t('decor.snow')}
       menuLabel={t('nav.menu')}
       closeLabel={t('nav.closeMenu')}
       data-visual="navbar"
@@ -170,6 +173,7 @@ const localeOptions = locales.map((code) => ({
       </Fragment>
     </NavBar>
     <slot />
+    <FallingDecor />
   </body>
 </html>
 
