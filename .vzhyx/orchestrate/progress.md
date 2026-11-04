@@ -105,3 +105,4 @@ Ruling: каталог отчётов не добавлен в owns, отчёт 
 - 04 floating-cta: done, contract e65351fb, verified grep, lint/test/build; визуально в задаче 11
 Ruling: два токена дополнительно к таблице (sliderHeadGap, sliderHeadWidth) добавлены дирижёром, исполнитель взял чужие токены с тем же значением — эти токены удалялись в задаче 10 — цена: нет
 - 05 faq-block: done, contract e65351fb, verified grep, lint/test/build
+- 06 header-and-menu: done, contract e65351fb, verified grep, lint/test/build/check:seo/storybook

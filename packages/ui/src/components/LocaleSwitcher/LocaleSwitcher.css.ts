@@ -8,25 +8,45 @@ export const root = style({
 export const list = style({
   display: vars.display.flex,
   alignItems: vars.alignItems.center,
-  gap: vars.spacing.m,
+  gap: vars.adaptive.navLangGap,
   margin: 0,
   padding: 0,
   listStyle: 'none',
+  font: vars.font.shorthand.navMono,
+});
+
+export const item = style({
+  display: vars.display.flex,
+  alignItems: vars.alignItems.center,
+  gap: vars.adaptive.navLangGap,
+  selectors: {
+    '&:not(:first-child)::before': {
+      content: '"/"',
+      opacity: 0.3,
+    },
+  },
 });
 
 export const link = style({
-  display: vars.display.block,
-  paddingBlock: vars.padding.xs,
+  boxSizing: 'border-box',
+  display: vars.display.flex,
+  alignItems: vars.alignItems.center,
+  justifyContent: vars.justifyContent.center,
+  minWidth: vars.size.hitTarget,
+  minHeight: vars.size.hitTarget,
   color: vars.color.text,
-  font: vars.font.shorthand.caption,
   textDecoration: 'none',
+  textTransform: 'uppercase',
+  opacity: 0.4,
+  transitionProperty: 'opacity',
+  transitionDuration: vars.motion.duration.base,
+  transitionTimingFunction: vars.motion.easing.standard,
   selectors: {
     '&:hover': {
-      textDecoration: 'underline',
+      opacity: 1,
     },
     '&[aria-current="page"]': {
-      textDecoration: 'underline',
-      textUnderlineOffset: vars.spacing.xs,
+      opacity: 1,
     },
     '&:focus-visible': {
       outline: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.focus}`,

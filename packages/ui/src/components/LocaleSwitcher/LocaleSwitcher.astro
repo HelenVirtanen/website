@@ -1,6 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
-import { root, list, link } from './LocaleSwitcher.css';
+import { root, list, item, link } from './LocaleSwitcher.css';
 
 const Tag = 'nav';
 
@@ -8,7 +8,7 @@ const Tag = 'nav';
 export interface LocaleOption {
   /** BCP-47 код языка; уходит в `lang` и `hreflang` ссылки */
   code: string;
-  /** Самоназвание языка: видимый текст ссылки */
+  /** Самоназвание языка: часть доступного имени ссылки */
   label: string;
   /** Адрес версии страницы на этом языке */
   href: string;
@@ -32,16 +32,18 @@ const { options, label, class: className, ...attrs } = Astro.props;
   <ul class={list}>
     {
       options.map((option) => (
-        <li>
+        <li class={item}>
           <a
             class={link}
             href={option.href}
             lang={option.code}
             hreflang={option.code}
             aria-current={option.current ? 'page' : undefined}
-            aria-label={option.current ? undefined : `${option.label}, ${option.hint}`}
+            aria-label={
+              option.current ? `${option.code}, ${option.label}` : `${option.code}, ${option.label}, ${option.hint}`
+            }
           >
-            {option.label}
+            {option.code}
           </a>
         </li>
       ))

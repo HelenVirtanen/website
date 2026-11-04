@@ -1,4 +1,5 @@
 const INITIALIZED = 'data-nav-initialized';
+const OPEN = 'data-nav-open';
 
 export function setupNavBar(nav: HTMLElement) {
   if (nav.hasAttribute(INITIALIZED)) return;
@@ -12,12 +13,18 @@ export function setupNavBar(nav: HTMLElement) {
 
   const open = () => {
     menu.removeAttribute('hidden');
+    nav.setAttribute(OPEN, '');
     toggle.setAttribute('aria-expanded', 'true');
+    // Бургер при открытом меню скрыт, фокус переходит на крестик на его месте.
+    closeButton?.focus();
   };
 
   const close = () => {
+    const hadFocus = nav.contains(document.activeElement);
     menu.setAttribute('hidden', '');
+    nav.removeAttribute(OPEN);
     toggle.setAttribute('aria-expanded', 'false');
+    if (hadFocus) toggle.focus();
   };
 
   toggle.addEventListener('click', () => {
@@ -27,10 +34,9 @@ export function setupNavBar(nav: HTMLElement) {
 
   closeButton?.addEventListener('click', close);
 
+  // Нажатие мимо пунктов и кнопок (на саму панель) закрывает меню.
   menu.addEventListener('click', (event) => {
-    const target = event.target;
-    if (!(target instanceof Node) || menuLinks.contains(target)) return;
-    close();
+    if (event.target === menu) close();
   });
 
   menu.querySelectorAll('a').forEach((anchor) => {

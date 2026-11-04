@@ -13,7 +13,8 @@ import {
   useTranslations,
   type Locale,
 } from '../i18n';
-import { loadCatalog } from '../content/catalog';
+import { loadCatalog, localeOf, upcomingEvent } from '../content/catalog';
+import { buildNow } from '../content/now';
 import { CARD_TYPE, OG_SIZE, OG_TYPE, cardMetaOf } from '../seo/og';
 import { AI_CATALOG_PATH, ARD_PATH } from '../agents/discovery';
 import { markdownPathOf } from '../agents/paths';
@@ -49,6 +50,16 @@ const t = useTranslations(lang);
 const catalog = await loadCatalog();
 const telegramHref = catalog.pages.find((entry) => entry.id === `${lang}/index`)?.data.telegramUrl;
 if (!telegramHref) throw new Error(`Missing page content: pages/${lang}/index.md`);
+
+// Подпись ссылки на Telegram — адрес без протокола и хвостового слэша.
+const telegramUrl = new URL(telegramHref);
+const telegramText = `${telegramUrl.host}${telegramUrl.pathname}`.replace(/\/$/, '');
+
+// Адрес в шапке — того же митапа, что показывает главная; без адреса строка остаётся только с Telegram.
+const addressLine = upcomingEvent(
+  catalog.events.filter((entry) => localeOf(entry) === lang),
+  buildNow(),
+)?.event.data.venue.address;
 
 const site = Astro.site;
 const absolute = (path: string) => (site ? new URL(path, site).href : path);
@@ -145,8 +156,11 @@ const localeOptions = locales.map((code) => ({
       links={navLinks}
       homeHref={localizePath(lang)}
       homeLabel={t('nav.home')}
+      homeText={t('hero.title')}
       telegramHref={telegramHref}
-      telegramLabel={t('nav.telegram')}
+      telegramButtonLabel={t('nav.telegramButton')}
+      telegramText={telegramText}
+      addressLine={addressLine}
       menuLabel={t('nav.menu')}
       closeLabel={t('nav.closeMenu')}
       data-visual="navbar"

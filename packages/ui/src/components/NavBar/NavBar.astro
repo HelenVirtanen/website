@@ -1,20 +1,28 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
-import { Close, Logo } from '@moscowcss/icons';
+import { Close } from '@moscowcss/icons';
 import BurgerButton from '../BurgerButton';
-import TgLinkButton from '../TgLinkButton';
+import Button from '../Button';
 import {
   root,
-  burger,
+  bar,
   home,
-  homeLogo,
   links,
   link,
+  actions,
+  burger,
+  closeButton,
+  closeIcon,
+  telegram,
+  meta,
+  metaAddress,
+  metaLink,
   overlay,
-  overlayClose,
-  overlayCloseIcon,
   overlayLinks,
   overlayLink,
+  overlayFooter,
+  overlayAddress,
+  overlayTelegram,
 } from './NavBar.css';
 
 const Tag = 'nav';
@@ -25,73 +33,98 @@ interface Props extends HTMLAttributes<typeof Tag> {
   links: { href: string; label: string }[];
   /** URL канала или чата в Telegram */
   telegramHref: string;
-  /** Доступное имя ссылки на Telegram */
-  telegramLabel: string;
+  /** Подпись кнопки со ссылкой на Telegram */
+  telegramButtonLabel: string;
+  /** Адрес Telegram без протокола: подпись ссылки в строке под шапкой и в меню */
+  telegramText: string;
   /** Доступное имя кнопки открытия меню */
   menuLabel: string;
   /** Доступное имя кнопки закрытия меню */
   closeLabel: string;
-  /** Адрес главной: знак митапа слева ведёт на неё; без адреса знака нет */
+  /** Адрес главной: логотип слева ведёт на неё; без адреса логотипа нет */
   homeHref?: string;
   /** Доступное имя ссылки на главную */
   homeLabel?: string;
+  /** Видимый текст логотипа */
+  homeText?: string;
+  /** Адрес ближайшего митапа: строка под разделителем и низ меню; без него остаётся только Telegram */
+  addressLine?: string;
 }
 
 const {
   links: navLinks,
   telegramHref,
-  telegramLabel,
+  telegramButtonLabel,
+  telegramText,
   menuLabel,
   closeLabel,
   homeHref,
   homeLabel,
+  homeText,
+  addressLine,
   class: className,
   ...attrs
 } = Astro.props;
+
+const external = { target: '_blank', rel: 'noopener noreferrer' } as const;
 ---
 
 <Tag class:list={[root, className]} data-navbar {...attrs}>
-  <div class={burger}>
-    <BurgerButton controls={MENU_ID} aria-label={menuLabel} />
-  </div>
-  {
-    homeHref && (
-      <a class={home} href={homeHref} aria-label={homeLabel}>
-        <Logo class={homeLogo} />
-      </a>
-    )
-  }
-  <ul class={links}>
-    {navLinks.map((item) => (
-      <li>
-        <a class={link} href={item.href}>
-          {item.label}
+  <div class={bar}>
+    {
+      homeHref && (
+        <a class={home} href={homeHref} aria-label={homeLabel}>
+          {homeText}
         </a>
-      </li>
-    ))}
-  </ul>
-  {Astro.slots.has('locale') && <slot name="locale" />}
-  <TgLinkButton
-    href={telegramHref}
-    aria-label={telegramLabel}
-    target="_blank"
-    rel="noopener noreferrer"
-  />
-  <div id={MENU_ID} class={overlay} data-nav-menu hidden>
-    <button type="button" class={overlayClose} aria-label={closeLabel} data-nav-close>
-      <Close class={overlayCloseIcon} />
-    </button>
-    <ul class={overlayLinks} data-nav-links>
-      {navLinks.map((item) => (
-        <li>
-          <a class={overlayLink} href={item.href}>
-            {item.label}
-          </a>
-        </li>
-      ))}
+      )
+    }
+    <ul class={links}>
+      {
+        navLinks.map((item) => (
+          <li>
+            <a class={link} href={item.href}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
     </ul>
+    <div class={actions}>
+      {Astro.slots.has('locale') && <slot name="locale" />}
+      <div class={telegram}>
+        <Button href={telegramHref} size="nav" {...external}>{telegramButtonLabel}</Button>
+      </div>
+      <div class={burger}>
+        <BurgerButton controls={MENU_ID} aria-label={menuLabel} />
+      </div>
+      <button type="button" class={closeButton} aria-label={closeLabel} data-nav-close>
+        <Close class={closeIcon} />
+      </button>
+    </div>
+  </div>
+  <div id={MENU_ID} class={overlay} data-nav-menu hidden>
+    <ul class={overlayLinks} data-nav-links>
+      {
+        navLinks.map((item) => (
+          <li>
+            <a class={overlayLink} href={item.href}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class={overlayFooter}>
+      <Button href={telegramHref} size="nav" {...external}>{telegramButtonLabel}</Button>
+      {addressLine && <p class={overlayAddress}>{addressLine}</p>}
+      <a class={overlayTelegram} href={telegramHref} {...external}>{telegramText}</a>
+    </div>
   </div>
 </Tag>
+<div class={meta}>
+  {addressLine && <p class={metaAddress}>{addressLine}</p>}
+  <a class={metaLink} href={telegramHref} {...external}>{telegramText}</a>
+</div>
 
 <script>
   import { setupNavBar } from './NavBar.client';

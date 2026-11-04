@@ -8,5 +8,6 @@ export default {
 export const Default = {
   args: {
     controls: 'nav-menu',
+    'aria-label': 'Меню',
   },
 };

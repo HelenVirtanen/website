@@ -3,7 +3,7 @@ id: "06"
 title: header-and-menu
 spec: "004"
 criteria: ["AC-7", "AC-8"]
-status: pending
+status: done
 depends_on: ["01", "02", "03"]
 owns: ["packages/ui/src/components/NavBar/**", "packages/ui/src/components/BurgerButton/**", "packages/ui/src/components/LocaleSwitcher/**", "packages/ui/src/components/TgLinkButton/**", "packages/ui/src/index.ts", "apps/storybook/stories/NavBar.stories.ts", "apps/storybook/stories/BurgerButton.stories.ts", "apps/storybook/stories/LocaleSwitcher.stories.ts", "apps/storybook/stories/TgLinkButton.stories.ts", "apps/website/src/layouts/BaseLayout.astro"]
 model: sonnet

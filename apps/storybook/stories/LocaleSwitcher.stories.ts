@@ -18,6 +18,7 @@ const en = {
   hint: 'Switch to the English version',
 };
 
+/** Текущий язык ярче второго; между ними разделитель. */
 export const Default = {
   args: {
     label: 'Язык сайта',

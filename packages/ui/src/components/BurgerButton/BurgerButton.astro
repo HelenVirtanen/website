@@ -18,9 +18,8 @@ const { controls, type = 'button', class: className, ...attrs } = Astro.props;
   class:list={[root, className]}
   aria-controls={controls}
   aria-expanded="false"
-  aria-label="Меню"
   data-nav-toggle
   {...attrs}
 >
-  <Burger class={icon} height="auto" />
+  <Burger class={icon} />
 </Tag>

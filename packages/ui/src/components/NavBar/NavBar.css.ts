@@ -1,78 +1,60 @@
 import { style } from '@vanilla-extract/css';
 import { vars, media } from '@moscowcss/design-system';
 
+const focusRing = {
+  outline: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.focus}`,
+  outlineOffset: vars.spacing.xs,
+} as const;
+
+const fade = {
+  transitionProperty: 'opacity, color',
+  transitionDuration: vars.motion.duration.base,
+  transitionTimingFunction: vars.motion.easing.standard,
+} as const;
+
 export const root = style({
   position: vars.position.sticky,
   top: vars.inset.zero,
   zIndex: vars.zIndex.navBar,
+  boxSizing: 'border-box',
+  width: '100%',
+  paddingTop: vars.adaptive.navPaddingTop,
+  paddingInline: vars.adaptive.navPaddingInline,
+  background: vars.color.background,
+});
+
+// Разделитель лежит внутри полей корня, поэтому не доходит до краёв окна.
+export const bar = style({
+  position: vars.position.relative,
+  zIndex: vars.zIndex.navBar,
   display: vars.display.flex,
   alignItems: vars.alignItems.center,
   justifyContent: vars.justifyContent.spaceBetween,
-  gap: vars.layout.gap.m,
-  boxSizing: 'border-box',
-  width: '100%',
-  paddingBlock: vars.padding.s,
-  paddingInline: vars.layout.inset.xxl,
-  background: vars.color.background,
-  borderBottom: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.divider}`,
-
-  '@media': {
-    [media.mobile]: {
-      justifyContent: vars.justifyContent.spaceBetween,
-      gap: 0,
-      paddingBlock: vars.layout.inset.m,
-      paddingInline: vars.layout.inset.l,
-      borderBottom: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.divider}`,
-    },
-  },
-});
-
-// Пункты строкой не помещаются уже ниже 1440px (их шесть, шрифт крупный): до `wide` — меню за кнопкой.
-export const burger = style({
-  display: vars.display.block,
-  '@media': {
-    [media.wide]: {
-      display: vars.display.none,
-    },
-  },
+  gap: vars.adaptive.navActionsGap,
+  paddingBottom: vars.adaptive.navGap,
+  borderBottom: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.dividerSoft}`,
 });
 
 export const home = style({
-  display: vars.display.flex,
   flexShrink: 0,
-  width: vars.size.navLogo,
-  height: vars.size.navLogo,
-  color: vars.color.focus,
-  // Пока пункты спрятаны в меню, знак держится у кнопки меню, а не посередине шапки.
-  marginInlineEnd: 'auto',
+  display: vars.display.flex,
+  alignItems: vars.alignItems.center,
+  minHeight: vars.size.hitTarget,
+  color: vars.color.link,
+  font: vars.font.shorthand.navLogo,
+  letterSpacing: vars.font.letterSpacing.navLogo,
+  textDecoration: 'none',
+  textTransform: 'uppercase',
+  whiteSpace: 'nowrap',
   selectors: {
-    '&:focus-visible': {
-      outline: `${vars.border.width.medium} ${vars.border.style.solid} ${vars.color.focus}`,
-      outlineOffset: vars.spacing.xs,
-    },
+    '&:focus-visible': focusRing,
   },
-  '@media': {
-    [media.mobile]: {
-      width: vars.size.navLogoCompact,
-      height: vars.size.navLogoCompact,
-      marginInlineEnd: 0,
-    },
-    [media.wide]: {
-      marginInlineEnd: 0,
-    },
-  },
-});
-
-export const homeLogo = style({
-  display: vars.display.block,
-  width: '100%',
-  height: '100%',
 });
 
 export const links = style({
   display: vars.display.none,
   alignItems: vars.alignItems.center,
-  gap: vars.layout.gap.xxl,
+  gap: vars.adaptive.navLinksGap,
   margin: '0 auto',
   padding: 0,
   listStyle: 'none',
@@ -84,22 +66,132 @@ export const links = style({
 });
 
 export const link = style({
+  display: vars.display.flex,
+  alignItems: vars.alignItems.center,
+  minWidth: vars.size.hitTarget,
+  minHeight: vars.size.hitTarget,
   color: vars.color.text,
-  font: vars.font.shorthand.subtitle,
-  letterSpacing: vars.font.letterSpacing.registration,
+  font: vars.font.shorthand.navMeta,
   textDecoration: 'none',
   textTransform: 'uppercase',
+  opacity: 0.8,
+  ...fade,
   selectors: {
     '&:hover': {
+      opacity: 1,
       textDecoration: 'underline',
     },
-    '&:focus-visible': {
-      outline: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.focus}`,
-      outlineOffset: vars.spacing.xs,
+    '&:focus-visible': focusRing,
+  },
+});
+
+export const actions = style({
+  flexShrink: 0,
+  display: vars.display.flex,
+  alignItems: vars.alignItems.center,
+  gap: vars.adaptive.navActionsGap,
+});
+
+// Иконка встаёт ровно на край полей, а не глубже на половину разницы с зоной нажатия.
+const iconEdgeOffset = `calc((${vars.size.burgerIcon} - ${vars.size.hitTarget}) / 2)`;
+
+// Ниже `wide` пункты спрятаны за бургером; при открытом меню на его месте стоит крестик.
+export const burger = style({
+  display: vars.display.block,
+  marginInlineEnd: iconEdgeOffset,
+  selectors: {
+    '[data-nav-open] &': {
+      display: vars.display.none,
+    },
+  },
+  '@media': {
+    [media.wide]: {
+      display: vars.display.none,
     },
   },
 });
 
+export const closeButton = style({
+  boxSizing: 'border-box',
+  display: vars.display.none,
+  alignItems: vars.alignItems.center,
+  justifyContent: vars.justifyContent.center,
+  minWidth: vars.size.hitTarget,
+  minHeight: vars.size.hitTarget,
+  marginInlineEnd: iconEdgeOffset,
+  padding: 0,
+  border: 0,
+  background: 'transparent',
+  color: vars.color.text,
+  cursor: 'pointer',
+  selectors: {
+    '[data-nav-open] &': {
+      display: vars.display.inlineFlex,
+    },
+    '&:focus-visible': focusRing,
+  },
+  '@media': {
+    [media.wide]: {
+      display: vars.display.none,
+    },
+  },
+});
+
+export const closeIcon = style({
+  display: vars.display.block,
+  width: vars.size.burgerIcon,
+  height: vars.size.burgerIcon,
+  flexShrink: 0,
+});
+
+export const telegram = style({
+  display: vars.display.none,
+  '@media': {
+    [media.wide]: {
+      display: vars.display.block,
+    },
+  },
+});
+
+// Строка лежит вне прилипшего корня и уезжает при прокрутке.
+export const meta = style({
+  display: vars.display.none,
+  alignItems: vars.alignItems.center,
+  justifyContent: vars.justifyContent.spaceBetween,
+  gap: vars.adaptive.navActionsGap,
+  boxSizing: 'border-box',
+  paddingBlock: vars.padding.s,
+  paddingInline: vars.adaptive.navPaddingInline,
+  color: vars.color.text,
+  font: vars.font.shorthand.navMeta,
+  '@media': {
+    [media.wide]: {
+      display: vars.display.flex,
+    },
+  },
+});
+
+export const metaAddress = style({
+  margin: 0,
+});
+
+export const metaLink = style({
+  marginInlineStart: 'auto',
+  display: vars.display.flex,
+  alignItems: vars.alignItems.center,
+  minHeight: vars.size.hitTarget,
+  color: vars.color.link,
+  textDecoration: 'none',
+  ...fade,
+  selectors: {
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+    '&:focus-visible': focusRing,
+  },
+});
+
+// Шапка остаётся над панелью, поэтому панель отступает на высоту полосы: поля, зона нажатия, промежуток, разделитель.
 export const overlay = style({
   position: vars.position.fixed,
   inset: vars.inset.zero,
@@ -107,78 +199,90 @@ export const overlay = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
   alignItems: vars.alignItems.stretch,
-  paddingBlock: vars.padding.s,
-  paddingInline: vars.padding['4xl'],
+  boxSizing: 'border-box',
+  overflowY: 'auto',
+  paddingTop: `calc(${vars.adaptive.navPaddingTop} + ${vars.size.hitTarget} + ${vars.adaptive.navGap} + ${vars.border.width.thin})`,
   background: vars.color.background,
   selectors: {
     '&[hidden]': {
       display: vars.display.none,
     },
   },
-});
-
-export const overlayClose = style({
-  position: vars.position.absolute,
-  top: vars.layout.inset.m,
-  left: vars.layout.inset.l,
-  boxSizing: 'border-box',
-  display: vars.display.inlineFlex,
-  alignItems: vars.alignItems.center,
-  justifyContent: vars.justifyContent.center,
-  width: vars.size.tgLinkButton,
-  height: vars.size.tgLinkButton,
-  padding: 0,
-  border: `${vars.border.width.medium} ${vars.border.style.solid} ${vars.color.tgBorder}`,
-  borderRadius: 0,
-  background: vars.color.background,
-  color: vars.color.tgBorder,
-  cursor: 'pointer',
-  selectors: {
-    '&:focus-visible': {
-      outline: `${vars.border.width.medium} ${vars.border.style.solid} ${vars.color.focus}`,
-      outlineOffset: vars.spacing.xs,
-    },
-  },
   '@media': {
-    [media.mobile]: {
-      width: vars.size.tgLinkButtonCompact,
-      height: vars.size.tgLinkButtonCompact,
-    },
-  },
-});
-
-export const overlayCloseIcon = style({
-  width: vars.size.burgerIcon,
-  height: 'auto',
-  flexShrink: 0,
-  '@media': {
-    [media.mobile]: {
-      width: vars.size.burgerIconCompact,
+    [media.wide]: {
+      display: vars.display.none,
     },
   },
 });
 
 export const overlayLinks = style({
-  display: vars.display.flex,
-  flexDirection: vars.flexDirection.column,
-  alignItems: vars.alignItems.stretch,
-  gap: vars.layout.gap.l,
+  display: vars.display.block,
   margin: 0,
-  padding: 0,
+  paddingBlock: 0,
+  paddingTop: vars.padding.s,
+  paddingInline: vars.padding.l,
   listStyle: 'none',
-  '@media': {
-    [media.mobile]: {
-      marginTop: `calc(${vars.size.tgLinkButtonCompact} + ${vars.layout.gap.l})`,
-      paddingInline: vars.padding['4xl'],
+});
+
+export const overlayLink = style({
+  boxSizing: 'border-box',
+  display: vars.display.flex,
+  alignItems: vars.alignItems.center,
+  justifyContent: vars.justifyContent.spaceBetween,
+  minHeight: vars.size.hitTarget,
+  // 18px макета: такой ступени нет в шкале, собираем из 16 и половины 4.
+  paddingBlock: `calc(${vars.padding.l} + ${vars.padding.xs} / 2)`,
+  borderBottom: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.dividerSoft}`,
+  color: vars.color.text,
+  font: vars.font.shorthand.menuLink,
+  letterSpacing: vars.font.letterSpacing.menuLink,
+  textDecoration: 'none',
+  textTransform: 'uppercase',
+  ...fade,
+  selectors: {
+    '&::after': {
+      content: '"→"',
+      opacity: 0.4,
+      ...fade,
     },
+    '&:hover': {
+      color: vars.color.link,
+    },
+    '&:hover::after': {
+      opacity: 1,
+    },
+    '&:focus-visible': focusRing,
   },
 });
 
-export const overlayLink = style([
-  link,
-  {
-    display: vars.display.block,
-    paddingBlock: vars.layout.inset.m,
-    paddingInline: vars.padding.s,
+export const overlayFooter = style({
+  display: vars.display.flex,
+  flexDirection: vars.flexDirection.column,
+  gap: vars.spacing.l,
+  marginTop: 'auto',
+  paddingTop: vars.padding.xxl,
+  paddingInline: vars.padding.l,
+  paddingBottom: vars.padding.xxxl,
+  font: vars.font.shorthand.navMeta,
+});
+
+export const overlayAddress = style({
+  margin: 0,
+});
+
+export const overlayTelegram = style({
+  display: vars.display.flex,
+  alignItems: vars.alignItems.center,
+  minHeight: vars.size.hitTarget,
+  color: vars.color.text,
+  textDecoration: 'none',
+  opacity: 0.6,
+  ...fade,
+  selectors: {
+    '&:hover': {
+      opacity: 1,
+      textDecoration: 'underline',
+    },
+    '&:focus-visible': focusRing,
   },
-]);
+});
