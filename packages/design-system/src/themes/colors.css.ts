@@ -10,8 +10,10 @@ const colorVars = (values: Record<ColorKey, string>): Record<string, string> =>
   Object.fromEntries((Object.keys(values) as ColorKey[]).map((k) => [vars.color[k], values[k]]));
 
 createGlobalTheme(':root', vars.color, colors.light.color);
+// Полосы прокрутки и поля браузера идут за темой сайта.
+globalStyle(':root', { colorScheme: 'light dark' });
 globalStyle(':root', {
   '@media': { '(prefers-color-scheme: dark)': { vars: colorVars(colors.dark.color) } },
 });
-globalStyle(':root[data-theme="dark"]', { vars: colorVars(colors.dark.color) });
-globalStyle(':root[data-theme="light"]', { vars: colorVars(colors.light.color) });
+globalStyle(':root[data-theme="dark"]', { colorScheme: 'dark', vars: colorVars(colors.dark.color) });
+globalStyle(':root[data-theme="light"]', { colorScheme: 'light', vars: colorVars(colors.light.color) });

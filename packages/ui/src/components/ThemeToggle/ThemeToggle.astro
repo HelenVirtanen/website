@@ -1,0 +1,20 @@
+---
+import type { ComponentProps } from 'astro/types';
+import { Moon, Sun } from '@moscowcss/icons';
+import IconToggle from '../IconToggle';
+import { moon, sun } from './ThemeToggle.css';
+
+type Props = ComponentProps<typeof IconToggle>;
+
+const attrs = Astro.props;
+---
+<IconToggle data-theme-toggle hidden {...attrs}>
+  <Moon class={moon} />
+  <Sun class={sun} />
+</IconToggle>
+
+<script>
+  import { setupThemeToggles } from './ThemeToggle.client';
+
+  setupThemeToggles();
+</script>

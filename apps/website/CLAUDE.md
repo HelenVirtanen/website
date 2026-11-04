@@ -101,7 +101,7 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   extension endpoint under `[...locale]` the first path's props). `check:seo`
   checks the head links, the feed language and that every item link is a page.
 - **Icons** (`favicon.ico`/`.svg`, `apple-touch-icon.png`, manifest + 192/512) are
-  drawn at build time from the MoscowCSS star in the brand red (`color.focus`,
+  drawn at build time from the MoscowCSS star in the brand red (`color.brand`,
   as the Hero star): `src/seo/icons.ts` lists them, `@moscowcss/og` renders them.
 - **Agent access** (spec 003). Every public page has a Markdown twin
   `<path>/index.md` (`pages/[...path]/index.md.ts`, built by `src/agents/markdown.ts`
@@ -118,8 +118,8 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   links and the skill digest.
 - Tests are vitest (`vitest.config.ts` uses `getViteConfig`, so they see the same
   plugins as the build); `astro:content` is mocked with `vi.mock`.
-- Theme is **colour-only** and driven by `data-theme` (`<html data-theme="…">`) /
-  OS preference — see `@moscowcss/design-system`.
+- Theme is **colour-only**: OS preference until the visitor presses `ThemeToggle`, then `data-theme`
+  on `<html>`, set before the first paint by the inline `themeInitScript` in `BaseLayout` — see `@moscowcss/design-system`.
 
 ## Validate
 

@@ -3,7 +3,7 @@ import sharp from 'sharp';
 import { LOGO_PATH, LOGO_VIEWBOX } from './logo';
 
 // Иконки сайта из знака MoscowCSS в красном бренда — том же цвете, что у звезды в Hero.
-export const ICON_COLOR = themeColors.focus;
+export const ICON_COLOR = themeColors.brand;
 export const ICON_BACKGROUND = themeColors.background;
 
 const { width, height } = LOGO_VIEWBOX;

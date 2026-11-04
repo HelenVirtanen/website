@@ -110,7 +110,7 @@ export const speakerName = style({
 
 export const speakerRole = style({
   margin: 0,
-  color: vars.color.divider,
+  color: vars.color.textMuted,
   font: vars.font.shorthand.programSpeakerRole,
   letterSpacing: vars.font.letterSpacing.figmaWide,
   textTransform: 'capitalize',

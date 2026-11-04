@@ -14,7 +14,15 @@ export default {
 
 export const Default = {
   args: {
-    label: 'Выключить пружинки',
+    label: 'Падающие пружинки',
+  },
+  play: show,
+};
+
+export const Snow = {
+  args: {
+    label: 'Падающие снежинки',
+    kind: 'snow',
   },
   play: show,
 };

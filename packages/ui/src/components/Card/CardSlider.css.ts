@@ -61,10 +61,6 @@ export const navButton = style({
       color: vars.color.disabled,
       cursor: 'not-allowed',
     },
-    '&:focus-visible': {
-      outline: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.focus}`,
-      outlineOffset: vars.spacing.xs,
-    },
   },
 });
 

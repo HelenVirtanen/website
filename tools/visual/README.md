@@ -88,5 +88,5 @@ To rebuild a baseline from an older commit, serve it from a separate worktree an
 
 `check-targets.mjs [url]` opens the built site at 375 and 1440, opens the menu on the narrow width
 and checks every link and button of the header, menu and slider, plus the language switcher: the box
-is at least 42×42 and keyboard focus draws an outline of `rgb(202, 48, 53)`, at least 1px thick. It
+is at least 42×42 and keyboard focus draws an outline of `rgb(56, 69, 207)`, at least 1px thick. It
 prints each violation and exits with 1.

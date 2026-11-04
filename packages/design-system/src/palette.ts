@@ -9,11 +9,21 @@ export const palette = {
   gray500: '#9B9B9B',
   gray700: '#494949',
 
+  // Графит и тёплый светлый — основа тёмной темы
+  graphite: '#23252B',
+  graphiteDeep: '#16181D',
+  graphiteLine: '#4A4D56',
+  graphiteMuted: '#3A3D45',
+  graphiteDisabled: '#6B6E77',
+  graphiteText: '#A6A8B0',
+  paper: '#ECEBE6',
+
   // Полупрозрачные из набора — альфа зашита в значение (hex8)
   blackA50: '#00000080',
   blackA30: '#0000004D',
   whiteA75: '#FFFFFFBF',
   inkA20: '#0B040033',
+  paperA20: '#ECEBE633',
 
   // Цветные
   red: '#F05133',
@@ -25,6 +35,8 @@ export const palette = {
   sky: '#8ED6FB',
   blue: '#3845CF',
   blue300: '#002E41',
+  bluePale: '#9AA5FF',
+  blueSoft: '#5563E8',
   magenta: '#C75FB8',
   pink: '#FF4E8D',
 } as const;

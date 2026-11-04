@@ -43,6 +43,7 @@ src/
 ├── contract.ts     # createGlobalThemeContract -> `vars`  (assembles the slices)
 ├── themes/         # per-concern appliers: each writes to :root and owns its adaptive
 │   ├── colors.css.ts     # colour = light base + dark (prefers-color-scheme + data-theme)
+│   ├── focus.css.ts      # the single `:focus-visible` ring and `::selection` of the whole site
 │   ├── spacing.css.ts    # padding/spacing/radius/size once on :root, constant (no @media)
 │   ├── layout.css.ts     # layout.inset / layout.gap ladders: base + overrides per breakpoint from `layoutSpace`
 │   ├── typography.css.ts # font once on :root + font-size overrides generated from `typeScale`
@@ -111,7 +112,10 @@ src/
   the shorthands follow. Never redefine a full shorthand per breakpoint. Note the
   size var is referenced as a `var(--font-size-…)` string inside `typography.ts`
   (importing `vars` there would be a circular dependency).
-- **Dark currently duplicates light.** To theme dark, change only the `dark`
+- **Dark is graphite (spec 005).** `colors.test.ts` checks the contrast of the token pairs.
+- **Focus.** One rule in `themes/focus.css.ts`; components add no `outline`. A black block swaps
+  `vars.color.focus` for `focusOnInverse` through `vars`.
+- **To retheme**, change only the `dark`
   values in **`colors.ts`** — the contract, typography, spacing and every
   component stay untouched.
 - **Comments:** only the *why* of non-obvious spots, short, in Russian (root §14).
@@ -122,7 +126,7 @@ Source-only package (no build step). From the repo root:
 
 ```bash
 pnpm lint
-pnpm --filter @moscowcss/design-system test   # scale resolver (scale.test.ts)
+pnpm --filter @moscowcss/design-system test   # scale resolver, contrast of colour tokens
 pnpm build            # website — proves the :root token vars emit
 pnpm build:storybook  # if components/stories are affected
 ```

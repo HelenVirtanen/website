@@ -13,7 +13,7 @@ const MENU_MAX_WIDTH = 767;
 const SELECTORS = ['[data-navbar] a', '[data-navbar] button', '[data-card-slider] button', 'a[hreflang]'];
 const MIN_SIZE = 42;
 const SIZE_EPSILON = 0.01;
-const FOCUS_COLOR = 'rgb(202, 48, 53)';
+const FOCUS_COLOR = 'rgb(56, 69, 207)';
 const MIN_OUTLINE_WIDTH = 1;
 const TARGET_ATTR = 'data-check-target';
 

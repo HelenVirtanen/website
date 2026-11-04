@@ -255,7 +255,8 @@ expose a single theme-independent `values`), then assembled into one theme:
   (42px) is the minimum hit area of every small interactive element (links, icon
   buttons, slider arrows, language switcher): enlarge the box, not the glyph, and
   give it a `:focus-visible` outline of at least `vars.border.width.thin` in
-  `vars.color.focus`. `tools/visual/check-targets.mjs` enforces it on the built site.
+  `vars.color.focus` comes from one global rule (`themes/focus.css.ts`), components write no `outline` of their
+  own; a block with a black background only swaps the token to `focusOnInverse`. `tools/visual/check-targets.mjs` enforces it on the built site.
 
 `contract.ts` assembles the slices into `vars`; the per-concern appliers in
 `themes/` apply them — colour per theme, padding/radius/typography once on
@@ -294,9 +295,10 @@ Colour is the only slice with a light/dark distinction:
 - `:root[data-theme="dark"]` / `:root[data-theme="light"]` force a theme (manual
   toggle wins over OS). Both override **only** the `--color-*` vars.
 
-> Current state: **dark colours duplicate light exactly.** Later we only change the
-> `dark` values in `colors.ts` — the contract, typography, spacing and every
-> component stay untouched. That is the whole point of the contract.
+The dark theme is graphite, not black (`dark` in `colors.ts`, spec 005). The partner block and
+organizer cards stay black in both themes, the cards inside the partner block turn graphite with a light edge; `colors.test.ts` checks the contrast of the token pairs.
+Without a saved choice the site follows `prefers-color-scheme`; `ThemeToggle` writes `data-theme` and
+`localStorage`, and an inline script in `<head>` applies the choice before the first paint.
 
 ### Breakpoints are special
 
@@ -624,7 +626,7 @@ regenerate rather than edit).
   gate: it opens the built site (`astro preview --host 127.0.0.1`) at 375 and 1440
   and fails (exit 1) when a link or button of the header, menu, slider or language
   switcher is smaller than 42×42 or has no `:focus-visible` outline in
-  `rgb(202, 48, 53)` of at least 1px. On Windows set `CHROMIUM_PATH`.
+  `rgb(56, 69, 207)` of at least 1px. On Windows set `CHROMIUM_PATH`.
 
 ---
 

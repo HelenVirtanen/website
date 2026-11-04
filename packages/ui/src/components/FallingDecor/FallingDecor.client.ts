@@ -58,7 +58,6 @@ export function setupFallingDecor(root: HTMLElement) {
   const kind: DecorKind = root.dataset['kind'] === 'snow' ? 'snow' : 'springs';
   const snowShape = root.querySelector('template')?.content.firstElementChild ?? null;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const offInputs = Array.from(document.querySelectorAll<HTMLInputElement>('[data-decor-off]'));
   const toggles = Array.from(document.querySelectorAll<HTMLElement>('[data-decor-toggle]'));
   let off = readDecorOff(storageOf());
   let spinners: Spinner[] = [];
@@ -189,14 +188,16 @@ export function setupFallingDecor(root: HTMLElement) {
   };
 
   const syncInputs = () => {
-    for (const input of offInputs) input.checked = off;
     // Без скрипта и при сниженной анимации падать нечему, и переключатель не нужен.
-    for (const toggle of toggles) toggle.hidden = reducedMotion.matches;
+    for (const toggle of toggles) {
+      toggle.hidden = reducedMotion.matches;
+      toggle.setAttribute('aria-pressed', String(!off));
+    }
   };
 
-  for (const input of offInputs) {
-    input.addEventListener('change', () => {
-      off = input.checked;
+  for (const toggle of toggles) {
+    toggle.addEventListener('click', () => {
+      off = !off;
       writeDecorOff(storageOf(), off);
       syncInputs();
       draw();

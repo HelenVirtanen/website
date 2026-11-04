@@ -45,15 +45,9 @@ export const link = style({
   marginBlock: `calc(-1 * ${hitInset})`,
   color: vars.color.text,
   overflowWrap: 'anywhere',
-  selectors: {
-    '&:focus-visible': {
-      outline: `${vars.border.width.thick} ${vars.border.style.solid} ${vars.color.focus}`,
-      outlineOffset: vars.spacing.xs,
-    },
-  },
 });
 
 export const caption = style({
-  color: vars.color.divider,
+  color: vars.color.textMuted,
   font: vars.font.shorthand.caption,
 });

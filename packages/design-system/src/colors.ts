@@ -13,13 +13,21 @@ const contract = {
     danger: null,
     info: null,
     warning: null,
+    brand: null, // фирменный красный: значки сайта
     focus: null, // кольцо фокуса
+    focusOnInverse: null, // кольцо на чёрном блоке
     border: null, // рамка
     divider: null, // разделитель (например, нижняя граница NavBar)
+    textMuted: null, // второстепенный текст: подписи, даты
+    cardText: null, // карточка партнёра
+    cardBackground: null,
+    cardMuted: null,
     // Инвертированная секция (партнёрский блок): фон, текст и рамки на тёмном фоне.
     surfaceDark: null,
     onSurfaceDark: null,
     borderOnDark: null,
+    accentOnInverse: null, // ссылки на чёрном блоке
+    surfaceDarkEdge: null, // граница чёрной карточки: на графите она иначе сливается с фоном
     partnerAccent: null,
     partnerBanner: null,
     surfaceDarkMuted: null,
@@ -57,12 +65,20 @@ const light = {
     danger: palette.red,
     info: palette.blue,
     warning: palette.yellow,
-    focus: palette.redDeep,
+    brand: palette.redDeep,
+    focus: palette.blue,
+    focusOnInverse: palette.bluePale,
     border: palette.ink,
     divider: palette.gray300,
+    textMuted: palette.gray300,
+    cardText: palette.black,
+    cardBackground: palette.white,
+    cardMuted: palette.gray300,
     surfaceDark: palette.black,
     onSurfaceDark: palette.white,
     borderOnDark: palette.white,
+    accentOnInverse: palette.pink,
+    surfaceDarkEdge: 'transparent',
     partnerAccent: palette.green,
     partnerBanner: palette.pink,
     surfaceDarkMuted: palette.gray700,
@@ -87,9 +103,30 @@ const light = {
   },
 };
 
-// Пока dark повторяет light — при вводе тёмной темы меняем ТОЛЬКО значения здесь.
-const dark: typeof light = {
-  color: { ...light.color },
+// Значения палитры — литералы, поэтому тип шире, чем у светлой темы.
+const dark: { color: Record<keyof typeof light.color, string> } = {
+  color: {
+    ...light.color,
+    background: palette.graphite,
+    text: palette.paper,
+    info: palette.bluePale,
+    focus: palette.bluePale,
+    border: palette.paper,
+    divider: palette.graphiteLine,
+    textMuted: palette.graphiteText,
+    cardText: palette.paper,
+    cardBackground: palette.graphite,
+    cardMuted: palette.graphiteText,
+    // Чёрные блоки (партнёр, карточки организаторов) остаются чёрными и в тёмной теме.
+    surfaceDarkEdge: palette.paper,
+    surfaceDarkMuted: palette.graphiteMuted,
+    dividerSoft: palette.paperA20,
+    link: palette.bluePale,
+    buttonHover: palette.bluePale,
+    onButtonHover: palette.graphiteDeep,
+    disabled: palette.graphiteDisabled,
+    tagBlue: palette.blueSoft,
+  },
 };
 
 export const colors = { contract, light, dark };

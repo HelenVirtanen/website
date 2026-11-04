@@ -12,6 +12,9 @@ export const root = style({
   paddingBlock: vars.size.organizerPadding,
   color: vars.color.onSurfaceDark,
   background: vars.color.surfaceDark,
+  // Тенью, а не рамкой: размер карточки не зависит от темы.
+  boxShadow: `inset 0 0 0 ${vars.border.width.thin} ${vars.color.surfaceDarkEdge}`,
+  vars: { [vars.color.focus]: vars.color.focusOnInverse },
 });
 
 // Подложка отдельным слоем: фото лежит поверх неё, и оба обрезаны одной фигурой.
@@ -101,12 +104,7 @@ globalStyle(`${bio} ul > li::before`, {
 });
 
 globalStyle(`${bio} a`, {
-  color: vars.color.speakerAccent,
-});
-
-globalStyle(`${bio} a:focus-visible`, {
-  outline: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.focus}`,
-  outlineOffset: vars.spacing.xs,
+  color: vars.color.accentOnInverse,
 });
 
 export const contacts = style({
@@ -137,12 +135,6 @@ export const contactLink = style({
   display: vars.display.inlineFlex,
   alignItems: vars.alignItems.center,
   minHeight: vars.size.hitTarget,
-  color: vars.color.speakerAccent,
+  color: vars.color.accentOnInverse,
   overflowWrap: 'anywhere',
-  selectors: {
-    '&:focus-visible': {
-      outline: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.focus}`,
-      outlineOffset: vars.spacing.xs,
-    },
-  },
 });

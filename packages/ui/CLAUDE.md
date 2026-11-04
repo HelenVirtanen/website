@@ -45,15 +45,16 @@ demoed in `apps/storybook`.
   without the motion.
 - **Small interactive elements** (links, icon buttons, slider arrows, language
   switcher) have a hit area of at least `vars.size.hitTarget` (42px): enlarge the
-  box or its padding, not the glyph. `:focus-visible` draws an outline of at least
-  `vars.border.width.thin` in `vars.color.focus`. `tools/visual/check-targets.mjs`
+  box or its padding, not the glyph. The `:focus-visible` ring is one global rule in the
+  design system, so a component writes no `outline`; on a black block set
+  `vars: { [vars.color.focus]: vars.color.focusOnInverse }`. `tools/visual/check-targets.mjs`
   checks this on the built site.
 - **Components with logic** keep the DOM-free part in a plain `.ts`
   (`TagPile/pile.ts`: the pile layout, a pure function of the tags and a seed) with
   a `*.test.ts` next to it; the package has its own vitest suite
   (`pnpm --filter @moscowcss/ui test`, also run by `pnpm test`). Client scripts are
   `*.client.ts` and are initialised from the component's `<script>`.
-- **Notable components:** `FallingDecor` (the falling springs or snowflakes over every page, `pointer-events: none`; grey and nearly transparent while over text, so they never hurt reading), `DecorToggle` (the checkbox that turns them off, in the header and menu; the choice lives in `localStorage`), `TagPile` (topic tags that fall into a pile; static and
+- **Notable components:** `FallingDecor` (the falling springs or snowflakes over every page, `pointer-events: none`; grey and nearly transparent while over text, so they never hurt reading), `IconToggle` (icon button with `aria-pressed`), `DecorToggle` and `ThemeToggle` built on it (in the header from `tablet`, in the menu on phones; the choice lives in `localStorage`), `TagPile` (topic tags that fall into a pile; static and
   fully visible without JS or under reduced motion), `OrganizerCard` (portrait slot
   in an octagon, name, text from Markdown in the default slot, contacts; the contacts list may be empty),
   `CallToAction` (floating registration button, `position: fixed`,

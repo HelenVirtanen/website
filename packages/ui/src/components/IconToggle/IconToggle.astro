@@ -1,0 +1,25 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { crossed as crossedStyle, root } from './IconToggle.css';
+
+const Tag = 'button';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Название настройки: доступное имя и подсказка при наведении */
+  label: string;
+  /** Перечёркивать значок, когда настройка выключена */
+  crossed?: boolean;
+}
+
+const { label, crossed = false, class: className, ...attrs } = Astro.props;
+---
+<Tag
+  type="button"
+  class:list={[root, crossed && crossedStyle, className]}
+  aria-label={label}
+  title={label}
+  aria-pressed="false"
+  {...attrs}
+>
+  <slot />
+</Tag>

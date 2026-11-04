@@ -1,19 +1,15 @@
 ---
-import type { HTMLAttributes } from 'astro/types';
-import { box, option, root } from './DecorToggle.css';
+import type { ComponentProps } from 'astro/types';
+import { Snowflake, Spring } from '@moscowcss/icons';
+import IconToggle from '../IconToggle';
 
-const Tag = 'div';
+type Props = ComponentProps<typeof IconToggle> & {
+  /** Что падает: от этого зависит значок */
+  kind?: 'springs' | 'snow';
+};
 
-interface Props extends HTMLAttributes<typeof Tag> {
-  /** Подпись чекбокса, который выключает падающие фигуры */
-  label: string;
-}
-
-const { label, class: className, ...attrs } = Astro.props;
+const { kind = 'springs', ...attrs } = Astro.props;
 ---
-<Tag class:list={[root, className]} data-decor-toggle hidden {...attrs}>
-  <label class={option}>
-    <input class={box} type="checkbox" data-decor-off />
-    {label}
-  </label>
-</Tag>
+<IconToggle crossed data-decor-toggle hidden {...attrs}>
+  {kind === 'snow' ? <Snowflake /> : <Spring />}
+</IconToggle>

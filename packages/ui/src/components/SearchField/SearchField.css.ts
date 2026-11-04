@@ -1,11 +1,6 @@
 import { style } from '@vanilla-extract/css';
 import { vars } from '@moscowcss/design-system';
 
-const focusRing = {
-  outline: `${vars.border.width.medium} ${vars.border.style.solid} ${vars.color.focus}`,
-  outlineOffset: vars.spacing.xs,
-} as const;
-
 export const root = style({
   display: vars.display.flex,
   flexWrap: 'wrap',
@@ -26,7 +21,6 @@ export const input = style({
   color: vars.color.text,
   font: vars.font.shorthand.body,
   selectors: {
-    '&:focus-visible': focusRing,
     '&:disabled': { opacity: 0.6, cursor: 'not-allowed' },
   },
 });
@@ -45,7 +39,6 @@ export const submit = style({
   selectors: {
     '&:hover': { opacity: 0.9 },
     '&:active': { opacity: 0.8 },
-    '&:focus-visible': focusRing,
     '&:disabled': { opacity: 0.6, cursor: 'not-allowed' },
   },
 });

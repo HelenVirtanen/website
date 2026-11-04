@@ -29,10 +29,6 @@ export const button = style({
       borderColor: vars.color.buttonHover,
       color: vars.color.onButtonHover,
     },
-    '&:focus-visible': {
-      outline: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.focus}`,
-      outlineOffset: vars.spacing.xs,
-    },
   },
 });
 

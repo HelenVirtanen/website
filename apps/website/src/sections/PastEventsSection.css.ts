@@ -29,10 +29,4 @@ export const feedLink = style({
   paddingBlock: hitInset,
   marginBlock: `calc(-1 * ${hitInset})`,
   color: vars.color.text,
-  selectors: {
-    '&:focus-visible': {
-      outline: `${vars.border.width.thick} ${vars.border.style.solid} ${vars.color.focus}`,
-      outlineOffset: vars.spacing.xs,
-    },
-  },
 });

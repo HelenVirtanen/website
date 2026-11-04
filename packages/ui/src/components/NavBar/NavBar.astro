@@ -4,6 +4,7 @@ import { Close } from '@moscowcss/icons';
 import BurgerButton from '../BurgerButton';
 import Button from '../Button';
 import DecorToggle from '../DecorToggle';
+import ThemeToggle from '../ThemeToggle';
 import {
   root,
   bar,
@@ -17,7 +18,8 @@ import {
   telegram,
   meta,
   metaAddress,
-  metaToggle,
+  toggles,
+  overlayToggles,
   overlay,
   overlayLinks,
   overlayLink,
@@ -35,8 +37,12 @@ interface Props extends HTMLAttributes<typeof Tag> {
   telegramHref: string;
   /** Подпись кнопки со ссылкой на Telegram */
   telegramButtonLabel: string;
-  /** Подпись чекбокса, который выключает падающие фигуры */
-  decorOffLabel: string;
+  /** Название кнопки падающих фигур */
+  decorLabel: string;
+  /** Что падает: от этого зависит значок кнопки */
+  decorKind?: 'springs' | 'snow';
+  /** Название кнопки тёмной темы */
+  themeLabel: string;
   /** Доступное имя кнопки открытия меню */
   menuLabel: string;
   /** Доступное имя кнопки закрытия меню */
@@ -47,7 +53,7 @@ interface Props extends HTMLAttributes<typeof Tag> {
   homeLabel?: string;
   /** Видимый текст логотипа */
   homeText?: string;
-  /** Адрес ближайшего митапа: строка под разделителем и низ меню; без него остаётся только Telegram */
+  /** Адрес ближайшего митапа: строка под разделителем и низ меню; без него строки нет */
   addressLine?: string;
 }
 
@@ -55,7 +61,9 @@ const {
   links: navLinks,
   telegramHref,
   telegramButtonLabel,
-  decorOffLabel,
+  decorLabel,
+  decorKind = 'springs',
+  themeLabel,
   menuLabel,
   closeLabel,
   homeHref,
@@ -91,6 +99,10 @@ const external = { target: '_blank', rel: 'noopener noreferrer' } as const;
     </ul>
     <div class={actions}>
       {Astro.slots.has('locale') && <slot name="locale" />}
+      <div class={toggles}>
+        <ThemeToggle label={themeLabel} />
+        <DecorToggle label={decorLabel} kind={decorKind} />
+      </div>
       <div class={telegram}>
         <Button href={telegramHref} size="nav" {...external}>{telegramButtonLabel}</Button>
       </div>
@@ -115,16 +127,22 @@ const external = { target: '_blank', rel: 'noopener noreferrer' } as const;
       }
     </ul>
     <div class={overlayFooter}>
-      <DecorToggle label={decorOffLabel} />
+      <div class={overlayToggles}>
+        <ThemeToggle label={themeLabel} />
+        <DecorToggle label={decorLabel} kind={decorKind} />
+      </div>
       <Button href={telegramHref} size="nav" {...external}>{telegramButtonLabel}</Button>
       {addressLine && <p class={overlayAddress}>{addressLine}</p>}
     </div>
   </div>
 </Tag>
-<div class={meta}>
-  {addressLine && <p class={metaAddress}>{addressLine}</p>}
-  <DecorToggle class={metaToggle} label={decorOffLabel} />
-</div>
+{
+  addressLine && (
+    <div class={meta}>
+      <p class={metaAddress}>{addressLine}</p>
+    </div>
+  )
+}
 
 <script>
   import { setupNavBar } from './NavBar.client';

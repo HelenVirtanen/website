@@ -1,11 +1,6 @@
 import { globalStyle, style } from '@vanilla-extract/css';
 import { dimensions, vars, media } from '@moscowcss/design-system';
 
-const focusRing = {
-  outline: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.focus}`,
-  outlineOffset: vars.spacing.xs,
-} as const;
-
 const fade = {
   transitionProperty: 'opacity, color',
   transitionDuration: vars.motion.duration.base,
@@ -55,9 +50,6 @@ export const home = style({
   textDecoration: 'none',
   textTransform: 'uppercase',
   whiteSpace: 'nowrap',
-  selectors: {
-    '&:focus-visible': focusRing,
-  },
 });
 
 export const links = style({
@@ -94,7 +86,6 @@ export const link = style({
       opacity: 1,
       textDecoration: 'underline',
     },
-    '&:focus-visible': focusRing,
   },
 });
 
@@ -141,7 +132,6 @@ export const closeButton = style({
     '[data-nav-open] &': {
       display: vars.display.inlineFlex,
     },
-    '&:focus-visible': focusRing,
   },
   '@media': {
     [media.wide]: {
@@ -188,8 +178,26 @@ export const metaAddress = style({
   margin: 0,
 });
 
-export const metaToggle = style({
-  marginInlineStart: 'auto',
+// На телефоне в строку шапки не помещаются, поэтому там они в меню.
+export const toggles = style({
+  display: vars.display.none,
+  alignItems: vars.alignItems.center,
+  '@media': {
+    [media.tablet]: {
+      display: vars.display.flex,
+    },
+  },
+});
+
+export const overlayToggles = style({
+  display: vars.display.flex,
+  alignItems: vars.alignItems.center,
+  gap: vars.spacing.s,
+  '@media': {
+    [media.tablet]: {
+      display: vars.display.none,
+    },
+  },
 });
 
 // Шапка остаётся над панелью, поэтому панель отступает на высоту полосы: поля, зона нажатия, промежуток, разделитель.
@@ -253,7 +261,6 @@ export const overlayLink = style({
     '&:hover::after': {
       opacity: 1,
     },
-    '&:focus-visible': focusRing,
   },
 });
 

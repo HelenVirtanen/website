@@ -20,7 +20,7 @@ export const status = style({
 
 export const note = style({
   margin: 0,
-  color: vars.color.divider,
+  color: vars.color.textMuted,
   font: vars.font.shorthand.caption,
   selectors: { '&[hidden]': { display: vars.display.none } },
 });
@@ -53,16 +53,12 @@ export const link = style({
   overflowWrap: 'anywhere',
   selectors: {
     '&:hover': { textDecoration: 'underline' },
-    '&:focus-visible': {
-      outline: `${vars.border.width.medium} ${vars.border.style.solid} ${vars.color.focus}`,
-      outlineOffset: vars.spacing.xs,
-    },
   },
 });
 
 export const description = style({
   margin: 0,
-  color: vars.color.divider,
+  color: vars.color.textMuted,
   font: vars.font.shorthand.caption,
   overflowWrap: 'anywhere',
   display: '-webkit-box',

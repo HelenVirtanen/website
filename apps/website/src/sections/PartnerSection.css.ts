@@ -7,6 +7,7 @@ export const section = style([
   {
     color: vars.color.onSurfaceDark,
     background: vars.color.surfaceDark,
+    vars: { [vars.color.focus]: vars.color.focusOnInverse },
   },
 ]);
 

@@ -10,3 +10,8 @@
 .sb-story {
   padding: 10px;
 }
+
+body {
+  color: var(--color-text);
+  background: var(--color-background);
+}

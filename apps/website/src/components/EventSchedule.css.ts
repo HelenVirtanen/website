@@ -34,7 +34,7 @@ export const row = style({
 export const time = style({
   margin: 0,
   font: vars.font.shorthand.body,
-  color: vars.color.divider,
+  color: vars.color.textMuted,
 });
 
 export const main = style({
@@ -54,17 +54,11 @@ export const title = style({
 export const people = style({
   margin: 0,
   font: vars.font.shorthand.caption,
-  color: vars.color.divider,
+  color: vars.color.textMuted,
 });
 
 export const link = style({
   // У строчной ссылки поля не двигают строку, но увеличивают зону нажатия.
   paddingBlock: `calc((${vars.size.hitTarget} - 1lh) / 2)`,
   color: vars.color.text,
-  selectors: {
-    '&:focus-visible': {
-      outline: `${vars.border.width.thick} ${vars.border.style.solid} ${vars.color.focus}`,
-      outlineOffset: vars.spacing.xs,
-    },
-  },
 });

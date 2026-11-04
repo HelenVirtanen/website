@@ -13,12 +13,6 @@ export const root = style({
   background: 'transparent',
   color: vars.color.text,
   cursor: 'pointer',
-  selectors: {
-    '&:focus-visible': {
-      outline: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.focus}`,
-      outlineOffset: vars.spacing.xs,
-    },
-  },
 });
 
 export const icon = style({

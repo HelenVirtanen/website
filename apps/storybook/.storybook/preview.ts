@@ -7,6 +7,7 @@ import '@moscowcss/design-system';
 import './preview.css';
 import { setupCardSlider } from '../../../packages/ui/src/components/Card/CardSlider.client';
 import { setupNavBar } from '../../../packages/ui/src/components/NavBar/NavBar.client';
+import { setupThemeToggles } from '../../../packages/ui/src/components/ThemeToggle/ThemeToggle.client';
 
 // Astro-компонентные <script> в renderMode 'server' не попадают в канвас — инициализируем вручную.
 function observeCanvasInit(
@@ -34,23 +35,42 @@ const initNavBars: Decorator = (Story, { canvasElement }) => {
   return Story();
 };
 
+const initThemeToggles: Decorator = (Story, { canvasElement }) => {
+  observeCanvasInit(canvasElement, '[data-theme-toggle]', () => {
+    setupThemeToggles();
+  });
+  return Story();
+};
+
 const initCardSliders: Decorator = (Story, { canvasElement }) => {
   observeCanvasInit(canvasElement, '[data-card-slider]', setupCardSlider);
   return Story();
 };
 
+// Тема меняет только цвет: фон холста берётся из токена, а не из настроек Storybook.
+const applyTheme: Decorator = (story, context) => {
+  document.documentElement.dataset['theme'] = String(context.globals['theme'] ?? 'light');
+  return story();
+};
+
 const preview = {
-  decorators: [initNavBars, initCardSliders],
-  // Автодок для каждого компонента без ручного тега на каждой истории.
-  tags: ['autodocs'],
-  parameters: {
-    backgrounds: {
-      options: {
-        light: { name: 'Light', value: '#ffffff' },
-        dark: { name: 'Dark', value: '#0f172a' },
+  decorators: [applyTheme, initNavBars, initThemeToggles, initCardSliders],
+  globalTypes: {
+    theme: {
+      description: 'Тема',
+      toolbar: {
+        icon: 'contrast',
+        items: [
+          { value: 'light', title: 'Светлая' },
+          { value: 'dark', title: 'Тёмная' },
+        ],
+        dynamicTitle: true,
       },
     },
   },
+  initialGlobals: { theme: 'light' },
+  // Автодок для каждого компонента без ручного тега на каждой истории.
+  tags: ['autodocs'],
 };
 
 export default preview;

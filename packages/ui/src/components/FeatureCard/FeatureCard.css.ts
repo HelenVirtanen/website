@@ -10,8 +10,10 @@ export const card = style({
   padding: vars.layout.inset.xxl,
   paddingBottom: vars.padding['4xl'],
   overflow: 'hidden',
-  color: vars.color.blackText,
-  background: vars.color.background,
+  color: vars.color.cardText,
+  background: vars.color.cardBackground,
+  // Тенью, а не рамкой: размер карточки не зависит от темы.
+  boxShadow: `inset 0 0 0 ${vars.border.width.thin} ${vars.color.surfaceDarkEdge}`,
 });
 
 export const content = style({
@@ -42,7 +44,7 @@ globalStyle(`${waveTrack} svg`, {
   display: vars.display.block,
   width: '100%',
   height: 'auto',
-  color: vars.color.divider,
+  color: vars.color.cardMuted,
 });
 
 export const title = style({
@@ -60,7 +62,7 @@ export const text = style({
 
 export const note = style({
   margin: 0,
-  color: vars.color.divider,
+  color: vars.color.cardMuted,
   font: vars.font.shorthand.featureCardFootnote,
   letterSpacing: vars.font.letterSpacing.figmaWide,
   textTransform: 'capitalize',

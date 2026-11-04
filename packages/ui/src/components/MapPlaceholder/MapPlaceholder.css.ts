@@ -46,10 +46,4 @@ export const link = style({
   color: vars.color.info,
   font: vars.font.shorthand.caption,
   textDecoration: 'underline',
-  selectors: {
-    '&:focus-visible': {
-      outline: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.focus}`,
-      outlineOffset: vars.spacing.xs,
-    },
-  },
 });
