@@ -1,0 +1,11 @@
+# В репозитории и в рабочей копии на любой ОС текст с переводом строки LF: иначе на Windows
+# файлы получают CRLF, и разбор frontmatter, снимки и линтер ведут себя не так, как на CI.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.woff2 binary
+*.ttf binary
+*.mp4 binary

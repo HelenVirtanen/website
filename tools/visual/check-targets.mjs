@@ -1,8 +1,7 @@
-import { chromium } from 'playwright-core';
+import { launchBrowser } from './browser.mjs';
 
 // Адрес берём из аргумента, иначе из SITE_URL, иначе локальный `astro preview`.
 const SITE_URL = process.argv[2] ?? process.env.SITE_URL ?? 'http://localhost:4321/';
-const CHROMIUM_PATH = process.env.CHROMIUM_PATH ?? '/usr/bin/chromium';
 
 const WIDTHS = [375, 1440];
 const VIEWPORT_HEIGHT = 900;
@@ -24,8 +23,8 @@ const violate = (width, message) => {
   console.error(`ОШИБКА [${width}] ${message}`);
 };
 
-const browser = await chromium.launch({ executablePath: CHROMIUM_PATH }).catch((error) => {
-  console.error(`ОШИБКА: не удалось запустить Chromium (${CHROMIUM_PATH}, переменная CHROMIUM_PATH): ${error.message}`);
+const browser = await launchBrowser().catch((error) => {
+  console.error(`ОШИБКА: ${error.message}`);
   process.exit(2);
 });
 

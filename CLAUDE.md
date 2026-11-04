@@ -132,6 +132,10 @@ pnpm add -Dw <pkg>
 pnpm --filter website add @moscowcss/ui@workspace:*
 ```
 
+A release is installed only 3 days after publication (`minimumReleaseAge` in
+`pnpm-workspace.yaml`). The repo works on Windows, macOS and Linux: no POSIX-only
+commands in scripts, LF everywhere (`.gitattributes`).
+
 Node & pnpm:
 
 - Node: use the **current LTS** (pinned for CI in `.nvmrc`). The hard floor is
@@ -146,7 +150,8 @@ Node & pnpm:
 
 | Script                | What it does                                                        |
 | --------------------- | ------------------------------------------------------------------- |
-| `pnpm dev`            | Runs the **website** dev server (Astro).                            |
+| `pnpm dev`            | Runs the **website** (:4321) and **Storybook** (:6006) together.    |
+| `pnpm dev:site`       | Runs only the **website** dev server (Astro).                       |
 | `pnpm storybook`      | Runs **Storybook** for the UI components.                           |
 | `pnpm build`          | Production build of the **website** (`astro build` + Pagefind index). |
 | `pnpm build:storybook`| Static Storybook build (for deploy).                                |
@@ -602,7 +607,7 @@ regenerate rather than edit).
   `src/test/fixtures.ts`, not the real content.
 - **CI and deploy.** `.github/workflows/deploy.yml` runs lint, test, build,
   `check:seo` and `build:storybook` on push to `main`, on pull requests and every
-  night; deploy to GitHub Pages happens only outside pull requests. The nightly run
+  night, plus lint, test and build on Windows and macOS; deploy to GitHub Pages happens only outside pull requests. The nightly run
   exists because the next meetup is decided at build time. pnpm and Node
   versions come from `packageManager` and `.nvmrc`, not from the YAML. One-off
   GitHub/DNS setup: `docs/deploy.md`. The husky `pre-commit` hook runs
