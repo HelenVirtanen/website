@@ -21,6 +21,11 @@ Montserrat Regular/SemiBold/Bold are also stored as **TTF** and exported from
   Storybook `preview.ts`). It is a side-effect CSS import.
 - **No italics** — only upright faces. Each `@font-face` uses a **`local()`-first**
   `src` (`local(...), url("./…woff2") format("woff2")`) with `font-display: swap`.
+- **Jost 400** (`jost/`, token `fontFamily.logo`), **Golos Text 400** (`golos/`,
+  `fontFamily.text`) and **JetBrains Mono 300** (`jetbrains/`, Light) are Cyrillic
+  and Latin subsets (`unicode-range`) from `@fontsource`, each folder with its
+  `LICENSE.txt`. Outside the subsets (e.g. latin-ext) the 300 weight falls back to
+  400. Keep the licence file when updating the files.
 - When adding a weight, add the `woff2` to the right subfolder and a matching
   `@font-face` with the correct numeric `font-weight`.
 - **TTF are for OG cards only.** satori cannot read WOFF2, so `@moscowcss/og` reads

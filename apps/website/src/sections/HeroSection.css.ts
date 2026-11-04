@@ -132,14 +132,18 @@ export const about = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
   gap: vars.adaptive.heroAboutGap,
-  // Справа на мобильном стоит закреплённая кнопка: текст не заходит под неё.
-  paddingInlineEnd: `calc(${vars.adaptive.ctaSize} + ${vars.spacing.l})`,
   '@media': {
-    [media.tablet]: {
-      paddingInlineEnd: 0,
-    },
     [media.wide]: {
       maxWidth: vars.adaptive.heroAboutWidth,
+    },
+  },
+});
+
+// Справа на мобильном стоит закреплённая кнопка: текст не заходит под неё.
+export const aboutBesideCta = style({
+  '@media': {
+    [media.mobile]: {
+      paddingInlineEnd: `calc(${vars.adaptive.ctaSize} + ${vars.spacing.l})`,
     },
   },
 });

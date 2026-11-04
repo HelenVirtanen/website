@@ -38,6 +38,28 @@ demoed in `apps/storybook`.
   rendered `<Tag>` with `class:list={[…, className]}` + `{...attrs}`. Declare only
   your **own** props; give each a short **Russian** `/** … */` JSDoc (Storybook
   autodocs reads it). Never a bare DOM type like `HTMLButtonElement['type']`.
+- **Sizes that follow the designer's layout are `vars.adaptive.*`**, fixed ones are
+  `vars.size.*`. Transitions and animations take duration and curve from
+  `vars.motion.*` (no `ms`, `ease`, `cubic-bezier` literals); under
+  `prefers-reduced-motion` they become instant, so the state must be visible
+  without the motion.
+- **Small interactive elements** (links, icon buttons, slider arrows, language
+  switcher) have a hit area of at least `vars.size.hitTarget` (42px): enlarge the
+  box or its padding, not the glyph. `:focus-visible` draws an outline of at least
+  `vars.border.width.thin` in `vars.color.focus`. `tools/visual/check-targets.mjs`
+  checks this on the built site.
+- **Components with logic** keep the DOM-free part in a plain `.ts`
+  (`TagPile/pile.ts`: the pile layout, a pure function of the tags and a seed) with
+  a `*.test.ts` next to it; the package has its own vitest suite
+  (`pnpm --filter @moscowcss/ui test`, also run by `pnpm test`). Client scripts are
+  `*.client.ts` and are initialised from the component's `<script>`.
+- **Notable components:** `TagPile` (topic tags that fall into a pile; static and
+  fully visible without JS or under reduced motion), `OrganizerCard` (portrait slot
+  in an octagon, name, regalia, contacts; the contacts list may be empty),
+  `CallToAction` (floating registration button, `position: fixed`,
+  `mix-blend-mode: difference`), `Button` (link or button, `default` and `nav`
+  sizes), `CardSlider`/`Card`/`BlockTitle` (FAQ block), `NavBar` (header and the
+  full-screen menu).
 - **Styles live only in the colocated `.css.ts`** — no inline `style="…"` with
   literal values.
 - **Stories live in `apps/storybook/stories/`**, not here (`pnpm new:component`
@@ -48,6 +70,7 @@ demoed in `apps/storybook`.
 
 ```bash
 pnpm lint            # from repo root (or: pnpm --filter @moscowcss/ui lint)
+pnpm --filter @moscowcss/ui test   # component logic such as TagPile/pile.ts
 pnpm build           # website builds (consumes this package)
 pnpm build:storybook # if components/stories changed
 ```

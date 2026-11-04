@@ -78,7 +78,6 @@ export function mediaOverrides<K extends string>(
 // Кегли текстовых ролей: база (mobile-first) и ступени, где кегль меняется.
 export const typeScale = {
   blockTitle: { base: px(36), tablet: px(40) },
-  registration: { base: '4rem' }, // 64px
   subtitle: { base: '1.75rem' }, // 28px
   websiteTitle: {
     base: '2.5rem', // 40px
@@ -109,7 +108,6 @@ export const typeScale = {
     desktop: '1.375rem',
   },
   body: { base: '1rem', desktop: '1.125rem' }, // 16px → 18px
-  navLink: { base: '1.75rem' }, // 28px
   caption: { base: '0.875rem' }, // 14px
   ui: { base: '0.875rem' }, // 14px
   programTalkTitle: { base: '1.75rem' }, // 28px
@@ -122,11 +120,6 @@ export const typeScale = {
   featureCardFootnote: { base: '1.125rem' }, // 18px
   partnerAddress: { base: '2.5rem' }, // 40px
   partnerDirectionsHint: { base: '1.375rem' }, // 22px
-  heroTitle: { base: '4.5rem', desktop: '10.625rem' }, // 72px → 170px
-  heroLightLabel: { base: '1.375rem' }, // 22px
-  heroMeetupLine: { base: '1.75rem' }, // 28px
-  heroInfoLine: { base: '1.375rem', desktop: '2.5rem' }, // 22px → 40px
-  heroCtaLabel: { base: '2rem', desktop: '3rem' }, // 32px → 48px
   buttonLabel: { base: px(12), wide: px(14), desktopLarge: px(18) },
   navLogo: { base: px(20), wide: px(24), desktopLarge: px(28) },
   navMono: { base: px(13), wide: px(16), desktopLarge: px(20) },
@@ -223,6 +216,7 @@ export const adaptiveScale = {
   sliderGap: { base: px(10), tablet: px(20) },
   sliderHeaderGap: { base: px(16), tablet: px(40), wide: px(20) },
   sliderHeadGap: { base: px(32), wide: px(40) },
+  blockTitlePaddingInline: { base: px(20), tablet: px(32) },
   organizerGap: { base: px(24), tablet: px(19), wide: px(24) },
   organizerWidth: { base: px(413), wide: px(573) },
 } as const satisfies Record<string, Steps>;

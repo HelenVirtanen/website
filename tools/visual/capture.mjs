@@ -8,7 +8,7 @@ const SITE_URL = process.env.SITE_URL ?? 'http://localhost:4321/';
 const STORYBOOK_URL = (process.env.STORYBOOK_URL ?? 'http://localhost:6006').replace(/\/$/, '');
 const CHROMIUM_PATH = process.env.CHROMIUM_PATH ?? '/usr/bin/chromium';
 
-const WIDTHS = [375, 768, 1024, 1280, 1920];
+const WIDTHS = [375, 768, 1024, 1280, 1440, 1920];
 const VIEWPORT_HEIGHT = 900;
 const STORY_TIMEOUT_MS = 30_000;
 const PAGE_TIMEOUT_MS = 30_000;

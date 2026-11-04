@@ -3,7 +3,8 @@ import { vars } from '@moscowcss/design-system';
 
 export const blockTitle = style({
   margin: 0,
-  padding: `${vars.padding.xl} ${vars.padding.xxxl} ${vars.layout.inset.l} ${vars.padding.xxxl}`,
+  paddingBlock: `${vars.padding.xl} ${vars.padding.l}`,
+  paddingInline: vars.adaptive.blockTitlePaddingInline,
   color: vars.color.text,
   font: vars.font.shorthand.blockTitle,
   letterSpacing: vars.font.letterSpacing.blockTitle,

@@ -100,6 +100,8 @@ function rotatedBox(width: number, height: number, deg: number): { width: number
 
 function tiltLimit(row: number, rowCount: number, width: number, height: number): number {
   if (row === 0) return 0;
+  // Второй ряд лежит почти ровно на нижнем, как в макете: большой наклон закрывал бы соседей.
+  if (row === 1 && rowCount > 2) return minTiltDeg;
   if (row < rowCount - 1) return midTiltDeg;
   const share = clamp((width / height - shortRatio) / (longRatio - shortRatio), 0, 1);
   return topTiltDeg - share * (topTiltDeg - midTiltDeg);
@@ -124,26 +126,27 @@ export function layoutPile(input: PileInput): PilePlacement[] {
   // Куча сужается кверху: нижний ряд шире средней доли, каждый следующий уже предыдущего.
   const levels = Math.min(maxLevels, Math.max(1, Math.floor(zoneHeight / (tagHeight + gap))));
   const total = fitted.reduce((sum, width) => sum + width, 0) + gap * (count - 1);
-  const baseCapacity = Math.min(zoneWidth, Math.max(Math.max(...fitted), (total / levels) * baseRowShare));
+  const widest = Math.max(...fitted);
   const capacityOf = (rowIndex: number): number =>
-    Math.max(Math.max(...fitted), baseCapacity * upperRowShare ** rowIndex);
+    Math.min(zoneWidth, Math.max(widest, (total / levels) * baseRowShare * upperRowShare ** rowIndex));
 
+  // В ряд идёт первая подходящая плашка, а не только следующая: так меньше рядов и наложений.
   const rows: number[][] = [];
-  let row: number[] = [];
-  let used = 0;
-  for (let index = 0; index < count; index += 1) {
-    const width = widthOf(index);
-    const next = row.length === 0 ? width : used + gap + width;
-    if (row.length > 0 && next > capacityOf(rows.length)) {
-      rows.push(row);
-      row = [index];
-      used = width;
-    } else {
-      row.push(index);
-      used = next;
+  let waiting = fitted.map((_, index) => index);
+  while (waiting.length > 0) {
+    const capacity = capacityOf(rows.length);
+    const members: number[] = [];
+    let used = 0;
+    for (const index of waiting) {
+      const next = members.length === 0 ? widthOf(index) : used + gap + widthOf(index);
+      if (members.length === 0 || next <= capacity) {
+        members.push(index);
+        used = next;
+      }
     }
+    rows.push(members);
+    waiting = waiting.filter((index) => !members.includes(index));
   }
-  rows.push(row);
 
   const travel = Math.max(0, zoneHeight - tagHeight);
   const step = rows.length > 1 ? Math.min(tagHeight + gap, travel / (rows.length - 1)) : 0;

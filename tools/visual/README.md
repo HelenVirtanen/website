@@ -14,7 +14,7 @@ at five widths, then compares two capture sets pixel by pixel.
   0.1% differing pixels is an error. The exit code is 1 on any error. Diff images of changed files
   are written to `<next-dir>/diff/`.
 
-Widths: 375, 768, 1024, 1280, 1920. Viewport height 900, `deviceScaleFactor: 1`,
+Widths: 375, 768, 1024, 1280, 1440, 1920. Viewport height 900, `deviceScaleFactor: 1`,
 `reducedMotion: 'reduce'`.
 
 ## Prerequisites
@@ -82,3 +82,20 @@ NavBar does not bleed into the sections under it.
 
 To rebuild a baseline from an older commit, serve it from a separate worktree and point
 `VISUAL_SOURCE_DIR` at it; run `capture.mjs` from the current tree.
+
+## Hit targets
+
+`check-targets.mjs [url]` opens the built site at 375 and 1440, opens the menu on the narrow width
+and checks every link and button of the header, menu and slider, plus the language switcher: the box
+is at least 42×42 and keyboard focus draws an outline of `rgb(202, 48, 53)`, at least 1px thick. It
+prints each violation and exits with 1.
+
+On Windows pass the browser and bind the preview to an IPv4 address:
+
+```bash
+pnpm --filter website exec astro preview --host 127.0.0.1
+```
+
+```bash
+CHROMIUM_PATH="C:/Program Files/Google/Chrome/Application/chrome.exe" node tools/visual/check-targets.mjs http://127.0.0.1:4321/
+```

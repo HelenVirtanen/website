@@ -21,8 +21,10 @@ languages (`apps/website`: `ru` at `/`, `en` at `/en/`), a **Storybook**
 `@moscowcss/*` scope — `content` (all site content as Markdown files + zod
 schema), `og` (build-time OpenGraph/Twitter PNG cards), `ui` (Astro components +
 vanilla-extract styles), `design-system` (the design-token system: palette +
-semantic vars + scale tables + layout/typography tokens + breakpoints), `icons`
-(SVGO → generated `.astro`), `fonts` (font *loading*), `eslint-config`,
+semantic vars + scale tables + layout/typography/motion/adaptive tokens +
+breakpoints, including the `wide` step at 1440px), `icons`
+(SVGO → generated `.astro`), `fonts` (font *loading*: Montserrat, Inter,
+JetBrains Mono, Jost, Golos Text), `eslint-config`,
 `typescript-config`. Decisions: `specs/001-blog-like-architecture.md`,
 `adr/001-*.md` (content model), `adr/002-*.md` (responsive scale).
 
@@ -39,8 +41,8 @@ semantic vars + scale tables + layout/typography tokens + breakpoints), `icons`
 - **Shared config extends, never forks** — ESLint/TS rules live in
   `packages/eslint-config` and `packages/typescript-config`.
 - **Use the generators** — `pnpm new:component`, and for content `pnpm new:event` /
-  `new:talk` / `new:speaker` / `new:partner` / `new:faq` (drafts in `ru` and `en`,
-  never overwrite). Never hand-create component or content files. Never edit
+  `new:talk` / `new:speaker` / `new:partner` / `new:faq` / `new:organizer` (drafts in
+  `ru` and `en`, never overwrite). Never hand-create component or content files. Never edit
   `packages/icons/src/generated/**` — regenerate it.
 - **Content is Markdown in `@moscowcss/content`**, `src/<collection>/<lang>/<name>.md`;
   relations live in the talk only; links `https` only, no raw HTML (the build
@@ -48,7 +50,10 @@ semantic vars + scale tables + layout/typography tokens + breakpoints), `icons`
   come from `apps/website/src/i18n`, the rest from content.
 - **Sizes in `rem`, no `px`.** Values live in `scale.ts` tables; component inner
   padding is constant (`vars.padding`/`vars.spacing`), only `vars.layout.*` grows
-  with width; `@media` in a component changes structure, not sizes.
+  with width; `@media` in a component changes structure, not sizes. Sizes that
+  follow the designer's layout are `vars.adaptive.*`; transitions take their
+  duration and curve from `vars.motion.*`; small interactive elements use
+  `vars.size.hitTarget` (42px) and a `:focus-visible` outline.
 - **Props extend the native element, tag is single source of truth.** A
   component's `Props` MUST be `interface Props extends HTMLAttributes<typeof Tag>`
   where `const Tag = 'div'` (from `astro/types`), rendered as `<Tag>` and spread
@@ -83,7 +88,9 @@ semantic vars + scale tables + layout/typography tokens + breakpoints), `icons`
 | `pnpm test` | all vitest suites (turbo) |
 | `pnpm --filter website check:seo` | SEO gate over the built `dist` |
 | `pnpm new:component` | scaffold a UI component and its story (plop) |
-| `pnpm new:event <n>` / `new:talk` / `new:speaker` / `new:partner` / `new:faq <name>` | draft content files, `ru` + `en` |
+| `pnpm new:event <n>` / `new:talk` / `new:speaker` / `new:partner` / `new:faq` / `new:organizer <name>` | draft content files, `ru` + `en` |
+| `pnpm --filter @moscowcss/ui test` | the UI package's vitest suite (e.g. the `TagPile` layout) |
+| `node tools/visual/check-targets.mjs` | hit-area gate (42×42, focus ring) over the built site |
 
 For anything not covered here — dependency policy, theming/token layers and the
 root font size, content and i18n rules, OG cards, CI/deploy, visual regression

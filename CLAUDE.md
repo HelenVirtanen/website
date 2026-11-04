@@ -41,13 +41,13 @@ changing the architecture they describe.
 ├── packages/
 │   ├── content/          # all site content: .md files per collection and language + zod schema
 │   ├── og/               # build-time OG/Twitter cards, speaker avatars, site icons (satori + sharp)
-│   ├── ui/               # Astro components + their vanilla-extract styles
-│   ├── design-system/    # the design-token system: palette + semantic vars + scale tables + layout/typography tokens + breakpoints
+│   ├── ui/               # Astro components + their vanilla-extract styles (own vitest suite)
+│   ├── design-system/    # the design-token system: palette + semantic vars + scale tables + layout/typography/motion/adaptive tokens + breakpoints
 │   ├── icons/            # source SVGs -> SVGO-cleaned, generated .astro icon components
-│   ├── fonts/            # @font-face css + font files (font *loading*, not the font tokens)
+│   ├── fonts/            # @font-face css + font files: Montserrat, Inter, JetBrains Mono, Jost, Golos Text (font *loading*, not the font tokens)
 │   ├── eslint-config/    # shared flat ESLint config (single source of truth)
 │   └── typescript-config/# shared tsconfig bases (single source of truth)
-├── tools/visual/         # screenshot capture/compare for visual regression (not a workspace package)
+├── tools/visual/         # screenshot capture/compare for visual regression + check-targets.mjs, the hit-area gate (not a workspace package)
 ├── adr/, specs/, plans/  # decision records, specs, task queues
 ├── docs/deploy.md        # one-off GitHub Pages and DNS setup
 ├── .github/workflows/    # deploy.yml: every check on push/PR, Pages deploy
@@ -159,6 +159,9 @@ Node & pnpm:
 | `pnpm new:speaker <name>` | Draft speaker files, `ru` and `en`; no photo means an initials avatar. |
 | `pnpm new:partner <name>` | Draft partner files, `ru` and `en`.                             |
 | `pnpm new:faq <name>`     | Draft FAQ entry files, `ru` and `en`.                           |
+| `pnpm new:organizer <name>` | Draft organizer files, `ru` and `en`; the editor fills `status` and `contacts`. |
+| `pnpm --filter @moscowcss/ui test` | The UI package's own vitest suite (pure logic, e.g. the `TagPile` layout in `pile.ts`). |
+| `node tools/visual/check-targets.mjs [url]` | Hit-area gate over the built site at 375 and 1440 (needs `astro preview` and `CHROMIUM_PATH`). |
 
 Notes:
 
@@ -170,6 +173,9 @@ Notes:
   picked up live by the website's and Storybook's Vite dev servers.
 - `@moscowcss/icons` **does** have a build step (SVG → generated `.astro`), so the
   website/storybook `build` depends on it topologically via `^build`.
+- `@moscowcss/ui` has a `test` script (`vitest run`), so `pnpm test` covers it.
+  Component logic that needs no DOM (layout, ordering) goes into a plain `.ts`
+  next to the component and is tested there.
 - `@moscowcss/content` and `@moscowcss/og` are source-only too. `og` has a `test`
   script (`tsc --noEmit && vitest run`); `content` is validated by the website
   build and tests.
@@ -213,7 +219,9 @@ expose a single theme-independent `values`), then assembled into one theme:
 - **scale** (`scale.ts`) — the single source of the numbers: "base + overrides
   per breakpoint" tables in `rem` (`typeScale`, `space`, `layoutSpace`) and a
   resolver, covered by `scale.test.ts`. The themes generate their CSS variables
-  and `:root` media queries from these tables.
+  and `:root` media queries from these tables. A table may override on any of
+  the steps `tablet`, `laptop`, `desktop`, `wide`, `desktopLarge` (`widthSteps`;
+  `wide` = 1440px sits between `desktop` and `desktopLarge`).
 - **spacing** (`spacing.ts`) — a t-shirt scale (`xs`…`4xl`) split into two
   semantic groups over the same values: `vars.padding.*` (inner padding) and
   `vars.spacing.*` (gaps/margins between elements), plus `vars.radius.*`. These
@@ -226,6 +234,22 @@ expose a single theme-independent `values`), then assembled into one theme:
 - **typography** (`typography.ts`) — `vars.font.*` **tokens** (the font
   shorthands). These are *not* the font *loading*: `@font-face` + files live in
   `@moscowcss/fonts`. The family names here must match that package.
+- **adaptive** (`adaptive.ts`, table `adaptiveScale` in `scale.ts`) —
+  `vars.adaptive.*`: component dimensions that follow the designer's layout
+  (button and card paddings, nav and hero gaps, floating-button size, slider
+  arrows, card and organizer widths, line heights). Each entry is "base + the
+  steps where the value changes"; `themes/adaptive.css.ts` emits the base and the
+  `:root` media overrides. Use it instead of a literal inside `@media`; keep
+  `vars.size.*` for fixed sizes that never change with width.
+- **motion** (`motion.ts`) — `vars.motion.duration.*` and `vars.motion.easing.*`.
+  Every transition and animation takes its duration and curve from here; no
+  `120ms`, `ease` or `cubic-bezier(…)` in a component. `themes/motion.css.ts`
+  zeroes the durations under `prefers-reduced-motion: reduce`.
+- **size tokens** (`spacing.ts`) — `vars.size.*` are fixed sizes. `vars.size.hitTarget`
+  (42px) is the minimum hit area of every small interactive element (links, icon
+  buttons, slider arrows, language switcher): enlarge the box, not the glyph, and
+  give it a `:focus-visible` outline of at least `vars.border.width.thin` in
+  `vars.color.focus`. `tools/visual/check-targets.mjs` enforces it on the built site.
 
 `contract.ts` assembles the slices into `vars`; the per-concern appliers in
 `themes/` apply them — colour per theme, padding/radius/typography once on
@@ -277,7 +301,7 @@ runtime CSS variable from the contract. Do not try to put breakpoints in the
 contract.
 
 `breakpoints.ts` exports named breakpoints (`mobile` / `tablet` / `laptop` /
-`desktop` / `wide` / `desktopLarge`, in `rem`; `wide` = 1440px is where the full header fits on one line) and a **`media`** map of ready-made
+`desktop` / `wide` / `desktopLarge`, in `rem`; `wide` = 1440px is where the full header fits on one line and where the designer's layout takes its desktop step) and a **`media`** map of ready-made
 media-query strings for those names. In components use **`media`** as the
 `@media` key — don't hand-write `(min-width: …)`.
 
@@ -289,12 +313,16 @@ the var.
 
 ### Typography is responsive by var-indirection
 
-`fonts.ts` holds the family/weight primitives (`fontFamily.{display,sans,mono}`,
+`fonts.ts` holds the family/weight primitives (`fontFamily.{display,sans,mono,logo,text}`,
 `fontWeight.*`). The `font` contract has three parts: **`size`** (rem values),
 **`shorthand`** (a ready `font:` value per role), **`letterSpacing`**. A component
 sets `font: vars.font.shorthand.h1` (+ optional `letterSpacing`). Roles:
 `h1`/`h2`/`h3` = display (Montserrat), `body`/`caption` = sans (Inter), `ui` = mono
-(JetBrains Mono).
+(JetBrains Mono); the designer's layout adds `logo` = Jost (header logo, hero chip
+and the huge hero title) and `text` = Golos Text (hero lead and body text), plus
+JetBrains Mono Light for the small header lines. The keys of `font.size` and
+`font.shorthand` are generated from `typeScale`, so a new role starts as a row in
+`scale.ts` and a shorthand in `typography.ts`.
 
 The trick: each `shorthand` embeds its **size var** (`… var(--font-size-h1) …`),
 so `themes/typography.css.ts` makes type responsive by overriding **only** the
@@ -322,20 +350,22 @@ export const card = style({ color: vars.palette.green });         // primitive l
 
 File layout in `packages/design-system/src` (the package's own `CLAUDE.md` has
 the annotated tree, including the non-colour slices `border`, `dimensions`,
-`zIndex`):
+`zIndex`, `motion`, `adaptive`):
 
 ```
 src/
 ├── palette.ts        # primitives: brand colours + neutrals  (raw values, no vars)
-├── fonts.ts          # primitives: fontFamily {display,sans,mono} + fontWeight (NOT @font-face)
+├── fonts.ts          # primitives: fontFamily {display,sans,mono,logo,text} + fontWeight (NOT @font-face)
 ├── colors.ts         # semantic colour tokens: contract slice + light/dark (from palette)
 ├── scale.ts          # scale tables (base + overrides per breakpoint, rem) + resolver; scale.test.ts
 ├── spacing.ts        # constant padding/spacing steps (xs…4xl) + radius + size tokens
 ├── layout.ts         # layout.inset / layout.gap ladders (grow with width) + display/position helpers
 ├── typography.ts     # font tokens: size / shorthand / letterSpacing (shorthand refs size vars)
+├── motion.ts         # transition durations and easing curves (zeroed under prefers-reduced-motion)
+├── adaptive.ts       # vars.adaptive.*: layout-driven component sizes, values from `adaptiveScale`
 ├── contract.ts       # createGlobalThemeContract -> `vars` (assembles the slices)
 ├── themes/           # per-concern appliers: each writes to :root and owns its adaptive
-│   ├── colors.css.ts, spacing.css.ts, layout.css.ts, typography.css.ts, …
+│   ├── colors.css.ts, spacing.css.ts, layout.css.ts, typography.css.ts, motion.css.ts, adaptive.css.ts, …
 │   ├── root.css.ts       # html font-size: max(100%, 100vw / 120)
 │   └── index.css.ts      # imports the appliers — the theme entry point
 ├── breakpoints.ts    # mobile/tablet/laptop/desktop/wide/desktopLarge (rem) + `media` query strings
@@ -365,6 +395,13 @@ src/
 - Add a new component with `pnpm new:component` — do not create the files by
   hand, so structure stays uniform. It also creates the story in
   `apps/storybook/stories/`.
+- Every component that changed or appeared with the designer's layout has a story
+  with text passed as props: `Button`, `CallToAction` (floating registration
+  button), `CardSlider`, `Card`, `BlockTitle`, `NavBar`, `TagPile` (falling topic
+  tags; the layout is the pure `pile.ts`, tested by `pnpm --filter @moscowcss/ui
+  test`) and `OrganizerCard`. Keep the story in step when the props change.
+- Interactive elements follow `vars.size.hitTarget` and the focus ring rule
+  (§5); transitions use `vars.motion.*`.
 
 ### Props always extend the native element (mandatory)
 
@@ -494,6 +531,11 @@ regenerate rather than edit).
   `package.json`, for `@moscowcss/og`: satori cannot read WOFF2. They come from
   the official Montserrat repository under the same OFL (see
   `packages/fonts/README.md`). Do not copy them elsewhere.
+- The designer's layout adds **Jost** 400 (`jost/`, `fontFamily.logo`), **Golos
+  Text** 400 (`golos/`, `fontFamily.text`) and **JetBrains Mono** 300
+  (`jetbrains/`, for the light header lines). All are Cyrillic + Latin `woff2`
+  subsets with their `LICENSE.txt` beside the files. Outside those subsets
+  (e.g. latin-ext) the 300 weight falls back to 400.
 
 ---
 
@@ -514,12 +556,25 @@ regenerate rather than edit).
   `BaseLayout`.
 - **Content is a package.** All text is `.md` (frontmatter + Markdown body) in
   `@moscowcss/content`, one folder per language: `src/<collection>/<lang>/<name>.md`.
-  Collections: `pages`, `events`, `talks`, `speakers`, `partners`, `faq`.
+  Collections: `pages`, `events`, `talks`, `speakers`, `partners`, `faq`,
+  `organizers`, `documents`.
   Relations live only in the talk (`event`, `speakers`); reverse lists and the
   event schedule are built at build time in `apps/website/src/content/catalog.ts`.
   Language-independent fields are duplicated in the translation and checked
   against `ru`. The build fails with the file and the field. Details:
   `adr/001-content-model-md-relations.md` and the package README (for editors).
+- **Organizers.** `organizers/<lang>/<name>.md`, photos in `organizers/assets/`
+  (optional, with `photoAlt`). `status: current | past` is required and must match
+  between languages; `contacts.telegram|github|website` are optional `https`
+  URLs and must match too. The home page shows only `current` entries after the FAQ
+  (`OrganizersSection`, card `OrganizerCard`); `organizersByStatus` and
+  `contactsOf` in `src/content/organizers.ts` are the pure selectors, so a future
+  about-page can list `past` ones from the same collection. Create with
+  `pnpm new:organizer <name>`; a new entry needs no code change.
+- **Meetup topics.** A meetup's optional `tags` (translated, not checked against
+  `ru`) feed the falling `TagPile` in the Hero together with the meetup modes.
+  The floating `CallToAction` renders only for an upcoming meetup that has a
+  `registrationUrl`; check it with `BUILD_NOW` set to a date before that meetup.
 - **Content rules** enforced at build time: a meetup's date is `date` (a day,
   `2026-07-09`) plus `time` (`"18:00"`, Moscow time); links in content are
   `https` only; bodies are Markdown only. The check is a hast plugin,
@@ -558,7 +613,11 @@ regenerate rather than edit).
   change is intended. A reference capture is `.visual/baseline` (taken from
   `dad0413`, before the architecture change; its `manifest.json` says which code
   it came from) and `.visual/hero-09`. Capture with `BUILD_NOW` pinned.
-  See `tools/visual/README.md`.
+  See `tools/visual/README.md`. `tools/visual/check-targets.mjs` is a separate
+  gate: it opens the built site (`astro preview --host 127.0.0.1`) at 375 and 1440
+  and fails (exit 1) when a link or button of the header, menu, slider or language
+  switcher is smaller than 42×42 or has no `:focus-visible` outline in
+  `rgb(202, 48, 53)` of at least 1px. On Windows set `CHROMIUM_PATH`.
 
 ---
 

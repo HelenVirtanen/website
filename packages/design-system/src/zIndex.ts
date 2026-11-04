@@ -2,7 +2,6 @@
 const contract = {
   zIndex: {
     ring: null,
-    mask: null,
     content: null,
     floatingCta: null,
     navOverlay: null,
@@ -13,7 +12,6 @@ const contract = {
 const values = {
   zIndex: {
     ring: '1',
-    mask: '2',
     content: '3',
     floatingCta: '50',
     navOverlay: '100',

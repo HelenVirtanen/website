@@ -30,12 +30,14 @@ single file bloats with every concern's responsive rules.
 ```
 src/
 ├── palette.ts      # primitives (raw values)
-├── fonts.ts        # primitives: fontFamily {display,sans,mono} + fontWeight (NOT @font-face)
+├── fonts.ts        # primitives: fontFamily {display,sans,mono,logo,text} + fontWeight (NOT @font-face)
 ├── colors.ts       # semantic colours: contract slice + light/dark (from palette)
 ├── scale.ts        # scale tables ("base + steps per breakpoint", rem) + resolver; tested in scale.test.ts
 ├── spacing.ts      # t-shirt scale (xs…4xl, constant) as padding + spacing groups + radius + size: contract slice + values
 ├── layout.ts       # layout.inset / layout.gap ladders (grow with width) + display/position/flex helpers
-├── border.ts, dimensions.ts, zIndex.ts  # border widths, aspect-ratio constants, z-index layers
+├── border.ts, dimensions.ts, zIndex.ts  # border widths, aspect-ratio and octagon shape constants, z-index layers
+├── motion.ts       # vars.motion: transition durations (fast/base/fall) and easing curves
+├── adaptive.ts     # vars.adaptive.*: component sizes that follow the designer's layout, values from `adaptiveScale`
 ├── theme-colors.ts # raw light-theme colours as pure TS (no .css import) — for @moscowcss/og and tests
 ├── typography.ts   # font tokens: size / shorthand / letterSpacing (shorthand refs size vars)
 ├── contract.ts     # createGlobalThemeContract -> `vars`  (assembles the slices)
@@ -44,6 +46,8 @@ src/
 │   ├── spacing.css.ts    # padding/spacing/radius/size once on :root, constant (no @media)
 │   ├── layout.css.ts     # layout.inset / layout.gap ladders: base + overrides per breakpoint from `layoutSpace`
 │   ├── typography.css.ts # font once on :root + font-size overrides generated from `typeScale`
+│   ├── adaptive.css.ts   # vars.adaptive.*: base on :root + overrides per breakpoint from `adaptiveScale`
+│   ├── motion.css.ts     # vars.motion.* on :root; durations are 0ms under prefers-reduced-motion: reduce
 │   ├── root.css.ts       # html font-size: max(100%, 100vw / 120) — the UI grows above 1920px (ADR-002)
 │   └── index.css.ts      # imports all appliers — the theme entry point
 ├── breakpoints.ts  # mobile/tablet/laptop/desktop/wide/desktopLarge (rem) + `media` query strings (NOT css vars)
@@ -53,10 +57,29 @@ src/
 ## Rules
 
 - **Scale lives in tables (`scale.ts`).** Font sizes (`typeScale`), the constant
-  spacing steps (`space`) and the growing ladders (`layoutSpace.inset|gap`) are
-  "base + overrides per breakpoint" tables in `rem`; themes generate CSS from them
+  spacing steps (`space`), the growing ladders (`layoutSpace.inset|gap`) and the
+  layout-driven component sizes (`adaptiveScale`) are "base + overrides per
+  breakpoint" tables in `rem`; themes generate CSS from them
   (`baseValues`, `mediaOverrides`) and `scale.test.ts` checks the resolver. Growing
   values go to `vars.layout.inset|gap`; `vars.padding|spacing` never change with width.
+  Layout values are written with the `px()` helper (`px(24)` is `1.5rem`) so the
+  table reads like the designer's frame while staying in `rem`.
+- **Steps are `tablet`, `laptop`, `desktop`, `wide`, `desktopLarge`** (`widthSteps`,
+  thresholds 768 / 1024 / 1280 / 1440 / 1920 px). `wide` (1440) is the step of the
+  designer's layout; `laptop` and `desktop` stay because sections without a
+  layout still use them. A table lists only the steps where its value changes. A
+  test pins the cascade at 1439 and 1440.
+- **`vars.adaptive.*` vs `vars.size.*`.** A component size that follows the
+  designer's layout (paddings, gaps, widths, line heights) is an `adaptiveScale`
+  entry and appears as `vars.adaptive.<name>`. `vars.size.*` (`spacing.ts`) holds
+  fixed sizes, e.g. `hitTarget` (42px, the minimum hit area of any small
+  interactive element), `organizerPhoto`, `sliderHeadWidth`.
+- **Motion.** Durations and easing live in `motion.ts` (`vars.motion.duration.*`,
+  `vars.motion.easing.*`); components never write `ms`, `ease` or `cubic-bezier`.
+  Under `prefers-reduced-motion: reduce` the durations become `0ms`.
+- **Remove what loses its consumer.** Before deleting a token, grep
+  `vars.<group>.<name>` over `packages` and `apps`; a token with a consumer
+  stays.
 - **Add a token** by editing the concern file (e.g. a new colour → `colors.ts`):
   add the key to its `contract` slice **and** to its values (`colors` has
   `light`/`dark`; theme-independent slices like `spacing`/`typography` have a
@@ -75,8 +98,12 @@ src/
   blocks: `'@media': { [media.laptop]: { … } }`. Use `breakpoints` for the raw
   `rem` values. Never try to put them in the contract.
 - **Typography tokens ≠ font loading.** Families/weights are primitives in
-  `fonts.ts` (`fontFamily.{display,sans,mono}`, `fontWeight.*`); the actual
+  `fonts.ts` (`fontFamily.{display,sans,mono,logo,text}`, `fontWeight.*`); the actual
   `@font-face` + files live in `@moscowcss/fonts` and family names must match.
+  `logo` is Jost (header logo, hero chip, hero title), `text` is Golos Text (hero
+  lead and body); JetBrains Mono Light (300) is the small header lines.
+  `font.size` and `font.shorthand` keys are generated from `typeScale`, so a role
+  is a row in `scale.ts` plus a shorthand in `typography.ts`.
 - **Typography is responsive by var-indirection.** `font.shorthand.*` embeds its
   `font.size.*` var (`… var(--font-size-h1) …`). To make type responsive, override
   **only** the size vars per breakpoint in `themes/typography.css.ts`

@@ -57,9 +57,20 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
 - `site` is `https://css.moscow`, `trailingSlash: 'always'`: canonical, hreflang
   and internal links are absolute/with a trailing slash.
 - **Content entries** are created with `pnpm new:event | new:talk | new:speaker |
-  new:partner | new:faq` (drafts, `ru` + `en`, never overwrite); hand-made
+  new:partner | new:faq | new:organizer` (drafts, `ru` + `en`, never overwrite); hand-made
   entries are fine if they pass the schema. Content lives in `@moscowcss/content`; the page code only
   reads it through `src/content/catalog.ts`.
+- **Organizers** are read through `src/content/organizers.ts`
+  (`organizersByStatus`, `contactsOf`: pure, tested) and rendered by
+  `sections/OrganizersSection.astro` after the FAQ with `OrganizerCard`; only
+  `status: current` shows on the home page. The agent Markdown twins and JSON-LD do
+  not list organizers yet.
+- **Hero and the floating button.** The Hero shows the meetup modes and its
+  `tags` as a `TagPile`; the floating `CallToAction` renders only for an upcoming
+  meetup with `registrationUrl` (label `hero.register`, accessible name
+  `hero.registerLabel`). To see it, build with `BUILD_NOW` set before that
+  meetup's date. A past meetup has no button; `data-visual="navbar"` captures only
+  the sticky top row of the header.
 - **Meetup date** is `date` (a day) + `time` (Moscow time). "Nearest meetup" is
   computed at build time; a meetup stays "upcoming" for 4 hours after its start.
   `BUILD_NOW=<ISO date>` pins "now" for **visual snapshots only**; it is in
@@ -117,4 +128,6 @@ pnpm dev                          # local dev server (no search index in dev)
 pnpm test                         # from repo root: vitest
 pnpm build                        # astro build + Pagefind index (must pass)
 pnpm --filter website check:seo   # SEO gate over dist, after the build
+# hit areas of the header, menu, slider and language switcher (preview must run):
+node tools/visual/check-targets.mjs http://127.0.0.1:4321/
 ```

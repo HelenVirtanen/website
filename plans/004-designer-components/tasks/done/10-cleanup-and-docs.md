@@ -3,7 +3,7 @@ id: "10"
 title: cleanup-and-docs
 spec: "004"
 criteria: ["AC-15", "AC-17"]
-status: pending
+status: done
 depends_on: ["09"]
 owns: ["packages/design-system/src/**", "apps/website/src/i18n/ui.ts", "apps/storybook/stories/**", "CLAUDE.md", "AGENTS.md", "packages/design-system/CLAUDE.md", "packages/design-system/AGENTS.md", "packages/ui/CLAUDE.md", "packages/ui/AGENTS.md", "packages/fonts/CLAUDE.md", "packages/fonts/AGENTS.md", "packages/content/CLAUDE.md", "packages/content/AGENTS.md", "apps/website/CLAUDE.md", "apps/website/AGENTS.md"]
 model: sonnet

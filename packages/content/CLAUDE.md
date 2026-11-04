@@ -18,7 +18,7 @@ Decision record: `adr/001-content-model-md-relations.md`.
 ## Rules
 
 - **Only `.md` files** for content. No `.mdx`, `.yml`, `.json`. Images live in
-  `assets/` next to the collection (`speakers/assets/`).
+  `assets/` next to the collection (`speakers/assets/`, `organizers/assets/`).
 - **The schema is the single source of the shape.** Fields are defined in
   `src/schema.ts` only; do not make required fields optional to "ease" editing —
   the editor-facing answer is short flat fields and clear error messages.
@@ -45,13 +45,24 @@ Decision record: `adr/001-content-model-md-relations.md`.
   without it the site generates an initials avatar (`@moscowcss/og`).
 - **`draft: true`** keeps an entry off the site. A published meetup cannot
   reference a draft partner. The `new:*` templates start as drafts.
-- **New entries:** `pnpm new:event | new:talk | new:speaker | new:partner | new:faq`
+- **Organizers** (`organizers/<lang>/<name>.md`, photos in `organizers/assets/`):
+  `status: current | past` is required and, like `contacts`, must match `ru`
+  (the build fails with the file and the field). `contacts.telegram | github |
+  website` are optional `https` URLs, not a free list: the card prints only the
+  filled ones in that order, with a short text taken from the URL. `photo` is
+  optional and needs `photoAlt`; `order` sorts the cards. The home page shows
+  `current` entries only; `past` ones are for a future about-page. Never invent
+  data for people whose details are not provided.
+- **Meetup `tags`:** optional list of topics shown as falling tags in the Hero,
+  next to the meetup modes. It is translated text, so it is not checked against `ru`.
+- **New entries:** `pnpm new:event | new:talk | new:speaker | new:partner | new:faq | new:organizer`
   writes drafts in both languages from `templates/` (outside `src/`, so they are
   not content). Hand-made files are fine if they pass the same schema.
 - **Russian text is the source of truth.** Do not edit Russian wording while
   moving content; the English text is a translation of the Russian meaning,
   names are transliterated.
-- Collections: `pages`, `events`, `talks`, `speakers`, `partners`, `faq`, `documents`.
+- Collections: `pages`, `events`, `talks`, `speakers`, `partners`, `faq`,
+  `organizers`, `documents`.
 - **Archive gaps:** talk `time` and speaker `role` are optional because old meetups
   did not keep them — never fill them in from guesswork. Meetup `photosUrl` links
   an external photo album; the registration link is hidden on past meetups.

@@ -13,14 +13,9 @@ const contract = {
     danger: null,
     info: null,
     warning: null,
-    // Акцентная кнопка (CTA): подложка, текст на ней и цвет кольца фокуса.
-    action: null,
-    onAction: null,
-    actionHover: null,
-    focus: null,
+    focus: null, // кольцо фокуса
     border: null, // рамка
     divider: null, // разделитель (например, нижняя граница NavBar)
-    tgBorder: null, // граница кнопки с сслыкой на телеграм
     // Инвертированная секция (партнёрский блок): фон, текст и рамки на тёмном фоне.
     surfaceDark: null,
     onSurfaceDark: null,
@@ -61,13 +56,9 @@ const light = {
     danger: palette.red,
     info: palette.blue,
     warning: palette.yellow,
-    action: palette.ink,
-    onAction: palette.white,
-    actionHover: palette.gray700,
     focus: palette.redDeep,
     border: palette.ink,
     divider: palette.gray300,
-    tgBorder: palette.blue300,
     surfaceDark: palette.black,
     onSurfaceDark: palette.white,
     borderOnDark: palette.white,
