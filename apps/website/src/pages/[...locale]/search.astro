@@ -27,7 +27,7 @@ const alternates = locales.map((code) => ({ locale: code, path: localizePath(cod
   alternates={alternates}
   noindex
 >
-  <main class={main}>
+  <main id="main" class={main}>
     <div class={inner}>
       <H1>{t('search.title')}</H1>
       <SearchField

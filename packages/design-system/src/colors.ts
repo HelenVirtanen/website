@@ -18,10 +18,9 @@ const contract = {
     focusOnInverse: null, // кольцо на чёрном блоке
     border: null, // рамка
     divider: null, // разделитель (например, нижняя граница NavBar)
-    textMuted: null, // второстепенный текст: подписи, даты
     cardText: null, // карточка партнёра
     cardBackground: null,
-    cardMuted: null,
+    cardWave: null, // декоративная волна на карточке
     // Инвертированная секция (партнёрский блок): фон, текст и рамки на тёмном фоне.
     surfaceDark: null,
     onSurfaceDark: null,
@@ -70,10 +69,9 @@ const light = {
     focusOnInverse: palette.bluePale,
     border: palette.ink,
     divider: palette.gray300,
-    textMuted: palette.gray300,
     cardText: palette.black,
     cardBackground: palette.white,
-    cardMuted: palette.gray300,
+    cardWave: palette.gray300,
     surfaceDark: palette.black,
     onSurfaceDark: palette.white,
     borderOnDark: palette.white,
@@ -88,7 +86,7 @@ const light = {
     onButtonHover: palette.white,
     disabled: palette.gray300,
     speakerAccent: palette.pink,
-    pastNote: palette.orange,
+    pastNote: palette.orangeDeep,
     decorMuted: palette.gray500,
     tagSky: palette.sky,
     onTagSky: palette.ink,
@@ -97,9 +95,9 @@ const light = {
     tagYellow: palette.yellow,
     onTagYellow: palette.ink,
     tagRed: palette.red,
-    onTagRed: palette.white,
+    onTagRed: palette.ink,
     tagOrange: palette.orange,
-    onTagOrange: palette.white,
+    onTagOrange: palette.ink,
   },
 };
 
@@ -113,10 +111,9 @@ const dark: { color: Record<keyof typeof light.color, string> } = {
     focus: palette.bluePale,
     border: palette.paper,
     divider: palette.graphiteLine,
-    textMuted: palette.graphiteText,
     cardText: palette.paper,
     cardBackground: palette.graphite,
-    cardMuted: palette.graphiteText,
+    cardWave: palette.graphiteText,
     // Чёрные блоки (партнёр, карточки организаторов) остаются чёрными и в тёмной теме.
     surfaceDarkEdge: palette.paper,
     surfaceDarkMuted: palette.graphiteMuted,
@@ -126,6 +123,7 @@ const dark: { color: Record<keyof typeof light.color, string> } = {
     onButtonHover: palette.graphiteDeep,
     disabled: palette.graphiteDisabled,
     tagBlue: palette.blueSoft,
+    pastNote: palette.orange,
   },
 };
 

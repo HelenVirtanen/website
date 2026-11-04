@@ -22,7 +22,7 @@ export const Slider = {};
 
 // Сама листается раз в две секунды и идёт по кругу, как организаторы на главной.
 export const SliderAutoplay = {
-  args: { autoplayMs: 2000 },
+  args: { autoplayMs: 2000, autoplayLabel: 'Автопрокрутка' },
 };
 
 // Середина ленты: обе стрелки активны.

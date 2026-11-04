@@ -159,6 +159,7 @@ Node & pnpm:
 | `pnpm lint`           | Lints **and** applies safe autofixes across all packages.           |
 | `pnpm test`           | Runs every package's vitest suite through turbo.                    |
 | `pnpm --filter website check:seo` | Gate over the built `dist` (run after `pnpm build`). |
+| `pnpm check:a11y`     | WCAG 2.2 A and AA gate over the built `dist`: axe, keyboard, menu, reflow, both themes. |
 | `pnpm new:component`  | Scaffolds a new component in `packages/ui` + its story (plop).      |
 | `pnpm new:event <number>` | Draft event files in `packages/content`, `ru` and `en`.         |
 | `pnpm new:talk <name>`    | Draft talk files, `ru` and `en`.                                |
@@ -668,6 +669,7 @@ pnpm lint           # zero errors (warnings acceptable if agreed)
 pnpm test           # every vitest suite
 pnpm build          # website builds, content validates, Pagefind index is built
 pnpm --filter website check:seo  # after the build, if you touched pages, layouts, content or og
+pnpm check:a11y     # after the build, if you touched anything visible
 pnpm build:storybook  # if you touched components/stories
 ```
 

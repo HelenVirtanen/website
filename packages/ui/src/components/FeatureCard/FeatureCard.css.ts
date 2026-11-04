@@ -44,7 +44,7 @@ globalStyle(`${waveTrack} svg`, {
   display: vars.display.block,
   width: '100%',
   height: 'auto',
-  color: vars.color.cardMuted,
+  color: vars.color.cardWave,
 });
 
 export const title = style({
@@ -62,7 +62,7 @@ export const text = style({
 
 export const note = style({
   margin: 0,
-  color: vars.color.cardMuted,
+  color: vars.color.cardText,
   font: vars.font.shorthand.featureCardFootnote,
   letterSpacing: vars.font.letterSpacing.figmaWide,
   textTransform: 'capitalize',

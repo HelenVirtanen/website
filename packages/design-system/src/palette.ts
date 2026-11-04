@@ -29,6 +29,7 @@ export const palette = {
   red: '#F05133',
   redDeep: '#CA3035', // brand
   orange: '#F16528',
+  orangeDeep: '#C2410C',
   yellow: '#F9DC3E',
   green: '#70DC55',
   greenDeep: '#468834',

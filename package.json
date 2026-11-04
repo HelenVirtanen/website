@@ -11,6 +11,7 @@
     "storybook": "turbo run storybook --filter=storybook",
     "build": "turbo run build --filter=website",
     "build:storybook": "turbo run build --filter=storybook",
+    "check:a11y": "node tools/visual/check-a11y.mjs",
     "lint": "turbo run lint",
     "new:component": "plop component",
     "new:event": "node apps/website/scripts/new-entry.mjs event",
@@ -24,6 +25,7 @@
   },
   "packageManager": "pnpm@11.28.10+sha512.672216f06e15c109b85471d49d3fbed17e6f03ead258df08c2bf5b4a5c33321ebfbf59476bce81325efada16ace0ac78548fd0bfcd7a51369e939182a3dd50e4",
   "devDependencies": {
+    "axe-core": "4.14.0",
     "eslint": "10.14.0",
     "husky": "9.1.7",
     "pixelmatch": "8.0.0",

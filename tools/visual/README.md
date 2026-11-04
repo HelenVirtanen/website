@@ -90,3 +90,18 @@ To rebuild a baseline from an older commit, serve it from a separate worktree an
 and checks every link and button of the header, menu and slider, plus the language switcher: the box
 is at least 42×42 and keyboard focus draws an outline of `rgb(56, 69, 207)`, at least 1px thick. It
 prints each violation and exits with 1.
+
+## Accessibility gate
+
+`pnpm check:a11y` (`check-a11y.mjs`) serves the built `apps/website/dist` itself, so it needs no running
+server, and exits 1 on any violation. It covers every page type in the light and dark theme at 375 and 1440:
+
+- axe with the WCAG 2.0, 2.1 and 2.2 A and AA rules;
+- structure: language, title, one `h1`, heading order, one `main`;
+- keyboard: skip link first, a visible ring on every stop, nothing off screen or under the sticky header;
+- the phone menu: opens by keyboard, keeps Tab inside, Esc closes and returns focus;
+- reflow at 320, text at 200% and the WCAG 1.4.12 text spacing;
+- a pause control for moving content, and sliders with live animation.
+
+Automation finds only part of the problems. A screen reader run and the keyboard inside the third-party map
+frame stay manual. Build with `BUILD_NOW` set before a meetup to also check the floating button.

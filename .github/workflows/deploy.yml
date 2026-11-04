@@ -50,6 +50,9 @@ jobs:
       - name: Check SEO of built site
         run: pnpm --filter website check:seo
 
+      - name: Check accessibility of built site
+        run: pnpm check:a11y
+
       - name: Build Storybook
         run: pnpm build:storybook
 

@@ -28,6 +28,12 @@ describe.each([
     ['текст на чёрном блоке', color.onSurfaceDark, color.surfaceDark],
     ['ссылка на чёрном блоке', color.accentOnInverse, color.surfaceDark],
     ['текст на кнопке при наведении', color.onButtonHover, color.buttonHover],
+    ['пометка «митап прошёл»', color.pastNote, color.background],
+    ['голубая плашка', color.onTagSky, color.tagSky],
+    ['синяя плашка', color.onTagBlue, color.tagBlue],
+    ['жёлтая плашка', color.onTagYellow, color.tagYellow],
+    ['красная плашка', color.onTagRed, color.tagRed],
+    ['оранжевая плашка', color.onTagOrange, color.tagOrange],
   ])('%s не ниже 4.5', (_label, foreground, background) => {
     expect(contrast(foreground, background)).toBeGreaterThanOrEqual(TEXT);
   });
@@ -54,15 +60,10 @@ describe('тёмная тема', () => {
     expect(contrast(colors.dark.color.surfaceDarkEdge, colors.dark.color.background)).toBeGreaterThanOrEqual(NON_TEXT);
   });
 
-  it('второстепенный текст читается на графите', () => {
-    expect(contrast(colors.dark.color.textMuted, colors.dark.color.background)).toBeGreaterThanOrEqual(TEXT);
-  });
-
   it('карточка партнёра графитовая со светлым текстом', () => {
-    const { cardText, cardMuted, cardBackground } = colors.dark.color;
+    const { cardText, cardBackground } = colors.dark.color;
     expect(cardBackground).toBe(palette.graphite);
     expect(contrast(cardText, cardBackground)).toBeGreaterThanOrEqual(TEXT);
-    expect(contrast(cardMuted, cardBackground)).toBeGreaterThanOrEqual(TEXT);
   });
 
   it('QR остаётся тёмным на светлом', () => {

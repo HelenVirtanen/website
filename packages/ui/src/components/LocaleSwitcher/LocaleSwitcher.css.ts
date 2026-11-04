@@ -37,7 +37,8 @@ export const link = style({
   color: vars.color.text,
   textDecoration: 'none',
   textTransform: 'uppercase',
-  opacity: 0.4,
+  // Приглушена, но контраст не ниже 4.5 в обеих темах.
+  opacity: 0.6,
   transitionProperty: 'opacity',
   transitionDuration: vars.motion.duration.base,
   transitionTimingFunction: vars.motion.easing.standard,

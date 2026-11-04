@@ -20,7 +20,7 @@ export const status = style({
 
 export const note = style({
   margin: 0,
-  color: vars.color.textMuted,
+  color: vars.color.text,
   font: vars.font.shorthand.caption,
   selectors: { '&[hidden]': { display: vars.display.none } },
 });
@@ -58,7 +58,7 @@ export const link = style({
 
 export const description = style({
   margin: 0,
-  color: vars.color.textMuted,
+  color: vars.color.text,
   font: vars.font.shorthand.caption,
   overflowWrap: 'anywhere',
   display: '-webkit-box',

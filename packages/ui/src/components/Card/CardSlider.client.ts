@@ -94,14 +94,41 @@ export function setupCardSlider(root: HTMLElement) {
 
   swiper.on('resize', sync);
 
+  // Tab доходит и до карточек за краем: лента сама подъезжает, иначе фокус окажется вне экрана.
+  container.addEventListener('focusin', (event) => {
+    const target = event.target as HTMLElement;
+    const slide = target.closest<HTMLElement>('.swiper-slide');
+    if (!slide) return;
+    const box = target.getBoundingClientRect();
+    if (box.left >= container.getBoundingClientRect().left && box.right <= window.innerWidth) return;
+    if (looped) swiper.slideToLoop(Number(slide.dataset['swiperSlideIndex']), 0);
+    else swiper.slideTo(swiper.slides.indexOf(slide), 0);
+    // Кольцо переставляет карточки в разметке, а перенос элемента снимает с него фокус.
+    if (document.activeElement !== target) target.focus({ preventScroll: true });
+  });
+
   // Пока человек читает карточку с клавиатуры, она не должна уезжать из-под фокуса.
   if (autoplays) {
+    let stoppedByUser = false;
     root.addEventListener('focusin', () => {
       swiper.autoplay.pause();
     });
     root.addEventListener('focusout', () => {
-      swiper.autoplay.resume();
+      if (!stoppedByUser) swiper.autoplay.resume();
     });
+
+    // Только наведения и фокуса мало: движение дольше пяти секунд должно останавливаться постоянно (WCAG 2.2.2).
+    const pauseButton = root.querySelector<HTMLButtonElement>('[data-card-slider-pause]');
+    if (pauseButton) {
+      pauseButton.hidden = false;
+      pauseButton.setAttribute('aria-pressed', 'true');
+      pauseButton.addEventListener('click', () => {
+        stoppedByUser = !stoppedByUser;
+        pauseButton.setAttribute('aria-pressed', String(!stoppedByUser));
+        if (stoppedByUser) swiper.autoplay.stop();
+        else swiper.autoplay.start();
+      });
+    }
   }
   gapQueries.forEach((query) => query.addEventListener('change', sync));
 }

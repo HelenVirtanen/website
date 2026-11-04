@@ -73,6 +73,23 @@ export const navButtonIcon = style({
   overflow: 'visible',
 });
 
+// Значок показывает, что сделает нажатие: идёт автопрокрутка — пауза, стоит — запуск.
+export const pauseIcon = style({
+  selectors: {
+    '[aria-pressed="false"] > &': {
+      display: vars.display.none,
+    },
+  },
+});
+
+export const playIcon = style({
+  selectors: {
+    '[aria-pressed="true"] > &': {
+      display: vars.display.none,
+    },
+  },
+});
+
 export const navButtonIconPrev = style({
   transform: 'scaleX(-1)',
 });

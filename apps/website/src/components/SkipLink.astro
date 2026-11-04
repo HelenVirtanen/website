@@ -1,0 +1,12 @@
+---
+import { skipLink } from './SkipLink.css';
+
+interface Props {
+  // Подпись ссылки из словаря
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<a class={skipLink} href="#main" data-skip-link>{label}</a>

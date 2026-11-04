@@ -48,6 +48,6 @@ export const link = style({
 });
 
 export const caption = style({
-  color: vars.color.textMuted,
+  color: vars.color.text,
   font: vars.font.shorthand.caption,
 });

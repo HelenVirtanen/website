@@ -21,6 +21,7 @@ import { AI_CATALOG_PATH, ARD_PATH } from '../agents/discovery';
 import { markdownPathOf } from '../agents/paths';
 import { feedPath } from '../rss/feed';
 import { navLinksOf } from './nav';
+import SkipLink from '../components/SkipLink.astro';
 import { themeInitScript } from '@moscowcss/ui/components/ThemeToggle';
 import { jsonLdOf, serializeJsonLd } from '../seo/jsonld';
 import { publicPagesOf } from '../seo/pages';
@@ -152,6 +153,7 @@ const localeOptions = locales.map((code) => ({
     {jsonLd && <script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />}
   </head>
   <body>
+    <SkipLink label={t('a11y.skip')} />
     <NavBar
       links={navLinks}
       homeHref={localizePath(lang)}

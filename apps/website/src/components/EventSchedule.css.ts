@@ -34,7 +34,7 @@ export const row = style({
 export const time = style({
   margin: 0,
   font: vars.font.shorthand.body,
-  color: vars.color.textMuted,
+  color: vars.color.text,
 });
 
 export const main = style({
@@ -54,7 +54,7 @@ export const title = style({
 export const people = style({
   margin: 0,
   font: vars.font.shorthand.caption,
-  color: vars.color.textMuted,
+  color: vars.color.text,
 });
 
 export const link = style({

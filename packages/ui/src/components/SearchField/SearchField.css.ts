@@ -33,7 +33,7 @@ export const submit = style({
   border: 'none',
   borderRadius: vars.radius.medium,
   background: vars.color.success,
-  color: vars.color.background,
+  color: vars.color.blackText,
   font: vars.font.shorthand.body,
   cursor: 'pointer',
   selectors: {

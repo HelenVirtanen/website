@@ -8,9 +8,11 @@ interface Props {
   count?: number;
   /** Листать самому через столько миллисекунд, по кругу */
   autoplayMs?: number;
+  /** Название кнопки паузы автопрокрутки */
+  autoplayLabel?: string;
 }
 
-const { count = 5, autoplayMs } = Astro.props;
+const { count = 5, autoplayMs, autoplayLabel } = Astro.props;
 
 const cards = [
   { title: 'ХОЧУ СТАТЬ СПИКЕРОМ НА МИТАПЕ', links: true },
@@ -21,7 +23,7 @@ const cards = [
 ].slice(0, count);
 ---
 
-<CardSlider prevLabel="Предыдущая карточка" nextLabel="Следующая карточка" autoplayMs={autoplayMs}>
+<CardSlider prevLabel="Предыдущая карточка" nextLabel="Следующая карточка" autoplayMs={autoplayMs} autoplayLabel={autoplayLabel}>
   <BlockTitle slot="header">ЧАВО</BlockTitle>
   {
     cards.map((card) => (

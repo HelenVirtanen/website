@@ -7,7 +7,8 @@ export const section = style([
   {
     color: vars.color.text,
     background: vars.color.background,
-    overflow: 'hidden',
+    // Не hidden: такую секцию браузер прокручивает вбок при фокусе на карточке за краем, и она остаётся сдвинутой.
+    overflow: 'clip',
   },
 ]);
 

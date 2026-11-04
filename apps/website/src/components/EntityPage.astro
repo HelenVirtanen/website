@@ -10,7 +10,7 @@ interface Props extends HTMLAttributes<typeof Tag> {}
 const { class: className, ...attrs } = Astro.props;
 ---
 
-<Tag class:list={[main, className]} data-pagefind-body {...attrs}>
+<Tag id="main" class:list={[main, className]} data-pagefind-body {...attrs}>
   <div class={inner}>
     <slot />
   </div>
