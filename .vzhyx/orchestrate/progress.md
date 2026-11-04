@@ -94,3 +94,7 @@ Ruling: Арслан Мамедов (4-й спикер 12-го по Telegram, н
 Ruling: «документы» на входе → passportRequired: true — паспорт и есть документ — цена: на старой странице плашка «по паспорту» не показывается (только у ближайшего митапа)
 - 06 meetups-2024: done, 4 meetups, 15 talks; conductor added '27': 3 to COUNT_OVERRIDE (sheet rows without number, Telegram 299/300)
 - 07 meetups-2025-2026: done, 3 meetups, 10 talks. Conductor removed deleted recording rYK74pJp_10 (9). Final: 32 meetups ok, 53/53 videos linked, gate green
+
+## Spec 004 — designer components (2026-11-04)
+Consent: spec 004 layout 60919298 agents 11
+Ruling: один ревью-проход в конце очереди вместо тестировщика и ревьюера на каждую задачу с risk contract — задачи однотипные, Done when и тесты проверяет дирижёр — цена: дефект найдётся позже
