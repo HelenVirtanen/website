@@ -38,57 +38,32 @@ const shapeBase = {
   transitionTimingFunction: vars.motion.easing.standard,
 } as const;
 
-const svgMotion = {
-  display: vars.display.block,
-  animationTimingFunction: vars.motion.easing.linear,
-  animationIterationCount: 'infinite',
-  willChange: 'transform',
-} as const;
-
-// Края окна просмотра растворяются, чтобы витки не обрывались резко.
+// Контур пружинки каждый кадр считает скрипт: так она по-настоящему вращается вокруг своей оси.
 export const spring = style({
   ...shapeBase,
   height: vars.adaptive.decorSpringHeight,
-  overflow: 'hidden',
-  maskImage: `linear-gradient(to bottom, transparent, ${vars.color.text} 12%, ${vars.color.text} 88%, transparent)`,
 });
 
 globalStyle(`${spring} svg`, {
-  ...svgMotion,
+  display: vars.display.block,
   width: '100%',
+  height: '100%',
   overflow: 'visible',
 });
 
 // Формы в макете разного размера, а линия у всех одной толщины.
 globalStyle(`${spring} path`, {
+  stroke: 'currentColor',
   strokeWidth: vars.border.width.medium,
+  strokeLinecap: 'round',
+  strokeLinejoin: 'round',
   vectorEffect: 'non-scaling-stroke',
 });
 
-// Плоскую спираль нельзя повернуть в 3D: на ребре она схлопывается в полоску. У настоящего винта при
-// вращении витки бегут вдоль оси, поэтому длинная спираль едет за окном ровно на один виток и начинает
-// заново: шов не виден, все витки одинаковые. Числа — размеры файла: width — ширина, visible — высота окна из макета,
-// pitch — шаг витка, total — вся высота SVG; первые два витка неполные, окно начинается после них.
-const screwShape = ({ width, visible, pitch, total }: { width: number; visible: number; pitch: number; total: number }) => {
-  const start = 2 * pitch;
-  const screw = keyframes({
-    from: { transform: `translateY(${String((-start / total) * 100)}%)` },
-    to: { transform: `translateY(${String((-(start + pitch) / total) * 100)}%)` },
-  });
-  const shape = style({ aspectRatio: `${String(width)} / ${String(visible)}` });
-  globalStyle(`${shape} svg`, {
-    height: `${String((total / visible) * 100)}%`,
-    animationName: screw,
-  });
-  return shape;
-};
-
-// Порядок совпадает с формами в FallingDecor.astro.
-export const springShapes = [
-  screwShape({ width: 102, visible: 197, pitch: 25.144, total: 329 }),
-  screwShape({ width: 54, visible: 143, pitch: 18.181, total: 239 }),
-  screwShape({ width: 181, visible: 493, pitch: 63.311, total: 826 }),
-];
+// Витки за осью бледнее: глаз читает это как глубину.
+export const springBack = style({
+  opacity: 0.45,
+});
 
 export const snow = style({
   ...shapeBase,
@@ -97,15 +72,18 @@ export const snow = style({
 });
 
 globalStyle(`${snow} svg`, {
-  ...svgMotion,
-  animationName: spinFlat,
+  display: vars.display.block,
   width: '100%',
   height: '100%',
+  animationName: spinFlat,
+  animationTimingFunction: vars.motion.easing.linear,
+  animationIterationCount: 'infinite',
+  willChange: 'transform',
 });
 
 const tone = (color: string) => style({ color });
 
-// Порядок совпадает с формами в FallingDecor.astro.
+// Порядок совпадает с формами в helix.ts.
 export const springTones = [tone(vars.color.tagSky), tone(vars.color.tagOrange), tone(vars.color.tagBlue)];
 
 export const snowTones = [
