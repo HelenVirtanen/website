@@ -14,8 +14,8 @@
   "devDependencies": {
     "@moscowcss/eslint-config": "workspace:*",
     "@moscowcss/typescript-config": "workspace:*",
-    "astro": "7.0.6",
-    "eslint": "10.6.0",
+    "astro": "7.4.4",
+    "eslint": "10.14.0",
     "typescript": "6.0.3"
   }
 }
