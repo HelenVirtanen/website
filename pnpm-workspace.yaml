@@ -8,8 +8,19 @@ packages:
 saveExact: true
 savePrefix: ""
 
+# Свежий релиз ставим не раньше чем через 3 дня: вредоносные версии обычно успевают
+# отозвать за это время, а исправления уязвимостей ждут недолго.
+minimumReleaseAge: 4320
+
+# Уязвимая версия приходит через satori, который сам ещё не обновился.
+overrides:
+  fflate: 0.7.5
+
 # Зависимости, которым разрешено выполнять install/build-скрипты (pnpm 11 по
 # умолчанию их блокирует): esbuild и sharp скачивают платформенные бинарники.
 allowBuilds:
   esbuild: true
   sharp: true
+
+patchedDependencies:
+  '@storybook-astro/framework@1.14.0': patches/@storybook-astro__framework@1.14.0.patch

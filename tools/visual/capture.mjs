@@ -2,11 +2,10 @@ import { execFileSync } from 'node:child_process';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright-core';
+import { launchBrowser } from './browser.mjs';
 
 const SITE_URL = process.env.SITE_URL ?? 'http://localhost:4321/';
 const STORYBOOK_URL = (process.env.STORYBOOK_URL ?? 'http://localhost:6006').replace(/\/$/, '');
-const CHROMIUM_PATH = process.env.CHROMIUM_PATH ?? '/usr/bin/chromium';
 
 const WIDTHS = [375, 768, 1024, 1280, 1440, 1920];
 const VIEWPORT_HEIGHT = 900;
@@ -166,11 +165,8 @@ async function captureStories(page) {
 await rm(outPath, { recursive: true, force: true });
 await mkdir(outPath, { recursive: true });
 
-const browser = await chromium.launch({
-  executablePath: CHROMIUM_PATH,
-  args: ['--font-render-hinting=none'],
-}).catch((error) => {
-  console.error(`ОШИБКА: не удалось запустить Chromium (${CHROMIUM_PATH}, переменная CHROMIUM_PATH): ${error.message}`);
+const browser = await launchBrowser({ args: ['--font-render-hinting=none'] }).catch((error) => {
+  console.error(`ОШИБКА: ${error.message}`);
   process.exit(1);
 });
 

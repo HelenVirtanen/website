@@ -9,6 +9,8 @@ export default defineConfig({
   // Страницы собираются каталогами (/en/index.html); слэш в конце делает canonical, hreflang и
   // внутренние ссылки адресами с кодом 200, без редиректа на хостинге.
   trailingSlash: 'always',
+  // На Windows `localhost` часто даёт только IPv6, и часть инструментов сервер не находит.
+  server: { host: '127.0.0.1' },
   // ru без префикса (`/`), en под `/en/`; список языков держать в синхроне с src/i18n/config.ts.
   i18n: {
     defaultLocale: 'ru',

@@ -29,7 +29,8 @@ pnpm storybook                              # http://localhost:6006/ (dev server
 
 Run the servers in separate terminals (or in the background) and stop them when done.
 
-The browser is the system Chromium; no browser is downloaded (`playwright-core` only).
+The browser is the one installed in the system, on Windows, macOS or Linux; none is downloaded
+(`playwright-core` only).
 
 ## Usage
 
@@ -57,7 +58,7 @@ single pixel: 0.1% of a 1920×2800 capture is ~5,000 pixels, enough to hide a fu
 | `SITE_URL`      | `http://localhost:4321/` | Homepage served by `astro preview`.      |
 | `STORYBOOK_URL` | `http://localhost:6006`  | Storybook dev server (`/index.json`).    |
 | `VISUAL_SOURCE_DIR` | repo root | Checkout the servers run from; its commit goes into `manifest.json`. |
-| `CHROMIUM_PATH` | `/usr/bin/chromium`      | Chromium executable used by Playwright.  |
+| `CHROMIUM_PATH` | found automatically      | Browser executable. Without it the scripts take the installed Chrome, then Edge, then `/usr/bin/chromium`. |
 
 ## Determinism notes
 
@@ -89,13 +90,3 @@ To rebuild a baseline from an older commit, serve it from a separate worktree an
 and checks every link and button of the header, menu and slider, plus the language switcher: the box
 is at least 42×42 and keyboard focus draws an outline of `rgb(202, 48, 53)`, at least 1px thick. It
 prints each violation and exits with 1.
-
-On Windows pass the browser and bind the preview to an IPv4 address:
-
-```bash
-pnpm --filter website exec astro preview --host 127.0.0.1
-```
-
-```bash
-CHROMIUM_PATH="C:/Program Files/Google/Chrome/Application/chrome.exe" node tools/visual/check-targets.mjs http://127.0.0.1:4321/
-```

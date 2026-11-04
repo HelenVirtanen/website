@@ -1,0 +1,13 @@
+diff --git a/dist/preset.js b/dist/preset.js
+index 56c6d9b1026ad342bb75995d5e8fc259a41fbf45..f2843c991a2edd0055753fd14d28374974c72ed9 100644
+--- a/dist/preset.js
++++ b/dist/preset.js
+@@ -266,7 +266,7 @@ function buildSnapshotFilePath(resolveFrom, filePath, snapshotDirName) {
+   if (normalizedFilePath.startsWith(`${normalizedResolveFrom}/`)) {
+     return `${snapshotDirName}/${relativePathFromRoot(resolveFrom, filePath)}`.replace(/\\/g, "/");
+   }
+-  return `${snapshotDirName}/__external/${normalizedFilePath.replace(/^[/\\]+/, "")}`.replace(
++  return `${snapshotDirName}/__external/${normalizedFilePath.replace(/^[a-zA-Z]:/, "").replace(/^[/\\]+/, "")}`.replace(
+     /\\/g,
+     "/"
+   );

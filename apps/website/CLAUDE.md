@@ -124,7 +124,7 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
 ## Validate
 
 ```bash
-pnpm dev                          # local dev server (no search index in dev)
+pnpm dev:site                     # local dev server (no search index in dev)
 pnpm test                         # from repo root: vitest
 pnpm build                        # astro build + Pagefind index (must pass)
 pnpm --filter website check:seo   # SEO gate over dist, after the build

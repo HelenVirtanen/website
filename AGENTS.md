@@ -80,7 +80,8 @@ JetBrains Mono, Jost, Golos Text), `eslint-config`,
 
 | Command | Does |
 | --- | --- |
-| `pnpm dev` | website dev server (Astro) |
+| `pnpm dev` | website (:4321) and Storybook (:6006) together |
+| `pnpm dev:site` | only the website dev server (Astro) |
 | `pnpm storybook` | Storybook for the UI components |
 | `pnpm build` | production build of the website (+ Pagefind index) |
 | `pnpm build:storybook` | static Storybook build |
