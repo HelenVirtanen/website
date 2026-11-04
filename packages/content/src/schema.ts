@@ -56,6 +56,8 @@ export const PageSchema = z.object({
   title: z.string().min(1).max(70),
   description: z.string().min(50).max(160),
   telegramUrl: url,
+  // Что падает по сайту: зимой пружинки меняются на снежинки одной строкой.
+  decor: z.enum(["springs", "snow"]).default("springs"),
   // Тег вопросов спикерам: подсказка программы берёт его отсюда, а тексты FAQ сверяются с ним.
   questionTag: z
     .string()

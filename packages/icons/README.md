@@ -10,3 +10,8 @@ import { ArrowLong } from '@moscowcss/icons';
 ---
 <ArrowLong size="24" />
 ```
+
+## Third-party icons
+
+`src/svg/snowflake.svg` is the `snowflake` icon from [Lucide](https://lucide.dev), ISC license, see
+`LICENSE-lucide.txt`.

@@ -6,20 +6,14 @@ const Tag = 'div';
 
 interface Props extends HTMLAttributes<typeof Tag> {
   /** Подпись чекбокса, который выключает падающие фигуры */
-  offLabel: string;
-  /** Подпись чекбокса, который меняет пружинки на снежинки */
-  snowLabel: string;
+  label: string;
 }
 
-const { offLabel, snowLabel, class: className, ...attrs } = Astro.props;
+const { label, class: className, ...attrs } = Astro.props;
 ---
 <Tag class:list={[root, className]} data-decor-toggle hidden {...attrs}>
   <label class={option}>
     <input class={box} type="checkbox" data-decor-off />
-    {offLabel}
-  </label>
-  <label class={option}>
-    <input class={box} type="checkbox" data-decor-snow />
-    {snowLabel}
+    {label}
   </label>
 </Tag>

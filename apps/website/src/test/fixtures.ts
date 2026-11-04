@@ -104,6 +104,7 @@ export function page(id: string, body = 'О митапе.'): PageEntry {
       description: 'Описание',
       telegramUrl: 'https://t.me/moscowcss',
       questionTag: '#вопрос_спикеру',
+      decor: 'springs',
     },
   };
 }

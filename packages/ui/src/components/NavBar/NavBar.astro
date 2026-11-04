@@ -40,8 +40,6 @@ interface Props extends HTMLAttributes<typeof Tag> {
   telegramText: string;
   /** Подпись чекбокса, который выключает падающие фигуры */
   decorOffLabel: string;
-  /** Подпись чекбокса, который меняет пружинки на снежинки */
-  decorSnowLabel: string;
   /** Доступное имя кнопки открытия меню */
   menuLabel: string;
   /** Доступное имя кнопки закрытия меню */
@@ -62,7 +60,6 @@ const {
   telegramButtonLabel,
   telegramText,
   decorOffLabel,
-  decorSnowLabel,
   menuLabel,
   closeLabel,
   homeHref,
@@ -122,7 +119,7 @@ const external = { target: '_blank', rel: 'noopener noreferrer' } as const;
       }
     </ul>
     <div class={overlayFooter}>
-      <DecorToggle offLabel={decorOffLabel} snowLabel={decorSnowLabel} />
+      <DecorToggle label={decorOffLabel} />
       <Button href={telegramHref} size="nav" {...external}>{telegramButtonLabel}</Button>
       {addressLine && <p class={overlayAddress}>{addressLine}</p>}
       <a class={overlayTelegram} href={telegramHref} {...external}>{telegramText}</a>
@@ -131,7 +128,7 @@ const external = { target: '_blank', rel: 'noopener noreferrer' } as const;
 </Tag>
 <div class={meta}>
   {addressLine && <p class={metaAddress}>{addressLine}</p>}
-  <DecorToggle offLabel={decorOffLabel} snowLabel={decorSnowLabel} />
+  <DecorToggle label={decorOffLabel} />
   <a class={metaLink} href={telegramHref} {...external}>{telegramText}</a>
 </div>
 

@@ -38,6 +38,9 @@ export const fall = style({
 
 const shapeBase = {
   display: vars.display.block,
+  transitionProperty: 'color, opacity',
+  transitionDuration: vars.motion.duration.base,
+  transitionTimingFunction: vars.motion.easing.standard,
   animationTimingFunction: vars.motion.easing.linear,
   animationIterationCount: 'infinite',
   willChange: 'transform',
@@ -87,3 +90,9 @@ export const snowTones = [
   tone(vars.color.tagRed),
   tone(vars.color.tagOrange),
 ];
+
+// Над текстом фигура почти исчезает, чтобы не мешать читать. Правило идёт после цветов и перебивает их.
+export const muted = style({
+  color: vars.color.decorMuted,
+  opacity: 0.2,
+});

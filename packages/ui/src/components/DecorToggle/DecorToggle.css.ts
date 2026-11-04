@@ -21,12 +21,6 @@ export const option = style({
   gap: vars.spacing.s,
   minHeight: vars.size.hitTarget,
   cursor: 'pointer',
-  selectors: {
-    '&:has(:disabled)': {
-      opacity: 0.4,
-      cursor: 'not-allowed',
-    },
-  },
 });
 
 export const box = style({

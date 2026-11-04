@@ -81,7 +81,7 @@ const INVARIANTS = {
   organizers: ['status', 'photo', 'contacts', 'order'],
   faq: ['order'],
   documents: [],
-  pages: ['telegramUrl', 'questionTag'],
+  pages: ['telegramUrl', 'questionTag', 'decor'],
 } as const;
 
 // Тело обязательно там, где оно и есть содержание страницы или карточки.

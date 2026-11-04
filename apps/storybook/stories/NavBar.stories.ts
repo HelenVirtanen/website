@@ -22,7 +22,6 @@ const args = {
   telegramHref: 'https://t.me/moscowcss',
   telegramButtonLabel: 'Канал в Telegram',
   decorOffLabel: 'Выключить пружинки',
-  decorSnowLabel: 'Снежинки вместо пружинок',
   telegramText: 't.me/moscowcss',
   menuLabel: 'Меню',
   closeLabel: 'Закрыть меню',

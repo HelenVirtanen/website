@@ -32,6 +32,7 @@ const contract = {
     speakerAccent: null,
     pastNote: null, // пометка «митап уже прошёл»
     // Цветные плашки: подложка и текст на ней.
+    decorMuted: null, // падающие фигуры поверх текста
     tagSky: null,
     onTagSky: null,
     tagBlue: null,
@@ -72,6 +73,7 @@ const light = {
     disabled: palette.gray300,
     speakerAccent: palette.pink,
     pastNote: palette.orange,
+    decorMuted: palette.gray500,
     tagSky: palette.sky,
     onTagSky: palette.ink,
     tagBlue: palette.blue,

@@ -14,8 +14,7 @@ export default {
 
 export const Default = {
   args: {
-    offLabel: 'Выключить пружинки',
-    snowLabel: 'Снежинки вместо пружинок',
+    label: 'Выключить пружинки',
   },
   play: show,
 };

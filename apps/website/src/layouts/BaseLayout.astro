@@ -49,8 +49,9 @@ const t = useTranslations(lang);
 
 // Ссылка на Telegram живёт в контенте: pages/<язык>/index.md → telegramUrl.
 const catalog = await loadCatalog();
-const telegramHref = catalog.pages.find((entry) => entry.id === `${lang}/index`)?.data.telegramUrl;
-if (!telegramHref) throw new Error(`Missing page content: pages/${lang}/index.md`);
+const homePage = catalog.pages.find((entry) => entry.id === `${lang}/index`);
+if (!homePage) throw new Error(`Missing page content: pages/${lang}/index.md`);
+const { telegramUrl: telegramHref, decor } = homePage.data;
 
 // Подпись ссылки на Telegram — адрес без протокола и хвостового слэша.
 const telegramUrl = new URL(telegramHref);
@@ -162,8 +163,7 @@ const localeOptions = locales.map((code) => ({
       telegramButtonLabel={t('nav.telegramButton')}
       telegramText={telegramText}
       addressLine={addressLine}
-      decorOffLabel={t('decor.off')}
-      decorSnowLabel={t('decor.snow')}
+      decorOffLabel={t(`decor.off.${decor}`)}
       menuLabel={t('nav.menu')}
       closeLabel={t('nav.closeMenu')}
       data-visual="navbar"
@@ -173,7 +173,7 @@ const localeOptions = locales.map((code) => ({
       </Fragment>
     </NavBar>
     <slot />
-    <FallingDecor />
+    <FallingDecor kind={decor} />
   </body>
 </html>
 

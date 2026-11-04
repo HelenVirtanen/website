@@ -1,46 +1,42 @@
 import { describe, expect, it } from 'vitest';
 import { createRandom } from '../TagPile/pile';
-import { defaultDecor, fallingCount, fallingItems, readDecor, writeDecor } from './falling';
+import { fallingCount, fallingItems, overlapsAny, readDecorOff, writeDecorOff } from './falling';
 
-const memoryStorage = (initial: string | null = null) => {
-  let value = initial;
+const memoryStorage = () => {
+  const values = new Map<string, string>();
   return {
-    getItem: () => value,
-    setItem: (_key: string, next: string) => {
-      value = next;
+    getItem: (key: string) => values.get(key) ?? null,
+    setItem: (key: string, value: string) => {
+      values.set(key, value);
+    },
+    removeItem: (key: string) => {
+      values.delete(key);
     },
   };
 };
 
-describe('readDecor', () => {
-  it('без сохранённого выбора пружинки включены', () => {
-    expect(readDecor(memoryStorage())).toEqual(defaultDecor);
-    expect(readDecor(undefined)).toEqual(defaultDecor);
+describe('readDecorOff', () => {
+  it('без сохранённого выбора фигуры включены', () => {
+    expect(readDecorOff(memoryStorage())).toBe(false);
+    expect(readDecorOff(undefined)).toBe(false);
   });
 
-  it('читает то, что записал writeDecor', () => {
+  it('читает то, что записал writeDecorOff, в обе стороны', () => {
     const storage = memoryStorage();
-    writeDecor(storage, { enabled: false, kind: 'snow' });
-    expect(readDecor(storage)).toEqual({ enabled: false, kind: 'snow' });
-  });
-
-  it('испорченная запись и незнакомый вид дают значения по умолчанию', () => {
-    expect(readDecor(memoryStorage('{не json'))).toEqual(defaultDecor);
-    expect(readDecor(memoryStorage('{"kind":"rain"}'))).toEqual(defaultDecor);
+    writeDecorOff(storage, true);
+    expect(readDecorOff(storage)).toBe(true);
+    writeDecorOff(storage, false);
+    expect(readDecorOff(storage)).toBe(false);
   });
 
   it('запрет на чтение и запись не роняет страницу', () => {
-    const blocked = {
-      getItem: () => {
-        throw new Error('SecurityError');
-      },
-      setItem: () => {
-        throw new Error('QuotaExceededError');
-      },
+    const fail = () => {
+      throw new Error('SecurityError');
     };
-    expect(readDecor(blocked)).toEqual(defaultDecor);
+    const blocked = { getItem: fail, setItem: fail, removeItem: fail };
+    expect(readDecorOff(blocked)).toBe(false);
     expect(() => {
-      writeDecor(blocked, defaultDecor);
+      writeDecorOff(blocked, true);
     }).not.toThrow();
   });
 });
@@ -70,5 +66,23 @@ describe('fallingItems', () => {
   it('разные сиды дают разное падение, одинаковые — одинаковое', () => {
     expect(fallingItems(6, createRandom(1))).toEqual(fallingItems(6, createRandom(1)));
     expect(fallingItems(6, createRandom(1))).not.toEqual(fallingItems(6, createRandom(2)));
+  });
+});
+
+describe('overlapsAny', () => {
+  const box = { left: 10, right: 20, top: 10, bottom: 20 };
+
+  it('видит пересечение с любым блоком', () => {
+    expect(overlapsAny(box, [{ left: 100, right: 200, top: 0, bottom: 50 }, { left: 15, right: 30, top: 15, bottom: 30 }])).toBe(true);
+  });
+
+  it('фигура вплотную к блоку и вне блока его не задевает', () => {
+    expect(overlapsAny(box, [{ left: 20, right: 30, top: 10, bottom: 20 }])).toBe(false);
+    expect(overlapsAny(box, [{ left: 100, right: 200, top: 100, bottom: 200 }])).toBe(false);
+    expect(overlapsAny(box, [])).toBe(false);
+  });
+
+  it('скрытый элемент с нулевым размером не считается текстом', () => {
+    expect(overlapsAny(box, [{ left: 15, right: 15, top: 15, bottom: 15 }])).toBe(false);
   });
 });

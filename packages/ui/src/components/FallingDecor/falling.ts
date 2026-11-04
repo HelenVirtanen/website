@@ -1,36 +1,25 @@
 import type { Random } from '../TagPile/pile';
 
+/** Что падает. Выбирают редакторы в контенте, человек может только выключить. */
 export type DecorKind = 'springs' | 'snow';
 
-export interface DecorState {
-  /** Падает ли что-нибудь */
-  enabled: boolean;
-  /** Что падает */
-  kind: DecorKind;
-}
+const STORAGE_KEY = 'moscowcss-decor-off';
 
-export const defaultDecor: DecorState = { enabled: true, kind: 'springs' };
+type DecorStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 
-const STORAGE_KEY = 'moscowcss-decor';
-
-type DecorStorage = Pick<Storage, 'getItem' | 'setItem'>;
-
-/** Выбор человека. Хранилище может быть недоступно или испорчено: тогда значения по умолчанию. */
-export function readDecor(storage: DecorStorage | undefined): DecorState {
+/** Выключил ли человек падающие фигуры. Хранилище может быть недоступно: тогда они включены. */
+export function readDecorOff(storage: DecorStorage | undefined): boolean {
   try {
-    const saved = JSON.parse(storage?.getItem(STORAGE_KEY) ?? 'null') as Partial<DecorState> | null;
-    return {
-      enabled: saved?.enabled !== false,
-      kind: saved?.kind === 'snow' ? 'snow' : 'springs',
-    };
+    return storage?.getItem(STORAGE_KEY) === '1';
   } catch {
-    return defaultDecor;
+    return false;
   }
 }
 
-export function writeDecor(storage: DecorStorage | undefined, state: DecorState): void {
+export function writeDecorOff(storage: DecorStorage | undefined, off: boolean): void {
   try {
-    storage?.setItem(STORAGE_KEY, JSON.stringify(state));
+    if (off) storage?.setItem(STORAGE_KEY, '1');
+    else storage?.removeItem(STORAGE_KEY);
   } catch {
     // В приватном режиме запись может быть запрещена: выбор просто не переживёт перезагрузку.
   }
@@ -75,4 +64,24 @@ export function fallingItems(count: number, random: Random): FallingItem[] {
       pick: random(),
     };
   });
+}
+
+export interface Box {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+}
+
+/** Задевает ли фигура хотя бы один блок текста; пустые блоки (скрытые элементы) не считаются. */
+export function overlapsAny(box: Box, blocks: readonly Box[]): boolean {
+  return blocks.some(
+    (block) =>
+      block.right > block.left &&
+      block.bottom > block.top &&
+      box.left < block.right &&
+      box.right > block.left &&
+      box.top < block.bottom &&
+      box.bottom > block.top,
+  );
 }
