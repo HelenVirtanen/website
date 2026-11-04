@@ -8,7 +8,7 @@ conflict.
 ## What this is
 
 Build-time generator of the OpenGraph (1200×630) and Twitter (1200×600) PNG cards:
-`renderCard({ title, kicker, meta, size })` → `Buffer`. satori draws the SVG from a
+`renderCard({ title, kicker, meta, size })` → `Buffer`. Cards are always in the dark theme. satori draws the SVG from a
 plain `{type, props}` tree (no React), sharp rasterises it. The same package draws
 the initials avatar of a speaker without a photo (`renderAvatar`) and the site icons
 (`iconSvg`, `renderIcon`, `toIco`: the star in the brand red, `favicon.ico` holds PNGs).

@@ -38,7 +38,7 @@ src/
 ├── border.ts, dimensions.ts, zIndex.ts  # border widths, aspect-ratio and octagon shape constants, z-index layers
 ├── motion.ts       # vars.motion: transition durations (fast/base/fall) and easing curves
 ├── adaptive.ts     # vars.adaptive.*: component sizes that follow the designer's layout, values from `adaptiveScale`
-├── theme-colors.ts # raw light-theme colours as pure TS (no .css import) — for @moscowcss/og and tests
+├── theme-colors.ts # raw colours of both themes as pure TS (no .css import) — for @moscowcss/og and tests
 ├── typography.ts   # font tokens: size / shorthand / letterSpacing (shorthand refs size vars)
 ├── contract.ts     # createGlobalThemeContract -> `vars`  (assembles the slices)
 ├── themes/         # per-concern appliers: each writes to :root and owns its adaptive

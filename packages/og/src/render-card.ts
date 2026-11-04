@@ -1,4 +1,4 @@
-import { themeColors } from '@moscowcss/design-system/theme-colors';
+import { darkThemeColors } from '@moscowcss/design-system/theme-colors';
 import { FONT_FAMILY } from './fonts';
 import { box, logo, renderPng, type Node } from './nodes';
 
@@ -20,7 +20,7 @@ export const CARD_SIZES: Record<CardSize, { width: number; height: number }> = {
   twitter: { width: 1200, height: 600 },
 };
 
-const colors = themeColors;
+const colors = darkThemeColors;
 const BRAND = 'MoscowCSS';
 const MARGIN = 64;
 const LOGO_HEIGHT = 56;
@@ -82,7 +82,7 @@ function card({ title, kicker, meta, size }: CardInput): Node {
   );
 }
 
-/** Рисует PNG-карточку страницы в светлой теме дизайн-системы. */
+/** Рисует PNG-карточку страницы в тёмной теме дизайн-системы. */
 export function renderCard(input: CardInput): Promise<Buffer> {
   const { width, height } = CARD_SIZES[input.size];
   return renderPng(card(input), width, height);

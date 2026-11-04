@@ -1,6 +1,6 @@
 import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
-import { themeColors } from '@moscowcss/design-system/theme-colors';
+import { darkThemeColors } from '@moscowcss/design-system/theme-colors';
 import { CARD_SIZES, renderCard, type CardInput } from './render-card';
 
 const base: Omit<CardInput, 'size'> = {
@@ -35,10 +35,10 @@ describe('renderCard', () => {
     expect(ru.equals(en)).toBe(false);
   });
 
-  it('фон — background светлой темы', async () => {
+  it('фон — графитовый background тёмной темы', async () => {
     const png = await renderCard({ ...base, size: 'og' });
     const { data } = await sharp(png).raw().toBuffer({ resolveWithObject: true });
-    expect([...data.subarray(0, 3)]).toEqual(hexToRgb(themeColors.background));
+    expect([...data.subarray(0, 3)]).toEqual(hexToRgb(darkThemeColors.background));
   });
 
   it('очень длинный заголовок не бросает и не меняет размер', async () => {
