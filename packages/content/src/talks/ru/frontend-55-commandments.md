@@ -3,6 +3,7 @@ event: "23"
 speakers:
   - "alexander-ermolov"
 title: "Frontend, что я понял за 2 года или 55 заповедей разработчика"
+cover: ../assets/frontend-55-commandments.jpg
 ---
 
 С технической точки зрения поговорим о чистоте кода, как верстать, какие есть инструменты.

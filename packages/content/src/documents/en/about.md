@@ -1,9 +1,9 @@
 ---
 title: "About the Moscow CSS community"
-description: "Moscow CSS holds free frontend meetups about CSS and layout in Moscow since 2017: who we are, where we meet and where to watch the recordings."
+description: "Free Moscow CSS meetups for interface developers on CSS, browsers and design, in Moscow since 2017: who we are, where we meet, where to watch."
 ---
 
-Moscow CSS is a community of frontend developers who love CSS and layout. Since 2 March 2017 we have held more than thirty meetups: talks about native CSS features, design systems, animation, accessibility, typography and frontend tools, and also about how a developer grows and works with designers.
+Moscow CSS is a community of interface developers and designers who love CSS, browser technology and design. The community has been around since 2015. Since 2 March 2017 we have held more than thirty meetups: talks about native CSS features, design systems, animation, accessibility, typography and frontend tools, and also about how a developer grows and works with designers.
 
 ## How the meetups work
 

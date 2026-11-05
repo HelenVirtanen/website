@@ -3,6 +3,7 @@ event: "17"
 speakers:
   - "artem-gusev"
 title: "Особенности CSS в веб-компонентах"
+cover: ../assets/css-in-web-components.jpg
 videoUrl: "https://www.youtube.com/watch?v=XgciQKPyMqU"
 ---
 

@@ -3,6 +3,7 @@ event: "13"
 speakers:
   - irina-frolova
 title: "«Почему именно я?», или Junior Frontend-разработчик глазами окружающих"
+cover: ../assets/why-me-junior-frontend.jpg
 videoUrl: "https://www.youtube.com/watch?v=lrv_skRkmts"
 ---
 

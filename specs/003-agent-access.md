@@ -6,7 +6,7 @@ created: 2026-11-03
 updated: 2026-11-03
 supersedes: []
 superseded_by: null
-tasks: null
+tasks: plans/003-agent-access/tasks
 prd: null
 ---
 

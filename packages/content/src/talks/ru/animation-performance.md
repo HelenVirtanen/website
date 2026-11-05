@@ -3,6 +3,7 @@ event: "10"
 speakers:
   - dmitry-dolzhenko
 title: "Производительность анимаций. Как не застрять в кадрах"
+cover: ../assets/animation-performance.jpg
 videoUrl: "https://www.youtube.com/watch?v=PVWQHZOuAnw"
 ---
 

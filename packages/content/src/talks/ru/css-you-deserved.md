@@ -3,6 +3,7 @@ event: "18"
 speakers:
   - "ilya-olovyannikov"
 title: "CSS, который вы ~забыли~ заслужили"
+cover: ../assets/css-you-deserved.jpg
 time: "19:30"
 ---
 

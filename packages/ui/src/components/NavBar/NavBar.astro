@@ -31,8 +31,8 @@ const Tag = 'nav';
 const MENU_ID = 'nav-menu';
 
 interface Props extends HTMLAttributes<typeof Tag> {
-  /** Пункты навигации: якорь и подпись */
-  links: { href: string; label: string }[];
+  /** Пункты навигации: адрес, подпись и `aria-current` у раздела текущей страницы */
+  links: { href: string; label: string; current?: 'page' | 'true' }[];
   /** URL канала или чата в Telegram */
   telegramHref: string;
   /** Подпись кнопки со ссылкой на Telegram */
@@ -90,7 +90,7 @@ const external = { target: '_blank', rel: 'noopener noreferrer' } as const;
       {
         navLinks.map((item) => (
           <li>
-            <a class={link} href={item.href}>
+            <a class={link} href={item.href} aria-current={item.current}>
               {item.label}
             </a>
           </li>
@@ -119,7 +119,7 @@ const external = { target: '_blank', rel: 'noopener noreferrer' } as const;
       {
         navLinks.map((item) => (
           <li>
-            <a class={overlayLink} href={item.href}>
+            <a class={overlayLink} href={item.href} aria-current={item.current}>
               {item.label}
             </a>
           </li>

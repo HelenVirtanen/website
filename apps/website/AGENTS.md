@@ -15,17 +15,18 @@ Decisions: `specs/001-blog-like-architecture.md`, `adr/001-*.md`, `adr/002-*.md`
 ```
 src/
 ├── i18n/       # config.ts (locales), ui.ts (UI dictionary, ru is the source), URL helpers
-├── content/    # catalog.ts (relations + validation), format.ts, markdown-safety.ts
+├── content/    # catalog.ts (relations + validation), archive.ts + archive-filter.ts (lists), format.ts, markdown-safety.ts
 ├── seo/        # pages.ts (public pages), og.ts (card input), jsonld.ts (schema.org), sitemap.ts (sitemap + robots)
 ├── layouts/    # BaseLayout: canonical, hreflang, og/twitter tags
 ├── pages/      # [...locale]/ (home, events, talks, speakers, search), og/ and avatars/ (images),
 │               # 404.astro (one bilingual page for GitHub Pages), sitemap.xml.ts, robots.txt.ts,
 │               # [...locale]/rss.xml.ts (feed), [icon].ts (favicon set + manifest, from @moscowcss/og)
 ├── sections/   # homepage sections
-├── components/ # page-level pieces that are not reusable UI
+├── components/ # page-level pieces that are not reusable UI (EntityPage, ArchivePage, …)
+├── archive/    # filter.client.ts: the filter of the list pages
 ├── search/     # Pagefind client
 ├── rss/        # feed.ts: per-language meetup feed (/rss.xml, /en/rss.xml)
-├── agents/     # markdown.ts (index.md of every page), discovery.ts (llms.txt, skill, ARD), webmcp.ts
+├── agents/     # markdown.ts (index.md of every page), discovery.ts (llms.txt, skill, ARD), webmcp.ts, archive-data.ts
 └── test/       # fixtures for tests
 scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* generator)
 ```
@@ -75,6 +76,25 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   computed at build time; a meetup stays "upcoming" for 4 hours after its start.
   `BUILD_NOW=<ISO date>` pins "now" for **visual snapshots only**; it is in
   `turbo.json` `build.env` and must never be set for a real build.
+- **Lists** (spec 007): `/events/`, `/talks/`, `/speakers/` and their `/en/` versions are public
+  pages of kind `list` (no content entry: title and description come from the dictionary),
+  rendered by `components/ArchivePage.astro`. The rows come from `archiveOf` in
+  `src/content/archive.ts`: meetups and talks newest first (talks of one meetup in programme
+  order), speakers by their latest talk, once each, speakers without talks last by name. A meetup
+  label is its number, or its year when the file name is not a number (`online-2021`). The filter
+  (`src/content/archive-filter.ts`: words without case and `ё`, year, recording) is one pure
+  function for the page script and WebMCP; the state lives in the address (`?q=&year=&media=1`).
+  Without JavaScript the whole list shows and the filter form stays `hidden`. The rows of a
+  language are also `/archive.json` (`/en/archive.json`), linked from every page's head.
+- **Talk covers.** A talk's optional `cover` (announcement card in
+  `packages/content/src/talks/assets/`) shows under the title of the talk page; a talk without
+  one shows the shared placeholder `/covers/tbd.png` (`pages/covers/tbd.png.ts`, drawn by
+  `@moscowcss/og`). A wide cover (`isWide` in `src/content/talk-cover.ts`, ratio ≥ 1.6) also
+  replaces the generated OG and Twitter cards: the `og/` route crops it to size with sharp. The
+  file path comes from the frontmatter (`coverFileOf`), because the parsed field has no path.
+- **Header** links go across the site, not to home sections: History (`/events/`), Talks,
+  Speakers, About (`/about/`), Search (`src/layouts/nav.ts`); the current section gets
+  `aria-current`. Registration is the floating button.
 - **Documents** (`documents` collection) render at `/<name>/` via
   `pages/[...locale]/[document].astro` and are public pages in `src/seo/pages.ts`
   (kind `document`, no JSON-LD). The meetup page hides the registration link once
@@ -109,8 +129,8 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   `rel="alternate" type="text/markdown"`. `/llms.txt`, the skill
   (`/.well-known/agent-skills/`), the ARD catalog (`ai-catalog.json`, `ard.json`)
   and `robots.txt` (`Content-Signal`, `Agentmap`) come from `src/agents/discovery.ts`
-  and `src/seo/sitemap.ts`. Every page registers WebMCP tools `search_site` and
-  `get_page_markdown` (`src/agents/webmcp.ts`); the search form is the
+  and `src/seo/sitemap.ts`. Every page registers WebMCP tools `search_site`,
+  `get_page_markdown` and `list_archive` (`src/agents/webmcp.ts`; the last reads `archive.json`); the search form is the
   declarative tool `search_page`. GitHub Pages cannot set headers, so there is no
   `Accept: text/markdown` negotiation, no `Vary`/`Link` headers and no Markdown
   404. The Pages upload keeps `/.well-known/` only with `include-hidden-files: true`

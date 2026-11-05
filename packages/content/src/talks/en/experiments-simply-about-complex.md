@@ -3,6 +3,7 @@ event: "20"
 speakers:
   - "alina-vanieva"
 title: "Experiments: simply about the complex"
+cover: ../assets/experiments-simply-about-complex.jpg
 time: "19:40"
 videoUrl: "https://www.youtube.com/watch?v=_TYXe3hVMvM"
 ---

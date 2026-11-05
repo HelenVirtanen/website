@@ -3,6 +3,7 @@ event: "10"
 speakers:
   - dmitry-dolzhenko
 title: "Animation performance. How not to get stuck in frames"
+cover: ../assets/animation-performance.jpg
 videoUrl: "https://www.youtube.com/watch?v=PVWQHZOuAnw"
 ---
 

@@ -3,6 +3,7 @@ event: "8"
 speakers:
   - evgeny-petukhov
 title: "Использование CSS Grid Layout с поддержкой IE"
+cover: ../assets/css-grid-layout-with-ie-support.jpg
 ---
 
 Расскажу о различиях старой и новой спецификации. О том, как эту разницу решает autoprefixer. Покажу реальные примеры, которые можно использовать уже сейчас в продакшене. Подведу итоги с лучшими практиками.

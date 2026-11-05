@@ -3,6 +3,7 @@ event: "13"
 speakers:
   - irina-frolova
 title: "\"Why me?\", or a junior frontend developer through other people's eyes"
+cover: ../assets/why-me-junior-frontend.jpg
 videoUrl: "https://www.youtube.com/watch?v=lrv_skRkmts"
 ---
 

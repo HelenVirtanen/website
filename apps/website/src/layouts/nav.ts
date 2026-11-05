@@ -3,25 +3,25 @@ import { localizePath, type Locale, type UiKey } from '../i18n';
 export interface NavLink {
   href: string;
   label: string;
+  /** `page` — это и есть текущая страница, `true` — текущая страница внутри раздела */
+  current?: 'page' | 'true';
 }
 
-// Разделы главной, на которые ведёт шапка. Якорь — `id` секции на главной.
-const HOME_SECTIONS: readonly { anchor: string; label: UiKey }[] = [
-  { anchor: 'registration', label: 'nav.registration' },
-  { anchor: 'program', label: 'nav.program' },
-  { anchor: 'partners', label: 'nav.partners' },
-  { anchor: 'address', label: 'nav.address' },
-  { anchor: 'events', label: 'nav.history' },
+// Шапка ведёт по сайту, а не по экранам главной (спека 007): регистрацию ведёт плавающая кнопка,
+// программа, партнёры и адрес — экраны главной под первым.
+const SECTIONS: readonly { path: string; label: UiKey }[] = [
+  { path: 'events', label: 'nav.history' },
+  { path: 'talks', label: 'nav.talks' },
+  { path: 'speakers', label: 'nav.speakers' },
+  { path: 'about', label: 'nav.about' },
+  { path: 'search', label: 'nav.search' },
 ];
 
-/**
- * Ссылки шапки. Разделы — якоря главной своего языка с путём (`/en/#program`): голый `#program`
- * на странице митапа или спикера никуда не ведёт, а на главной путь к ней же не перезагружает страницу.
- */
-export function navLinksOf(locale: Locale, t: (key: UiKey) => string): NavLink[] {
-  const home = localizePath(locale);
-  return [
-    ...HOME_SECTIONS.map(({ anchor, label }) => ({ href: `${home}#${anchor}`, label: t(label) })),
-    { href: localizePath(locale, 'search'), label: t('nav.search') },
-  ];
+/** Ссылки шапки; у раздела текущей страницы — `current`. `pathname` — путь со слэшем на конце. */
+export function navLinksOf(locale: Locale, t: (key: UiKey) => string, pathname = ''): NavLink[] {
+  return SECTIONS.map(({ path, label }) => {
+    const href = localizePath(locale, path);
+    const current = pathname === href ? 'page' : pathname.startsWith(href) ? 'true' : undefined;
+    return { href, label: t(label), ...(current && { current }) };
+  });
 }

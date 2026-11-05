@@ -3,6 +3,7 @@ event: "21"
 speakers:
   - "ionna-avagyan"
 title: "Why do companies build an IT brand?"
+cover: ../assets/why-companies-build-it-brand.jpg
 time: "20:30"
 ---
 

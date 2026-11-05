@@ -3,6 +3,7 @@ event: "18"
 speakers:
   - "sofia-valitova"
 title: "Values in CSS: from declaration to display"
+cover: ../assets/css-values-from-declaration-to-display.jpg
 time: "20:10"
 ---
 

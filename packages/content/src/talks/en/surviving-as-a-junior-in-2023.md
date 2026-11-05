@@ -3,6 +3,7 @@ event: "22"
 speakers:
   - "alexander-ermolov"
 title: "How a junior developer can survive in 2023: a view from both sides"
+cover: ../assets/surviving-as-a-junior-in-2023.jpg
 time: "20:10"
 ---
 

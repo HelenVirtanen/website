@@ -3,6 +3,7 @@ event: "16"
 speakers:
   - igor-lesnevsky
 title: "Разработка универсальных библиотек компонентов для платформы по созданию сайтов"
+cover: ../assets/universal-component-libraries.jpg
 videoUrl: "https://www.youtube.com/watch?v=5gfcWaKJEUY"
 ---
 

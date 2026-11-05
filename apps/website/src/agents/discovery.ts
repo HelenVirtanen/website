@@ -21,7 +21,7 @@ export const SKILLS_SCHEMA = 'https://schemas.agentskills.io/discovery/0.2.0/sch
 const hostOf = (site: URL): string => site.hostname;
 
 export const SKILL_DESCRIPTION =
-  'Read MoscowCSS, the frontend community meetups in Moscow (since 2017, Russian and English): the next ' +
+  'Read Moscow CSS, the meetups of interface developers and designers in Moscow (since 2017, Russian and English): the next ' +
   'meetup, its date, venue, programme and registration, and the archive of past meetups, talks, speakers and ' +
   'recordings. Use when a task asks about MoscowCSS meetups, a talk or a speaker of MoscowCSS.';
 
@@ -47,7 +47,7 @@ export function skillMarkdown(site: URL): string {
     '',
     '# Reading css.moscow',
     '',
-    'css.moscow is the site of MoscowCSS, free meetups of the frontend community in Moscow. It is a static',
+    'css.moscow is the site of Moscow CSS, free meetups of interface developers and designers in Moscow. It is a static',
     'site: no API, no MCP server, no sign-in. Everything below is a plain HTTP GET of a public file.',
     '',
     '## Languages',
@@ -72,6 +72,9 @@ export function skillMarkdown(site: URL): string {
     '## List everything',
     '',
     `- ${abs(LLMS_PATH)} lists every meetup and page in both languages; ${abs(LLMS_FULL_PATH)} adds every talk and speaker.`,
+    `- Lists, newest first, as Markdown: ${abs(markdownPathOf('/events/'))}, ${abs(markdownPathOf('/talks/'))},`,
+    `  ${abs(markdownPathOf('/speakers/'))} (speakers by their latest talk); \`/en/\` in front for English.`,
+    `- The same rows as JSON with years and recording flags: ${abs('/archive.json')}, ${abs('/en/archive.json')}.`,
     `- ${abs('/sitemap.xml')} lists every indexable URL.`,
     '- RSS feeds of meetups, newest first:',
     ...locales.map((locale) => `  - ${localeNames[locale]}: ${abs(feedPath(locale))}`),
@@ -82,7 +85,7 @@ export function skillMarkdown(site: URL): string {
     ...perLocale('search').map((line) => `${line}?q=`),
     '- Results are rendered in the browser by Pagefind JavaScript: a client without JavaScript gets',
     `  none. Without a browser, pick pages from ${abs(LLMS_PATH)} and fetch their \`index.md\`.`,
-    '- In a browser with WebMCP the site registers the tools `search_site` and `get_page_markdown`.',
+    '- In a browser with WebMCP the site registers the tools `search_site`, `get_page_markdown` and `list_archive` (meetups, talks or speakers filtered by words, year and recording).',
     '',
     '## Using the content',
     '',
@@ -190,11 +193,11 @@ export function aiCatalog(site: URL): AiCatalog {
 
 // Одна строка: перевод строки в тексте сломал бы markdown-список.
 const line = (text: string): string => text.replace(/\s+/g, ' ').trim();
-const KIND_ORDER: Record<PublicPage['kind'], number> = { home: 0, document: 1, event: 2, talk: 3, speaker: 4 };
+const KIND_ORDER: Record<PublicPage['kind'], number> = { home: 0, list: 1, document: 2, event: 3, talk: 4, speaker: 5 };
 
-// В оглавлении — главная, документы и митапы; доклады и спикеры только в полном списке: вместе с ними
+// В оглавлении — главная, списки, документы и митапы; доклады и спикеры только в полном списке: вместе с ними
 // llms.txt выходит за 30 000 знаков, которые сканеры считают пределом для оглавления.
-const INDEX_KINDS: ReadonlySet<PublicPage['kind']> = new Set(['home', 'document', 'event']);
+const INDEX_KINDS: ReadonlySet<PublicPage['kind']> = new Set(['home', 'list', 'document', 'event']);
 
 /**
  * llms.txt (llmstxt.org): H1, цитата-резюме, раздел «When to use», затем страницы по языкам — каждая
@@ -218,6 +221,7 @@ export function llmsTxt(
     switch (page.kind) {
       case 'home':
       case 'document':
+      case 'list':
         return page.entry.data.title;
       case 'event':
         return page.entry.data.tagline;
@@ -232,6 +236,7 @@ export function llmsTxt(
     switch (page.kind) {
       case 'home':
       case 'document':
+      case 'list':
         return page.entry.data.description;
       case 'event':
         return `${eventWhen(page.entry.data, page.locale, { withTime: tl('hero.dateTime'), dateOnly: tl('date.long') })}, ${venueLine(page.entry.data.venue)}`;
@@ -259,7 +264,7 @@ export function llmsTxt(
   return [
     `# ${t('site.name')}`,
     '',
-    `> MoscowCSS is a free community meetup about CSS, layout and frontend in Moscow, held since 2017, offline and online. css.moscow has every meetup with its programme, talks, speakers and recordings, in Russian (default) and English.`,
+    `> Moscow CSS is a community of interface developers and designers (since 2015) with free meetups on CSS, browser internals and design in Moscow and online, held since 2017. css.moscow has every meetup with its programme, talks, speakers and recordings, in Russian (default) and English.`,
     '',
     'Every link below is the Markdown version of a page (`index.md`); drop `index.md` to get the HTML page.',
     scope === 'index'

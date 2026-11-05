@@ -10,7 +10,7 @@ import {
   FaqSchema,
   createOrganizerSchema,
   createPartnerSchema,
-  TalkSchema,
+  createTalkSchema,
   createSpeakerSchema,
 } from '@moscowcss/content/schema';
 import { DEFAULT_DIRS, isoDate, KINDS, LOCALES, planEntry, runNewEntry } from './new-entry.mjs';
@@ -18,7 +18,7 @@ import { DEFAULT_DIRS, isoDate, KINDS, LOCALES, planEntry, runNewEntry } from '.
 // Схема коллекции по типу заготовки; картинки в схеме — `image()`, здесь достаточно строки пути.
 const SCHEMAS = {
   event: EventSchema,
-  talk: TalkSchema,
+  talk: createTalkSchema(() => z.string()),
   speaker: createSpeakerSchema(() => z.string()),
   partner: createPartnerSchema(() => z.string()),
   faq: FaqSchema,

@@ -3,6 +3,7 @@ event: "21"
 speakers:
   - "ionna-avagyan"
 title: "Зачем компании развивают IT-бренд?"
+cover: ../assets/why-companies-build-it-brand.jpg
 time: "20:30"
 ---
 

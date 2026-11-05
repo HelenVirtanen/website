@@ -3,6 +3,7 @@ event: "18"
 speakers:
   - "sofia-valitova"
 title: "Значения в CSS: от декларации до отображения"
+cover: ../assets/css-values-from-declaration-to-display.jpg
 time: "20:10"
 ---
 

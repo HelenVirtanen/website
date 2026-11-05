@@ -7,7 +7,7 @@ import {
   PageSchema,
   createOrganizerSchema,
   createPartnerSchema,
-  TalkSchema,
+  createTalkSchema,
   createSpeakerSchema,
 } from './schema';
 
@@ -24,7 +24,7 @@ const localized = (dir: string) =>
 export const collections = {
   pages: defineCollection({ loader: localized('pages'), schema: PageSchema }),
   events: defineCollection({ loader: localized('events'), schema: EventSchema }),
-  talks: defineCollection({ loader: localized('talks'), schema: TalkSchema }),
+  talks: defineCollection({ loader: localized('talks'), schema: ({ image }) => createTalkSchema(image) }),
   speakers: defineCollection({
     loader: localized('speakers'),
     schema: ({ image }) => createSpeakerSchema(image),

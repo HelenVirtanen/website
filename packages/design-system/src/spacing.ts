@@ -37,6 +37,9 @@ const contract = {
     sliderHeadWidth: null,
     organizerPhoto: null,
     organizerPadding: null,
+    archiveCardMin: null,
+    archiveFieldMin: null,
+    archivePhoto: null,
   },
 } as const;
 
@@ -71,6 +74,9 @@ const values = {
     sliderHeadWidth: '26.5625rem', // 425px
     organizerPhoto: '15.577rem', // 249.23px
     organizerPadding: '2rem', // 32px
+    archiveCardMin: '17rem', // 272px — уже карточка спикера не становится
+    archiveFieldMin: '16rem', // 256px — поле фильтра
+    archivePhoto: '8rem', // 128px — фото в карточке спикера
   },
 };
 

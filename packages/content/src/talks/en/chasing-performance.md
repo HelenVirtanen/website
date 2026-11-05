@@ -3,6 +3,7 @@ event: "16"
 speakers:
   - daniil-krokhmal
 title: "Chasing performance"
+cover: ../assets/chasing-performance.jpg
 videoUrl: "https://www.youtube.com/watch?v=wbTEDA8A4xY"
 ---
 

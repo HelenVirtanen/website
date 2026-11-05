@@ -3,6 +3,7 @@ event: "online-2021"
 speakers:
   - "andrey-yamanov"
 title: "The magic of color"
+cover: ../assets/magic-of-color.jpg
 time: "19:10"
 videoUrl: "https://www.youtube.com/watch?v=NTFZtJXIVIQ"
 ---

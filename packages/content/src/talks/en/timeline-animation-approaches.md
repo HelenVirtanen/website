@@ -4,6 +4,7 @@ speakers:
   - vladislav-khudyakov
 time: "19:30"
 title: "Ways to implement animations, from simple to controlled timelines"
+cover: ../assets/timeline-animation-approaches.jpg
 ---
 
 We all run into animation tasks for elements and whole sections one way or another.

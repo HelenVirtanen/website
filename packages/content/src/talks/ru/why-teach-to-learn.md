@@ -3,6 +3,7 @@ event: "14"
 speakers:
   - aleksey-popkov
 title: "Зачем учить учиться и учиться учить?"
+cover: ../assets/why-teach-to-learn.jpg
 videoUrl: "https://www.youtube.com/watch?v=_XczxtpLxQ0"
 ---
 

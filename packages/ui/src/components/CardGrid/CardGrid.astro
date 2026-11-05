@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { root, columnsOf } from './CardGrid.css';
+
+const Tag = 'ul';
+
+// Ячейки — `<li>` в слоте: их прячет фильтр атрибутом `hidden`, поэтому `display` у них не задаётся.
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Раскладка: одна колонка (таблица строк) или столько колонок, сколько влезает, с `tablet` */
+  columns?: 'single' | 'auto';
+}
+
+const { columns = 'auto', class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[root, columnsOf[columns], className]} {...attrs}>
+  <slot />
+</Tag>

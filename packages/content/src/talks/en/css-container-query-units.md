@@ -3,6 +3,7 @@ event: "22"
 speakers:
   - "anna-blok"
 title: "Will the new CSS units make you cry? Or not?"
+cover: ../assets/css-container-query-units.jpg
 time: "19:10"
 ---
 

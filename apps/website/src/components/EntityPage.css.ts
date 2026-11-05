@@ -30,3 +30,12 @@ export const photo = style({
   blockSize: 'auto',
   objectFit: 'cover',
 });
+
+// Обложка доклада: не шире текста страницы, пропорции — из файла.
+export const cover = style({
+  display: vars.display.block,
+  inlineSize: '100%',
+  maxInlineSize: '48rem',
+  blockSize: 'auto',
+  border: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.border}`,
+});

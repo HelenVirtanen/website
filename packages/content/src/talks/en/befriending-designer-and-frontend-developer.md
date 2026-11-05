@@ -3,6 +3,7 @@ event: "20"
 speakers:
   - "aleksey-avdeev"
 title: "How to make a designer and a frontend developer friends"
+cover: ../assets/befriending-designer-and-frontend-developer.jpg
 time: "20:10"
 videoUrl: "https://www.youtube.com/watch?v=PFLTSfIt_G4"
 ---

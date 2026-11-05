@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'astro/zod';
-import { EventSchema, PageSchema, TalkSchema, createOrganizerSchema } from '@moscowcss/content/schema';
+import { EventSchema, PageSchema, createOrganizerSchema, createTalkSchema } from '@moscowcss/content/schema';
 
 const event = (patch: Record<string, unknown> = {}) => ({
   date: '2026-07-09',
@@ -58,6 +58,8 @@ describe('EventSchema', () => {
     expect(EventSchema.safeParse(at('24:00')).success).toBe(false);
   });
 });
+
+const TalkSchema = createTalkSchema(() => z.string());
 
 describe('TalkSchema', () => {
   it('время 99:99 отклоняется', () => {

@@ -4,6 +4,7 @@ speakers:
   - anastasiya-yarosh
 time: "19:30"
 title: "Легаси технология, о которой полезно знать"
+cover: ../assets/legacy-technology-worth-knowing.jpg
 ---
 
 Расскажу на примере "Stylus" кратко о препроцессорах, и как с ними жить. Надо ли от них отказываться.

@@ -3,6 +3,6 @@ name: "Имя Фамилия"
 role: "Должность и место работы"
 draft: true
 # Черновик. Фото необязательно: без него сайт нарисует аватар с инициалами. С фото — положите
-# файл в speakers/assets/{{name}}.jpg и добавьте строки photo: ../assets/{{name}}.jpg и
+# файл в speakers/assets/{{name}}.jpg и добавьте в оба файла строку photo: ../assets/{{name}}.jpg.
 # Необязательно: links (label и url, только https). Уберите draft: true.
 ---

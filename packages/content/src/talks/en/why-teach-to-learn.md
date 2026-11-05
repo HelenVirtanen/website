@@ -3,6 +3,7 @@ event: "14"
 speakers:
   - aleksey-popkov
 title: "Why teach to learn and learn to teach?"
+cover: ../assets/why-teach-to-learn.jpg
 videoUrl: "https://www.youtube.com/watch?v=_XczxtpLxQ0"
 ---
 

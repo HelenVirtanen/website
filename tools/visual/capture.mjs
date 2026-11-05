@@ -50,11 +50,13 @@ async function settle(page) {
       await new Promise((resolve) => setTimeout(resolve, 50));
     }
     window.scrollTo(0, 0);
+    // Lazy-картинка вне экрана (скрытый слайд) может не начать грузиться никогда: ждём не дольше 5 с.
     await Promise.all(
       [...document.images].map((img) =>
         img.complete ? undefined : new Promise((resolve) => {
           img.addEventListener('load', resolve, { once: true });
           img.addEventListener('error', resolve, { once: true });
+          setTimeout(resolve, 5000);
         }),
       ),
     );

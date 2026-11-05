@@ -3,6 +3,7 @@ event: "15"
 speakers:
   - masha-stogova
 title: "Расширение возможностей CSS с Houdini"
+cover: ../assets/extending-css-with-houdini.jpg
 videoUrl: "https://www.youtube.com/watch?v=x0nD8VUScmc"
 ---
 

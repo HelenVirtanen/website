@@ -3,6 +3,7 @@ event: "21"
 speakers:
   - "lev-solntsev"
 title: "CSS layouts: what they are and how to cook them"
+cover: ../assets/css-layouts-and-how-to-cook-them.jpg
 time: "19:10"
 ---
 

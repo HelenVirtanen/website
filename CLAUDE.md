@@ -593,8 +593,9 @@ regenerate rather than edit).
   (`draft: true`) are excluded from the site.
 - **Pages.** Home (`/`, `/en/`: nearest future meetup, or the last past one
   without registration; list of past meetups), `/events/<n>/`, `/talks/<name>/`,
-  `/speakers/<name>/`, `/search/` (Pagefind, `noindex`). The list of public
-  pages for SEO is `src/seo/pages.ts`.
+  `/speakers/<name>/`, the lists `/events/`, `/talks/`, `/speakers/` (newest first,
+  with a client-side filter; spec 007), `/search/` (Pagefind, `noindex`). The
+  list of public pages for SEO is `src/seo/pages.ts`.
 - **SEO and OG.** `BaseLayout` writes `description`, `canonical`, `hreflang`,
   16 `og:*`/`twitter:*` tags. Cards come from `@moscowcss/og`
   (`renderCard({ title, kicker, meta, size })`: 1200×630 for OpenGraph,

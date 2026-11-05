@@ -3,6 +3,7 @@ event: "22"
 speakers:
   - "anton-cherednichenko"
 title: "SVG анимация"
+cover: ../assets/svg-animation.jpg
 time: "19:30"
 ---
 
