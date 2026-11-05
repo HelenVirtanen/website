@@ -64,7 +64,8 @@ export function cardInputOf(
 
   switch (page.kind) {
     case 'home':
-      return { title: page.entry.data.title, kicker: t('og.kind.home'), meta: t('og.home.meta') };
+      // Имя сообщества уже в шапке карточки: заголовок говорит, о чём митапы, а не повторяет имя.
+      return { title: t('og.home.title'), kicker: t('og.kind.home'), meta: t('og.home.meta') };
     case 'event': {
       const { tagline, venue } = page.entry.data;
       const dateTime = eventWhen(page.entry.data, locale, { withTime: t('hero.dateTime'), dateOnly: t('date.long') });

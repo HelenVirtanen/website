@@ -5,7 +5,7 @@ import type { Locale } from './config';
 const ru = {
   'site.name': 'MoscowCSS Meetup',
   'site.description':
-    'Митапы сообщества фронтендеров MoscowCSS: программа, спикеры, партнёры и регистрация.',
+    'Moscow CSS — сообщество разработчиков и дизайнеров интерфейсов: митапы о CSS, браузерах и дизайне в Москве и онлайн.',
   'nav.history': 'История',
   'nav.talks': 'Доклады',
   'nav.speakers': 'Спикеры',
@@ -16,7 +16,7 @@ const ru = {
   'list.tab.talks': 'Доклады',
   'list.tab.speakers': 'Спикеры',
   'list.events.title': 'Все митапы',
-  'list.events.description': 'Все митапы сообщества фронтендеров MoscowCSS с 2017 года: даты, площадки, программы, записи и фото.',
+  'list.events.description': 'Все митапы Moscow CSS с 2017 года: даты, площадки, программы докладов, записи и фотографии.',
   'list.talks.title': 'Все доклады',
   'list.talks.description': 'Все доклады митапов MoscowCSS о CSS, вёрстке и фронтенде: спикеры, митапы, видео и слайды.',
   'list.speakers.title': 'Все спикеры',
@@ -98,7 +98,7 @@ const ru = {
   'agents.lastMeetup': 'Последний митап',
   'agents.more': 'Ещё на сайте',
   'rss.title': 'MoscowCSS Meetup — митапы',
-  'rss.description': 'Новые митапы сообщества фронтендеров MoscowCSS: дата, место и программа докладов.',
+  'rss.description': 'Новые митапы Moscow CSS, сообщества разработчиков интерфейсов: дата, место и программа докладов.',
   'rss.talks': 'Доклады',
   'rss.subscribe': 'Подписаться на RSS',
   'map.open': 'Показать на карте',
@@ -129,13 +129,14 @@ const ru = {
   'speaker.talks': 'Доклады',
   'speaker.events': 'Митапы',
   'speaker.links': 'Ссылки',
-  'og.kind.home': 'Сообщество фронтендеров',
+  'og.kind.home': 'Сообщество разработчиков интерфейсов',
   'og.kind.talk': 'Доклад',
   'og.kind.speaker': 'Спикер',
   'og.kind.document': 'Документ',
   'og.kind.list': 'Архив',
   'og.kicker.event': 'Митап № {slug}',
-  'og.home.meta': 'Митапы фронтендеров в Москве',
+  'og.home.title': 'Митапы о CSS, браузерах и дизайне',
+  'og.home.meta': 'Москва и онлайн · с 2017 года',
 } as const;
 
 export type UiKey = keyof typeof ru;
@@ -143,7 +144,7 @@ export type UiKey = keyof typeof ru;
 const en = {
   'site.name': 'MoscowCSS Meetup',
   'site.description':
-    'MoscowCSS meetups for the frontend community: schedule, speakers, partners and registration.',
+    'Moscow CSS is a community of interface developers and designers: meetups on CSS, browsers and design, in Moscow and online.',
   'nav.history': 'History',
   'nav.talks': 'Talks',
   'nav.speakers': 'Speakers',
@@ -154,7 +155,7 @@ const en = {
   'list.tab.talks': 'Talks',
   'list.tab.speakers': 'Speakers',
   'list.events.title': 'All meetups',
-  'list.events.description': 'Every MoscowCSS frontend community meetup since 2017: dates, venues, programmes, recordings and photos.',
+  'list.events.description': 'Every Moscow CSS meetup since 2017: dates, venues, talk programmes, recordings and photos.',
   'list.talks.title': 'All talks',
   'list.talks.description': 'Every talk of the MoscowCSS meetups on CSS, layout and frontend: speakers, meetups, videos and slides.',
   'list.speakers.title': 'All speakers',
@@ -236,7 +237,7 @@ const en = {
   'agents.lastMeetup': 'Latest meetup',
   'agents.more': 'More on the site',
   'rss.title': 'MoscowCSS Meetup — meetups',
-  'rss.description': 'New meetups of the MoscowCSS frontend community: date, venue and the talk programme.',
+  'rss.description': 'New meetups of Moscow CSS, the interface developers community: date, venue and the talk programme.',
   'rss.talks': 'Talks',
   'rss.subscribe': 'Subscribe via RSS',
   'map.open': 'Show on the map',
@@ -267,13 +268,14 @@ const en = {
   'speaker.talks': 'Talks',
   'speaker.events': 'Meetups',
   'speaker.links': 'Links',
-  'og.kind.home': 'Frontend community',
+  'og.kind.home': 'Interface developers community',
   'og.kind.talk': 'Talk',
   'og.kind.speaker': 'Speaker',
   'og.kind.document': 'Document',
   'og.kind.list': 'Archive',
   'og.kicker.event': 'Meetup #{slug}',
-  'og.home.meta': 'Frontend meetups in Moscow',
+  'og.home.title': 'Meetups on CSS, browsers and design',
+  'og.home.meta': 'Moscow and online · since 2017',
 } satisfies Record<UiKey, string>;
 
 export const ui: Record<Locale, Record<UiKey, string>> = { ru, en };

@@ -21,7 +21,7 @@ export const SKILLS_SCHEMA = 'https://schemas.agentskills.io/discovery/0.2.0/sch
 const hostOf = (site: URL): string => site.hostname;
 
 export const SKILL_DESCRIPTION =
-  'Read MoscowCSS, the frontend community meetups in Moscow (since 2017, Russian and English): the next ' +
+  'Read Moscow CSS, the meetups of interface developers and designers in Moscow (since 2017, Russian and English): the next ' +
   'meetup, its date, venue, programme and registration, and the archive of past meetups, talks, speakers and ' +
   'recordings. Use when a task asks about MoscowCSS meetups, a talk or a speaker of MoscowCSS.';
 
@@ -47,7 +47,7 @@ export function skillMarkdown(site: URL): string {
     '',
     '# Reading css.moscow',
     '',
-    'css.moscow is the site of MoscowCSS, free meetups of the frontend community in Moscow. It is a static',
+    'css.moscow is the site of Moscow CSS, free meetups of interface developers and designers in Moscow. It is a static',
     'site: no API, no MCP server, no sign-in. Everything below is a plain HTTP GET of a public file.',
     '',
     '## Languages',
@@ -264,7 +264,7 @@ export function llmsTxt(
   return [
     `# ${t('site.name')}`,
     '',
-    `> MoscowCSS is a free community meetup about CSS, layout and frontend in Moscow, held since 2017, offline and online. css.moscow has every meetup with its programme, talks, speakers and recordings, in Russian (default) and English.`,
+    `> Moscow CSS is a community of interface developers and designers (since 2015) with free meetups on CSS, browser internals and design in Moscow and online, held since 2017. css.moscow has every meetup with its programme, talks, speakers and recordings, in Russian (default) and English.`,
     '',
     'Every link below is the Markdown version of a page (`index.md`); drop `index.md` to get the HTML page.',
     scope === 'index'
