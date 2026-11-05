@@ -3,6 +3,7 @@ event: "17"
 speakers:
   - "ksenia-mayorova"
 title: "How to understand the designer and dive deeper into the product?"
+cover: ../assets/understanding-the-designer.jpg
 videoUrl: "https://www.youtube.com/watch?v=dif07leiGI4"
 ---
 

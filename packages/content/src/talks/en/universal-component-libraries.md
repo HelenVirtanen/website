@@ -3,6 +3,7 @@ event: "16"
 speakers:
   - igor-lesnevsky
 title: "Building universal component libraries for a website-building platform"
+cover: ../assets/universal-component-libraries.jpg
 videoUrl: "https://www.youtube.com/watch?v=5gfcWaKJEUY"
 ---
 

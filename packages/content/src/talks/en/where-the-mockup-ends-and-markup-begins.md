@@ -3,6 +3,7 @@ event: "18"
 speakers:
   - "dmitry-shkulnik"
 title: "Where the mockup ends and the markup begins"
+cover: ../assets/where-the-mockup-ends-and-markup-begins.jpg
 time: "19:05"
 ---
 

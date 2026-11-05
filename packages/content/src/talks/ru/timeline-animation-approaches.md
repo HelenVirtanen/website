@@ -4,6 +4,7 @@ speakers:
   - vladislav-khudyakov
 time: "19:30"
 title: "Способы реализации от простых до управляемых timeline анимаций"
+cover: ../assets/timeline-animation-approaches.jpg
 ---
 
 Все мы так или иначе пересекаемся с задачами по анимации элементов и целых секций.

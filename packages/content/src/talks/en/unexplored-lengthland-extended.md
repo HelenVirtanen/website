@@ -3,6 +3,7 @@ event: "19-plus"
 speakers:
   - "pavel-korshikov"
 title: "The unexplored LengthLand (extended version): become the Length Lord of your layouts"
+cover: ../assets/unexplored-lengthland-extended.jpg
 time: "19:00"
 videoUrl: "https://www.youtube.com/watch?v=Ptlv_HZ8UFc"
 ---

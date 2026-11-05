@@ -123,16 +123,20 @@ export const EventSchema = EventFields.transform((event) => {
   };
 });
 
-export const TalkSchema = z.object({
-  event: slug,
-  speakers: z.array(slug).min(1),
-  // Необязательно только потому, что у архивных митапов (до 31-го) время докладов не сохранилось.
-  time: clockTime.optional(),
-  title: z.string().min(1),
-  slidesUrl: url.optional(),
-  videoUrl: url.optional(),
-  draft: z.boolean().default(false),
-});
+// `image()` доступна только в схеме-функции, поэтому схема доклада — фабрика, как у спикера.
+export const createTalkSchema = (image: ImageFunction) =>
+  z.object({
+    event: slug,
+    speakers: z.array(slug).min(1),
+    // Необязательно только потому, что у архивных митапов (до 31-го) время докладов не сохранилось.
+    time: clockTime.optional(),
+    title: z.string().min(1),
+    slidesUrl: url.optional(),
+    videoUrl: url.optional(),
+    // Карточка анонса доклада; без неё страница показывает общую заглушку TBD.
+    cover: image().optional(),
+    draft: z.boolean().default(false),
+  });
 
 // `image()` доступна только в схеме-функции, поэтому схема спикера — фабрика.
 export const createSpeakerSchema = (image: ImageFunction) =>

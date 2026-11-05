@@ -3,6 +3,7 @@ event: "14"
 speakers:
   - mariya-kutuzova
 title: "Жизненный цикл презентации и основные принципы её создания"
+cover: ../assets/presentation-life-cycle.jpg
 videoUrl: "https://www.youtube.com/watch?v=meEUD3v4Hq8"
 ---
 

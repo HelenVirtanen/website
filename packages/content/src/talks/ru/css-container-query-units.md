@@ -3,6 +3,7 @@ event: "22"
 speakers:
   - "anna-blok"
 title: "Новые единицы измерения в CSS заставят плакать. Или нет?"
+cover: ../assets/css-container-query-units.jpg
 time: "19:10"
 ---
 

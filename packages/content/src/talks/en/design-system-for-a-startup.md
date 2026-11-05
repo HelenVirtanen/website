@@ -3,6 +3,7 @@ event: "13"
 speakers:
   - alisa-smelkova
 title: "Starting a design system in a small product / startup"
+cover: ../assets/design-system-for-a-startup.jpg
 videoUrl: "https://www.youtube.com/watch?v=G6oPs4Fn3L4"
 ---
 

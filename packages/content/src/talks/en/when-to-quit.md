@@ -3,6 +3,7 @@ event: "13"
 speakers:
   - anastasiya-kalashnikova
 title: "How do you know it is time to quit?"
+cover: ../assets/when-to-quit.jpg
 videoUrl: "https://www.youtube.com/watch?v=_e5Rbl1i_js"
 ---
 

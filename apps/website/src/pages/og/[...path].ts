@@ -1,6 +1,9 @@
+import { readFileSync } from 'node:fs';
 import type { APIRoute, GetStaticPaths } from 'astro';
-import { renderCard, type CardInput } from '@moscowcss/og';
+import sharp from 'sharp';
+import { CARD_SIZES, renderCard, type CardInput } from '@moscowcss/og';
 import { loadCatalog } from '../../content/catalog';
+import { coverFileOf, isWide } from '../../content/talk-cover';
 import { CARD_TYPE, cardInputOf, cardParam, sizeOfParam } from '../../seo/og';
 import { publicPagesOf } from '../../seo/pages';
 
@@ -12,22 +15,33 @@ const EXTENSION = '.png';
 
 interface Props {
   input: Omit<CardInput, 'size'>;
+  /** Файл широкой обложки доклада: карточка — она, обрезанная по центру до размера */
+  cover: string | undefined;
 }
+
+const readSource = (path: string): string => readFileSync(path, 'utf8');
 
 export const getStaticPaths = (async () => {
   const catalog = await loadCatalog();
   return publicPagesOf(catalog).flatMap((page) => {
     const input = cardInputOf(page, catalog);
+    const cover =
+      page.kind === 'talk' && page.entry.data.cover && isWide(page.entry.data.cover)
+        ? coverFileOf(page.entry, readSource)
+        : undefined;
     return (['og', 'twitter'] as const).map((size) => ({
       params: { path: `${cardParam(page, size)}${EXTENSION}` },
-      props: { input } satisfies Props,
+      props: { input, cover } satisfies Props,
     }));
   });
 }) satisfies GetStaticPaths;
 
 export const GET: APIRoute = async ({ params, props }) => {
-  const { input } = props as Props;
+  const { input, cover } = props as Props;
   const param = (params['path'] ?? '').slice(0, -EXTENSION.length);
-  const png = await renderCard({ ...input, size: sizeOfParam(param) });
+  const size = sizeOfParam(param);
+  const png = cover
+    ? await sharp(cover).resize({ ...CARD_SIZES[size], fit: 'cover', position: 'centre' }).png().toBuffer()
+    : await renderCard({ ...input, size });
   return new Response(new Uint8Array(png), { headers: { 'Content-Type': CARD_TYPE } });
 };

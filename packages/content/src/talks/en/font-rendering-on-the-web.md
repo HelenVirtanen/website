@@ -3,6 +3,7 @@ event: "7"
 speakers:
   - andrey-yamanov
 title: "Font rendering on the web"
+cover: ../assets/font-rendering-on-the-web.jpg
 ---
 
 An account of why identical text rendering across platforms is still hard to achieve, whether it can be solved, and what designers have to do with it.

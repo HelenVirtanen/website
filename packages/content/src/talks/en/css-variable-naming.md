@@ -3,6 +3,7 @@ event: "15"
 speakers:
   - mariya-nagornykh
 title: "A naming system for CSS variables"
+cover: ../assets/css-variable-naming.jpg
 videoUrl: "https://www.youtube.com/watch?v=5QVnY8lJ6d8"
 ---
 

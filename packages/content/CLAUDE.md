@@ -18,7 +18,8 @@ Decision record: `adr/001-content-model-md-relations.md`.
 ## Rules
 
 - **Only `.md` files** for content. No `.mdx`, `.yml`, `.json`. Images live in
-  `assets/` next to the collection (`speakers/assets/`, `organizers/assets/`).
+  `assets/` next to the collection (`speakers/assets/`, `organizers/assets/`,
+  `talks/assets/` for talk `cover`s, the announcement cards; `cover` must match `ru`).
 - **The schema is the single source of the shape.** Fields are defined in
   `src/schema.ts` only; do not make required fields optional to "ease" editing —
   the editor-facing answer is short flat fields and clear error messages.

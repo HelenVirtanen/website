@@ -3,6 +3,7 @@ event: "17"
 speakers:
   - "mariya-nagornykh"
 title: "Custom properties: variables or properties?"
+cover: ../assets/custom-properties-variables-or-properties.jpg
 videoUrl: "https://www.youtube.com/watch?v=rBrsm4_Dk0Y"
 ---
 

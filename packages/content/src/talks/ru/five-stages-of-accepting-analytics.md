@@ -3,6 +3,7 @@ event: "21"
 speakers:
   - "darya-korchuganova"
 title: "5 стадий принятия аналитики"
+cover: ../assets/five-stages-of-accepting-analytics.jpg
 time: "20:00"
 ---
 

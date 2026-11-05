@@ -3,6 +3,7 @@ event: "12"
 speakers:
   - igor-lesnevsky
 title: "Рабочая эффективность: как я пытался обуздать свой день"
+cover: ../assets/work-efficiency-taming-my-day.jpg
 videoUrl: "https://www.youtube.com/watch?v=0RykI_wj4mU"
 ---
 

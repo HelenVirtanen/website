@@ -3,6 +3,7 @@ event: "7"
 speakers:
   - aleksey-okhrimenko
 title: "Производительность верстки"
+cover: ../assets/layout-performance.jpg
 ---
 
 Доклад о выборе инструментов верстки, таких как Flexbox, Float, Grid, Table, InlineBlock. Поговорим о том, что и когда выбирать, как происходит Rendering элементов и о проблемах производительности, связанных с этим.

@@ -3,6 +3,7 @@ event: "15"
 speakers:
   - ivan-babkov
 title: "SPA на чистом CSS"
+cover: ../assets/spa-in-pure-css.jpg
 videoUrl: "https://www.youtube.com/watch?v=o5nOs4n18xY"
 ---
 

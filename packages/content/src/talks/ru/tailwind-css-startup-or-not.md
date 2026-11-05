@@ -3,6 +3,7 @@ event: "20"
 speakers:
   - "alexander-vodolazskikh"
 title: "Tailwind-css: Поздравляю, у вас стартап! Или нет?"
+cover: ../assets/tailwind-css-startup-or-not.jpg
 time: "19:10"
 videoUrl: "https://www.youtube.com/watch?v=WliFSy9kXr8"
 ---

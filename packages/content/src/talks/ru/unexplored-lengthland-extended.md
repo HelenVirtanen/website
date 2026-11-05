@@ -3,6 +3,7 @@ event: "19-plus"
 speakers:
   - "pavel-korshikov"
 title: "Неизведанный LengthLand (расширенная версия): стань Length Lord'ом своих макетов"
+cover: ../assets/unexplored-lengthland-extended.jpg
 time: "19:00"
 videoUrl: "https://www.youtube.com/watch?v=Ptlv_HZ8UFc"
 ---

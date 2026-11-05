@@ -3,6 +3,7 @@ event: "10"
 speakers:
   - nikita-prilepsky
 title: "Дизайн-система Tinkoff.ru"
+cover: ../assets/tinkoff-design-system.jpg
 videoUrl: "https://www.youtube.com/watch?v=qGNwQULq9co"
 ---
 

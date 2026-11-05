@@ -3,6 +3,7 @@ event: "12"
 speakers:
   - nikita-borisov
 title: "SVG in plain and simple language"
+cover: ../assets/svg-in-plain-language.jpg
 videoUrl: "https://www.youtube.com/watch?v=Bf8bTOS0sNI"
 ---
 

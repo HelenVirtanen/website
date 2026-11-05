@@ -3,6 +3,7 @@ event: "11"
 speakers:
   - alexandra-shinkevich
 title: "Тестирование фронтенда для разработчиков"
+cover: ../assets/frontend-testing-for-developers.jpg
 videoUrl: "https://www.youtube.com/watch?v=mSWMSmaGrEo"
 ---
 

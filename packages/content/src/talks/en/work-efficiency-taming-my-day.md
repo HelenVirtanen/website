@@ -3,6 +3,7 @@ event: "12"
 speakers:
   - igor-lesnevsky
 title: "Work efficiency: how I tried to tame my day"
+cover: ../assets/work-efficiency-taming-my-day.jpg
 videoUrl: "https://www.youtube.com/watch?v=0RykI_wj4mU"
 ---
 

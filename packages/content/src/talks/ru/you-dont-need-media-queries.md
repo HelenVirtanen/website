@@ -3,6 +3,7 @@ event: "27"
 speakers:
   - ilya-krupnov
 title: "Вам (почти) не нужны медиазапросы"
+cover: ../assets/you-dont-need-media-queries.jpg
 ---
 
 Поговорим о том:

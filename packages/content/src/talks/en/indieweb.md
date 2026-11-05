@@ -3,6 +3,7 @@ event: "22"
 speakers:
   - "nikita-dubko"
 title: "IndieWeb, or your content belongs to you"
+cover: ../assets/indieweb.jpg
 time: "20:40"
 ---
 

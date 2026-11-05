@@ -3,6 +3,7 @@ event: "10"
 speakers:
   - oleg-lykasov
 title: "Styling reusable UI components"
+cover: ../assets/styling-reusable-ui-components.jpg
 videoUrl: "https://www.youtube.com/watch?v=zyITxD-z7qQ"
 ---
 

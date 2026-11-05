@@ -3,6 +3,7 @@ event: "18"
 speakers:
   - "dmitry-shkulnik"
 title: "Там, где заканчивается макет и начинается верстка"
+cover: ../assets/where-the-mockup-ends-and-markup-begins.jpg
 time: "19:05"
 ---
 

@@ -3,6 +3,7 @@ event: "16"
 speakers:
   - anna-blok
 title: "Рецепт востребованного верстальщика: дизайн + код"
+cover: ../assets/designer-plus-code-recipe.jpg
 videoUrl: "https://www.youtube.com/watch?v=0T9NIqp4W9o"
 ---
 

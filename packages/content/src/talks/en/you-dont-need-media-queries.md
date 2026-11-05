@@ -3,6 +3,7 @@ event: "27"
 speakers:
   - ilya-krupnov
 title: "You (almost) don't need media queries"
+cover: ../assets/you-dont-need-media-queries.jpg
 ---
 
 Let us talk about:

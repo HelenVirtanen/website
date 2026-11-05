@@ -3,6 +3,7 @@ event: "12"
 speakers:
   - aleksey-okhrimenko
 title: "Great artists steal"
+cover: ../assets/great-artists-steal.jpg
 videoUrl: "https://www.youtube.com/watch?v=yyUpfhR5ScE"
 ---
 

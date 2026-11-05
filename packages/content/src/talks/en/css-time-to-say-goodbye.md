@@ -3,6 +3,7 @@ event: "14"
 speakers:
   - andrey-yamanov
 title: "CSS: time to say goodbye..."
+cover: ../assets/css-time-to-say-goodbye.jpg
 videoUrl: "https://www.youtube.com/watch?v=CeDdgCDq86s"
 ---
 

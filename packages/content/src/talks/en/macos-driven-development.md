@@ -3,6 +3,7 @@ event: "11"
 speakers:
   - nikita-dubko
 title: "MacOS Driven Development"
+cover: ../assets/macos-driven-development.jpg
 videoUrl: "https://www.youtube.com/watch?v=w39AWcIMbZ4"
 ---
 

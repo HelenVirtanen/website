@@ -3,6 +3,7 @@ event: "11"
 speakers:
   - aleksey-popkov
 title: "Давайте не будем ждать?"
+cover: ../assets/lets-not-wait.jpg
 videoUrl: "https://www.youtube.com/watch?v=h3Do8UZAAWU"
 ---
 

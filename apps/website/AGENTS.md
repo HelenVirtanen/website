@@ -86,6 +86,12 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   function for the page script and WebMCP; the state lives in the address (`?q=&year=&media=1`).
   Without JavaScript the whole list shows and the filter form stays `hidden`. The rows of a
   language are also `/archive.json` (`/en/archive.json`), linked from every page's head.
+- **Talk covers.** A talk's optional `cover` (announcement card in
+  `packages/content/src/talks/assets/`) shows under the title of the talk page; a talk without
+  one shows the shared placeholder `/covers/tbd.png` (`pages/covers/tbd.png.ts`, drawn by
+  `@moscowcss/og`). A wide cover (`isWide` in `src/content/talk-cover.ts`, ratio ≥ 1.6) also
+  replaces the generated OG and Twitter cards: the `og/` route crops it to size with sharp. The
+  file path comes from the frontmatter (`coverFileOf`), because the parsed field has no path.
 - **Header** links go across the site, not to home sections: History (`/events/`), Talks,
   Speakers, About (`/about/`), Search (`src/layouts/nav.ts`); the current section gets
   `aria-current`. Registration is the floating button.
