@@ -1,5 +1,7 @@
 import { MOSCOW_UTC_OFFSET_HOURS } from '@moscowcss/content/schema';
 import { localeOf, slugOf, talksOfEvent, type Catalog } from '../content/catalog';
+import { archiveOf } from '../content/archive';
+import { localizePath } from '../i18n';
 import type { PublicPage } from './pages';
 
 // Разметка schema.org для поисковиков и агентов: кто проводит митапы, когда и где ближайший,
@@ -58,7 +60,7 @@ function organization(context: JsonLdContext): Thing {
 /** Граф JSON-LD страницы или `undefined`, если для её вида разметки нет (доклад). */
 export function jsonLdOf(
   page: PublicPage,
-  catalog: Pick<Catalog, 'talks' | 'speakers'>,
+  catalog: Pick<Catalog, 'events' | 'talks' | 'speakers'>,
   context: JsonLdContext,
 ): Thing | undefined {
   const url = new URL(page.path, context.site).href;
@@ -131,6 +133,35 @@ export function jsonLdOf(
         name,
         ...(role && { description: role }),
         ...(links.length > 0 && { sameAs: links.map((link) => link.url) }),
+      };
+    }
+
+    case 'list': {
+      const { list, title, description } = page.entry.data;
+      const archive = archiveOf(catalog, page.locale);
+      const items: { path: string; name: string }[] =
+        list === 'events'
+          ? archive.events.map((item) => ({ path: `events/${item.slug}`, name: item.title }))
+          : list === 'talks'
+            ? archive.talks.map((item) => ({ path: `talks/${item.slug}`, name: item.title }))
+            : archive.speakers.map((item) => ({ path: `speakers/${item.slug}`, name: item.name }));
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        ...base,
+        name: title,
+        description,
+        isPartOf: { '@type': 'WebSite', url: new URL(localizePath(page.locale), context.site).href },
+        mainEntity: {
+          '@type': 'ItemList',
+          numberOfItems: items.length,
+          itemListElement: items.map((item, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            name: item.name,
+            url: new URL(localizePath(page.locale, item.path), context.site).href,
+          })),
+        },
       };
     }
 

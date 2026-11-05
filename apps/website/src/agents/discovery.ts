@@ -72,6 +72,9 @@ export function skillMarkdown(site: URL): string {
     '## List everything',
     '',
     `- ${abs(LLMS_PATH)} lists every meetup and page in both languages; ${abs(LLMS_FULL_PATH)} adds every talk and speaker.`,
+    `- Lists, newest first, as Markdown: ${abs(markdownPathOf('/events/'))}, ${abs(markdownPathOf('/talks/'))},`,
+    `  ${abs(markdownPathOf('/speakers/'))} (speakers by their latest talk); \`/en/\` in front for English.`,
+    `- The same rows as JSON with years and recording flags: ${abs('/archive.json')}, ${abs('/en/archive.json')}.`,
     `- ${abs('/sitemap.xml')} lists every indexable URL.`,
     '- RSS feeds of meetups, newest first:',
     ...locales.map((locale) => `  - ${localeNames[locale]}: ${abs(feedPath(locale))}`),
@@ -82,7 +85,7 @@ export function skillMarkdown(site: URL): string {
     ...perLocale('search').map((line) => `${line}?q=`),
     '- Results are rendered in the browser by Pagefind JavaScript: a client without JavaScript gets',
     `  none. Without a browser, pick pages from ${abs(LLMS_PATH)} and fetch their \`index.md\`.`,
-    '- In a browser with WebMCP the site registers the tools `search_site` and `get_page_markdown`.',
+    '- In a browser with WebMCP the site registers the tools `search_site`, `get_page_markdown` and `list_archive` (meetups, talks or speakers filtered by words, year and recording).',
     '',
     '## Using the content',
     '',
@@ -190,11 +193,11 @@ export function aiCatalog(site: URL): AiCatalog {
 
 // Одна строка: перевод строки в тексте сломал бы markdown-список.
 const line = (text: string): string => text.replace(/\s+/g, ' ').trim();
-const KIND_ORDER: Record<PublicPage['kind'], number> = { home: 0, document: 1, event: 2, talk: 3, speaker: 4 };
+const KIND_ORDER: Record<PublicPage['kind'], number> = { home: 0, list: 1, document: 2, event: 3, talk: 4, speaker: 5 };
 
-// В оглавлении — главная, документы и митапы; доклады и спикеры только в полном списке: вместе с ними
+// В оглавлении — главная, списки, документы и митапы; доклады и спикеры только в полном списке: вместе с ними
 // llms.txt выходит за 30 000 знаков, которые сканеры считают пределом для оглавления.
-const INDEX_KINDS: ReadonlySet<PublicPage['kind']> = new Set(['home', 'document', 'event']);
+const INDEX_KINDS: ReadonlySet<PublicPage['kind']> = new Set(['home', 'list', 'document', 'event']);
 
 /**
  * llms.txt (llmstxt.org): H1, цитата-резюме, раздел «When to use», затем страницы по языкам — каждая
@@ -218,6 +221,7 @@ export function llmsTxt(
     switch (page.kind) {
       case 'home':
       case 'document':
+      case 'list':
         return page.entry.data.title;
       case 'event':
         return page.entry.data.tagline;
@@ -232,6 +236,7 @@ export function llmsTxt(
     switch (page.kind) {
       case 'home':
       case 'document':
+      case 'list':
         return page.entry.data.description;
       case 'event':
         return `${eventWhen(page.entry.data, page.locale, { withTime: tl('hero.dateTime'), dateOnly: tl('date.long') })}, ${venueLine(page.entry.data.venue)}`;

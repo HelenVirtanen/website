@@ -106,10 +106,12 @@ describe('llmsTxt', () => {
     }
   });
 
-  it('оглавление: митапы и документы без докладов и спикеров, ссылка на полный список', () => {
+  it('оглавление: списки, митапы и документы без отдельных докладов и спикеров, ссылка на полный список', () => {
     expect(index).toContain('(https://css.moscow/events/10/index.md)');
-    expect(index).not.toContain('/talks/');
-    expect(index).not.toContain('/speakers/');
+    expect(index).toContain('(https://css.moscow/talks/index.md)');
+    expect(index).toContain('(https://css.moscow/en/speakers/index.md)');
+    expect(index).not.toMatch(/\/talks\/(?!index\.md)[a-z]/);
+    expect(index).not.toMatch(/\/speakers\/(?!index\.md)[a-z]/);
     expect(index).toContain('[llms-full.txt](https://css.moscow/llms-full.txt)');
     expect(text).toContain('[llms.txt](https://css.moscow/llms.txt) is the short index');
   });

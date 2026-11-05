@@ -1,0 +1,44 @@
+---
+import CardGrid from '@moscowcss/ui/components/CardGrid';
+import SpeakerCard from '@moscowcss/ui/components/SpeakerCard';
+import ArchiveRow from '@moscowcss/ui/components/ArchiveRow';
+import photoUrl from '../../../packages/content/src/speakers/assets/aleksey-okhrimenko.jpg?url';
+
+interface Props {
+  /** Что показать: карточки спикеров сеткой или строки докладов в одну колонку */
+  variant?: 'speakers' | 'rows';
+  /** Сколько ячеек */
+  count?: number;
+}
+
+const { variant = 'speakers', count = 7 } = Astro.props;
+const names = ['Алексей Охрименко', 'Константин Леонидович Константинопольский', 'Анна Иванова', 'Борис Петров'];
+const tags = [['31', '28', '22'], ['30'], [], ['2021', '19']];
+const image = { src: photoUrl, width: 480, height: 480 };
+---
+
+{
+  variant === 'speakers' ? (
+    <CardGrid>
+      {Array.from({ length: count }, (_, index) => (
+        <li>
+          <SpeakerCard href="#" name={names[index % names.length] ?? ''} image={image} tags={tags[index % tags.length]} tagsLabel="Митапы" />
+        </li>
+      ))}
+    </CardGrid>
+  ) : (
+    <CardGrid columns="single">
+      {Array.from({ length: count }, (_, index) => (
+        <li>
+          <ArchiveRow
+            href="#"
+            title={index === 1 ? 'Очень длинное название доклада про контейнерные запросы, каскадные слои и всё, что между ними' : 'Якорное позиционирование'}
+            meta={['Алексей Охрименко', '31 митап, 9 июля 2026']}
+            badges={index % 2 === 0 ? ['31', 'видео', 'слайды'] : ['30']}
+            headingLevel={3}
+          />
+        </li>
+      ))}
+    </CardGrid>
+  )
+}

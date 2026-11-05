@@ -1,0 +1,30 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { root, list, link } from './SectionTabs.css';
+
+const Tag = 'nav';
+
+export interface SectionTab {
+  /** Адрес раздела */
+  href: string;
+  /** Название раздела */
+  label: string;
+  /** Текущий раздел: `aria-current="page"` */
+  current?: boolean;
+}
+
+// Доступное имя навигации — атрибут `aria-label` из HTMLAttributes<typeof Tag>.
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Разделы в порядке показа */
+  items: SectionTab[];
+}
+
+const { items, class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[root, className]} {...attrs}>
+  <ul class={list}>
+    {items.map((tab) => (
+      <li><a class={link} href={tab.href} aria-current={tab.current ? 'page' : undefined}>{tab.label}</a></li>
+    ))}
+  </ul>
+</Tag>

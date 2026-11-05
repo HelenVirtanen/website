@@ -16,7 +16,7 @@ const home = (locale: string) => ({
 const catalog = () => ({ ...twoMeetupsCatalog(), pages: [home('ru'), home('en')] });
 
 describe('publicPagesOf', () => {
-  it('даёт главную, митапы, доклады и спикеров каждого языка', () => {
+  it('даёт главную, списки, митапы, доклады и спикеров каждого языка', () => {
     const pages = publicPagesOf(catalog());
     expect(pages.map((page) => page.path).sort()).toEqual(
       [
@@ -32,8 +32,24 @@ describe('publicPagesOf', () => {
         '/en/talks/anchor-positioning/',
         '/speakers/daria-egorova/',
         '/en/speakers/daria-egorova/',
+        '/events/',
+        '/talks/',
+        '/speakers/',
+        '/en/events/',
+        '/en/talks/',
+        '/en/speakers/',
       ].sort(),
     );
+  });
+
+  it('список: путь под языком, заголовок и описание из словаря, оба языка в alternates', () => {
+    const talks = pagesOfKind(publicPagesOf(catalog()), 'list').find((page) => page.path === '/en/talks/');
+    expect(talks).toMatchObject({ locale: 'en', slugParam: 'talks', entry: { data: { list: 'talks', title: 'All talks' } } });
+    expect(talks?.entry.data.description.length).toBeGreaterThanOrEqual(50);
+    expect(talks?.alternates).toEqual([
+      { locale: 'ru', path: '/talks/' },
+      { locale: 'en', path: '/en/talks/' },
+    ]);
   });
 
   it('документ живёт прямо под языком, без папки раздела; черновик не публичен', () => {

@@ -1,0 +1,15 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ArchivePage from '../../../components/ArchivePage.astro';
+import { loadCatalog } from '../../../content/catalog';
+import { localeParam, pagesOfKind, publicPagesOf, type PublicPage } from '../../../seo/pages';
+
+export const getStaticPaths = (async () =>
+  pagesOfKind(publicPagesOf(await loadCatalog()), 'list')
+    .filter((page) => page.entry.data.list === 'events')
+    .map((page) => ({ params: { locale: localeParam(page.locale) }, props: { page } }))) satisfies GetStaticPaths;
+
+const { page } = Astro.props as { page: Extract<PublicPage, { kind: 'list' }> };
+---
+
+<ArchivePage page={page} />

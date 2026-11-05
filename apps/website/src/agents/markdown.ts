@@ -8,6 +8,7 @@ import {
   type Catalog,
   type EventEntry,
 } from '../content/catalog';
+import { archiveOf, SPEAKER_EVENT_LABELS } from '../content/archive';
 import { eventLinksOf } from '../content/event-links';
 import { eventDateParts, eventWhen, fillTemplate, venueLine } from '../content/format';
 import { localizePath, useTranslations } from '../i18n';
@@ -154,5 +155,31 @@ export function markdownOf(page: PublicPage, catalog: MarkdownCatalog, context: 
 
     case 'document':
       return document([`# ${page.entry.data.title}`, '', page.entry.body?.trim()]);
+
+    case 'list': {
+      const { list, title, description } = page.entry.data;
+      const archive = archiveOf(catalog, locale);
+      const url = (path: string): string => abs(localizePath(locale, path));
+      const badges = (items: readonly (string | false)[]): string => {
+        const shown = items.filter((item): item is string => Boolean(item));
+        return shown.length > 0 ? ` (${shown.join(', ')})` : '';
+      };
+      const lines =
+        list === 'events'
+          ? archive.events.map((item) => {
+              const event = inLocale(catalog.events).find((entry) => slugOf(entry) === item.slug);
+              return `- ${link(item.title, url(`events/${item.slug}`))}, ${event ? day(event) : item.date}, ${item.venue}; ${fillTemplate(t('list.talksCount'), { count: String(item.talks) })}${badges([item.recording && t('badge.recording'), item.photos && t('badge.photos')])}`;
+            })
+          : list === 'talks'
+            ? archive.talks.map((item) => {
+                const people = speakerLinks(item.speakers.map((speaker) => speaker.slug));
+                return `- ${link(item.title, url(`talks/${item.slug}`))}${people ? `, ${people}` : ''}; ${link(item.event.title, url(`events/${item.event.slug}`))}${badges([item.video && t('badge.video'), item.slides && t('badge.slides')])}`;
+              })
+            : archive.speakers.map((item) => {
+                const labels = item.events.slice(0, SPEAKER_EVENT_LABELS).map((event) => event.label);
+                return `- ${link(item.name, url(`speakers/${item.slug}`))}${item.role ? `: ${item.role}` : ''}${labels.length > 0 ? `; ${t('speaker.events')}: ${labels.join(', ')}` : ''}`;
+              });
+      return document([`# ${title}`, '', description, '', ...lines]);
+    }
   }
 }

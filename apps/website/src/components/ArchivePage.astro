@@ -1,0 +1,138 @@
+---
+import H1 from '@moscowcss/ui/components/H1';
+import Paragraph from '@moscowcss/ui/components/Paragraph';
+import SectionTabs from '@moscowcss/ui/components/SectionTabs';
+import ArchiveFilter from '@moscowcss/ui/components/ArchiveFilter';
+import CardGrid from '@moscowcss/ui/components/CardGrid';
+import ArchiveRow from '@moscowcss/ui/components/ArchiveRow';
+import SpeakerCard from '@moscowcss/ui/components/SpeakerCard';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { archiveOf, SPEAKER_EVENT_LABELS, yearsInArchive, ARCHIVE_KINDS } from '../content/archive';
+import { loadCatalog, localeOf, slugOf } from '../content/catalog';
+import { eventDateParts, fillTemplate } from '../content/format';
+import { speakerImage } from '../content/speaker-image';
+import { localizePath, useTranslations } from '../i18n';
+import type { PublicPage } from '../seo/pages';
+import { main, inner, head, empty, resetButton } from './ArchivePage.css';
+
+// Страница списка: митапы, доклады или спикеры. Строки — из archiveOf, их же фильтрует скрипт.
+interface Props {
+  page: Extract<PublicPage, { kind: 'list' }>;
+}
+
+const { page } = Astro.props;
+const { locale, alternates } = page;
+const { list: kind, title, description } = page.entry.data;
+const t = useTranslations(locale);
+
+const catalog = await loadCatalog();
+const archive = archiveOf(catalog, locale);
+const eventBySlug = new Map(
+  catalog.events.filter((event) => localeOf(event) === locale).map((event) => [slugOf(event), event]),
+);
+const dayOf = (slug: string): string => {
+  const event = eventBySlug.get(slug);
+  return event ? fillTemplate(t('date.long'), eventDateParts(event.data.date, locale)) : '';
+};
+const speakerBySlug = new Map(
+  catalog.speakers.filter((speaker) => localeOf(speaker) === locale).map((speaker) => [slugOf(speaker), speaker]),
+);
+const images = new Map(
+  kind === 'speakers'
+    ? await Promise.all(
+        archive.speakers.map(async (item) => {
+          const entry = speakerBySlug.get(item.slug);
+          return [item.slug, entry ? await speakerImage(entry) : undefined] as const;
+        }),
+      )
+    : [],
+);
+
+const items = archive[kind];
+const years = kind === 'speakers' ? [] : yearsInArchive(kind, items);
+const tabs = ARCHIVE_KINDS.map((list) => ({
+  href: localizePath(locale, list),
+  label: t(`list.tab.${list}`),
+  current: list === kind,
+}));
+// Только строки своего вида: остальное странице не нужно.
+const data = JSON.stringify({ events: [], talks: [], speakers: [], [kind]: items }).replaceAll('<', '\\u003c');
+---
+
+<BaseLayout title={`${title} — ${t('site.name')}`} description={description} lang={locale} alternates={alternates}>
+  <main id="main" tabindex="-1" class={main}>
+    <div class={inner} data-archive data-archive-kind={kind} data-archive-template={t('filter.status')}>
+      <div class={head}>
+        <H1>{title}</H1>
+        <SectionTabs aria-label={t('list.tabs')} items={tabs} />
+      </div>
+      <ArchiveFilter
+        queryLabel={t(`filter.query.${kind}`)}
+        queryPlaceholder={t(`filter.placeholder.${kind}`)}
+        yearLabel={kind === 'speakers' ? undefined : t('filter.year')}
+        anyYearLabel={t('filter.anyYear')}
+        years={years}
+        mediaLabel={kind === 'speakers' ? undefined : t(`filter.media.${kind}`)}
+        resetLabel={t('filter.reset')}
+        toolParamDescription={t('filter.toolParam')}
+      />
+      <div class={empty} data-archive-empty hidden>
+        <Paragraph>{t('filter.empty')}</Paragraph>
+        <button class={resetButton} type="button" data-archive-reset>{t('filter.reset')}</button>
+      </div>
+      {
+        kind === 'speakers' ? (
+          <CardGrid data-archive-list>
+            {archive.speakers.map((item, index) => {
+              const image = images.get(item.slug);
+              return (
+                image && (
+                  <li data-archive-index={index}>
+                    <SpeakerCard
+                      href={localizePath(locale, `speakers/${item.slug}`)}
+                      name={item.name}
+                      image={image}
+                      tags={item.events.slice(0, SPEAKER_EVENT_LABELS).map((event) => event.label)}
+                      tagsLabel={t('speaker.events')}
+                    />
+                  </li>
+                )
+              );
+            })}
+          </CardGrid>
+        ) : kind === 'talks' ? (
+          <CardGrid columns="single" data-archive-list>
+            {archive.talks.map((item, index) => (
+              <li data-archive-index={index}>
+                <ArchiveRow
+                  href={localizePath(locale, `talks/${item.slug}`)}
+                  title={item.title}
+                  meta={[item.speakers.map((speaker) => speaker.name).join(', '), `${item.event.title}, ${dayOf(item.event.slug)}`].filter(Boolean)}
+                  badges={[item.event.label, item.video && t('badge.video'), item.slides && t('badge.slides')].filter((badge): badge is string => Boolean(badge))}
+                />
+              </li>
+            ))}
+          </CardGrid>
+        ) : (
+          <CardGrid columns="single" data-archive-list>
+            {archive.events.map((item, index) => (
+              <li data-archive-index={index}>
+                <ArchiveRow
+                  href={localizePath(locale, `events/${item.slug}`)}
+                  title={item.title}
+                  meta={[dayOf(item.slug), item.venue, fillTemplate(t('list.talksCount'), { count: String(item.talks) })]}
+                  badges={[item.label, item.recording && t('badge.recording'), item.photos && t('badge.photos')].filter((badge): badge is string => Boolean(badge))}
+                />
+              </li>
+            ))}
+          </CardGrid>
+        )
+      }
+      <script type="application/json" data-archive-data set:html={data} />
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import '../archive/filter.client';
+</script>

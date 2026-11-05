@@ -1,7 +1,9 @@
 ---
 import LinkList from '@moscowcss/ui/components/LinkList';
 import Paragraph from '@moscowcss/ui/components/Paragraph';
+import SectionTabs from '@moscowcss/ui/components/SectionTabs';
 import type { CollectionEntry } from 'astro:content';
+import { ARCHIVE_KINDS } from '../content/archive-filter';
 import { slugOf } from '../content/catalog';
 import { eventDateParts, fillTemplate } from '../content/format';
 import { localizePath, useTranslations, type Locale } from '../i18n';
@@ -29,6 +31,7 @@ const items = events.map((event) => ({
     <section class={section} id="events">
       <div class={inner}>
         <LinkList title={t('events.past')} items={items} />
+        <SectionTabs aria-label={t('list.all')} items={ARCHIVE_KINDS.map((list) => ({ href: localizePath(locale, list), label: t(`list.tab.${list}`) }))} />
         <Paragraph>
           <a class={feedLink} href={feedPath(locale)} type="application/rss+xml">{t('rss.subscribe')}</a>
         </Paragraph>

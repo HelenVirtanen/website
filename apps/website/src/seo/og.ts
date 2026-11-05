@@ -25,6 +25,7 @@ export const OG_TYPE: Record<Kind, 'website' | 'article' | 'profile'> = {
   talk: 'article',
   speaker: 'profile',
   document: 'article',
+  list: 'website',
 };
 
 /** Параметр маршрута `/og/[...path].png`: адрес без слэшей по краям, у Twitter с суффиксом. */
@@ -91,5 +92,7 @@ export function cardInputOf(
       return { title: page.entry.data.name, kicker: t('og.kind.speaker'), meta: page.entry.data.role ?? '' };
     case 'document':
       return { title: page.entry.data.title, kicker: t('og.kind.document'), meta: page.entry.data.description };
+    case 'list':
+      return { title: page.entry.data.title, kicker: t('og.kind.list'), meta: t('og.home.meta') };
   }
 }

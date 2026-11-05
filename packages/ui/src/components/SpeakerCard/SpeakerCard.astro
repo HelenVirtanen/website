@@ -1,0 +1,33 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { root, photo, name as nameClass, tags as tagsClass, tag, hiddenLabel } from './SpeakerCard.css';
+
+const Tag = 'a';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Имя и фамилия спикера */
+  name: string;
+  /** Фото или аватар с инициалами; подпись не нужна — рядом имя */
+  image: { src: string; width: number; height: number };
+  /** Метки последних митапов спикера, например `31`, `28` */
+  tags?: string[];
+  /** Слово перед метками для скринридера: «Митапы» */
+  tagsLabel?: string;
+}
+
+const { name, image, tags = [], tagsLabel, class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[root, className]} {...attrs}>
+  <img class={photo} src={image.src} width={image.width} height={image.height} alt="" loading="lazy" decoding="async" />
+  <span class={nameClass}>{name}</span>
+  {
+    tags.length > 0 && (
+      <span class={tagsClass}>
+        {tagsLabel && <span class={hiddenLabel}>{`${tagsLabel}: `}</span>}
+        {tags.map((label, index) => (
+          <span class={tag}>{index < tags.length - 1 && tagsLabel ? <>{label}<span class={hiddenLabel}>, </span></> : label}</span>
+        ))}
+      </span>
+    )
+  }
+</Tag>

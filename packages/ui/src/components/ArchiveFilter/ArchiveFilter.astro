@@ -1,0 +1,67 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { root, field, label as labelClass, input, select, check, checkbox, reset, status } from './ArchiveFilter.css';
+
+const Tag = 'form';
+
+// Без скрипта фильтр не работает, поэтому форма скрыта атрибутом `hidden`, а скрипт страницы его
+// снимает. Поля — `q`, `year`, `media`: те же имена, что в адресе страницы.
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Подпись текстового поля */
+  queryLabel: string;
+  /** Подсказка внутри пустого текстового поля */
+  queryPlaceholder?: string;
+  /** Подпись выбора года; без неё выбора года нет */
+  yearLabel?: string;
+  /** Первый вариант выбора года: «Все годы» */
+  anyYearLabel?: string;
+  /** Годы для выбора, новые первыми */
+  years?: number[];
+  /** Подпись флажка «есть видео» или «есть запись»; без неё флажка нет */
+  mediaLabel?: string;
+  /** Подпись кнопки сброса */
+  resetLabel: string;
+  /** Описание поля для агента браузера (WebMCP `toolparamdescription`) */
+  toolParamDescription?: string;
+}
+
+const {
+  queryLabel,
+  queryPlaceholder,
+  yearLabel,
+  anyYearLabel = '',
+  years = [],
+  mediaLabel,
+  resetLabel,
+  toolParamDescription,
+  class: className,
+  ...attrs
+} = Astro.props;
+---
+<Tag class:list={[root, className]} role="search" hidden data-archive-filter {...attrs}>
+  <label class={field}>
+    <span class={labelClass}>{queryLabel}</span>
+    <input class={input} type="search" name="q" placeholder={queryPlaceholder} autocomplete="off" toolparamdescription={toolParamDescription} />
+  </label>
+  {
+    yearLabel && years.length > 0 && (
+      <label class={field}>
+        <span class={labelClass}>{yearLabel}</span>
+        <select class:list={[input, select]} name="year">
+          <option value="">{anyYearLabel}</option>
+          {years.map((year) => <option value={String(year)}>{year}</option>)}
+        </select>
+      </label>
+    )
+  }
+  {
+    mediaLabel && (
+      <label class={check}>
+        <input class={checkbox} type="checkbox" name="media" value="1" />
+        <span>{mediaLabel}</span>
+      </label>
+    )
+  }
+  <button class={reset} type="reset">{resetLabel}</button>
+  <p class={status} aria-live="polite" data-archive-status></p>
+</Tag>

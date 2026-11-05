@@ -85,11 +85,16 @@ async function discoverPages() {
   const { context, page } = await newPage('light', 1440);
   await open(page, '/events/31/');
   const firstLink = (prefix) =>
-    page.evaluate((value) => document.querySelector(`a[href^="${value}"]`)?.getAttribute('href'), prefix);
+    page.evaluate(
+      (value) => [...document.querySelectorAll(`main a[href^="${value}"]`)].map((link) => link.getAttribute('href')).find((href) => href !== value),
+      prefix,
+    );
   const talk = await firstLink('/talks/');
   const speaker = await firstLink('/speakers/');
   await context.close();
-  return ['/', '/en/', '/events/31/', talk, speaker, '/search/', '/privacy/', '/about/', '/en/events/31/', '/404.html'].filter(Boolean);
+  // Списки (спека 007) — с фильтром, раскрытым скриптом страницы.
+  const lists = ['/events/', '/talks/', '/speakers/', '/en/speakers/'];
+  return ['/', '/en/', '/events/31/', talk, speaker, ...lists, '/search/', '/privacy/', '/about/', '/en/events/31/', '/404.html'].filter(Boolean);
 }
 
 async function checkAxe(page, where) {

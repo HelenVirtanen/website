@@ -60,7 +60,11 @@ demoed in `apps/storybook`.
   `CallToAction` (floating registration button, `position: fixed`,
   `mix-blend-mode: difference`), `Button` (link or button, `default` and `nav`
   sizes), `CardSlider`/`Card`/`BlockTitle` (FAQ block; `autoplayMs` makes the slider self-playing and looped, paused on hover, on focus and under reduced motion, `shuffle` randomises the cards: both used by the organizers), `MapDialog` (native modal `dialog` with the Yandex map, loaded on open, and links to Yandex, 2GIS and Google), `NavBar` (header and the
-  full-screen menu).
+  full-screen menu; a link with `current` gets `aria-current`). The list pages (spec 007) use
+  `CardGrid` (a `ul` whose `li` cells share one border line, like the designer's table; one
+  column, or as many as fit from `tablet`), `SpeakerCard` (whole-card link: octagon photo, name,
+  up to three meetup labels), `ArchiveRow` (title link, caption line, labels), `ArchiveFilter`
+  (form `hidden` until the page script shows it) and `SectionTabs` (links between the lists).
 - **Styles live only in the colocated `.css.ts`** — no inline `style="…"` with
   literal values.
 - **Stories live in `apps/storybook/stories/`**, not here (`pnpm new:component`

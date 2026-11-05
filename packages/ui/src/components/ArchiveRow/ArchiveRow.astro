@@ -1,0 +1,34 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { root, title as titleClass, link, meta as metaClass, badges as badgesClass, badge } from './ArchiveRow.css';
+
+const Tag = 'article';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Адрес страницы митапа или доклада */
+  href: string;
+  /** Название: ссылка и заголовок строки */
+  title: string;
+  /** Подписи под названием по порядку: дата, площадка, спикеры */
+  meta?: string[];
+  /** Короткие метки справа: номер митапа, «видео», «слайды» */
+  badges?: string[];
+  /** Уровень заголовка строки: иерархию задаёт страница */
+  headingLevel?: 2 | 3 | 4;
+}
+
+const { href, title, meta = [], badges = [], headingLevel = 2, class: className, ...attrs } = Astro.props;
+const Heading = `h${headingLevel}` as const;
+---
+<Tag class:list={[root, className]} {...attrs}>
+  <Heading class={titleClass}><a class={link} href={href}>{title}</a></Heading>
+  {meta.length > 0 && <p class={metaClass}>{meta.join(' · ')}</p>}
+  {
+    badges.length > 0 && (
+      <ul class={badgesClass}>
+        {badges.map((label) => <li class={badge}>{label}</li>)}
+      </ul>
+    )
+  }
+  <slot />
+</Tag>

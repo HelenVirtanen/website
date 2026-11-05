@@ -86,6 +86,12 @@ export const link = style({
       opacity: 1,
       textDecoration: 'underline',
     },
+    // Текущий раздел — полная яркость и подчёркивание: не только цветом.
+    '&[aria-current]': {
+      opacity: 1,
+      textDecoration: 'underline',
+      textDecorationThickness: vars.border.width.medium,
+    },
   },
 });
 
@@ -260,6 +266,13 @@ export const overlayLink = style({
     },
     '&:hover::after': {
       opacity: 1,
+    },
+    '&[aria-current]::after': {
+      opacity: 1,
+    },
+    '&[aria-current]': {
+      textDecoration: 'underline',
+      textDecorationThickness: vars.border.width.medium,
     },
   },
 });

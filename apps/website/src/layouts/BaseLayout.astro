@@ -19,6 +19,7 @@ import { buildNow } from '../content/now';
 import { CARD_TYPE, OG_SIZE, OG_TYPE, cardMetaOf } from '../seo/og';
 import { AI_CATALOG_PATH, ARD_PATH } from '../agents/discovery';
 import { markdownPathOf } from '../agents/paths';
+import { archiveDataPath } from '../agents/archive-data';
 import { feedPath } from '../rss/feed';
 import { navLinksOf } from './nav';
 import SkipLink from '../components/SkipLink.astro';
@@ -86,7 +87,7 @@ const jsonLd =
 const ogLocale: Record<Locale, string> = { ru: 'ru_RU', en: 'en_US' };
 const xDefault = alternates.find((alternate) => alternate.locale === defaultLocale);
 
-const navLinks = navLinksOf(lang, t);
+const navLinks = navLinksOf(lang, t, Astro.url.pathname);
 
 const localeOptions = locales.map((code) => ({
   code,
@@ -147,6 +148,8 @@ const localeOptions = locales.map((code) => ({
     {xDefault && <link rel="alternate" hreflang="x-default" href={absolute(xDefault.path)} />}
     <link rel="alternate" type="application/rss+xml" title={t('rss.title')} href={absolute(feedPath(lang))} />
     {publicPage && <link rel="alternate" type="text/markdown" href={absolute(markdownPathOf(publicPage.path))} />}
+    {/* Данные списков архива языка: их читает WebMCP-инструмент list_archive */}
+    <link rel="alternate" type="application/json" href={archiveDataPath(lang)} data-archive-json />
     <link rel="privacy-policy" href={absolute(localizePath(lang, 'privacy'))} />
     <link rel="ai-catalog" href={absolute(AI_CATALOG_PATH)} />
     <link rel="ard" href={absolute(ARD_PATH)} />
@@ -190,6 +193,7 @@ const localeOptions = locales.map((code) => ({
     location: new URL(window.location.href),
     fetch: (url) => fetch(url),
     loadPagefind: () => import(/* @vite-ignore */ PAGEFIND),
+    archiveUrl: document.querySelector<HTMLLinkElement>('link[data-archive-json]')?.href,
   }).catch((error: unknown) => {
     console.error('WebMCP: инструменты не зарегистрированы', error);
   });

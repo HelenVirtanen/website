@@ -66,11 +66,57 @@ describe('registerSiteTools', () => {
     expect(await registerSiteTools(undefined, env())).toBe(false);
   });
 
-  it('регистрирует оба инструмента и передаёт signal', async () => {
+  it('регистрирует все инструменты и передаёт signal', async () => {
     const registerTool = vi.fn();
     const signal = new AbortController().signal;
     expect(await registerSiteTools({ registerTool }, env(), signal)).toBe(true);
-    expect(registerTool.mock.calls.map(([item]) => (item as WebMcpTool).name)).toEqual(['search_site', 'get_page_markdown']);
+    expect(registerTool.mock.calls.map(([item]) => (item as WebMcpTool).name)).toEqual(['search_site', 'get_page_markdown', 'list_archive']);
     expect(registerTool.mock.calls[0]?.[1]).toEqual({ signal });
+  });
+});
+
+describe('list_archive', () => {
+  const archive = {
+    events: [
+      { slug: '31', label: '31', title: '31 митап', date: '2026-07-09', year: 2026, venue: 'Звук', talks: 2, recording: false, photos: true },
+      { slug: '10', label: '10', title: '10 митап', date: '2023-03-14', year: 2023, venue: 'Авито', talks: 3, recording: true, photos: false },
+    ],
+    talks: [
+      { slug: 'anchor', title: 'Якоря', year: 2026, event: { slug: '31', label: '31', title: '31 митап' }, speakers: [{ slug: 'elkin', name: 'Пётр Ёлкин' }], video: false, slides: true },
+      { slug: 'grid', title: 'Гриды', year: 2023, event: { slug: '10', label: '10', title: '10 митап' }, speakers: [{ slug: 'elkin', name: 'Пётр Ёлкин' }], video: true, slides: false },
+    ],
+    speakers: [{ slug: 'elkin', name: 'Пётр Ёлкин', role: 'Яндекс', years: [2026, 2023], events: [{ slug: '31', label: '31' }, { slug: '10', label: '10' }] }],
+  };
+  const archiveEnv = (overrides: Partial<ToolEnvironment> = {}) =>
+    env({
+      location: new URL('https://css.moscow/en/talks/'),
+      archiveUrl: 'https://css.moscow/en/archive.json',
+      fetch: vi.fn(async (url: string) => ({ ok: url === '/en/archive.json', status: url === '/en/archive.json' ? 200 : 404, text: async () => JSON.stringify(archive) })),
+      ...overrides,
+    });
+
+  it('фильтрует той же функцией, что страница: ё, год, видео; адреса — языка данных', async () => {
+    const environment = archiveEnv();
+    const result = await tool('list_archive', environment).execute({ kind: 'talks', query: 'ёлкин', media: true });
+    expect(result.content[0]?.text).toBe(
+      '1 talks match; showing 1–1.\n- Гриды: https://css.moscow/en/talks/grid/ — Пётр Ёлкин; meetup 10 (2023) [video]',
+    );
+    expect(environment.fetch).toHaveBeenCalledWith('/en/archive.json');
+  });
+
+  it('митапы и спикеры, лимит и сдвиг', async () => {
+    const events = await tool('list_archive', archiveEnv()).execute({ kind: 'events', limit: 1, offset: 1 });
+    expect(events.content[0]?.text).toBe(
+      '2 events match; showing 2–2.\n- 10 митап: https://css.moscow/en/events/10/ — 2023-03-14, Авито, talks: 3 [recording]',
+    );
+    const speakers = await tool('list_archive', archiveEnv()).execute({ kind: 'speakers', year: 2023 });
+    expect(speakers.content[0]?.text).toContain('- Пётр Ёлкин: https://css.moscow/en/speakers/elkin/ — Яндекс; meetups: 31, 10');
+  });
+
+  it('неизвестный вид, нет данных, пустой результат', async () => {
+    expect((await tool('list_archive', archiveEnv()).execute({ kind: 'videos' })).isError).toBe(true);
+    expect((await tool('list_archive', archiveEnv({ archiveUrl: undefined })).execute({ kind: 'talks' })).isError).toBe(true);
+    expect((await tool('list_archive', archiveEnv({ archiveUrl: '/missing.json' })).execute({ kind: 'talks' })).isError).toBe(true);
+    expect((await tool('list_archive', archiveEnv()).execute({ kind: 'events', year: 2019 })).content[0]?.text).toBe('No events match (0 found in total).');
   });
 });

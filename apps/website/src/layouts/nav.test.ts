@@ -8,30 +8,23 @@ vi.mock('astro:i18n', () => ({
 }));
 
 describe('navLinksOf', () => {
-  it('разделы ведут на главную своего языка, а не на якорь текущей страницы', () => {
+  it('пять разделов сайта своего языка, без якорей главной', () => {
     expect(navLinksOf('ru', useTranslations('ru')).map((link) => link.href)).toEqual([
-      '/#registration',
-      '/#program',
-      '/#partners',
-      '/#address',
-      '/#events',
+      '/events/',
+      '/talks/',
+      '/speakers/',
+      '/about/',
       '/search/',
     ]);
-    expect(navLinksOf('en', useTranslations('en'))[1]).toEqual({ href: '/en/#program', label: 'Program' });
-    expect(navLinksOf('ru', useTranslations('ru'))[4]).toEqual({ href: '/#events', label: 'История' });
+    expect(navLinksOf('en', useTranslations('en'))[1]).toEqual({ href: '/en/talks/', label: 'Talks' });
+    expect(navLinksOf('ru', useTranslations('ru'))[0]).toEqual({ href: '/events/', label: 'История' });
   });
 
-  it('каждый якорь — id секции главной', async () => {
-    const { readFile } = await import('node:fs/promises');
-    const sections = await Promise.all(
-      ['HeroSection', 'ProgramSection', 'PartnerSection', 'PastEventsSection'].map((name) =>
-        readFile(new URL(`../sections/${name}.astro`, import.meta.url), 'utf8'),
-      ),
-    );
-    const source = sections.join('\n');
-    for (const { href } of navLinksOf('ru', useTranslations('ru')).slice(0, -1)) {
-      const anchor = href.split('#')[1];
-      expect(source, anchor).toMatch(new RegExp(`(id = '|id=")${anchor}['"]`));
-    }
+  it('текущий раздел: сама страница — page, страница внутри — true, главная — ничего', () => {
+    const t = useTranslations('ru');
+    expect(navLinksOf('ru', t, '/speakers/').find((link) => link.current)).toMatchObject({ href: '/speakers/', current: 'page' });
+    expect(navLinksOf('ru', t, '/talks/grid/').find((link) => link.current)).toMatchObject({ href: '/talks/', current: 'true' });
+    expect(navLinksOf('ru', t, '/').some((link) => link.current)).toBe(false);
+    expect(navLinksOf('en', useTranslations('en'), '/talks/').some((link) => link.current)).toBe(false);
   });
 });
