@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createRandom } from '../TagPile/pile';
-import { fallingCount, fallingItems, overlapsAny, readDecorOff, writeDecorOff } from './falling';
+import { fallingCount, fallingItems, gridPoints, overlapsAny, readDecorOff, writeDecorOff } from './falling';
 
 const memoryStorage = () => {
   const values = new Map<string, string>();
@@ -67,6 +67,15 @@ describe('fallingItems', () => {
   it('разные сиды дают разное падение, одинаковые — одинаковое', () => {
     expect(fallingItems(6, createRandom(1))).toEqual(fallingItems(6, createRandom(1)));
     expect(fallingItems(6, createRandom(1))).not.toEqual(fallingItems(6, createRandom(2)));
+  });
+});
+
+describe('gridPoints', () => {
+  it('раскладывает точки равномерно внутри фигуры', () => {
+    const points = gridPoints({ left: 10, right: 40, top: 0, bottom: 30 }, 3);
+    expect(points).toHaveLength(9);
+    expect(points[0]).toEqual({ x: 15, y: 5 });
+    expect(points[8]).toEqual({ x: 35, y: 25 });
   });
 });
 

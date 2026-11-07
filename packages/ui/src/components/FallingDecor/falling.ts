@@ -79,6 +79,20 @@ export interface Box {
   bottom: number;
 }
 
+/** Точки сетки внутри фигуры: у шага меньше высоты строки ни одна строка текста под фигурой не проскочит. */
+export function gridPoints(box: Box, perSide = 3): { x: number; y: number }[] {
+  const points: { x: number; y: number }[] = [];
+  for (let row = 0; row < perSide; row += 1) {
+    for (let column = 0; column < perSide; column += 1) {
+      points.push({
+        x: box.left + ((box.right - box.left) * (column + 0.5)) / perSide,
+        y: box.top + ((box.bottom - box.top) * (row + 0.5)) / perSide,
+      });
+    }
+  }
+  return points;
+}
+
 /** Задевает ли фигура хотя бы один блок текста; пустые блоки (скрытые элементы) не считаются. */
 export function overlapsAny(box: Box, blocks: readonly Box[]): boolean {
   return blocks.some(

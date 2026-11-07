@@ -1,11 +1,8 @@
 import { createRandom } from '../TagPile/pile';
-import { fallingCount, fallingItems, overlapsAny, readDecorOff, writeDecorOff, type DecorKind } from './falling';
+import { fallingCount, fallingItems, gridPoints, overlapsAny, readDecorOff, writeDecorOff, type DecorKind } from './falling';
 import { helixBox, helixPaths, helixShapes, helixStretch, type HelixShape } from './helix';
 
 const INITIALIZED = 'data-falling-decor-initialized';
-// Шапка и открытое меню непрозрачны и закрывают фигуры сами, поэтому их тексты не считаем.
-const TEXT_BLOCKS =
-  ':is(h1, h2, h3, h4, h5, h6, p, li, dt, dd, blockquote, figcaption, td, th, label, a, button, input):not([data-navbar] *)';
 // Фигуры движутся медленно: чаще проверять незачем, а реже будет заметно, что цвет запаздывает.
 const CHECK_INTERVAL_MS = 150;
 // Вращение медленное: 30 кадров в секунду на глаз не отличить от 60, а считать вдвое меньше.
@@ -35,6 +32,25 @@ interface Spinner {
   onScreen: boolean;
 }
 
+// Строки текста под фигурой. Меряем сами строки, а не блоки: абзац и строка списка тянутся на всю ширину, и фигура
+// серела бы над пустым местом рядом с ними. Берём весь стек под точкой: растянутая ссылка заслоняет текст от верхнего элемента.
+function textLinesUnder(box: DOMRect, range: Range): DOMRect[] {
+  const seen = new Set<Element>();
+  const lines: DOMRect[] = [];
+  for (const { x, y } of gridPoints(box)) {
+    for (const element of document.elementsFromPoint(x, y)) {
+      if (seen.has(element)) continue;
+      seen.add(element);
+      for (const node of element.childNodes) {
+        if (node.nodeType !== Node.TEXT_NODE || !node.textContent?.trim()) continue;
+        range.selectNodeContents(node);
+        lines.push(...range.getClientRects());
+      }
+    }
+  }
+  return lines;
+}
+
 // Хранилище может быть запрещено настройками браузера уже на чтении свойства.
 function storageOf(): Storage | undefined {
   try {
@@ -62,13 +78,13 @@ export function setupFallingDecor(root: HTMLElement) {
   let off = readDecorOff(storageOf());
   let spinners: Spinner[] = [];
 
-  // Список собираем заново при каждой проверке: лента ЧАВО листается, а результаты поиска появляются позже.
+  const range = document.createRange();
+
   const muteOverText = () => {
-    const blocks = Array.from(document.querySelectorAll(TEXT_BLOCKS), (element) => element.getBoundingClientRect());
     root.querySelectorAll<HTMLElement>('[data-falling-item]').forEach((item) => {
       // Разжатая пружинка выходит за свой кадр, поэтому меряем сам контур: над текстом она должна сереть вовремя.
-      const shape = item.querySelector('[data-spring-outline]') ?? item;
-      item.firstElementChild?.classList.toggle(classes.muted, overlapsAny(shape.getBoundingClientRect(), blocks));
+      const box = (item.querySelector('[data-spring-outline]') ?? item).getBoundingClientRect();
+      item.firstElementChild?.classList.toggle(classes.muted, overlapsAny(box, textLinesUnder(box, range)));
     });
     for (const spinner of spinners) {
       const box = spinner.fall.getBoundingClientRect();
