@@ -3,7 +3,7 @@ import { fallingCount, fallingItems, overlapsAny, readDecorOff, writeDecorOff, t
 import { helixBox, helixPaths, helixShapes, helixStretch, type HelixShape } from './helix';
 
 const INITIALIZED = 'data-falling-decor-initialized';
-// Шапка и открытое меню лежат выше слоя и закрывают фигуры сами, поэтому их тексты не считаем.
+// Шапка и открытое меню непрозрачны и закрывают фигуры сами, поэтому их тексты не считаем.
 const TEXT_BLOCKS =
   ':is(h1, h2, h3, h4, h5, h6, p, li, dt, dd, blockquote, figcaption, td, th, label, a, button, input):not([data-navbar] *)';
 // Фигуры движутся медленно: чаще проверять незачем, а реже будет заметно, что цвет запаздывает.

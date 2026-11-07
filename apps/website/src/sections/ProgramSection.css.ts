@@ -7,7 +7,6 @@ export const section = style([
   {
     position: vars.position.relative,
     color: vars.color.text,
-    background: vars.color.background,
     overflow: 'hidden',
     selectors: {
       '&::before': {

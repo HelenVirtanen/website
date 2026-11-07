@@ -9,7 +9,6 @@ export const section = style([
   sectionPadding,
   {
     color: vars.color.text,
-    background: vars.color.background,
   },
 ]);
 

@@ -1,7 +1,7 @@
 import { globalStyle, keyframes, style } from '@vanilla-extract/css';
 import { vars } from '@moscowcss/design-system';
 
-// Слой над контентом, но без событий мыши: кнопки и ссылки под фигурами работают как обычно.
+// Слой под всем содержимым: фон страницы только у body, поэтому фигуры видны между блоками, а непрозрачные блоки их закрывают.
 export const root = style({
   position: vars.position.fixed,
   inset: vars.inset.zero,

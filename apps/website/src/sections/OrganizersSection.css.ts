@@ -6,7 +6,6 @@ export const section = style([
   sectionPadding,
   {
     color: vars.color.text,
-    background: vars.color.background,
     // Не hidden: такую секцию браузер прокручивает вбок при фокусе на карточке за краем, и она остаётся сдвинутой.
     overflow: 'clip',
   },

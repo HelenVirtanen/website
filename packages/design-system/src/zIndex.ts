@@ -15,7 +15,7 @@ const values = {
   zIndex: {
     ring: '1',
     content: '3',
-    decor: '40',
+    decor: '-1',
     floatingCta: '50',
     navOverlay: '100',
     skipLink: '110',

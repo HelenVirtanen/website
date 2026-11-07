@@ -8,7 +8,6 @@ export const section = style({
   paddingBlockEnd: vars.adaptive.heroPaddingBottom,
   paddingInline: vars.adaptive.heroPaddingInline,
   color: vars.color.text,
-  background: vars.color.background,
   overflow: 'hidden',
 });
 
