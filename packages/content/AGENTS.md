@@ -55,16 +55,21 @@ Decision record: `adr/001-content-model-md-relations.md`.
   the home page shows them in a self-playing looped slider, shuffled on every load. It shows
   `current` entries only; `past` ones are for a future about-page. Never invent
   data for people whose details are not provided.
+- **Reviews** (`reviews/<lang>/<name>.md`, images in `reviews/assets/`): real words of real people,
+  never invented; the Russian text is kept verbatim. `name` and the body are required. `role`,
+  `photo` (a portrait; without one the site draws initials) and `gallery` (`image` + translated `alt`,
+  shown in the review window) are optional; `photo` and the gallery files must match `ru`. No order
+  field: the wall shuffles on every load. The first paragraph goes on the sticker.
 - **Meetup `tags`:** optional list of topics shown as falling tags in the Hero,
   next to the meetup modes. It is translated text, so it is not checked against `ru`.
-- **New entries:** `pnpm new:event | new:talk | new:speaker | new:partner | new:faq | new:organizer`
+- **New entries:** `pnpm new:event | new:talk | new:speaker | new:partner | new:faq | new:organizer | new:review`
   writes drafts in both languages from `templates/` (outside `src/`, so they are
   not content). Hand-made files are fine if they pass the same schema.
 - **Russian text is the source of truth.** Do not edit Russian wording while
   moving content; the English text is a translation of the Russian meaning,
   names are transliterated.
 - Collections: `pages`, `events`, `talks`, `speakers`, `partners`, `faq`,
-  `organizers`, `documents`.
+  `organizers`, `reviews`, `documents`.
 - **Archive gaps:** talk `time` and speaker `role` are optional because old meetups
   did not keep them — never fill them in from guesswork. Meetup `photosUrl` links
   an external photo album; the registration link is hidden on past meetups.

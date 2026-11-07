@@ -9,6 +9,7 @@ import type {
   PageSchema,
   createOrganizerSchema,
   createPartnerSchema,
+  createReviewSchema,
   createTalkSchema,
   createSpeakerSchema,
 } from '@moscowcss/content/schema';
@@ -32,6 +33,7 @@ export type TalkData = z.output<ReturnType<typeof createTalkSchema>>;
 export type SpeakerData = z.output<ReturnType<typeof createSpeakerSchema>>;
 export type PartnerData = z.output<ReturnType<typeof createPartnerSchema>>;
 export type OrganizerData = z.output<ReturnType<typeof createOrganizerSchema>>;
+export type ReviewData = z.output<ReturnType<typeof createReviewSchema>>;
 export type PageData = z.output<typeof PageSchema>;
 export type FaqData = z.output<typeof FaqSchema>;
 export type DocumentData = z.output<typeof DocumentSchema>;
@@ -41,6 +43,7 @@ export type TalkEntry = CatalogEntry<TalkData>;
 export type SpeakerEntry = CatalogEntry<SpeakerData>;
 export type PartnerEntry = CatalogEntry<PartnerData>;
 export type OrganizerEntry = CatalogEntry<OrganizerData>;
+export type ReviewEntry = CatalogEntry<ReviewData>;
 export type PageEntry = CatalogEntry<PageData>;
 export type FaqEntry = CatalogEntry<FaqData>;
 export type DocumentEntry = CatalogEntry<DocumentData>;
@@ -51,6 +54,7 @@ export interface Catalog {
   speakers: SpeakerEntry[];
   partners: PartnerEntry[];
   organizers: OrganizerEntry[];
+  reviews: ReviewEntry[];
   pages: PageEntry[];
   faq: FaqEntry[];
   documents: DocumentEntry[];
@@ -79,13 +83,14 @@ const INVARIANTS = {
   speakers: ['photo', 'links'],
   partners: ['url', 'handle', 'logo', 'qrUrl'],
   organizers: ['status', 'photo', 'contacts'],
+  reviews: ['photo', 'gallery[].image'],
   faq: ['order'],
   documents: [],
   pages: ['telegramUrl', 'questionTag', 'decor'],
 } as const;
 
 // Тело обязательно там, где оно и есть содержание страницы или карточки.
-const BODY_REQUIRED = ['pages', 'talks', 'faq', 'documents'] as const;
+const BODY_REQUIRED = ['pages', 'talks', 'faq', 'documents', 'reviews'] as const;
 
 
 /** Язык записи: первый сегмент id. */
@@ -216,6 +221,7 @@ export function validateCatalog(
   checkTranslations('speakers', catalog.speakers, problems);
   checkTranslations('partners', catalog.partners, problems);
   checkTranslations('organizers', catalog.organizers, problems);
+  checkTranslations('reviews', catalog.reviews, problems);
   checkTranslations('faq', catalog.faq, problems);
   checkTranslations('pages', catalog.pages, problems);
   checkTranslations('documents', catalog.documents, problems);
@@ -227,6 +233,7 @@ export function validateCatalog(
     ['speakers', catalog.speakers],
     ['partners', catalog.partners],
     ['organizers', catalog.organizers],
+    ['reviews', catalog.reviews],
     ['faq', catalog.faq],
     ['documents', catalog.documents],
   ];
@@ -309,17 +316,18 @@ export function checkEventDays(
  * приходит от Astro (с путём файла), ошибка связей и переводов — от `validateCatalog`.
  */
 export async function loadCatalog(): Promise<Catalog> {
-  const [pages, events, talks, speakers, partners, organizers, faq, documents] = await Promise.all([
+  const [pages, events, talks, speakers, partners, organizers, reviews, faq, documents] = await Promise.all([
     getCollection('pages'),
     getCollection('events'),
     getCollection('talks'),
     getCollection('speakers'),
     getCollection('partners'),
     getCollection('organizers'),
+    getCollection('reviews'),
     getCollection('faq'),
     getCollection('documents'),
   ]);
-  const catalog = { events, talks, speakers, partners, organizers, pages, faq, documents };
+  const catalog = { events, talks, speakers, partners, organizers, reviews, pages, faq, documents };
   validateCatalog(catalog, {
     requireRendered: true,
     // filePath у записей Astro — относительно корня проекта, а сборка идёт из него же.

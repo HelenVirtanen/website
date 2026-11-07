@@ -1,0 +1,16 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ReviewsPage from '../../../components/ReviewsPage.astro';
+import { loadCatalog } from '../../../content/catalog';
+import { localeParam, pagesOfKind, publicPagesOf, type PublicPage } from '../../../seo/pages';
+
+export const getStaticPaths = (async () =>
+  pagesOfKind(publicPagesOf(await loadCatalog()), 'reviews').map((page) => ({
+    params: { locale: localeParam(page.locale) },
+    props: { page },
+  }))) satisfies GetStaticPaths;
+
+const { page } = Astro.props as { page: Extract<PublicPage, { kind: 'reviews' }> };
+---
+
+<ReviewsPage page={page} />

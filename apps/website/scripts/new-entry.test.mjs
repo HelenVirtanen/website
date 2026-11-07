@@ -10,6 +10,7 @@ import {
   FaqSchema,
   createOrganizerSchema,
   createPartnerSchema,
+  createReviewSchema,
   createTalkSchema,
   createSpeakerSchema,
 } from '@moscowcss/content/schema';
@@ -23,6 +24,7 @@ const SCHEMAS = {
   partner: createPartnerSchema(() => z.string()),
   faq: FaqSchema,
   organizer: createOrganizerSchema(() => z.string()),
+  review: createReviewSchema(() => z.string()),
 };
 
 // Шаблоны настоящие (packages/content/templates), контент во временной папке: тест ловит и поломку

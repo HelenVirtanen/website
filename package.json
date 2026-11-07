@@ -20,6 +20,7 @@
     "new:partner": "node apps/website/scripts/new-entry.mjs partner",
     "new:faq": "node apps/website/scripts/new-entry.mjs faq",
     "new:organizer": "node apps/website/scripts/new-entry.mjs organizer",
+    "new:review": "node apps/website/scripts/new-entry.mjs review",
     "prepare": "husky",
     "test": "turbo run test"
   },

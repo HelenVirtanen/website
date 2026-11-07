@@ -6,10 +6,12 @@ import {
   type CatalogEntry,
   type DocumentEntry,
   type EventEntry,
+  type ReviewEntry,
   type SpeakerEntry,
   type TalkEntry,
 } from '../content/catalog';
 import { ARCHIVE_KINDS, type ArchiveKind } from '../content/archive';
+import { publishedReviews } from '../content/reviews';
 import { defaultLocale, localizePath, locales, useTranslations, type Locale } from '../i18n';
 
 // Единый источник «какие страницы публичны и где они живут»: из него строятся маршруты,
@@ -19,6 +21,9 @@ type PageEntry = CatalogEntry<{ title: string; description: string }>;
 
 /** Страница списка (спека 007): записи в контенте у неё нет, заголовок и описание — из словаря. */
 export type ListEntry = CatalogEntry<{ title: string; description: string; list: ArchiveKind; draft: false }>;
+
+/** Стена отзывов (спека 008): записи в контенте у неё нет, заголовок и описание — из словаря. */
+export type ReviewsEntry = CatalogEntry<{ title: string; description: string; draft: false }>;
 
 export interface Alternate {
   locale: Locale;
@@ -42,12 +47,13 @@ export type PublicPage =
   | (Base & { kind: 'talk'; entry: TalkEntry })
   | (Base & { kind: 'speaker'; entry: SpeakerEntry })
   | (Base & { kind: 'document'; entry: DocumentEntry })
-  | (Base & { kind: 'list'; entry: ListEntry });
+  | (Base & { kind: 'list'; entry: ListEntry })
+  | (Base & { kind: 'reviews'; entry: ReviewsEntry });
 
 type Kind = PublicPage['kind'];
 
 // Документ и список живут прямо под языком, без папки раздела: `/privacy/`, `/talks/`.
-const SECTION: Record<Exclude<Kind, 'home' | 'document' | 'list'>, string> = {
+const SECTION: Record<Exclude<Kind, 'home' | 'document' | 'list' | 'reviews'>, string> = {
   event: 'events',
   talk: 'talks',
   speaker: 'speakers',
@@ -67,7 +73,7 @@ export function trimTrailingSlashes(path: string): string {
 const pathOf = (kind: Kind, locale: Locale, slug: string): string =>
   kind === 'home'
     ? localizePath(locale)
-    : localizePath(locale, kind === 'document' || kind === 'list' ? slug : `${SECTION[kind]}/${slug}`);
+    : localizePath(locale, kind === 'document' || kind === 'list' || kind === 'reviews' ? slug : `${SECTION[kind]}/${slug}`);
 
 const listEntriesOf = (locale: Locale): ListEntry[] => {
   const t = useTranslations(locale);
@@ -77,14 +83,21 @@ const listEntriesOf = (locale: Locale): ListEntry[] => {
   }));
 };
 
+// Пустой стены на сайте нет: страница языка появляется с первым опубликованным отзывом.
+const reviewsEntriesOf = (reviews: readonly ReviewEntry[]) => (locale: Locale): ReviewsEntry[] => {
+  if (publishedReviews(reviews, locale).length === 0) return [];
+  const t = useTranslations(locale);
+  return [{ id: `${locale}/reviews`, data: { title: t('reviews.title'), description: t('reviews.description'), draft: false } }];
+};
+
 /**
  * Публичные страницы по готовому каталогу: главная, митапы, доклады, спикеры, документы и списки каждого
  * включённого языка, без черновиков. Чистая функция — тестируется без `astro:content`.
  */
 export function publicPagesOf(
-  catalog: Pick<Catalog, 'events' | 'talks' | 'speakers'> & { pages: PageEntry[]; documents?: DocumentEntry[] },
+  catalog: Pick<Catalog, 'events' | 'talks' | 'speakers'> & { pages: PageEntry[]; documents?: DocumentEntry[]; reviews?: ReviewEntry[] },
 ): PublicPage[] {
-  const raw: { kind: Kind; entry: PageEntry | EventEntry | TalkEntry | SpeakerEntry | DocumentEntry | ListEntry }[] = [
+  const raw: { kind: Kind; entry: PageEntry | EventEntry | TalkEntry | SpeakerEntry | DocumentEntry | ListEntry | ReviewsEntry }[] = [
     ...catalog.pages
       .filter((entry) => slugOf(entry) === 'index')
       .map((entry) => ({ kind: 'home' as const, entry })),
@@ -93,6 +106,7 @@ export function publicPagesOf(
     ...catalog.speakers.filter(isPublished).map((entry) => ({ kind: 'speaker' as const, entry })),
     ...(catalog.documents ?? []).filter(isPublished).map((entry) => ({ kind: 'document' as const, entry })),
     ...locales.flatMap(listEntriesOf).map((entry) => ({ kind: 'list' as const, entry })),
+    ...locales.flatMap(reviewsEntriesOf(catalog.reviews ?? [])).map((entry) => ({ kind: 'reviews' as const, entry })),
   ].filter(({ entry }) => isEnabled(entry));
 
   // Переводы одной страницы делят вид и имя файла.

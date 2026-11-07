@@ -183,6 +183,17 @@ export const createOrganizerSchema = (image: ImageFunction) =>
       draft: z.boolean().default(false),
     });
 
+// Отзыв о сообществе: тело обязательно. `photo` — портрет на стикере, `gallery` — снимки в окне отзыва.
+export const createReviewSchema = (image: ImageFunction) =>
+  z.object({
+    name: z.string().min(1),
+    role: z.string().min(1).optional(),
+    // Без фото сайт рисует аватар с инициалами.
+    photo: image().optional(),
+    gallery: z.array(z.object({ image: image(), alt: z.string().min(1) })).default([]),
+    draft: z.boolean().default(false),
+  });
+
 // Логотип и QR у каждого партнёра свои: логотип — файл в partners/assets, QR сайт рисует из qrUrl.
 export const createPartnerSchema = (image: ImageFunction) =>
   z.object({

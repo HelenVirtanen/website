@@ -37,6 +37,15 @@ const contract = {
     sliderHeadWidth: null,
     organizerPhoto: null,
     organizerPadding: null,
+    reviewSticker: null,
+    reviewPhoto: null,
+    reviewPhotoLarge: null,
+    reviewDialogWidth: null,
+    reviewGalleryMin: null,
+    reviewTapeWidth: null,
+    reviewTapeHeight: null,
+    reviewFold: null,
+    reviewDots: null,
     archiveCardMin: null,
     archiveFieldMin: null,
     archivePhoto: null,
@@ -75,6 +84,15 @@ const values = {
     sliderHeadWidth: '26.5625rem', // 425px
     organizerPhoto: '15.577rem', // 249.23px
     organizerPadding: '2rem', // 32px
+    reviewSticker: '20rem', // 320px
+    reviewPhoto: '4.5rem', // 72px
+    reviewPhotoLarge: '6rem', // 96px
+    reviewDialogWidth: '48rem', // 768px
+    reviewGalleryMin: '12rem', // 192px
+    reviewTapeWidth: '5.5rem', // 88px
+    reviewTapeHeight: '1.5rem', // 24px
+    reviewFold: '1.75rem', // 28px
+    reviewDots: '1.5rem', // 24px
     archiveCardMin: '17rem', // 272px — уже карточка спикера не становится
     archiveFieldMin: '16rem', // 256px — поле фильтра
     archivePhoto: '8rem', // 128px — фото в карточке спикера

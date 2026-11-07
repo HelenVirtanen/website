@@ -193,11 +193,11 @@ export function aiCatalog(site: URL): AiCatalog {
 
 // Одна строка: перевод строки в тексте сломал бы markdown-список.
 const line = (text: string): string => text.replace(/\s+/g, ' ').trim();
-const KIND_ORDER: Record<PublicPage['kind'], number> = { home: 0, list: 1, document: 2, event: 3, talk: 4, speaker: 5 };
+const KIND_ORDER: Record<PublicPage['kind'], number> = { home: 0, list: 1, reviews: 2, document: 3, event: 4, talk: 5, speaker: 6 };
 
 // В оглавлении — главная, списки, документы и митапы; доклады и спикеры только в полном списке: вместе с ними
 // llms.txt выходит за 30 000 знаков, которые сканеры считают пределом для оглавления.
-const INDEX_KINDS: ReadonlySet<PublicPage['kind']> = new Set(['home', 'list', 'document', 'event']);
+const INDEX_KINDS: ReadonlySet<PublicPage['kind']> = new Set(['home', 'list', 'reviews', 'document', 'event']);
 
 /**
  * llms.txt (llmstxt.org): H1, цитата-резюме, раздел «When to use», затем страницы по языкам — каждая
@@ -222,6 +222,7 @@ export function llmsTxt(
       case 'home':
       case 'document':
       case 'list':
+      case 'reviews':
         return page.entry.data.title;
       case 'event':
         return page.entry.data.tagline;
@@ -237,6 +238,7 @@ export function llmsTxt(
       case 'home':
       case 'document':
       case 'list':
+      case 'reviews':
         return page.entry.data.description;
       case 'event':
         return `${eventWhen(page.entry.data, page.locale, { withTime: tl('hero.dateTime'), dateOnly: tl('date.long') })}, ${venueLine(page.entry.data.venue)}`;

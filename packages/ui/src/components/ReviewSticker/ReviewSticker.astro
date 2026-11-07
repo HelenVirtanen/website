@@ -1,0 +1,33 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { stickerLook } from './look';
+import { head, name as nameClass, photo, role as roleClass, root, text as textClass, tilts, tones, who } from './ReviewSticker.css';
+
+const Tag = 'a';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Имя автора отзыва */
+  name: string;
+  /** Кто это: должность и компания */
+  role?: string | undefined;
+  /** Начало отзыва */
+  text: string;
+  /** Фото или аватар с инициалами; подпись не нужна — рядом имя */
+  image: { src: string; width: number; height: number };
+  /** Имя файла отзыва: от него зависят цвет и наклон листка */
+  seed: string;
+}
+
+const { name, role, text, image, seed, class: className, ...attrs } = Astro.props;
+const look = stickerLook(seed, tones.length, tilts.length);
+---
+<Tag class:list={[root, tones[look.tone], tilts[look.tilt], className]} {...attrs}>
+  <div class={head}>
+    <img class={photo} src={image.src} width={image.width} height={image.height} alt="" loading="lazy" decoding="async" />
+    <div class={who}>
+      <h2 class={nameClass}>{name}</h2>
+      {role && <p class={roleClass}>{role}</p>}
+    </div>
+  </div>
+  <p class={textClass}>{text}</p>
+</Tag>

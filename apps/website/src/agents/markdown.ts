@@ -1,3 +1,4 @@
+import { publishedReviews } from '../content/reviews';
 import {
   localeOf,
   scheduleOf,
@@ -6,7 +7,7 @@ import {
   upcomingEvent,
   pastEvents,
   type Catalog,
-  type EventEntry,
+  type EventEntry, type ReviewEntry,
 } from '../content/catalog';
 import { archiveOf, SPEAKER_EVENT_LABELS } from '../content/archive';
 import { eventLinksOf } from '../content/event-links';
@@ -27,7 +28,7 @@ export interface MarkdownContext {
   now: Date;
 }
 
-type MarkdownCatalog = Pick<Catalog, 'events' | 'talks' | 'speakers'>;
+type MarkdownCatalog = Pick<Catalog, 'events' | 'talks' | 'speakers'> & { reviews?: ReviewEntry[] };
 
 // Квадратные скобки в тексте ссылки закрыли бы её раньше времени.
 const linkText = (text: string): string => text.replace(/[[\]]/g, '\\$&');
@@ -155,6 +156,19 @@ export function markdownOf(page: PublicPage, catalog: MarkdownCatalog, context: 
 
     case 'document':
       return document([`# ${page.entry.data.title}`, '', page.entry.body?.trim()]);
+
+    case 'reviews': {
+      const { title, description } = page.entry.data;
+      const entries = publishedReviews(catalog.reviews ?? [], locale).flatMap((entry) => [
+        `## ${[entry.data.name, entry.data.role].filter(Boolean).join(', ')}`,
+        '',
+        abs(`${page.path}?review=${slugOf(entry)}`),
+        '',
+        entry.body?.trim(),
+        '',
+      ]);
+      return document([`# ${title}`, '', description, '', ...entries]);
+    }
 
     case 'list': {
       const { list, title, description } = page.entry.data;

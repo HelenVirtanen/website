@@ -58,7 +58,7 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
 - `site` is `https://css.moscow`, `trailingSlash: 'always'`: canonical, hreflang
   and internal links are absolute/with a trailing slash.
 - **Content entries** are created with `pnpm new:event | new:talk | new:speaker |
-  new:partner | new:faq | new:organizer` (drafts, `ru` + `en`, never overwrite); hand-made
+  new:partner | new:faq | new:organizer | new:review` (drafts, `ru` + `en`, never overwrite); hand-made
   entries are fine if they pass the schema. Content lives in `@moscowcss/content`; the page code only
   reads it through `src/content/catalog.ts`.
 - **Organizers** are read through `src/content/organizers.ts`
@@ -86,6 +86,11 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   function for the page script and WebMCP; the state lives in the address (`?q=&year=&media=1`).
   Without JavaScript the whole list shows and the filter form stays `hidden`. The rows of a
   language are also `/archive.json` (`/en/archive.json`), linked from every page's head.
+- **Reviews** (spec 008): `/reviews/` and `/en/reviews/` are public pages of kind `reviews` (title
+  and description from the dictionary), rendered by `components/ReviewsPage.astro`. A language gets
+  the page and the header and footer links only with a published review. `src/content/reviews.ts`
+  holds `publishedReviews` and `previewOf` (first paragraph cut at a word boundary, not a CSS clamp:
+  that hides text under increased spacing, WCAG 1.4.12). No `Review` schema.org markup on purpose.
 - **Talk covers.** A talk's optional `cover` (announcement card in
   `packages/content/src/talks/assets/`) shows under the title of the talk page; a talk without
   one shows the shared placeholder `/covers/tbd.png` (`pages/covers/tbd.png.ts`, drawn by
@@ -93,7 +98,7 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   replaces the generated OG and Twitter cards: the `og/` route crops it to size with sharp. The
   file path comes from the frontmatter (`coverFileOf`), because the parsed field has no path.
 - **Header** links go across the site, not to home sections: History (`/events/`), Talks,
-  Speakers, About (`/about/`, which also holds the Contacts section), Search (`src/layouts/nav.ts`); the current section gets
+  Speakers, Reviews (only with a published review), About (`/about/`, which also holds the Contacts section), Search (`src/layouts/nav.ts`); the current section gets
   `aria-current`. Registration is the floating button.
 - **Footer** (`@moscowcss/ui` `Footer`, wired in `BaseLayout`): the star links home, then the policy page and the
   Telegram channel (`src/layouts/footer.ts`), and `© 2015–<build year>`. 2015 is the year the community began; the

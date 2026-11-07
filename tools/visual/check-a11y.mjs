@@ -94,7 +94,9 @@ async function discoverPages() {
   await context.close();
   // Списки (спека 007) — с фильтром, раскрытым скриптом страницы.
   const lists = ['/events/', '/talks/', '/speakers/', '/en/speakers/'];
-  return ['/', '/en/', '/events/31/', talk, speaker, ...lists, '/search/', '/privacy/', '/about/', '/en/events/31/', '/404.html'].filter(Boolean);
+  // Стены нет, пока нет опубликованных отзывов (спека 008).
+  const reviews = (await fetch(`${origin}/reviews/`)).ok ? ['/reviews/', '/en/reviews/'] : [];
+  return ['/', '/en/', '/events/31/', talk, speaker, ...lists, ...reviews, '/search/', '/privacy/', '/about/', '/en/events/31/', '/404.html'].filter(Boolean);
 }
 
 async function checkAxe(page, where) {
@@ -334,6 +336,39 @@ async function checkMapDialog(theme, width) {
   await context.close();
 }
 
+async function checkReviewDialog(theme, width) {
+  const where = `/reviews/ ${theme} ${width} окно отзыва`;
+  const { context, page } = await newPage(theme, width);
+  await open(page, '/reviews/');
+  const sticker = page.locator('[data-review-sticker]').first();
+  if ((await sticker.count()) === 0) {
+    await context.close();
+    return;
+  }
+  const slug = await sticker.getAttribute('data-review-sticker');
+  await sticker.focus();
+  await page.keyboard.press('Enter');
+  const facts = await page.evaluate((name) => {
+    const dialog = document.querySelector(`dialog[data-review-dialog="${name}"]`);
+    return {
+      modal: dialog.matches(':modal'),
+      focusInside: dialog.contains(document.activeElement),
+      labelled: Boolean(document.getElementById(dialog.getAttribute('aria-labelledby'))?.textContent.trim()),
+      param: new URLSearchParams(location.search).get('review'),
+    };
+  }, slug);
+  if (!facts.modal) report(where, 'dialog', 'окно не модальное');
+  if (!facts.focusInside) report(where, 'dialog', 'фокус не перешёл в окно');
+  if (!facts.labelled) report(where, 'dialog', 'у окна нет названия');
+  if (facts.param !== slug) report(where, 'dialog-url', `в адресе ${facts.param}, а открыт ${slug}`);
+  await checkAxe(page, where);
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !new URLSearchParams(location.search).has('review'));
+  const after = await page.evaluate((name) => document.activeElement?.getAttribute('data-review-sticker') === name, slug);
+  if (!after) report(where, 'dialog', 'после закрытия фокус не вернулся на стикер');
+  await context.close();
+}
+
 async function checkPauseControls() {
   const { context, page } = await newPage('light', 1440, { reducedMotion: 'no-preference' });
   await context.addInitScript(() => localStorage.removeItem('moscowcss-decor-off'));
@@ -374,7 +409,10 @@ try {
   await checkPauseControls();
   for (const width of WIDTHS) {
     await checkLiveSlider(width);
-    for (const theme of THEMES) await checkMapDialog(theme, width);
+    for (const theme of THEMES) {
+      await checkMapDialog(theme, width);
+      await checkReviewDialog(theme, width);
+    }
   }
 } finally {
   await browser.close();

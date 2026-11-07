@@ -1,0 +1,80 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { Close } from '@moscowcss/icons';
+import Prose from '../Prose';
+import { stickerLook } from '../ReviewSticker';
+import { tilts, tones } from '../ReviewSticker/ReviewSticker.css';
+import { caption, close, closeIcon, content, copy, footer, gallery as galleryClass, galleryImage, head, name as nameClass, photo, root, status, who } from './ReviewDialog.css';
+
+const Tag = 'dialog';
+
+interface GalleryImage {
+  /** Адрес картинки */
+  src: string;
+  /** Ширина файла */
+  width: number;
+  /** Высота файла */
+  height: number;
+  /** Что на снимке */
+  alt: string;
+}
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Имя файла отзыва: адрес окна и цвет шапки */
+  slug: string;
+  /** Имя автора отзыва */
+  name: string;
+  /** Кто это: должность и компания */
+  role?: string | undefined;
+  /** Фото или аватар с инициалами */
+  image: { src: string; width: number; height: number };
+  /** Снимки к отзыву */
+  gallery?: GalleryImage[];
+  /** Адрес страницы без окна: куда ведёт закрытие без скрипта */
+  closeHref: string;
+  /** Доступное имя ссылки закрытия */
+  closeLabel: string;
+  /** Постоянный адрес отзыва */
+  shareHref: string;
+  /** Подпись ссылки на отзыв */
+  copyLabel: string;
+  /** Сообщение после копирования */
+  copiedLabel: string;
+  /** Сообщение, если буфер обмена недоступен */
+  copyFailedLabel: string;
+}
+
+const { slug, name, role, image, gallery = [], closeHref, closeLabel, shareHref, copyLabel, copiedLabel, copyFailedLabel, class: className, ...attrs } = Astro.props;
+const look = stickerLook(slug, tones.length, tilts.length);
+const titleId = `review-${slug}-title`;
+---
+<Tag class:list={[root, className]} id={`review-${slug}`} aria-labelledby={titleId} data-review-dialog={slug} {...attrs}>
+  <div class:list={[head, tones[look.tone]]}>
+    <img class={photo} src={image.src} width={image.width} height={image.height} alt="" loading="lazy" decoding="async" />
+    <div class={who}>
+      <h2 class={nameClass} id={titleId}>{name}</h2>
+      {role && <p class={caption}>{role}</p>}
+    </div>
+    <a class={close} href={closeHref} aria-label={closeLabel} data-review-close>
+      <Close class={closeIcon} aria-hidden="true" />
+    </a>
+  </div>
+  <div class={content}>
+    <Prose><slot /></Prose>
+    {
+      gallery.length > 0 && (
+        <ul class={galleryClass}>
+          {gallery.map((item) => (
+            <li>
+              <img class={galleryImage} src={item.src} width={item.width} height={item.height} alt={item.alt} loading="lazy" decoding="async" />
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    <div class={footer}>
+      <a class={copy} href={shareHref} data-review-copy>{copyLabel}</a>
+      <span class={status} role="status" data-review-status data-copied={copiedLabel} data-failed={copyFailedLabel}></span>
+    </div>
+  </div>
+</Tag>

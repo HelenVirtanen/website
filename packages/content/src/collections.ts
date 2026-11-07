@@ -7,6 +7,7 @@ import {
   PageSchema,
   createOrganizerSchema,
   createPartnerSchema,
+  createReviewSchema,
   createTalkSchema,
   createSpeakerSchema,
 } from './schema';
@@ -36,6 +37,10 @@ export const collections = {
   organizers: defineCollection({
     loader: localized('organizers'),
     schema: ({ image }) => createOrganizerSchema(image),
+  }),
+  reviews: defineCollection({
+    loader: localized('reviews'),
+    schema: ({ image }) => createReviewSchema(image),
   }),
   faq: defineCollection({ loader: localized('faq'), schema: FaqSchema }),
   documents: defineCollection({ loader: localized('documents'), schema: DocumentSchema }),

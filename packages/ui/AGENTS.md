@@ -54,7 +54,7 @@ demoed in `apps/storybook`.
   a `*.test.ts` next to it; the package has its own vitest suite
   (`pnpm --filter @moscowcss/ui test`, also run by `pnpm test`). Client scripts are
   `*.client.ts` and are initialised from the component's `<script>`.
-- **Notable components:** `FallingDecor` (the falling springs or snowflakes over every page, `pointer-events: none`; grey and nearly transparent while over text, so they never hurt reading), `IconToggle` (icon button with `aria-pressed`), `DecorToggle` and `ThemeToggle` built on it (in the header from `tablet`, in the menu on phones; the choice lives in `localStorage`), `TagPile` (topic tags that fall into a pile; static and
+- **Notable components:** `FallingDecor` (the falling springs or snowflakes beneath all content at `z-index: -1`: only `body` paints the page background, opaque blocks cover them; grey and nearly transparent while behind text, so they never hurt reading), `IconToggle` (icon button with `aria-pressed`), `DecorToggle` and `ThemeToggle` built on it (in the header from `tablet`, in the menu on phones; the choice lives in `localStorage`), `TagPile` (topic tags that fall into a pile; static and
   fully visible without JS or under reduced motion), `OrganizerCard` (portrait slot
   in an octagon, name, text from Markdown in the default slot, contacts; the contacts list may be empty),
   `CallToAction` (floating registration button, `position: fixed`,
@@ -64,7 +64,7 @@ demoed in `apps/storybook`.
   `CardGrid` (a `ul` whose `li` cells share one border line, like the designer's table; one
   column, or as many as fit from `tablet`), `SpeakerCard` (whole-card link: octagon photo, name,
   up to three meetup labels), `ArchiveRow` (the whole row is the title link, stretched by its `::after`; caption line, labels), `ArchiveFilter`
-  (form `hidden` until the page script shows it) and `SectionTabs` (links between the lists).
+  (form `hidden` until the page script shows it) and `SectionTabs` (links between the lists). The reviews wall (spec 008) uses `ReviewWall` (dotted board, shuffles its `li` on load, syncs the open window with `?review=<name>`; `reviewUrl.ts` is the pure part), `ReviewSticker` (whole-card link; colour and tilt come from the file name, `look.ts`, so a new review does not repaint old ones) and `ReviewDialog` (native modal `dialog`, a real link closes it without JS, gallery of photos).
 - **Styles live only in the colocated `.css.ts`** — no inline `style="…"` with
   literal values.
 - **Stories live in `apps/storybook/stories/`**, not here (`pnpm new:component`

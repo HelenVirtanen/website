@@ -16,6 +16,7 @@ import {
   type Locale,
 } from '../i18n';
 import { loadCatalog, localeOf, upcomingEvent } from '../content/catalog';
+import { publishedReviews } from '../content/reviews';
 import { buildNow } from '../content/now';
 import { CARD_TYPE, OG_SIZE, OG_TYPE, cardMetaOf } from '../seo/og';
 import { AI_CATALOG_PATH, ARD_PATH } from '../agents/discovery';
@@ -89,7 +90,8 @@ const jsonLd =
 const ogLocale: Record<Locale, string> = { ru: 'ru_RU', en: 'en_US' };
 const xDefault = alternates.find((alternate) => alternate.locale === defaultLocale);
 
-const navLinks = navLinksOf(lang, t, Astro.url.pathname);
+const hasReviews = publishedReviews(catalog.reviews, lang).length > 0;
+const navLinks = navLinksOf(lang, t, Astro.url.pathname, { reviews: hasReviews });
 
 const localeOptions = locales.map((code) => ({
   code,
@@ -182,7 +184,7 @@ const localeOptions = locales.map((code) => ({
     <Footer
       homeHref={localizePath(lang)}
       homeLabel={t('nav.home')}
-      links={footerLinksOf(lang, t, telegramHref)}
+      links={footerLinksOf(lang, t, telegramHref, { reviews: hasReviews })}
       copyright={copyrightOf(t, buildNow())}
       data-visual="footer"
     />

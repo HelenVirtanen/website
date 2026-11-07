@@ -165,6 +165,16 @@ export function jsonLdOf(
       };
     }
 
+    case 'reviews':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        ...base,
+        name: page.entry.data.title,
+        description: page.entry.data.description,
+        isPartOf: { '@type': 'WebSite', url: new URL(localizePath(page.locale), context.site).href },
+      };
+
     case 'talk':
     case 'document':
       return undefined;

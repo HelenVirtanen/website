@@ -5,6 +5,8 @@ import type {
   FaqEntry,
   OrganizerData,
   OrganizerEntry,
+  ReviewData,
+  ReviewEntry,
   PageEntry,
   PartnerEntry,
   SpeakerData,
@@ -92,6 +94,16 @@ export function organizer(id: string, data: Partial<OrganizerData> = {}): Organi
   };
 }
 
+export function review(id: string, data: Partial<ReviewData> = {}, body = 'Первый абзац.\n\nВторой абзац.'): ReviewEntry {
+  return {
+    id,
+    filePath: filePathOf('reviews', id),
+    body,
+    rendered: { html: `<p>${body.split('\n\n').join('</p>\n<p>')}</p>` },
+    data: { name: 'Анна Иванова', gallery: [], draft: false, ...data },
+  };
+}
+
 export function page(id: string, body = 'О митапе.'): PageEntry {
   return {
     id,
@@ -143,6 +155,7 @@ export function twoMeetupsCatalog() {
     speakers: [speaker('ru/daria-egorova'), speaker('en/daria-egorova')],
     partners: [] as PartnerEntry[],
     organizers: [] as OrganizerEntry[],
+    reviews: [] as ReviewEntry[],
     pages: [] as PageEntry[],
     faq: [] as FaqEntry[],
     documents: [] as DocumentEntry[],

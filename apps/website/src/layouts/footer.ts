@@ -10,8 +10,9 @@ export function copyrightOf(t: (key: UiKey) => string, now: Date): string {
   return t('footer.copyright').replace('{years}', `${COMMUNITY_FOUNDED}–${moscowYear.format(now)}`);
 }
 
-export function footerLinksOf(locale: Locale, t: (key: UiKey) => string, telegramUrl: string) {
+export function footerLinksOf(locale: Locale, t: (key: UiKey) => string, telegramUrl: string, { reviews = false }: { reviews?: boolean } = {}) {
   return [
+    ...(reviews ? [{ href: localizePath(locale, 'reviews'), label: t('footer.reviews') }] : []),
     { href: localizePath(locale, 'privacy'), label: t('footer.rules') },
     { href: telegramUrl, label: t('footer.telegram'), external: true },
   ];

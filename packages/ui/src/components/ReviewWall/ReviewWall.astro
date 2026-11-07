@@ -1,0 +1,23 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { grid, root } from './ReviewWall.css';
+
+const Tag = 'div';
+
+// Своих пропсов нет: стикеры в элементах списка идут в слот, окна — в слот `dialogs`.
+interface Props extends HTMLAttributes<typeof Tag> {}
+
+const { class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[root, className]} data-review-wall {...attrs}>
+  <ul class={grid} data-review-list>
+    <slot />
+  </ul>
+  <slot name="dialogs" />
+</Tag>
+
+<script>
+  import { setupReviewWall } from './ReviewWall.client';
+
+  document.querySelectorAll<HTMLElement>('[data-review-wall]').forEach(setupReviewWall);
+</script>

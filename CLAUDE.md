@@ -167,6 +167,7 @@ Node & pnpm:
 | `pnpm new:partner <name>` | Draft partner files, `ru` and `en`.                             |
 | `pnpm new:faq <name>`     | Draft FAQ entry files, `ru` and `en`.                           |
 | `pnpm new:organizer <name>` | Draft organizer files, `ru` and `en`; the editor fills `status` and `contacts`. |
+| `pnpm new:review <name>` | Draft community review files, `ru` and `en`; photo and gallery are optional. |
 | `pnpm --filter @moscowcss/ui test` | The UI package's own vitest suite (pure logic, e.g. the `TagPile` layout in `pile.ts`). |
 | `node tools/visual/check-targets.mjs [url]` | Hit-area gate over the built site at 375 and 1440 (needs `astro preview` and `CHROMIUM_PATH`). |
 
@@ -566,7 +567,7 @@ regenerate rather than edit).
 - **Content is a package.** All text is `.md` (frontmatter + Markdown body) in
   `@moscowcss/content`, one folder per language: `src/<collection>/<lang>/<name>.md`.
   Collections: `pages`, `events`, `talks`, `speakers`, `partners`, `faq`,
-  `organizers`, `documents`.
+  `organizers`, `reviews`, `documents`.
   Relations live only in the talk (`event`, `speakers`); reverse lists and the
   event schedule are built at build time in `apps/website/src/content/catalog.ts`.
   Language-independent fields are duplicated in the translation and checked
@@ -580,6 +581,12 @@ regenerate rather than edit).
   `contactsOf` in `src/content/organizers.ts` are the pure selectors, so a future
   about-page can list `past` ones from the same collection. Create with
   `pnpm new:organizer <name>`; a new entry needs no code change.
+- **Reviews.** `reviews/<lang>/<name>.md`, photos in `reviews/assets/`: `name` and a body are
+  required, `role`, `photo` and `gallery` are optional; `photo` and the gallery files must match
+  `ru`. `/reviews/` is a wall of stickers (`components/ReviewsPage.astro`, `ReviewWall`,
+  `ReviewSticker`, `ReviewDialog`) in random order on every load; a sticker opens a modal `dialog`
+  addressed by `?review=<name>`. The page and its header and footer links exist only with a
+  published review. Spec 008.
 - **Meetup topics.** A meetup's optional `tags` (translated, not checked against
   `ru`) feed the falling `TagPile` in the Hero together with the meetup modes.
   The floating `CallToAction` renders only for an upcoming meetup that has a
