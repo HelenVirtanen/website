@@ -1,5 +1,5 @@
 import { shuffled } from '../Card/sliderOrder';
-import { targetOf, withReview } from './reviewUrl';
+import { categoryOf, targetOf, withCategory, withReview } from './reviewUrl';
 
 const READY = 'data-review-ready';
 // Запись истории создана кликом по стикеру: закрытие возвращается с неё назад, а не копит записи.
@@ -35,7 +35,40 @@ export function setupReviewWall(root: HTMLElement): void {
       (sticker) => sticker.dataset['reviewSticker'] === slug,
     );
 
+  const filter = root.querySelector<HTMLElement>('[data-review-filter]');
+  const options = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-review-filter-option]'));
+  const status = root.querySelector<HTMLElement>('[data-review-filter-status]');
+  const items = Array.from(root.querySelectorAll<HTMLElement>('[data-review-category]'));
+  const categories = new Set(options.map((option) => option.dataset['reviewFilterOption'] ?? '').filter(Boolean));
+  if (filter) filter.hidden = false;
+
+  const applyFilter = () => {
+    const category = categoryOf(new URL(location.href), categories);
+    let shown = 0;
+    for (const item of items) {
+      item.hidden = category !== undefined && item.dataset['reviewCategory'] !== category;
+      if (!item.hidden) shown += 1;
+    }
+    for (const option of options) {
+      option.setAttribute('aria-pressed', String((option.dataset['reviewFilterOption'] || undefined) === category));
+    }
+    if (status) {
+      status.textContent = (status.dataset['template'] ?? '')
+        .replace('{shown}', String(shown))
+        .replace('{total}', String(items.length));
+    }
+  };
+
+  for (const option of options) {
+    option.addEventListener('click', () => {
+      // Без новой записи истории: «Назад» после переключения фильтров должен уводить со страницы, а не перебирать их.
+      history.replaceState(history.state, '', withCategory(new URL(location.href), option.dataset['reviewFilterOption'] || undefined));
+      applyFilter();
+    });
+  }
+
   const sync = () => {
+    applyFilter();
     const { open, cleanUrl } = targetOf(new URL(location.href), known);
     if (cleanUrl) history.replaceState(history.state, '', cleanUrl);
     for (const [slug, dialog] of dialogs) {
@@ -56,10 +89,10 @@ export function setupReviewWall(root: HTMLElement): void {
   });
 
   for (const [slug, dialog] of dialogs) {
-    const status = dialog.querySelector<HTMLElement>('[data-review-status]');
+    const copyStatus = dialog.querySelector<HTMLElement>('[data-review-status]');
 
     dialog.addEventListener('close', () => {
-      if (status) status.textContent = '';
+      if (copyStatus) copyStatus.textContent = '';
       const url = new URL(location.href);
       // Окно закрыл сам адрес (кнопка «Назад») — тогда менять в истории нечего.
       if (targetOf(url, known).open === slug) {
@@ -88,7 +121,7 @@ export function setupReviewWall(root: HTMLElement): void {
     const copy = dialog.querySelector<HTMLAnchorElement>('[data-review-copy]');
     copy?.addEventListener('click', (event) => {
       event.preventDefault();
-      void copyLink(copy, status);
+      void copyLink(copy, copyStatus);
     });
   }
 

@@ -3,6 +3,9 @@ import { vars } from '@moscowcss/design-system';
 
 // Точки — стена, на которой висят листки; фона у неё нет, поэтому падающие фигуры видны насквозь.
 export const root = style({
+  display: vars.display.flex,
+  flexDirection: vars.flexDirection.column,
+  gap: vars.layout.gap.xxl,
   paddingBlock: vars.padding.xl,
   paddingInline: vars.padding.l,
   backgroundImage: `radial-gradient(${vars.color.dividerSoft} ${vars.border.width.medium}, transparent 0)`,

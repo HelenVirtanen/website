@@ -83,7 +83,7 @@ const INVARIANTS = {
   speakers: ['photo', 'links'],
   partners: ['url', 'handle', 'logo', 'qrUrl'],
   organizers: ['status', 'photo', 'contacts'],
-  reviews: ['photo', 'gallery[].image'],
+  reviews: ['category', 'photo', 'gallery[].image'],
   faq: ['order'],
   documents: [],
   pages: ['telegramUrl', 'questionTag', 'decor'],

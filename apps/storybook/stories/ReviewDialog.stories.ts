@@ -14,6 +14,7 @@ export const WithGallery = {
     open: true,
     slug: 'example',
     name: 'Имя Фамилия',
+    category: 'Спикер',
     role: 'Должность и компания',
     image,
     gallery: [

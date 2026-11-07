@@ -1,5 +1,6 @@
 ---
 name: "Anastasia Maltseva"
+category: speaker
 photo: ../assets/anastasia-maltseva.jpg
 ---
 

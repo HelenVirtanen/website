@@ -1,5 +1,6 @@
 ---
 name: "Aleksandr Litvin"
+category: speaker
 photo: ../assets/aleksandr-litvin.jpg
 ---
 

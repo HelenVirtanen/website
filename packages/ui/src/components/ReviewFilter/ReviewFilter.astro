@@ -1,0 +1,40 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { button, buttons, root, status } from './ReviewFilter.css';
+
+const Tag = 'div';
+
+interface Option {
+  /** Значение категории в адресе */
+  value: string;
+  /** Подпись кнопки */
+  label: string;
+}
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Категории, у которых есть отзывы */
+  options: Option[];
+  /** Подпись кнопки «все отзывы» */
+  allLabel: string;
+  /** Доступное имя группы кнопок */
+  groupLabel: string;
+  /** Шаблон счётчика с {shown} и {total} */
+  statusTemplate: string;
+}
+
+const { options, allLabel, groupLabel, statusTemplate, class: className, ...attrs } = Astro.props;
+---
+{/* Без скрипта фильтровать нечем: блок показывает скрипт стены, а список виден целиком. */}
+<Tag class:list={[root, className]} data-review-filter hidden {...attrs}>
+  <div class={buttons} role="group" aria-label={groupLabel}>
+    <button class={button} type="button" data-review-filter-option="" aria-pressed="true">{allLabel}</button>
+    {
+      options.map((option) => (
+        <button class={button} type="button" data-review-filter-option={option.value} aria-pressed="false">
+          {option.label}
+        </button>
+      ))
+    }
+  </div>
+  <p class={status} role="status" data-review-filter-status data-template={statusTemplate}></p>
+</Tag>

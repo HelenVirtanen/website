@@ -89,7 +89,7 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
 - **Reviews** (spec 008): `/reviews/` and `/en/reviews/` are public pages of kind `reviews` (title
   and description from the dictionary), rendered by `components/ReviewsPage.astro`. A language gets
   the page and the header and footer links only with a published review. `src/content/reviews.ts`
-  holds `publishedReviews` and `previewOf` (first paragraph cut at a word boundary, not a CSS clamp:
+  holds `publishedReviews`, `reviewCategories` (buttons of the filter, state in `?category=`) and `previewOf` (first paragraph cut at a word boundary, not a CSS clamp:
   that hides text under increased spacing, WCAG 1.4.12). No `Review` schema.org markup on purpose.
 - **Talk covers.** A talk's optional `cover` (announcement card in
   `packages/content/src/talks/assets/`) shows under the title of the talk page; a talk without

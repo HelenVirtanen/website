@@ -3,11 +3,12 @@ import { render } from 'astro:content';
 import H1 from '@moscowcss/ui/components/H1';
 import Paragraph from '@moscowcss/ui/components/Paragraph';
 import ReviewDialog from '@moscowcss/ui/components/ReviewDialog';
+import ReviewFilter from '@moscowcss/ui/components/ReviewFilter';
 import ReviewSticker from '@moscowcss/ui/components/ReviewSticker';
 import ReviewWall, { reviewHref, stickerHref } from '@moscowcss/ui/components/ReviewWall';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { loadCatalog, slugOf } from '../content/catalog';
-import { previewOf, publishedReviews } from '../content/reviews';
+import { previewOf, publishedReviews, reviewCategories } from '../content/reviews';
 import { optimizedPhoto, reviewImage } from '../content/speaker-image';
 import { useTranslations } from '../i18n';
 import type { PublicPage } from '../seo/pages';
@@ -26,8 +27,10 @@ const { title, description } = page.entry.data;
 const t = useTranslations(locale);
 
 const catalog = await loadCatalog();
+const published = publishedReviews(catalog.reviews, locale);
+const categories = reviewCategories(published);
 const reviews = await Promise.all(
-  publishedReviews(catalog.reviews, locale).map(async (entry) => ({
+  published.map(async (entry) => ({
     entry,
     slug: slugOf(entry),
     image: await reviewImage(entry),
@@ -48,11 +51,23 @@ const reviews = await Promise.all(
         <Paragraph>{t('reviews.lead')}</Paragraph>
       </div>
       <ReviewWall data-visual="reviews">
+        {
+          categories.length > 1 && (
+            <ReviewFilter
+              slot="filter"
+              options={categories.map((value) => ({ value, label: t(`reviews.group.${value}`) }))}
+              allLabel={t('reviews.all')}
+              groupLabel={t('reviews.filter')}
+              statusTemplate={t('filter.status')}
+            />
+          )
+        }
         {reviews.map(({ entry, slug, image, preview }) => (
-          <li>
+          <li data-review-category={entry.data.category}>
             <ReviewSticker
               href={stickerHref(path, slug)}
               name={entry.data.name}
+              category={t(`reviews.category.${entry.data.category}`)}
               role={entry.data.role}
               text={preview}
               image={image}
@@ -66,6 +81,7 @@ const reviews = await Promise.all(
             <ReviewDialog
               slug={slug}
               name={entry.data.name}
+              category={t(`reviews.category.${entry.data.category}`)}
               role={entry.data.role}
               image={image}
               gallery={gallery}

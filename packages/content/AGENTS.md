@@ -56,7 +56,8 @@ Decision record: `adr/001-content-model-md-relations.md`.
   `current` entries only; `past` ones are for a future about-page. Never invent
   data for people whose details are not provided.
 - **Reviews** (`reviews/<lang>/<name>.md`, images in `reviews/assets/`): real words of real people,
-  never invented; the Russian text is kept verbatim. `name` and the body are required. `role`,
+  never invented; the Russian text is kept verbatim. `name`, `category` (`speaker | organizer |
+  past-organizer | guest | partner`, must match `ru`, drives the wall's filter) and the body are required. `role`,
   `photo` (a portrait; without one the site draws initials) and `gallery` (`image` + translated `alt`,
   shown in the review window) are optional; `photo` and the gallery files must match `ru`. No order
   field: the wall shuffles on every load. The first paragraph goes on the sticker.

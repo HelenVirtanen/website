@@ -2,7 +2,7 @@
 id: "01"
 title: reviews-wall
 spec: "008"
-criteria: ["AC-1", "AC-2", "AC-3", "AC-4", "AC-5", "AC-6", "AC-7", "AC-8", "AC-9", "AC-10"]
+criteria: ["AC-1", "AC-2", "AC-3", "AC-4", "AC-5", "AC-6", "AC-7", "AC-8", "AC-9", "AC-10", "AC-11"]
 status: done
 depends_on: []
 owns: ["packages/content/src/reviews/**", "packages/ui/src/components/Review*/**", "apps/website/src/components/ReviewsPage*", "apps/website/src/content/reviews*", "apps/website/src/pages/[...locale]/reviews/**"]
@@ -30,6 +30,7 @@ attempts: 0
 - AC-7: страницы и `index.md` есть в `dist`, sitemap и `llms.txt` (`check:seo`).
 - AC-8: без опубликованных отзывов страницы и ссылок нет (тест списка страниц).
 - AC-9: ссылка в шапке и подвале, шапка на 1440 в одну строку (браузер).
+- AC-11: фильтр по категории работает и хранится в адресе (тесты адреса и каталога, браузер).
 - AC-10: `pnpm lint`, `pnpm test`, `pnpm build`, `check:seo`, `build:storybook`, `check:a11y`, `check-targets` зелёные.
 
 ## Must not

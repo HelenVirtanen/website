@@ -4,12 +4,13 @@ import { grid, root } from './ReviewWall.css';
 
 const Tag = 'div';
 
-// Своих пропсов нет: стикеры в элементах списка идут в слот, окна — в слот `dialogs`.
+// Своих пропсов нет: стикеры в элементах списка идут в слот, окна — в слот `dialogs`, фильтр — в слот `filter`.
 interface Props extends HTMLAttributes<typeof Tag> {}
 
 const { class: className, ...attrs } = Astro.props;
 ---
 <Tag class:list={[root, className]} data-review-wall {...attrs}>
+  <slot name="filter" />
   <ul class={grid} data-review-list>
     <slot />
   </ul>

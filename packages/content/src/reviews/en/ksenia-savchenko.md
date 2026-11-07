@@ -1,5 +1,6 @@
 ---
 name: "Ksenia Savchenko"
+category: partner
 gallery:
   - image: ../assets/ksenia-savchenko-meetup.jpg
     alt: "Attendees of the joint Frontend Community and Moscow CSS meetup waving from the stage"

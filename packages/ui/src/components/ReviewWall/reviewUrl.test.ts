@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { reviewHref, stickerHref, targetOf, withReview } from './reviewUrl';
+import { categoryOf, reviewHref, stickerHref, targetOf, withCategory, withReview } from './reviewUrl';
 
 const known = new Set(['anna-lapa', 'aleksandr-litvin']);
 const page = 'https://css.moscow/reviews/';
@@ -19,6 +19,25 @@ describe('адреса отзыва', () => {
 
   it('повторное открытие не плодит параметр', () => {
     expect(withReview(new URL(`${page}?review=anna-lapa`), 'aleksandr-litvin')).toBe(`${page}?review=aleksandr-litvin`);
+  });
+});
+
+describe('фильтр в адресе', () => {
+  const categories = new Set(['speaker', 'partner']);
+
+  it('читает известную категорию, неизвестная значит все отзывы', () => {
+    expect(categoryOf(new URL(`${page}?category=speaker`), categories)).toBe('speaker');
+    expect(categoryOf(new URL(`${page}?category=nope`), categories)).toBeUndefined();
+    expect(categoryOf(new URL(page), categories)).toBeUndefined();
+  });
+
+  it('ставит и убирает фильтр, не трогая окно и чужие параметры', () => {
+    expect(withCategory(new URL(`${page}?utm_source=tg&review=anna-lapa`), 'speaker')).toBe(`${page}?utm_source=tg&review=anna-lapa&category=speaker`);
+    expect(withCategory(new URL(`${page}?category=speaker&utm_source=tg`), undefined)).toBe(`${page}?utm_source=tg`);
+  });
+
+  it('открытие окна не сбрасывает фильтр', () => {
+    expect(withReview(new URL(`${page}?category=speaker`), 'anna-lapa')).toBe(`${page}?category=speaker&review=anna-lapa`);
   });
 });
 

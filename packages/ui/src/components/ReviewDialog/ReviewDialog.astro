@@ -24,7 +24,9 @@ interface Props extends HTMLAttributes<typeof Tag> {
   slug: string;
   /** Имя автора отзыва */
   name: string;
-  /** Кто это: должность и компания */
+  /** Кто это в сообществе: спикер, партнёр */
+  category: string;
+  /** Должность и компания */
   role?: string | undefined;
   /** Фото или аватар с инициалами */
   image: { src: string; width: number; height: number };
@@ -44,7 +46,7 @@ interface Props extends HTMLAttributes<typeof Tag> {
   copyFailedLabel: string;
 }
 
-const { slug, name, role, image, gallery = [], closeHref, closeLabel, shareHref, copyLabel, copiedLabel, copyFailedLabel, class: className, ...attrs } = Astro.props;
+const { slug, name, category, role, image, gallery = [], closeHref, closeLabel, shareHref, copyLabel, copiedLabel, copyFailedLabel, class: className, ...attrs } = Astro.props;
 const look = stickerLook(slug, tones.length, tilts.length);
 const titleId = `review-${slug}-title`;
 ---
@@ -53,7 +55,7 @@ const titleId = `review-${slug}-title`;
     <img class={photo} src={image.src} width={image.width} height={image.height} alt="" loading="lazy" decoding="async" />
     <div class={who}>
       <h2 class={nameClass} id={titleId}>{name}</h2>
-      {role && <p class={caption}>{role}</p>}
+      <p class={caption}>{[category, role].filter(Boolean).join(' · ')}</p>
     </div>
     <a class={close} href={closeHref} aria-label={closeLabel} data-review-close>
       <Close class={closeIcon} aria-hidden="true" />

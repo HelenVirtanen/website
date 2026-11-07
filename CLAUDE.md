@@ -581,11 +581,11 @@ regenerate rather than edit).
   `contactsOf` in `src/content/organizers.ts` are the pure selectors, so a future
   about-page can list `past` ones from the same collection. Create with
   `pnpm new:organizer <name>`; a new entry needs no code change.
-- **Reviews.** `reviews/<lang>/<name>.md`, photos in `reviews/assets/`: `name` and a body are
+- **Reviews.** `reviews/<lang>/<name>.md`, photos in `reviews/assets/`: `name`, `category` and a body are
   required, `role`, `photo` and `gallery` are optional; `photo` and the gallery files must match
   `ru`. `/reviews/` is a wall of stickers (`components/ReviewsPage.astro`, `ReviewWall`,
   `ReviewSticker`, `ReviewDialog`) in random order on every load; a sticker opens a modal `dialog`
-  addressed by `?review=<name>`. The page and its header and footer links exist only with a
+  addressed by `?review=<name>`; buttons filter by category (`?category=`). The page and its header and footer links exist only with a
   published review. Spec 008.
 - **Meetup topics.** A meetup's optional `tags` (translated, not checked against
   `ru`) feed the falling `TagPile` in the Hero together with the meetup modes.

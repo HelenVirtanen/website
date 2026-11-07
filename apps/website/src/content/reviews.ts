@@ -1,3 +1,4 @@
+import { REVIEW_CATEGORIES } from '@moscowcss/content/schema';
 import { localeOf, slugOf, type ReviewEntry } from './catalog';
 
 /** Опубликованные отзывы одного языка по имени файла: порядок без скрипта, страница его перемешивает. */
@@ -5,6 +6,12 @@ export function publishedReviews<T extends Pick<ReviewEntry, 'id' | 'data'>>(ent
   return entries
     .filter((entry) => localeOf(entry) === locale && !entry.data.draft)
     .sort((a, b) => slugOf(a).localeCompare(slugOf(b)));
+}
+
+/** Категории, у которых есть отзывы, в порядке кнопок; пустую кнопку показывать незачем. */
+export function reviewCategories(entries: readonly Pick<ReviewEntry, 'data'>[]): (typeof REVIEW_CATEGORIES)[number][] {
+  const present = new Set(entries.map((entry) => entry.data.category));
+  return REVIEW_CATEGORIES.filter((category) => present.has(category));
 }
 
 const ENTITIES: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };

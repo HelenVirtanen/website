@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { page, review, speaker, twoMeetupsCatalog } from '../test/fixtures';
 import { publicPagesOf } from '../seo/pages';
 import { CatalogError, validateCatalog } from './catalog';
-import { previewOf, publishedReviews } from './reviews';
+import { previewOf, publishedReviews, reviewCategories } from './reviews';
 
 describe('publishedReviews', () => {
   it('отбирает язык, убирает черновики и идёт по имени файла', () => {
@@ -13,6 +13,14 @@ describe('publishedReviews', () => {
       review('ru/gleb', { draft: true }),
     ];
     expect(publishedReviews(entries, 'ru').map((entry) => entry.id)).toEqual(['ru/anna', 'ru/vera']);
+  });
+});
+
+describe('reviewCategories', () => {
+  it('оставляет только занятые категории в порядке схемы', () => {
+    const entries = [review('ru/a', { category: 'partner' }), review('ru/b', { category: 'speaker' }), review('ru/c', { category: 'speaker' })];
+    expect(reviewCategories(entries)).toEqual(['speaker', 'partner']);
+    expect(reviewCategories([])).toEqual([]);
   });
 });
 
@@ -59,6 +67,12 @@ describe('проверка каталога', () => {
     expect(problemsOf([review('en/anna')])).toContain('reviews/en/anna.md: нет оригинала');
     const photo = { src: '/a.jpg', width: 1, height: 1, format: 'jpg' } as const;
     expect(problemsOf([review('ru/anna', { photo }), review('en/anna')])).toContain('reviews/en/anna.md: поле photo');
+  });
+
+  it('роняет сборку на другой категории в переводе', () => {
+    expect(problemsOf([review('ru/anna', { category: 'speaker' }), review('en/anna', { category: 'guest' })])).toContain(
+      'reviews/en/anna.md: поле category',
+    );
   });
 
   it('роняет сборку на других файлах галереи, но не на переводе описания', () => {

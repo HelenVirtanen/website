@@ -100,7 +100,7 @@ export function review(id: string, data: Partial<ReviewData> = {}, body = 'Пе�
     filePath: filePathOf('reviews', id),
     body,
     rendered: { html: `<p>${body.split('\n\n').join('</p>\n<p>')}</p>` },
-    data: { name: 'Анна Иванова', gallery: [], draft: false, ...data },
+    data: { name: 'Анна Иванова', category: 'guest', gallery: [], draft: false, ...data },
   };
 }
 

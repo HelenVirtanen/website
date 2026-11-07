@@ -160,7 +160,7 @@ export function markdownOf(page: PublicPage, catalog: MarkdownCatalog, context: 
     case 'reviews': {
       const { title, description } = page.entry.data;
       const entries = publishedReviews(catalog.reviews ?? [], locale).flatMap((entry) => [
-        `## ${[entry.data.name, entry.data.role].filter(Boolean).join(', ')}`,
+        `## ${[entry.data.name, t(`reviews.category.${entry.data.category}`), entry.data.role].filter(Boolean).join(', ')}`,
         '',
         abs(`${page.path}?review=${slugOf(entry)}`),
         '',

@@ -183,10 +183,14 @@ export const createOrganizerSchema = (image: ImageFunction) =>
       draft: z.boolean().default(false),
     });
 
+// Кто оставил отзыв: порядок здесь — порядок кнопок фильтра на стене.
+export const REVIEW_CATEGORIES = ['speaker', 'organizer', 'past-organizer', 'guest', 'partner'] as const;
+
 // Отзыв о сообществе: тело обязательно. `photo` — портрет на стикере, `gallery` — снимки в окне отзыва.
 export const createReviewSchema = (image: ImageFunction) =>
   z.object({
     name: z.string().min(1),
+    category: z.enum(REVIEW_CATEGORIES),
     role: z.string().min(1).optional(),
     // Без фото сайт рисует аватар с инициалами.
     photo: image().optional(),

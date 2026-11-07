@@ -1,5 +1,6 @@
 ---
 name: "Sergey Popov"
+category: past-organizer
 photo: ../assets/sergey-popov.jpg
 ---
 

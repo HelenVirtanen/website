@@ -1,5 +1,6 @@
 ---
 name: "Анна Лапа"
+category: speaker
 photo: ../assets/anna-lapa.jpg
 gallery:
   - image: ../assets/anna-lapa-meetup.jpg
