@@ -1,7 +1,7 @@
 ---
 name: "Анастасия Мальцева"
 category: speaker
-photo: ../assets/anastasia-maltseva.jpg
+photo: ../assets/anastasiya-maltseva.jpg
 ---
 
 Я разработчик и спикер, у меня более 30 выступлений в России и за рубежом. А началось все с митапа Moscow CSS, где состоялось одно из первых моих выступлений.

@@ -1,7 +1,7 @@
 ---
-name: "Anastasia Maltseva"
+name: "Anastasiya Maltseva"
 category: speaker
-photo: ../assets/anastasia-maltseva.jpg
+photo: ../assets/anastasiya-maltseva.jpg
 ---
 
 I'm a developer and a speaker, with more than 30 talks in Russia and abroad. And it all began with a Moscow CSS meetup, where I gave one of my first talks.

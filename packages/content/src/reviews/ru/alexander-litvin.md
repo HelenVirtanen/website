@@ -1,7 +1,7 @@
 ---
 name: "Александр Литвин"
 category: speaker
-photo: ../assets/aleksandr-litvin.jpg
+photo: ../assets/alexander-litvin.jpg
 ---
 
 ### Мой путь в moscss: От первого «вау» до собственного доклада

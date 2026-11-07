@@ -1,7 +1,7 @@
 ---
-name: "Aleksandr Litvin"
+name: "Alexander Litvin"
 category: speaker
-photo: ../assets/aleksandr-litvin.jpg
+photo: ../assets/alexander-litvin.jpg
 ---
 
 ### My path through moscss: from the first "wow" to a talk of my own
