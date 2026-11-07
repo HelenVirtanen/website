@@ -211,43 +211,6 @@ export const mediaTileFrame = style({
   border: `${vars.border.width.superThick} ${vars.border.style.solid} ${vars.color.onSurfaceDark}`,
 });
 
-// Блок в цветах Школы 21: подменяем токены блока, а вёрстка остаётся общей.
-export const school21 = style({
-  background: vars.color.schoolSurface,
-  color: vars.color.onSchoolSurface,
-  vars: {
-    [vars.color.surfaceDark]: vars.color.schoolSurface,
-    [vars.color.onSurfaceDark]: vars.color.onSchoolSurface,
-    [vars.color.borderOnDark]: vars.color.schoolAccent,
-    [vars.color.accentOnInverse]: vars.color.schoolAccent,
-    [vars.color.focusOnInverse]: vars.color.schoolAccent,
-    [vars.color.focus]: vars.color.schoolAccent,
-    [vars.color.cardBackground]: vars.color.schoolCard,
-    [vars.color.cardText]: vars.color.onSchoolCard,
-    [vars.color.surfaceDarkEdge]: 'transparent',
-    [vars.color.link]: vars.color.schoolAccent,
-  },
-});
-
-// Логотип квадратный, а место под него рассчитано на широкий логотип Звука.
-export const school21Logo = style({
-  width: vars.size.partnerLogoSquare,
-  maxWidth: vars.size.partnerLogoSquare,
-  height: vars.size.partnerLogoSquare,
-  marginTop: 0,
-  '@media': {
-    [media.desktop]: {
-      width: vars.size.partnerLogoSquare,
-      height: vars.size.partnerLogoSquare,
-      marginTop: 0,
-    },
-  },
-});
-
-export const school21Handle = style({
-  color: vars.color.schoolAccent,
-});
-
 // Рассказ о партнёре из текста его файла.
 export const about = style({
   alignSelf: 'center',
@@ -262,18 +225,4 @@ globalStyle(`${about} p`, {
 
 globalStyle(`${about} a`, {
   color: vars.color.accentOnInverse,
-});
-
-// Карточки как на их сайте: скруглённые, цифра крупно, подпись под ней.
-export const school21Cards = style({});
-
-globalStyle(`${school21Cards} > article`, {
-  minHeight: 'auto',
-  padding: vars.padding.xxl,
-  borderRadius: vars.radius.card,
-});
-
-globalStyle(`${school21Cards} h3`, {
-  font: vars.font.shorthand.h1,
-  letterSpacing: vars.font.letterSpacing.heading,
 });

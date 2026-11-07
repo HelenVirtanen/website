@@ -35,6 +35,7 @@ const contract = {
     schoolAccent: null,
     schoolCard: null,
     onSchoolCard: null,
+    schoolPanel: null,
     surfaceDarkMuted: null,
     dividerSoft: null, // мягкий разделитель на светлом фоне
     link: null,
@@ -91,6 +92,7 @@ const light = {
     schoolAccent: palette.school21Green,
     schoolCard: palette.school21Mist,
     onSchoolCard: palette.school21Ink,
+    schoolPanel: palette.school21Slate,
     surfaceDarkMuted: palette.gray700,
     dividerSoft: palette.inkA20,
     link: palette.blue,

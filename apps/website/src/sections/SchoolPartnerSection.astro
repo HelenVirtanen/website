@@ -1,0 +1,131 @@
+---
+import Prose from '@moscowcss/ui/components/Prose';
+import { MapPin } from '@moscowcss/icons';
+import { render, type CollectionEntry } from 'astro:content';
+import { fillTemplate } from '../content/format';
+import { qrPath } from '../content/qr';
+import { useTranslations, type Locale } from '../i18n';
+import {
+  section,
+  inner,
+  pixels,
+  pixel,
+  pixelAccent,
+  intro,
+  introText,
+  brand,
+  brandLogo,
+  headline,
+  pill,
+  qrCard,
+  qrCode as qrClass,
+  qrBackground,
+  qrModules,
+  qrCaption,
+  about,
+  stats,
+  stat,
+  statValue,
+  statLabel,
+  place,
+  placeIcon,
+  placeText,
+} from './SchoolPartnerSection.css';
+
+// Блок партнёра в визуальном языке Школы 21: тёмная плашка, зелёные кнопки-таблетки, скруглённые карточки
+// с крупными цифрами и пиксельный мотив их логотипа. Данные те же, что у обычного блока партнёра.
+interface Props {
+  // Партнёр митапа с look: school21
+  partner: CollectionEntry<'partners'>;
+  // Митап: текст «как добраться» из его файла
+  event: CollectionEntry<'events'>;
+  locale: Locale;
+  id?: string;
+}
+
+const { partner, event, locale, id = 'partners' } = Astro.props;
+const t = useTranslations(locale);
+const { name, handle, tagline, features, logo, qrUrl } = partner.data;
+const qr = qrUrl ? qrPath(qrUrl) : undefined;
+// Поле вокруг кода в модулях: без него камера не находит границы.
+const QR_QUIET_ZONE = 2;
+const { Content: About } = await render(partner);
+const hasAbout = Boolean(partner.body?.trim());
+const { Content: Directions } = await render(event);
+
+// Пиксели как в логотипе «21»: ступенька из квадратов в углу плашки, координаты в клетках.
+const PIXELS: readonly (readonly [number, number, boolean])[] = [
+  [3, 0, true],
+  [4, 0, false],
+  [4, 1, true],
+  [2, 1, false],
+  [3, 2, false],
+  [4, 3, true],
+];
+---
+
+<section class={section} id={id} data-visual="partner">
+  <div class={inner}>
+    <div class={intro}>
+      <div class={introText}>
+        <h2 class={brand}>
+          {logo ? <img class={brandLogo} src={logo.src} width={logo.width} height={logo.height} alt={name} decoding="async" /> : name}
+        </h2>
+        <p class={headline}>{tagline}</p>
+        {
+          qrUrl && (
+            <a class={pill} href={qrUrl} target="_blank" rel="noopener noreferrer">
+              {handle}
+            </a>
+          )
+        }
+      </div>
+      {
+        qr && (
+          <figure class={qrCard}>
+            <svg class={pixels} viewBox="0 0 5 4" aria-hidden="true">
+              {PIXELS.map(([x, y, accent]) => <rect class:list={[pixel, accent && pixelAccent]} x={x} y={y} width="1" height="1" />)}
+            </svg>
+            <svg
+              class={qrClass}
+              viewBox={`${String(-QR_QUIET_ZONE)} ${String(-QR_QUIET_ZONE)} ${String(qr.size + 2 * QR_QUIET_ZONE)} ${String(qr.size + 2 * QR_QUIET_ZONE)}`}
+              role="img"
+              aria-label={fillTemplate(t('partner.qrLabel'), { handle })}
+              shape-rendering="crispEdges"
+            >
+              <rect class={qrBackground} x={-QR_QUIET_ZONE} y={-QR_QUIET_ZONE} width={qr.size + 2 * QR_QUIET_ZONE} height={qr.size + 2 * QR_QUIET_ZONE} />
+              <path class={qrModules} d={qr.d} />
+            </svg>
+            <figcaption class={qrCaption}>{t('partner.qrCaption')}</figcaption>
+          </figure>
+        )
+      }
+    </div>
+
+    {
+      hasAbout && (
+        <Prose class={about}>
+          <About />
+        </Prose>
+      )
+    }
+
+    <ul class={stats}>
+      {
+        features.map((feature) => (
+          <li class={stat}>
+            <p class={statValue}>{feature.title}</p>
+            <p class={statLabel}>{feature.description}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class={place} id="address">
+      <MapPin class={placeIcon} aria-hidden="true" />
+      <Prose class={placeText}>
+        <Directions />
+      </Prose>
+    </div>
+  </div>
+</section>

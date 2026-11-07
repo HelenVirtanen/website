@@ -19,4 +19,6 @@ features:
 
 ### What is School 21?
 
-We help people unlock their potential and prepare them for a successful career in IT. At School 21, participants develop hard and soft skills at the same time: working in groups and on their own, they complete projects taken from the practice of major IT companies, review each other's work and code, and learn to give and receive feedback.
+We help people unlock their potential and prepare them for a successful career in IT
+
+At School 21, participants develop hard and soft skills at the same time: working in groups and on their own, they complete projects taken from the practice of major IT companies, review each other's work and code, and learn to give and receive feedback.

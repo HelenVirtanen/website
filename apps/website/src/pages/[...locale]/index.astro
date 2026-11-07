@@ -6,6 +6,7 @@ import AboutSection from '../../sections/AboutSection.astro';
 import HeroSection from '../../sections/HeroSection.astro';
 import ProgramSection from '../../sections/ProgramSection.astro';
 import PartnerSection from '../../sections/PartnerSection.astro';
+import SchoolPartnerSection from '../../sections/SchoolPartnerSection.astro';
 import FAQSection from '../../sections/FAQSection.astro';
 import OrganizersSection from '../../sections/OrganizersSection.astro';
 import { loadCatalog, localeOf, upcomingEvent } from '../../content/catalog';
@@ -63,7 +64,13 @@ const alternates = locales.map((code) => ({ locale: code, path: localizePath(cod
         />
       )
     }
-    {partner && featured && <PartnerSection partner={partner} event={featured.event} locale={locale} />}
+    {
+      partner && featured && (partner.data.look === 'school21' ? (
+        <SchoolPartnerSection partner={partner} event={featured.event} locale={locale} />
+      ) : (
+        <PartnerSection partner={partner} event={featured.event} locale={locale} />
+      ))
+    }
     <FAQSection entries={inLocale(catalog.faq).filter((entry) => !entry.data.draft)} locale={locale} />
     <OrganizersSection entries={organizers} locale={locale} />
     <AboutSection page={page} locale={locale} />

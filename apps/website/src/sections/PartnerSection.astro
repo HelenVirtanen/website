@@ -31,10 +31,6 @@ import {
   mediaTileFrame,
   about,
   handleLink,
-  school21,
-  school21Cards,
-  school21Handle,
-  school21Logo,
 } from './PartnerSection.css';
 
 interface Props {
@@ -48,8 +44,7 @@ interface Props {
 
 const { partner, event, locale, id = 'partners' } = Astro.props;
 const t = useTranslations(locale);
-const { name, handle: partnerHandle, tagline: partnerTagline, features, logo, qrUrl, look } = partner.data;
-const isSchool = look === 'school21';
+const { name, handle: partnerHandle, tagline: partnerTagline, features, logo, qrUrl } = partner.data;
 const { Content: About } = await render(partner);
 const hasAbout = Boolean(partner.body?.trim());
 const qrCode = qrUrl ? qrPath(qrUrl) : undefined;
@@ -65,21 +60,17 @@ const routeMedia = [
 ] as const;
 ---
 
-<section class:list={[section, isSchool && school21]} id={id} data-visual="partner">
+<section class={section} id={id} data-visual="partner">
   <div class={hero}>
-    {
-      !isSchool && (
-        <div class={heroWave} aria-hidden="true">
-          <LineVektor />
-        </div>
-      )
-    }
+    <div class={heroWave} aria-hidden="true">
+      <LineVektor />
+    </div>
     <div class={inner}>
       <div class={partnerHeader}>
         <h2 class:list={[brandTitle, !logo && brandName]}>
           {
             logo ? (
-              <img class:list={[brandLogo, isSchool && school21Logo]} src={logo.src} width={logo.width} height={logo.height} alt={name} decoding="async" />
+              <img class={brandLogo} src={logo.src} width={logo.width} height={logo.height} alt={name} decoding="async" />
             ) : (
               name
             )
@@ -105,7 +96,7 @@ const routeMedia = [
             </svg>
           )
         }
-        <p class:list={[handle, isSchool && school21Handle]}>
+        <p class={handle}>
           {qrUrl ? <a class={handleLink} href={qrUrl} target="_blank" rel="noopener noreferrer">{partnerHandle}</a> : partnerHandle}
         </p>
         <p class={tagline}>{partnerTagline}</p>
@@ -120,15 +111,15 @@ const routeMedia = [
       }
 
       <div class={cardsRow}>
-        <div class:list={[cardsGrid, isSchool && school21Cards]}>
+        <div class={cardsGrid}>
           {
             features.map((feature, index) => (
               <FeatureCard
                 title={feature.title}
                 description={feature.description}
                 footnote={feature.footnote}
-                waveIndex={isSchool ? undefined : index}
-                waveSvg={isSchool ? undefined : partnerCardsWave}
+                waveIndex={index}
+                waveSvg={partnerCardsWave}
               />
             ))
           }
@@ -153,16 +144,13 @@ const routeMedia = [
             />
           )
         }
-        {
-          // Заглушки маршрута только у Звука: для кампуса фото маршрута нет.
-          !isSchool && (
-            <div class={mediaRow}>
-              {routeMedia.map((item) => (
-                <MediaTile class={mediaTileFrame} kind={item.kind} alt={item.alt} />
-              ))}
-            </div>
-          )
-        }
+        <div class={mediaRow}>
+          {
+            routeMedia.map((item) => (
+              <MediaTile class={mediaTileFrame} kind={item.kind} alt={item.alt} />
+            ))
+          }
+        </div>
       </div>
     </div>
   </div>

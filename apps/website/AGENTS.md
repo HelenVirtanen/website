@@ -87,6 +87,9 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   Without JavaScript the whole list shows and the filter form stays `hidden`. The rows of a
   language are also `/archive.json` (`/en/archive.json`), linked from every page's head.
 - **Programme of a meetup** is one component, `components/ProgramList.astro`, on the home page (`ProgramSection`) and on the meetup page (`EventSchedule`): time, speaker avatar, title, description. The whole row links to the talk through the stretched `::after` of the title link; speaker names and links in the description sit above it (`zIndex.ring`) and lead to their own pages.
+- **Partner block** on the home page: `sections/PartnerSection.astro` by default; a partner with `look: school21`
+  gets `sections/SchoolPartnerSection.astro` instead (dark plate, green pill buttons, rounded stat cards, pixel motif of
+  their logo). Its colours are the `color.school*` tokens and stay the same in both site themes.
 - **Reviews** (spec 008): `/reviews/` and `/en/reviews/` are public pages of kind `reviews` (title
   and description from the dictionary), rendered by `components/ReviewsPage.astro`. A language gets
   the page and the header and footer links only with a published review. `src/content/reviews.ts`

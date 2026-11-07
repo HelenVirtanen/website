@@ -106,6 +106,7 @@ const ru = {
   'program.hint':
     'Задай вопрос спикеру на митапе в чате MoscowCSS, обязательно укажи тег {tag}',
   'partner.qrLabel': 'QR-код {handle}',
+  'partner.qrCaption': 'Наведите камеру, чтобы открыть Telegram',
   'route.photoFirst': 'Фото маршрута 1',
   'route.photoSecond': 'Фото маршрута 2',
   'route.video': 'Видео маршрута',
@@ -268,6 +269,7 @@ const en = {
   'program.hint':
     'Ask the speaker a question at the meetup in the MoscowCSS chat and be sure to include the tag {tag}',
   'partner.qrLabel': 'QR code {handle}',
+  'partner.qrCaption': 'Point your camera to open Telegram',
   'route.photoFirst': 'Route photo 1',
   'route.photoSecond': 'Route photo 2',
   'route.video': 'Route video',

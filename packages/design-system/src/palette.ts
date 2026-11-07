@@ -34,6 +34,7 @@ export const palette = {
   school21Ink: '#1D2633',
   school21Green: '#00DB00',
   school21Mist: '#F4F4F9',
+  school21Slate: '#334048',
   green: '#70DC55',
   greenDeep: '#468834',
   sky: '#8ED6FB',
