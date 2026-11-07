@@ -38,7 +38,7 @@ interface Props {
 
 const { event, locale, past, id = 'registration' } = Astro.props;
 const t = useTranslations(locale);
-const { tagline, venue, modes: eventModes, tags, passportRequired, registrationUrl, streamUrl, recordingUrl } = event.data;
+const { tagline, venue, modes: eventModes, tags, passportRequired, registrationUrl, recordingUrl } = event.data;
 const parts = eventDateParts(event.data.date, locale);
 const slug = slugOf(event);
 // Чип с номером только у пронумерованных митапов; `online-2021` его не получает
@@ -81,18 +81,7 @@ const number = /^\d+$/.test(slug) ? slug : undefined;
             </p>
           )
         ) : (
-          <p class={body}>
-            {t('hero.onlineNote')}
-            <br />
-            {/* Без адреса трансляции ссылка была бы пустой — показываем текст без ссылки */}
-            {streamUrl ? (
-              <a class={link} href={streamUrl} target="_blank" rel="noopener noreferrer">
-                {t('hero.watchStream')}
-              </a>
-            ) : (
-              <span>{t('hero.watchStream')}</span>
-            )}
-          </p>
+          <p class={body}>{t('hero.onlineNote')}</p>
         )
       }
     </div>

@@ -4,5 +4,5 @@ order: 3
 ---
 
 Задавайте вопросы спикерам в чате трансляции\
-или заранее в [@moscowcss](https://t.me/moscowcss)\
+или заранее в [@moscowcss_chat](https://t.me/moscowcss_chat)\
 с тегом #вопрос_спикеру
