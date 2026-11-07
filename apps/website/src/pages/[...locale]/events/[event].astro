@@ -1,6 +1,6 @@
 ---
 import type { GetStaticPaths } from 'astro';
-import { render } from 'astro:content';
+import { render, type CollectionEntry } from 'astro:content';
 import H1 from '@moscowcss/ui/components/H1';
 import Paragraph from '@moscowcss/ui/components/Paragraph';
 import Prose from '@moscowcss/ui/components/Prose';
@@ -31,8 +31,8 @@ const t = useTranslations(locale);
 const catalog = await loadCatalog();
 const inLocale = <T extends { id: string }>(entries: T[]): T[] =>
   entries.filter((item) => localeOf(item) === locale);
-const speakers = inLocale(catalog.speakers);
-const schedule = scheduleOf(entry as EventEntry, inLocale(catalog.talks));
+const speakers = inLocale(catalog.speakers) as CollectionEntry<'speakers'>[];
+const schedule = scheduleOf(entry as EventEntry, inLocale(catalog.talks) as CollectionEntry<'talks'>[]);
 
 const { tagline, venue } = entry.data;
 const dateTime = eventWhen(entry.data, locale, { withTime: t('hero.dateTime'), dateOnly: t('date.long') });

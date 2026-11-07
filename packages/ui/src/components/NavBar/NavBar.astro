@@ -16,15 +16,12 @@ import {
   closeButton,
   closeIcon,
   telegram,
-  meta,
-  metaAddress,
   toggles,
   overlayToggles,
   overlay,
   overlayLinks,
   overlayLink,
   overlayFooter,
-  overlayAddress,
 } from './NavBar.css';
 
 const Tag = 'nav';
@@ -53,8 +50,6 @@ interface Props extends HTMLAttributes<typeof Tag> {
   homeLabel?: string;
   /** Видимый текст логотипа */
   homeText?: string;
-  /** Адрес ближайшего митапа: строка под разделителем и низ меню; без него строки нет */
-  addressLine?: string;
 }
 
 const {
@@ -69,7 +64,6 @@ const {
   homeHref,
   homeLabel,
   homeText,
-  addressLine,
   class: className,
   ...attrs
 } = Astro.props;
@@ -132,17 +126,9 @@ const external = { target: '_blank', rel: 'noopener noreferrer' } as const;
         <DecorToggle label={decorLabel} kind={decorKind} />
       </div>
       <Button href={telegramHref} size="nav" {...external}>{telegramButtonLabel}</Button>
-      {addressLine && <p class={overlayAddress}>{addressLine}</p>}
     </div>
   </div>
 </Tag>
-{
-  addressLine && (
-    <div class={meta}>
-      <p class={metaAddress}>{addressLine}</p>
-    </div>
-  )
-}
 
 <script>
   import { setupNavBar } from './NavBar.client';

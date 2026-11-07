@@ -28,7 +28,6 @@ const args = {
   homeHref: '/',
   homeLabel: 'Moscow CSS: на главную',
   homeText: 'Moscow CSS',
-  addressLine: 'Москва, Тверская ул., 7',
 };
 
 const setup = async ({ canvasElement }: { canvasElement: HTMLElement }) => {

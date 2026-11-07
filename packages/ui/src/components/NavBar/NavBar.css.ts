@@ -163,27 +163,6 @@ export const telegram = style({
 });
 
 // Строка лежит вне прилипшего корня и уезжает при прокрутке.
-export const meta = style({
-  display: vars.display.none,
-  alignItems: vars.alignItems.center,
-  justifyContent: vars.justifyContent.spaceBetween,
-  gap: vars.adaptive.navActionsGap,
-  boxSizing: 'border-box',
-  paddingBlock: vars.padding.s,
-  paddingInline: vars.adaptive.navPaddingInline,
-  color: vars.color.text,
-  font: vars.font.shorthand.navMeta,
-  '@media': {
-    [media.wide]: {
-      display: vars.display.flex,
-    },
-  },
-});
-
-export const metaAddress = style({
-  margin: 0,
-});
-
 // На телефоне в строку шапки не помещаются, поэтому там они в меню.
 export const toggles = style({
   display: vars.display.none,
@@ -286,8 +265,4 @@ export const overlayFooter = style({
   paddingInline: vars.padding.l,
   paddingBottom: vars.padding.xxxl,
   font: vars.font.shorthand.navMeta,
-});
-
-export const overlayAddress = style({
-  margin: 0,
 });

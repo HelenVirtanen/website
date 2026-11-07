@@ -15,7 +15,7 @@ import {
   useTranslations,
   type Locale,
 } from '../i18n';
-import { loadCatalog, localeOf, upcomingEvent } from '../content/catalog';
+import { loadCatalog } from '../content/catalog';
 import { publishedReviews } from '../content/reviews';
 import { buildNow } from '../content/now';
 import { CARD_TYPE, OG_SIZE, OG_TYPE, cardMetaOf } from '../seo/og';
@@ -58,12 +58,6 @@ const catalog = await loadCatalog();
 const homePage = catalog.pages.find((entry) => entry.id === `${lang}/index`);
 if (!homePage) throw new Error(`Missing page content: pages/${lang}/index.md`);
 const { telegramUrl: telegramHref, decor } = homePage.data;
-
-// Адрес в шапке — того же митапа, что показывает главная; без адреса в строке остаётся только чекбокс.
-const addressLine = upcomingEvent(
-  catalog.events.filter((entry) => localeOf(entry) === lang),
-  buildNow(),
-)?.event.data.venue.address;
 
 const site = Astro.site;
 const absolute = (path: string) => (site ? new URL(path, site).href : path);
@@ -168,7 +162,6 @@ const localeOptions = locales.map((code) => ({
       homeText={t('hero.title')}
       telegramHref={telegramHref}
       telegramButtonLabel={t('nav.telegramButton')}
-      addressLine={addressLine}
       decorLabel={t(`decor.toggle.${decor}`)}
       decorKind={decor}
       themeLabel={t('theme.dark')}
