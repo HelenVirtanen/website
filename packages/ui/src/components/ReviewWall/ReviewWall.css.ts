@@ -18,7 +18,12 @@ export const grid = style({
   listStyle: 'none',
 });
 
-// Без скрипта адрес стикера ведёт на якорь окна. Выше шапки: у окна без showModal нет верхнего слоя браузера.
+// Без скрипта адрес стикера ведёт на якорь окна. У окна без showModal нет верхнего слоя браузера, а родитель стены —
+// свой контекст наложения, поэтому над шапку поднимаем его, иначе шапка закроет имя и ссылку закрытия.
+globalStyle(`:has(> ${root}:not([data-review-ready]) dialog:target)`, {
+  zIndex: vars.zIndex.skipLink,
+});
+
 globalStyle(`${root}:not([data-review-ready]) dialog:target`, {
   display: vars.display.block,
   position: vars.position.fixed,

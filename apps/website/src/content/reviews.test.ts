@@ -60,6 +60,15 @@ describe('проверка каталога', () => {
     const photo = { src: '/a.jpg', width: 1, height: 1, format: 'jpg' } as const;
     expect(problemsOf([review('ru/anna', { photo }), review('en/anna')])).toContain('reviews/en/anna.md: поле photo');
   });
+
+  it('роняет сборку на других файлах галереи, но не на переводе описания', () => {
+    const image = (src: string) => ({ src, width: 1, height: 1, format: 'jpg' }) as const;
+    const ru = review('ru/anna', { gallery: [{ image: image('/a.jpg'), alt: 'Снимок' }] });
+    expect(problemsOf([ru, review('en/anna', { gallery: [{ image: image('/a.jpg'), alt: 'A photo' }] })])).toBe('');
+    expect(problemsOf([ru, review('en/anna', { gallery: [{ image: image('/b.jpg'), alt: 'A photo' }] })])).toContain(
+      'reviews/en/anna.md: поле gallery[].image',
+    );
+  });
 });
 
 describe('страница отзывов в списке публичных', () => {

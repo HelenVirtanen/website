@@ -70,9 +70,14 @@ export function setupReviewWall(root: HTMLElement): void {
       stickerOf(slug)?.focus();
     });
 
+    // Клик мимо содержимого приходит на сам dialog: это подложка. Нажатие должно начаться там же,
+    // иначе выделение текста, отпущенное за краем окна, закрыло бы его.
+    let pressedOnBackdrop = false;
+    dialog.addEventListener('mousedown', (event) => {
+      pressedOnBackdrop = event.target === dialog;
+    });
     dialog.addEventListener('click', (event) => {
-      // Клик мимо содержимого приходит на сам dialog: это подложка.
-      if (event.target === dialog) dialog.close();
+      if (event.target === dialog && pressedOnBackdrop) dialog.close();
     });
 
     dialog.querySelector('[data-review-close]')?.addEventListener('click', (event) => {

@@ -31,7 +31,7 @@ export const root = style({
       width: vars.size.reviewTapeWidth,
       height: vars.size.reviewTapeHeight,
       translate: '-50% 0',
-      rotate: '-3deg',
+      rotate: dimensions.reviewSticker.tapeTilt,
       background: `color-mix(in srgb, ${vars.color.text} 25%, transparent)`,
     },
     // Загнутый угол: половина квадрата цвета страницы, половина — изнанка листка.
@@ -57,28 +57,27 @@ export const tones = [
   tone(vars.color.tagBlue, vars.color.onTagBlue),
 ];
 
+const flat = { [angle]: dimensions.reviewSticker.flat, [shift]: vars.inset.zero };
+const shifts = [vars.inset.zero, vars.spacing.s, vars.spacing.xs, vars.inset.zero];
+
 // Наклон задан переменными, поэтому наведение и сниженная анимация выравнивают листок одним правилом.
-const tilt = (turn: string, offset: string) =>
+export const tilts = dimensions.reviewSticker.tilts.map((turn, index) =>
   style({
-    vars: { [angle]: turn, [shift]: offset },
+    vars: { [angle]: turn, [shift]: shifts[index] ?? vars.inset.zero },
     selectors: {
       '&:hover, &:focus-visible': {
-        vars: { [angle]: '0deg', [shift]: `calc(-1 * ${vars.spacing.xs})` },
+        vars: { [angle]: dimensions.reviewSticker.flat, [shift]: `calc(-1 * ${vars.spacing.xs})` },
       },
     },
     '@media': {
+      // Наведение специфичнее простого правила, поэтому сбрасываем и его: иначе листок подпрыгнет и при сниженной анимации.
       '(prefers-reduced-motion: reduce)': {
-        vars: { [angle]: '0deg', [shift]: '0rem' },
+        vars: flat,
+        selectors: { '&:hover, &:focus-visible': { vars: flat } },
       },
     },
-  });
-
-export const tilts = [
-  tilt('-2deg', '0rem'),
-  tilt('1.5deg', vars.spacing.s),
-  tilt('-1deg', vars.spacing.xs),
-  tilt('2deg', '0rem'),
-];
+  }),
+);
 
 export const head = style({
   display: vars.display.flex,

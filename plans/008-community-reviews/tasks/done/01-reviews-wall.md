@@ -7,7 +7,7 @@ status: done
 depends_on: []
 owns: ["packages/content/src/reviews/**", "packages/ui/src/components/Review*/**", "apps/website/src/components/ReviewsPage*", "apps/website/src/content/reviews*", "apps/website/src/pages/[...locale]/reviews/**"]
 model: opus
-risk: none
+risk: contract
 attempts: 0
 ---
 
