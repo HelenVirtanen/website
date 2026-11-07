@@ -101,8 +101,8 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   that hides text under increased spacing, WCAG 1.4.12). No `Review` schema.org markup on purpose.
 - **Talk covers.** A talk's optional `cover` (announcement card in
   `packages/content/src/talks/assets/`) shows under the title of the talk page; a talk without
-  one shows the shared placeholder `/covers/tbd.png` (`pages/covers/tbd.png.ts`, drawn by
-  `@moscowcss/og`). A wide cover (`isWide` in `src/content/talk-cover.ts`, ratio ≥ 1.6) also
+  one gets a generated cover `/covers/<lang>/<talk>.png` (`pages/covers/[...path].ts`, `renderTalkCover` from
+  `@moscowcss/og`, inputs from `talkCoverSourceOf`), also used as its OG and Twitter card. A wide cover (`isWide` in `src/content/talk-cover.ts`, ratio ≥ 1.6) also
   replaces the generated OG and Twitter cards: the `og/` route crops it to size with sharp. The
   file path comes from the frontmatter (`coverFileOf`), because the parsed field has no path.
 - **Header** links go across the site, not to home sections: History (`/events/`), Talks,
