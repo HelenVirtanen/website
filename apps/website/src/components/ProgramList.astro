@@ -90,6 +90,7 @@ const rows = await Promise.all(
         </li>
       ) : (
         <li class={activityRow}>
+          {/* Пустая колонка времени держит заголовок на одной линии с докладами */}
           <p class={time}>{item.time}</p>
           <p class={activityTitle}>{item.title}</p>
         </li>

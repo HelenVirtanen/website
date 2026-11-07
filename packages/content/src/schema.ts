@@ -64,8 +64,9 @@ export const PageSchema = z.object({
     .regex(/^#[\p{L}\p{N}_]+$/u, "тег — решётка и буквы, цифры или _ без пробелов: #вопрос_спикеру"),
 });
 
+// Времени нет, пока расписание будущего митапа не готово: порядок задаёт сам список, придумывать часы нельзя.
 const ScheduleItemSchema = z.object({
-  time: timeRange,
+  time: timeRange.optional(),
   title: z.string().min(1),
   kind: z.enum(["break", "activity"]),
 });
@@ -128,7 +129,7 @@ export const createTalkSchema = (image: ImageFunction) =>
   z.object({
     event: slug,
     speakers: z.array(slug).min(1),
-    // Необязательно только потому, что у архивных митапов (до 31-го) время докладов не сохранилось.
+    // Нет у архивных митапов (до 31-го), где время не сохранилось, и у будущего, пока расписание не готово.
     time: clockTime.optional(),
     title: z.string().min(1),
     slidesUrl: url.optional(),
@@ -208,6 +209,8 @@ export const createPartnerSchema = (image: ImageFunction) =>
     logo: image().optional(),
     // Адрес, который кодирует QR-код под логотипом; без него QR не показывается.
     qrUrl: url.optional(),
+    // Как оформлен блок партнёра: обычный или в цветах партнёра.
+    look: z.enum(["default", "school21"]).default("default"),
     tagline: z.string().min(1),
     features: z
       .array(

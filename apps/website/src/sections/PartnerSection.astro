@@ -29,6 +29,11 @@ import {
   directionsProse,
   mediaRow,
   mediaTileFrame,
+  about,
+  school21,
+  school21Cards,
+  school21Handle,
+  school21Logo,
 } from './PartnerSection.css';
 
 interface Props {
@@ -42,7 +47,10 @@ interface Props {
 
 const { partner, event, locale, id = 'partners' } = Astro.props;
 const t = useTranslations(locale);
-const { name, handle: partnerHandle, tagline: partnerTagline, features, logo, qrUrl } = partner.data;
+const { name, handle: partnerHandle, tagline: partnerTagline, features, logo, qrUrl, look } = partner.data;
+const isSchool = look === 'school21';
+const { Content: About } = await render(partner);
+const hasAbout = Boolean(partner.body?.trim());
 const qrCode = qrUrl ? qrPath(qrUrl) : undefined;
 // Поле вокруг кода в модулях: без него камера не находит границы на тёмном фоне.
 const QR_QUIET_ZONE = 2;
@@ -56,17 +64,21 @@ const routeMedia = [
 ] as const;
 ---
 
-<section class={section} id={id} data-visual="partner">
+<section class:list={[section, isSchool && school21]} id={id} data-visual="partner">
   <div class={hero}>
-    <div class={heroWave} aria-hidden="true">
-      <LineVektor />
-    </div>
+    {
+      !isSchool && (
+        <div class={heroWave} aria-hidden="true">
+          <LineVektor />
+        </div>
+      )
+    }
     <div class={inner}>
       <div class={partnerHeader}>
         <h2 class:list={[brandTitle, !logo && brandName]}>
           {
             logo ? (
-              <img class={brandLogo} src={logo.src} width={logo.width} height={logo.height} alt={name} decoding="async" />
+              <img class:list={[brandLogo, isSchool && school21Logo]} src={logo.src} width={logo.width} height={logo.height} alt={name} decoding="async" />
             ) : (
               name
             )
@@ -92,20 +104,28 @@ const routeMedia = [
             </svg>
           )
         }
-        <p class={handle}>{partnerHandle}</p>
+        <p class:list={[handle, isSchool && school21Handle]}>{partnerHandle}</p>
         <p class={tagline}>{partnerTagline}</p>
       </div>
 
+      {
+        hasAbout && (
+          <Prose class={about}>
+            <About />
+          </Prose>
+        )
+      }
+
       <div class={cardsRow}>
-        <div class={cardsGrid}>
+        <div class:list={[cardsGrid, isSchool && school21Cards]}>
           {
             features.map((feature, index) => (
               <FeatureCard
                 title={feature.title}
                 description={feature.description}
                 footnote={feature.footnote}
-                waveIndex={index}
-                waveSvg={partnerCardsWave}
+                waveIndex={isSchool ? undefined : index}
+                waveSvg={isSchool ? undefined : partnerCardsWave}
               />
             ))
           }
@@ -130,13 +150,16 @@ const routeMedia = [
             />
           )
         }
-        <div class={mediaRow}>
-          {
-            routeMedia.map((item) => (
-              <MediaTile class={mediaTileFrame} kind={item.kind} alt={item.alt} />
-            ))
-          }
-        </div>
+        {
+          // Заглушки маршрута только у Звука: для кампуса фото маршрута нет.
+          !isSchool && (
+            <div class={mediaRow}>
+              {routeMedia.map((item) => (
+                <MediaTile class={mediaTileFrame} kind={item.kind} alt={item.alt} />
+              ))}
+            </div>
+          )
+        }
       </div>
     </div>
   </div>

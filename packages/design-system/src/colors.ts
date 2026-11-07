@@ -29,6 +29,12 @@ const contract = {
     surfaceDarkEdge: null, // граница чёрной карточки: на графите она иначе сливается с фоном
     partnerAccent: null,
     partnerBanner: null,
+    // Блок партнёра в цветах Школы 21: одинаков в обеих темах.
+    schoolSurface: null,
+    onSchoolSurface: null,
+    schoolAccent: null,
+    schoolCard: null,
+    onSchoolCard: null,
     surfaceDarkMuted: null,
     dividerSoft: null, // мягкий разделитель на светлом фоне
     link: null,
@@ -80,6 +86,11 @@ const light = {
     surfaceDarkEdge: 'transparent',
     partnerAccent: palette.green,
     partnerBanner: palette.pink,
+    schoolSurface: palette.school21Ink,
+    onSchoolSurface: palette.white,
+    schoolAccent: palette.school21Green,
+    schoolCard: palette.school21Mist,
+    onSchoolCard: palette.school21Ink,
     surfaceDarkMuted: palette.gray700,
     dividerSoft: palette.inkA20,
     link: palette.blue,

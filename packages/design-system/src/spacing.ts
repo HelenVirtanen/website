@@ -14,6 +14,7 @@ const contract = {
     small: null,
     medium: null,
     large: null,
+    card: null,
   },
   size: {
     burgerIcon: null,
@@ -30,6 +31,7 @@ const contract = {
     partnerQrCodeWidth: null,
     partnerLogoWidth: null,
     partnerLogoHeight: null,
+    partnerLogoSquare: null,
     partnerLogoOffsetTop: null,
     programHintMaxWidth: null,
     hitTarget: null,
@@ -61,6 +63,7 @@ const values = {
     small: '0.25rem', // 4px
     medium: '0.5rem', // 8px
     large: '0.625rem', // 10px
+    card: '2rem', // 32px
   },
   size: {
     burgerIcon: '1.5rem', // 24px
@@ -77,6 +80,7 @@ const values = {
     partnerQrCodeWidth: '12.9375rem',
     partnerLogoWidth: '51.1875rem',
     partnerLogoHeight: '14.125rem',
+    partnerLogoSquare: '8rem', // 128px
     partnerLogoOffsetTop: '10.146875rem',
     programHintMaxWidth: '36rem', // 576px
     hitTarget: '2.625rem', // 42px — минимальная зона нажатия

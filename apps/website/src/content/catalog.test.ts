@@ -284,6 +284,17 @@ describe('связи', () => {
     ]);
   });
 
+  it('scheduleOf: без расписания сперва доклады по имени файла, затем пункты в порядке файла', () => {
+    const planned = event('ru/32', {
+      schedule: [
+        { title: 'Секрет 1', kind: 'activity' },
+        { title: 'Секрет 2', kind: 'activity' },
+      ],
+    });
+    const talks = [talk('ru/b-talk', { event: '32', time: undefined, title: 'Второй' }), talk('ru/a-talk', { event: '32', time: undefined, title: 'Первый' })];
+    expect(scheduleOf(planned, talks).map((item) => item.title)).toEqual(['Первый', 'Второй', 'Секрет 1', 'Секрет 2']);
+  });
+
   it('scheduleOf: доклад без времени идёт после перерывов и докладов со временем', () => {
     const untimed = talk('ru/untimed', { event: '10', title: 'Без времени' });
     delete untimed.data.time;

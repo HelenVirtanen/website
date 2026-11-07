@@ -81,7 +81,7 @@ const INVARIANTS = {
   ],
   talks: ['event', 'speakers', 'time', 'slidesUrl', 'videoUrl', 'cover'],
   speakers: ['photo', 'links'],
-  partners: ['url', 'handle', 'logo', 'qrUrl'],
+  partners: ['url', 'handle', 'logo', 'qrUrl', 'look'],
   organizers: ['status', 'photo', 'contacts'],
   reviews: ['category', 'photo', 'gallery[].image'],
   faq: ['order'],
@@ -362,7 +362,7 @@ export function talksOfEvent<T extends TalkEntry>(event: EventEntry, talks: read
 
 export type ScheduleItem<T extends TalkEntry = TalkEntry> =
   | { kind: 'talk'; time: string | undefined; title: string; talk: T }
-  | { kind: 'break' | 'activity'; time: string; title: string };
+  | { kind: 'break' | 'activity'; time: string | undefined; title: string };
 
 /** Расписание митапа: доклады и перерывы с активностями вперемешку по началу. */
 export function scheduleOf<T extends TalkEntry>(

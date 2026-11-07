@@ -2,6 +2,9 @@
 name: "Дарина Паирель"
 status: current
 photo: ../assets/darina-pairel.png
+contacts:
+  telegram: https://t.me/RinaPa
+  channel: https://t.me/welcomehomeyouhi
 ---
 
 - Senior Frontend разработчик
