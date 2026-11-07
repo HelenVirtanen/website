@@ -12,8 +12,9 @@ import { loadCatalog, localeOf, slugOf } from '../content/catalog';
 import { eventDateParts, fillTemplate } from '../content/format';
 import { speakerImage } from '../content/speaker-image';
 import { localizePath, useTranslations } from '../i18n';
+import { feedPath } from '../rss/feed';
 import type { PublicPage } from '../seo/pages';
-import { main, inner, head, empty, resetButton } from './ArchivePage.css';
+import { main, inner, head, empty, resetButton, feedLink } from './ArchivePage.css';
 
 // Страница списка: митапы, доклады или спикеры. Строки — из archiveOf, их же фильтрует скрипт.
 interface Props {
@@ -64,6 +65,16 @@ const data = JSON.stringify({ events: [], talks: [], speakers: [], [kind]: items
     <div class={inner} data-archive data-archive-kind={kind} data-archive-template={t('filter.status')}>
       <div class={head}>
         <H1>{title}</H1>
+        {
+          kind === 'events' && (
+            <Paragraph>
+              {t('rss.invite')}{' '}
+              <a class={feedLink} href={feedPath(locale)} type="application/rss+xml">
+                {t('rss.subscribe')}
+              </a>
+            </Paragraph>
+          )
+        }
         <SectionTabs aria-label={t('list.tabs')} items={tabs} />
       </div>
       <ArchiveFilter

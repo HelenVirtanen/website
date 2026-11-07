@@ -94,6 +94,12 @@ export const tagline = style({
   letterSpacing: vars.font.letterSpacing.figmaWide,
 });
 
+export const handleLink = style({
+  color: 'inherit',
+  textDecorationThickness: vars.border.width.thin,
+  textUnderlineOffset: '0.15em',
+});
+
 // QR — тёмные модули на светлой подложке: инверсный код читают не все камеры.
 export const qrBackground = style({ fill: vars.color.white });
 export const qrModules = style({ fill: vars.color.blackText });

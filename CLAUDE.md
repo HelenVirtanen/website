@@ -599,7 +599,7 @@ regenerate rather than edit).
   fail the build. Do not weaken it with regexes over the source text. Drafts
   (`draft: true`) are excluded from the site.
 - **Pages.** Home (`/`, `/en/`: nearest future meetup, or the last past one
-  without registration; list of past meetups), `/events/<n>/`, `/talks/<name>/`,
+  without registration; past meetups live on `/events/`, which links the RSS feed under its heading), `/events/<n>/`, `/talks/<name>/`,
   `/speakers/<name>/`, the lists `/events/`, `/talks/`, `/speakers/` (newest first,
   with a client-side filter; spec 007), `/search/` (Pagefind, `noindex`). The
   list of public pages for SEO is `src/seo/pages.ts`.

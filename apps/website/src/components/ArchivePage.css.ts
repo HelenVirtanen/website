@@ -45,3 +45,15 @@ export const resetButton = style({
   font: vars.font.shorthand.ui,
   cursor: 'pointer',
 });
+
+// Зона нажатия до hitTarget за счёт полей с компенсирующим отрицательным отступом: строка не едет.
+const hitInset = `max(calc(${vars.size.hitTarget} * 0), calc((${vars.size.hitTarget} - 1lh) / 2))`;
+
+export const feedLink = style({
+  display: vars.display.inlineFlex,
+  alignItems: vars.alignItems.center,
+  minWidth: vars.size.hitTarget,
+  paddingBlock: hitInset,
+  marginBlock: `calc(-1 * ${hitInset})`,
+  color: vars.color.text,
+});

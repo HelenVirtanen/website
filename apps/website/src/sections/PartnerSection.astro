@@ -30,6 +30,7 @@ import {
   mediaRow,
   mediaTileFrame,
   about,
+  handleLink,
   school21,
   school21Cards,
   school21Handle,
@@ -104,7 +105,9 @@ const routeMedia = [
             </svg>
           )
         }
-        <p class:list={[handle, isSchool && school21Handle]}>{partnerHandle}</p>
+        <p class:list={[handle, isSchool && school21Handle]}>
+          {qrUrl ? <a class={handleLink} href={qrUrl} target="_blank" rel="noopener noreferrer">{partnerHandle}</a> : partnerHandle}
+        </p>
         <p class={tagline}>{partnerTagline}</p>
       </div>
 

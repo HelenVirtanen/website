@@ -8,8 +8,7 @@ import ProgramSection from '../../sections/ProgramSection.astro';
 import PartnerSection from '../../sections/PartnerSection.astro';
 import FAQSection from '../../sections/FAQSection.astro';
 import OrganizersSection from '../../sections/OrganizersSection.astro';
-import PastEventsSection from '../../sections/PastEventsSection.astro';
-import { loadCatalog, localeOf, pastEvents, upcomingEvent } from '../../content/catalog';
+import { loadCatalog, localeOf, upcomingEvent } from '../../content/catalog';
 import { buildNow } from '../../content/now';
 import { organizersByStatus } from '../../content/organizers';
 import { defaultLocale, localizePath, locales, useTranslations, type Locale } from '../../i18n';
@@ -68,7 +67,6 @@ const alternates = locales.map((code) => ({ locale: code, path: localizePath(cod
     <FAQSection entries={inLocale(catalog.faq).filter((entry) => !entry.data.draft)} locale={locale} />
     <OrganizersSection entries={organizers} locale={locale} />
     <AboutSection page={page} locale={locale} />
-    <PastEventsSection events={pastEvents(events, now)} locale={locale} />
     {
       featured && !featured.past && featured.event.data.registrationUrl && (
         <CallToAction href={featured.event.data.registrationUrl} aria-label={t('hero.registerLabel')}>
