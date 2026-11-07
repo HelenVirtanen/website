@@ -1,0 +1,29 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { body, chip, cover, image as imageClass, meta as metaClass, root, title as titleClass } from './TalkCard.css';
+
+const Tag = 'a';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Название доклада */
+  title: string;
+  /** Метка митапа: номер или год */
+  label: string;
+  /** Строка под меткой: митап и дата */
+  meta: string;
+  /** Обложка доклада или общая заглушка; подпись не нужна — рядом название */
+  image: { src: string; width: number; height: number };
+}
+
+const { title, label, meta, image, class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[root, className]} {...attrs}>
+  <span class={cover}>
+    <img class={imageClass} src={image.src} width={image.width} height={image.height} alt="" loading="lazy" decoding="async" />
+  </span>
+  <span class={body}>
+    <span class={chip}>{label}</span>
+    <h3 class={titleClass}>{title}</h3>
+    <span class={metaClass}>{meta}</span>
+  </span>
+</Tag>

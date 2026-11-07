@@ -87,6 +87,10 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   Without JavaScript the whole list shows and the filter form stays `hidden`. The rows of a
   language are also `/archive.json` (`/en/archive.json`), linked from every page's head.
 - **Programme of a meetup** is one component, `components/ProgramList.astro`, on the home page (`ProgramSection`) and on the meetup page (`EventSchedule`): time, speaker avatar, title, description. The whole row links to the talk through the stretched `::after` of the title link; speaker names and links in the description sit above it (`zIndex.ring`) and lead to their own pages.
+- **Meetup and speaker pages** share `components/DetailPage.css.ts`: a hero in the home page's language (dashed chip,
+  big title, blue date, slash list, coloured topic pills, pill links), the programme via `ProgramList`, talk cards
+  (`TalkCard`) on the speaker page and a meetup `gallery` opened in `Lightbox` (`@moscowcss/ui`). A speaker portrait is
+  an octagon over a shifted pink one; only a real photo opens large.
 - **Partner block** on the home page: `sections/PartnerSection.astro` by default; a partner with `look: school21`
   gets `sections/SchoolPartnerSection.astro` instead (dark plate, green pill buttons, rounded stat cards, pixel motif of
   their logo). Its colours are the `color.school*` tokens and stay the same in both site themes.

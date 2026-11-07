@@ -36,6 +36,10 @@ const contract = {
     schoolPixel: null,
     schoolPixelSmall: null,
     schoolStatHeight: null,
+    detailPortrait: null,
+    galleryRow: null,
+    sliderArrowWidth: null,
+    sliderArrowHeight: null,
     partnerLogoOffsetTop: null,
     programHintMaxWidth: null,
     hitTarget: null,
@@ -89,6 +93,10 @@ const values = {
     schoolPixel: '2rem', // 32px
     schoolPixelSmall: '1.25rem', // 20px
     schoolStatHeight: '15rem', // 240px
+    detailPortrait: '26rem', // 416px
+    galleryRow: '11rem', // 176px
+    sliderArrowWidth: '3.75rem', // 60px
+    sliderArrowHeight: '1.375rem', // 22px
     partnerLogoOffsetTop: '10.146875rem',
     programHintMaxWidth: '36rem', // 576px
     hitTarget: '2.625rem', // 42px — минимальная зона нажатия

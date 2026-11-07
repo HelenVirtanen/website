@@ -1,18 +1,38 @@
 ---
 import type { GetStaticPaths } from 'astro';
+import { getImage } from 'astro:assets';
 import { render } from 'astro:content';
-import H1 from '@moscowcss/ui/components/H1';
-import Paragraph from '@moscowcss/ui/components/Paragraph';
+import BlockTitle from '@moscowcss/ui/components/BlockTitle';
+import Lightbox from '@moscowcss/ui/components/Lightbox';
 import Prose from '@moscowcss/ui/components/Prose';
-import LinkList from '@moscowcss/ui/components/LinkList';
+import TalkCard from '@moscowcss/ui/components/TalkCard';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import EntityPage from '../../../components/EntityPage.astro';
-import { body, header, photo } from '../../../components/EntityPage.css';
+import { eventLabel } from '../../../content/archive';
 import { loadCatalog, localeOf, slugOf, talksOfSpeaker, type SpeakerEntry } from '../../../content/catalog';
 import { eventDateParts, fillTemplate } from '../../../content/format';
 import { speakerImage } from '../../../content/speaker-image';
+import { talkCoverImage } from '../../../content/talk-cover-image';
 import { localizePath, useTranslations } from '../../../i18n';
 import { localeParam, pagesOfKind, publicPagesOf, type PublicPage } from '../../../seo/pages';
+import {
+  action,
+  actions,
+  block,
+  cards,
+  chip,
+  hero,
+  heroText,
+  inner,
+  lead,
+  main,
+  portrait,
+  portraitImage,
+  prose,
+  tag,
+  tagTones,
+  tags,
+  title,
+} from '../../../components/DetailPage.css';
 
 export const getStaticPaths = (async () => {
   const catalog = await loadCatalog();
@@ -35,52 +55,97 @@ const appearances = talksOfSpeaker(
 );
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const { Content } = await render(entry as any);
+const hasBio = Boolean(entry.body?.trim());
 
-const { name, role, links } = entry.data;
+const { name, role, links = [], photo } = entry.data;
 const image = await speakerImage(entry);
+// Крупно открываем только настоящее фото: аватар с инициалами увеличивать незачем.
+const full = photo ? await getImage({ src: photo, width: Math.min(1400, photo.width), format: 'webp' }) : undefined;
+
+const talks = await Promise.all(
+  appearances.map(async ({ talk, event }) => ({
+    href: localizePath(locale, `talks/${slugOf(talk)}`),
+    title: talk.data.title,
+    label: eventLabel(event),
+    meta: `${event.data.tagline}, ${fillTemplate(t('date.long'), eventDateParts(event.data.date, locale))}`,
+    image: await talkCoverImage(talk),
+  })),
+);
+const events = [...new Map(appearances.map(({ event }) => [slugOf(event), event])).values()];
 ---
 
-<BaseLayout
-  title={`${name} — ${t('site.name')}`}
-  description={role ?? name}
-  lang={locale}
-  alternates={alternates}
->
-  <EntityPage>
-    <div class={header}>
-      <img class={photo} src={image.src} width={image.width} height={image.height} alt="" decoding="async" />
-      <H1>{name}</H1>
-      {role && <Paragraph>{role}</Paragraph>}
+<BaseLayout title={`${name} — ${t('site.name')}`} description={role ?? name} lang={locale} alternates={alternates}>
+  <main id="main" tabindex="-1" class={main} data-pagefind-body>
+    <div class={inner}>
+      <div class={hero}>
+        {
+          full ? (
+            <Lightbox dialogLabel={name} closeLabel={t('lightbox.close')} prevLabel={t('lightbox.prev')} nextLabel={t('lightbox.next')}>
+              <a class={portrait} href={full.src} data-lightbox-item data-caption={name} aria-label={fillTemplate(t('lightbox.open'), { name })}>
+                <img class={portraitImage} src={image.src} width={image.width} height={image.height} alt="" decoding="async" />
+              </a>
+            </Lightbox>
+          ) : (
+            <span class={portrait}>
+              <img class={portraitImage} src={image.src} width={image.width} height={image.height} alt="" decoding="async" />
+            </span>
+          )
+        }
+        <div class={heroText}>
+          <span class={chip}>{t('speaker.kicker')}</span>
+          <h1 class={title}>{name}</h1>
+          {role && <p class={lead}>{role}</p>}
+          {
+            events.length > 0 && (
+              <ul class={tags} aria-label={t('speaker.events')}>
+                {events.map((event, index) => (
+                  <li>
+                    <a class:list={[tag, tagTones[index % tagTones.length]]} href={localizePath(locale, `events/${slugOf(event)}`)}>
+                      {event.data.tagline}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+          {
+            links.length > 0 && (
+              <ul class={actions} aria-label={t('speaker.links')}>
+                {links.map((link) => (
+                  <li>
+                    <a class={action} href={link.url} target="_blank" rel="noopener noreferrer">
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+        </div>
+      </div>
+
+      {
+        hasBio && (
+          <Prose class={prose}>
+            <Content />
+          </Prose>
+        )
+      }
+
+      {
+        talks.length > 0 && (
+          <section class={block}>
+            <BlockTitle>{t('speaker.talks')}</BlockTitle>
+            <ul class={cards}>
+              {talks.map((item) => (
+                <li>
+                  <TalkCard href={item.href} title={item.title} label={item.label} meta={item.meta} image={item.image} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
     </div>
-    <Prose class={body}>
-      <Content />
-    </Prose>
-    {
-      appearances.length > 0 && (
-        <LinkList
-          title={t('speaker.talks')}
-          items={appearances.flatMap(({ talk, event }) => [
-            {
-              href: localizePath(locale, `talks/${slugOf(talk)}`),
-              label: talk.data.title,
-              caption: `${event.data.tagline}, ${fillTemplate(t('date.long'), eventDateParts(event.data.date, locale))}`,
-            },
-          ])}
-        />
-      )
-    }
-    {
-      appearances.length > 0 && (
-        <LinkList
-          title={t('speaker.events')}
-          items={[...new Map(appearances.map(({ event }) => [slugOf(event), event])).values()].map((event) => ({
-            href: localizePath(locale, `events/${slugOf(event)}`),
-            label: event.data.tagline,
-            caption: fillTemplate(t('date.long'), eventDateParts(event.data.date, locale)),
-          }))}
-        />
-      )
-    }
-    {links && links.length > 0 && <LinkList title={t('speaker.links')} items={links.map((link) => ({ href: link.url, label: link.label }))} />}
-  </EntityPage>
+  </main>
 </BaseLayout>

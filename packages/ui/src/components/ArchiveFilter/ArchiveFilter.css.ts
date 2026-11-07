@@ -44,8 +44,16 @@ export const input = style({
   font: vars.font.shorthand.body,
 });
 
+// Родную стрелку браузер прижимает к рамке и полям не подчиняет: рисуем свою из двух градиентов цвета текста.
+const arrow = vars.spacing.s;
 export const select = style({
   cursor: 'pointer',
+  appearance: 'none',
+  paddingInlineEnd: `calc(${vars.padding.l} * 2 + ${arrow})`,
+  backgroundImage: 'linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%)',
+  backgroundPosition: `right calc(${vars.padding.l} + ${arrow} / 2) center, right ${vars.padding.l} center`,
+  backgroundSize: `calc(${arrow} / 2) calc(${arrow} / 2)`,
+  backgroundRepeat: 'no-repeat',
 });
 
 export const check = style({

@@ -1,20 +1,43 @@
 ---
 import type { GetStaticPaths } from 'astro';
+import { getImage } from 'astro:assets';
 import { render, type CollectionEntry } from 'astro:content';
-import H1 from '@moscowcss/ui/components/H1';
-import Paragraph from '@moscowcss/ui/components/Paragraph';
+import BlockTitle from '@moscowcss/ui/components/BlockTitle';
+import Lightbox from '@moscowcss/ui/components/Lightbox';
 import Prose from '@moscowcss/ui/components/Prose';
-import LinkList from '@moscowcss/ui/components/LinkList';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import EntityPage from '../../../components/EntityPage.astro';
-import EventSchedule from '../../../components/EventSchedule.astro';
-import { body, header } from '../../../components/EntityPage.css';
-import { loadCatalog, localeOf, scheduleOf, type EventEntry } from '../../../content/catalog';
-import { eventWhen, venueLine } from '../../../content/format';
+import ProgramList from '../../../components/ProgramList.astro';
+import { loadCatalog, localeOf, scheduleOf, slugOf, type EventEntry } from '../../../content/catalog';
+import { eventDateParts, fillTemplate, eventWhen, venueLine } from '../../../content/format';
 import { eventLinksOf } from '../../../content/event-links';
 import { buildNow } from '../../../content/now';
 import { useTranslations } from '../../../i18n';
 import { localeParam, pagesOfKind, publicPagesOf, type PublicPage } from '../../../seo/pages';
+import {
+  action,
+  actionPrimary,
+  actions,
+  block,
+  chip,
+  date,
+  dateTime,
+  gallery,
+  galleryImage,
+  galleryItem,
+  galleryLink,
+  heroText,
+  inner,
+  lead,
+  main,
+  panel,
+  prose,
+  slashes,
+  tag,
+  tagTones,
+  tags,
+  title,
+  topRow,
+} from '../../../components/DetailPage.css';
 
 export const getStaticPaths = (async () => {
   const catalog = await loadCatalog();
@@ -29,16 +52,19 @@ const { locale, entry, alternates } = page;
 const t = useTranslations(locale);
 
 const catalog = await loadCatalog();
-const inLocale = <T extends { id: string }>(entries: T[]): T[] =>
-  entries.filter((item) => localeOf(item) === locale);
+const inLocale = <T extends { id: string }>(entries: T[]): T[] => entries.filter((item) => localeOf(item) === locale);
 const speakers = inLocale(catalog.speakers) as CollectionEntry<'speakers'>[];
 const schedule = scheduleOf(entry as EventEntry, inLocale(catalog.talks) as CollectionEntry<'talks'>[]);
 
-const { tagline, venue } = entry.data;
-const dateTime = eventWhen(entry.data, locale, { withTime: t('hero.dateTime'), dateOnly: t('date.long') });
+const { tagline, venue, modes, tags: topics, gallery: photos = [] } = entry.data;
+const slug = slugOf(entry);
+const number = /^\d+$/.test(slug) ? slug : undefined;
+const parts = eventDateParts(entry.data.date, locale);
+const dateText = eventWhen(entry.data, locale, { withTime: t('hero.dateTime'), dateOnly: t('date.long') });
 const place = venueLine(venue);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const { Content } = await render(entry as any);
+const hasBody = Boolean(entry.body?.trim());
 
 const links = eventLinksOf(entry, buildNow(), {
   registration: t('event.registration'),
@@ -47,24 +73,92 @@ const links = eventLinksOf(entry, buildNow(), {
   photos: t('event.photos'),
   map: t('event.map'),
 });
+
+// Превью плиткой и большое фото для окна просмотра.
+const pictures = await Promise.all(
+  photos.map(async (item, index) => {
+    const thumb = await getImage({ src: item.image, width: Math.min(index === 0 ? 1000 : 600, item.image.width), format: 'webp' });
+    const full = await getImage({ src: item.image, width: Math.min(1600, item.image.width), format: 'webp' });
+    return { alt: item.alt, thumb: thumb.src, full: full.src, width: thumb.attributes['width'], height: thumb.attributes['height'] };
+  }),
+);
 ---
 
-<BaseLayout
-  title={`${tagline} — ${t('site.name')}`}
-  description={`${tagline}. ${dateTime}, ${place}`}
-  lang={locale}
-  alternates={alternates}
->
-  <EntityPage>
-    <div class={header}>
-      <H1>{tagline}</H1>
-      <Paragraph>{dateTime}</Paragraph>
-      <Paragraph>{place}</Paragraph>
+<BaseLayout title={`${tagline} — ${t('site.name')}`} description={`${tagline}. ${dateText}, ${place}`} lang={locale} alternates={alternates}>
+  <main id="main" tabindex="-1" class={main} data-pagefind-body>
+    <div class={inner}>
+      <div class={heroText}>
+        <div class={topRow}>
+          {number ? <span class={chip}>{fillTemplate(t('hero.meetupNumber'), { number })}</span> : <span />}
+          <p class={date}>
+            <span>{fillTemplate(t('date.long'), parts)}</span>
+            {entry.data.time !== undefined && <span class={dateTime}>{fillTemplate(t('hero.time'), { time: parts.time })}</span>}
+          </p>
+        </div>
+        <h1 class={title}>{tagline}</h1>
+        <ul class={slashes}>
+          {modes.map((mode) => <li>{mode}</li>)}
+        </ul>
+        <p class={lead}>{place}</p>
+        {
+          topics.length > 0 && (
+            <ul class={tags} aria-label={t('hero.tags')}>
+              {topics.map((topic, index) => (
+                <li class:list={[tag, tagTones[index % tagTones.length]]}>{topic}</li>
+              ))}
+            </ul>
+          )
+        }
+        {
+          links.length > 0 && (
+            <ul class={actions} aria-label={t('event.links')}>
+              {links.map((link, index) => (
+                <li>
+                  <a class:list={[action, index === 0 && link.label === t('event.registration') && actionPrimary]} href={link.href} target="_blank" rel="noopener noreferrer">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+
+      {
+        hasBody && (
+          <Prose class:list={[prose, panel]}>
+            <Content />
+          </Prose>
+        )
+      }
+
+      {
+        schedule.length > 0 && (
+          <section class={block}>
+            <BlockTitle>{t('event.schedule')}</BlockTitle>
+            <ProgramList items={schedule} speakers={speakers} locale={locale} />
+          </section>
+        )
+      }
+
+      {
+        pictures.length > 0 && (
+          <section class={block}>
+            <BlockTitle>{t('event.gallery')}</BlockTitle>
+            <Lightbox dialogLabel={t('event.gallery')} closeLabel={t('lightbox.close')} prevLabel={t('lightbox.prev')} nextLabel={t('lightbox.next')}>
+              <ul class={gallery}>
+                {pictures.map((picture) => (
+                  <li class={galleryItem}>
+                    <a class={galleryLink} href={picture.full} data-lightbox-item>
+                      <img class={galleryImage} src={picture.thumb} width={picture.width} height={picture.height} alt={picture.alt} loading="lazy" decoding="async" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </Lightbox>
+          </section>
+        )
+      }
     </div>
-    <Prose class={body}>
-      <Content />
-    </Prose>
-    {schedule.length > 0 && <EventSchedule items={schedule} speakers={speakers} locale={locale} />}
-    {links.length > 0 && <LinkList title={t('event.links')} items={links} />}
-  </EntityPage>
+  </main>
 </BaseLayout>

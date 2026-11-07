@@ -102,12 +102,14 @@ const EventFields = z.object({
   // Альбом с фотографиями митапа (VK, Яндекс Диск): сами фотографии на сайт не копируются.
   photosUrl: url.optional(),
   partner: slug.optional(),
+  // Снимки со встречи для галереи на странице митапа: файлы одинаковы в языках, описание переводится.
+  gallery: z.array(z.object({ image: z.string().min(1), alt: z.string().min(1) })).default([]),
   // Перерывы и активности без спикера: у них нет своей страницы, доклады идут отдельными файлами.
   schedule: z.array(ScheduleItemSchema).default([]),
   draft: z.boolean().default(false),
 });
 
-export const EventSchema = EventFields.transform((event) => {
+const withMoment = <T extends { date: Date; time?: string | undefined }>(event: T): T => {
   const [hours = 0, minutes = 0] = (event.time ?? "00:00").split(":").map(Number);
   const { date } = event;
   return {
@@ -122,7 +124,13 @@ export const EventSchema = EventFields.transform((event) => {
       ),
     ),
   };
-});
+};
+
+export const EventSchema = EventFields.transform(withMoment);
+
+// `image()` доступна только в схеме-функции: с ней галерея митапа получает настоящие картинки.
+export const createEventSchema = (image: ImageFunction) =>
+  EventFields.extend({ gallery: z.array(z.object({ image: image(), alt: z.string().min(1) })).default([]) }).transform(withMoment);
 
 // `image()` доступна только в схеме-функции, поэтому схема доклада — фабрика, как у спикера.
 export const createTalkSchema = (image: ImageFunction) =>

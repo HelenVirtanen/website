@@ -2,7 +2,7 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import {
   DocumentSchema,
-  EventSchema,
+  createEventSchema,
   FaqSchema,
   PageSchema,
   createOrganizerSchema,
@@ -24,7 +24,7 @@ const localized = (dir: string) =>
 
 export const collections = {
   pages: defineCollection({ loader: localized('pages'), schema: PageSchema }),
-  events: defineCollection({ loader: localized('events'), schema: EventSchema }),
+  events: defineCollection({ loader: localized('events'), schema: ({ image }) => createEventSchema(image) }),
   talks: defineCollection({ loader: localized('talks'), schema: ({ image }) => createTalkSchema(image) }),
   speakers: defineCollection({
     loader: localized('speakers'),

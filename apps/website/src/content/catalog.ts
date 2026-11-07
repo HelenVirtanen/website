@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 import type { z } from 'astro/zod';
 import type {
   DocumentSchema,
-  EventSchema,
+  createEventSchema,
   FaqSchema,
   PageSchema,
   createOrganizerSchema,
@@ -28,7 +28,7 @@ export interface CatalogEntry<D> {
   data: D;
 }
 
-export type EventData = z.output<typeof EventSchema>;
+export type EventData = z.output<ReturnType<typeof createEventSchema>>;
 export type TalkData = z.output<ReturnType<typeof createTalkSchema>>;
 export type SpeakerData = z.output<ReturnType<typeof createSpeakerSchema>>;
 export type PartnerData = z.output<ReturnType<typeof createPartnerSchema>>;
@@ -78,6 +78,7 @@ const INVARIANTS = {
     'partner',
     'schedule[].time',
     'schedule[].kind',
+    'gallery[].image',
   ],
   talks: ['event', 'speakers', 'time', 'slidesUrl', 'videoUrl', 'cover'],
   speakers: ['photo', 'links'],

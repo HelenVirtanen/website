@@ -63,6 +63,9 @@ export const talkTitle = style({
   font: vars.font.shorthand.programTalkTitle,
   letterSpacing: vars.font.letterSpacing.figmaWide,
   textTransform: 'uppercase',
+  // «ПРОИЗВОДИТЕЛЬНОСТЬ» капсом шире узкого экрана: переносим по слогам, а в крайнем случае где угодно.
+  hyphens: 'auto',
+  overflowWrap: 'anywhere',
 });
 
 // Вся строка — ссылка на доклад: псевдоэлемент ссылки растянут на строку, а заголовок остаётся её доступным именем.

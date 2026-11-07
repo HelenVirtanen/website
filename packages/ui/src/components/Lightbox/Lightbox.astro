@@ -1,0 +1,48 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { ArrowLong, Close } from '@moscowcss/icons';
+import { caption, closeButton, dialog, figure, image, nav, navButton, prevIcon, root } from './Lightbox.css';
+
+const Tag = 'div';
+
+// В слот кладутся ссылки `<a data-lightbox-item href="большое фото">` с превью внутри.
+// Без скрипта ссылка открывает фото как файл; со скриптом — в окне поверх страницы.
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Название окна для скринридера, когда у фото нет подписи */
+  dialogLabel: string;
+  /** Доступное имя кнопки закрытия */
+  closeLabel: string;
+  /** Доступное имя кнопки «предыдущее фото» */
+  prevLabel: string;
+  /** Доступное имя кнопки «следующее фото» */
+  nextLabel: string;
+}
+
+const { dialogLabel, closeLabel, prevLabel, nextLabel, class: className, ...attrs } = Astro.props;
+---
+<Tag class:list={[root, className]} data-lightbox {...attrs}>
+  <slot />
+  <dialog class={dialog} aria-label={dialogLabel} data-lightbox-dialog>
+    <button class={closeButton} type="button" aria-label={closeLabel} data-lightbox-close>
+      <Close aria-hidden="true" />
+    </button>
+    <figure class={figure}>
+      <img class={image} alt="" data-lightbox-image />
+      <figcaption class={caption} data-lightbox-caption></figcaption>
+    </figure>
+    <div class={nav} data-lightbox-nav hidden>
+      <button class={navButton} type="button" aria-label={prevLabel} data-lightbox-prev>
+        <ArrowLong class={prevIcon} aria-hidden="true" />
+      </button>
+      <button class={navButton} type="button" aria-label={nextLabel} data-lightbox-next>
+        <ArrowLong aria-hidden="true" />
+      </button>
+    </div>
+  </dialog>
+</Tag>
+
+<script>
+  import { setupLightbox } from './Lightbox.client';
+
+  document.querySelectorAll<HTMLElement>('[data-lightbox]').forEach(setupLightbox);
+</script>
