@@ -12,6 +12,7 @@
     "build": "turbo run build --filter=website",
     "build:storybook": "turbo run build --filter=storybook",
     "check:a11y": "node tools/visual/check-a11y.mjs",
+    "cutout": "node tools/cutout/run.mjs",
     "lint": "turbo run lint",
     "new:component": "plop component",
     "new:event": "node apps/website/scripts/new-entry.mjs event",

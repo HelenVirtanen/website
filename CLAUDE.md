@@ -48,6 +48,7 @@ changing the architecture they describe.
 │   ├── eslint-config/    # shared flat ESLint config (single source of truth)
 │   └── typescript-config/# shared tsconfig bases (single source of truth)
 ├── tools/visual/         # screenshot capture/compare for visual regression + check-targets.mjs, the hit-area gate (not a workspace package)
+├── tools/cutout/         # background removal for portraits (rembg in its own Python venv; not a workspace package)
 ├── adr/, specs/, plans/  # decision records, specs, task queues
 ├── docs/deploy.md        # one-off GitHub Pages and DNS setup
 ├── .github/workflows/    # deploy.yml: every check on push/PR, Pages deploy, nightly rebuild
@@ -159,6 +160,7 @@ Node & pnpm:
 | `pnpm lint`           | Lints **and** applies safe autofixes across all packages.           |
 | `pnpm test`           | Runs every package's vitest suite through turbo.                    |
 | `pnpm --filter website check:seo` | Gate over the built `dist` (run after `pnpm build`). |
+| `pnpm cutout <in> <out.png>` | Cuts the background out of a portrait (rembg); `--setup` once per machine. See `tools/cutout/README.md`. |
 | `pnpm check:a11y`     | WCAG 2.2 A and AA gate over the built `dist`: axe, keyboard, menu, reflow, both themes. |
 | `pnpm new:component`  | Scaffolds a new component in `packages/ui` + its story (plop).      |
 | `pnpm new:event <number>` | Draft event files in `packages/content`, `ru` and `en`.         |
@@ -196,7 +198,9 @@ Notes:
 - `BUILD_NOW` (an ISO date, e.g. `2026-07-01`) pins "now" for the homepage. It is
   for visual snapshots only, never set it for a real build. It is declared in
   `turbo.json` `build.env`, otherwise turbo's strict env mode drops it.
-- `pnpm lint` does not cover `tools/visual`; keep that tooling readable by hand.
+- `pnpm lint` does not cover `tools/visual` and `tools/cutout`; keep that tooling readable by hand.
+- Organizer portraits are transparent cut-outs: make them with `pnpm cutout` (Python, `tools/cutout/.venv`,
+  git-ignored; versions pinned in its `requirements.txt`). Check the `--preview` before committing.
 
 ---
 

@@ -13,5 +13,7 @@ temp
 !plans/
 # снимки визуального тулинга (tools/visual)
 .visual/
+# окружение Python вырезателя фона (tools/cutout)
+tools/cutout/.venv/
 !docs/
 !CLAUDE.md
