@@ -53,7 +53,9 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   The plugin also opens external links in a new tab (`target="_blank"`,
   `rel="noopener noreferrer"`). Rendered content is cached in
   `.astro/data-store.json` and `node_modules/.astro/`: after changing a Markdown
-  plugin, delete those files, or unchanged content keeps the old HTML locally
+  plugin or a content schema (`packages/content/src/schema.ts`), stop the dev server and delete those files,
+  or unchanged content keeps the old HTML and the old parsed frontmatter locally: an entry is re-parsed only
+  when its file changes, and a dev server running during the schema change caches it without the new fields
   (CI starts clean).
 - `site` is `https://css.moscow`, `trailingSlash: 'always'`: canonical, hreflang
   and internal links are absolute/with a trailing slash.
