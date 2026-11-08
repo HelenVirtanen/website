@@ -3,7 +3,7 @@ import { localeOf, slugOf, upcomingEvent, type Catalog } from '../content/catalo
 import { newsDayOf } from '../content/archive';
 import { eventWhen, venueLine } from '../content/format';
 import { defaultLocale, localeNames, locales, localizePath, useTranslations, type Locale } from '../i18n';
-import { feedPath, newsFeedPath } from '../rss/feed';
+import { eventsFeedPath, feedPath, newsFeedPath } from '../rss/feed';
 import type { PublicPage } from '../seo/pages';
 import { markdownPathOf } from './paths';
 
@@ -81,10 +81,8 @@ export function skillMarkdown(site: URL): string {
     '  the contacts and `next`: the upcoming meetup with its programme',
     '  (`null` when none is announced). It is rebuilt every night.',
     `- ${abs('/sitemap.xml')} lists every indexable URL.`,
-    '- RSS feeds of meetups, newest first:',
-    ...locales.map((locale) => `  - ${localeNames[locale]}: ${abs(feedPath(locale))}`),
-    '- RSS feeds of community news, newest first, with the full text:',
-    ...locales.map((locale) => `  - ${localeNames[locale]}: ${abs(newsFeedPath(locale))}`),
+    '- RSS feeds, newest first, one per language: everything (meetups and news), meetups only, news only (with the full text):',
+    ...locales.map((locale) => `  - ${localeNames[locale]}: ${abs(feedPath(locale))}, ${abs(eventsFeedPath(locale))}, ${abs(newsFeedPath(locale))}`),
     '',
     '## Search',
     '',
@@ -164,12 +162,13 @@ export function aiCatalog(site: URL): AiCatalog {
       },
       {
         identifier: urn('feed', 'rss'),
-        displayName: 'MoscowCSS meetups RSS',
+        displayName: 'MoscowCSS RSS',
         type: 'application/rss+xml',
         url: abs(feedPath(defaultLocale)),
-        description: 'RSS 2.0 feed of MoscowCSS meetups in Russian, newest first; /en/rss.xml is the English feed.',
+        description: 'RSS 2.0 feed of MoscowCSS meetups and news in Russian, newest first; /en/rss.xml is the English feed, /events/rss.xml and /news/rss.xml carry one section only.',
         representativeQueries: [
           'subscribe to MoscowCSS meetup announcements',
+          'MoscowCSS community news feed',
           'новые митапы MoscowCSS',
         ],
       },

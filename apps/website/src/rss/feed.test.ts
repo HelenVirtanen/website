@@ -1,6 +1,18 @@
 import { describe, expect, it, vi } from 'vitest';
 import { event, news, talk } from '../test/fixtures';
-import { feedItemsOf, feedPath, isNewsPath, localeOfFeed, newestNewsDate, newsFeedItemsOf, newsFeedPath } from './feed';
+import {
+  eventsFeedPath,
+  feedItemsOf,
+  feedPath,
+  feedPathOf,
+  feedTextOf,
+  lastBuildDateOf,
+  localeOfFeed,
+  newsFeedItemsOf,
+  newsFeedPath,
+  scopeItemsOf,
+  sectionFeedsOf,
+} from './feed';
 
 vi.mock('astro:content', () => ({ getCollection: vi.fn() }));
 vi.mock('astro:i18n', () => ({
@@ -60,36 +72,45 @@ describe('feedItemsOf', () => {
   });
 });
 
-describe('лента новостей', () => {
+describe('лента новостей и общая лента', () => {
   const entries = [
     news('ru/old', { date: new Date('2025-04-09T00:00:00Z'), title: 'Старая', tags: [] }),
     news('ru/new', { date: new Date('2026-11-08T00:00:00Z'), title: 'Свежая', tags: ['Сайт'] }),
     news('ru/draft', { date: new Date('2026-12-01T00:00:00Z'), draft: true }),
     news('en/new', { date: new Date('2026-11-08T00:00:00Z'), title: 'Fresh' }),
   ];
+  const catalog = { events, talks, news: entries };
 
-  it('адрес под разделом новостей языка, без слэша', () => {
-    expect(newsFeedPath('ru')).toBe('/news/rss.xml');
-    expect(newsFeedPath('en')).toBe('/en/news/rss.xml');
-    expect(localeOfFeed('/en/news/rss.xml/')).toBe('en');
+  it('адреса: общая в корне языка, узкие — в папке раздела', () => {
+    expect([feedPath('ru'), eventsFeedPath('ru'), newsFeedPath('ru')]).toEqual(['/rss.xml', '/events/rss.xml', '/news/rss.xml']);
+    expect(feedPathOf('en', 'news')).toBe('/en/news/rss.xml');
+    expect(localeOfFeed('/en/events/rss.xml/')).toBe('en');
   });
 
-  it('опубликованные новости языка, свежие сверху, с темами и полным текстом', () => {
+  it('новости: опубликованные своего языка, свежие сверху, категория «Новости» и темы', () => {
     const items = newsFeedItemsOf('ru', entries);
     expect(items.map((item) => item.title)).toEqual(['Свежая', 'Старая']);
-    expect(items[0]).toMatchObject({ link: '/news/new/', categories: ['Сайт'], description: expect.any(String) });
-    expect(items[1]?.categories).toBeUndefined();
+    expect(items[0]).toMatchObject({ link: '/news/new/', categories: ['Новости', 'Сайт'] });
     expect(newsFeedItemsOf('en', entries).map((item) => item.link)).toEqual(['/en/news/new/']);
   });
 
-  it('дата сборки канала — самая свежая новость языка', () => {
-    expect(newestNewsDate('ru', entries)?.toISOString()).toBe('2026-11-08T00:00:00.000Z');
-    expect(newestNewsDate('ru', [])).toBeUndefined();
+  it('общая лента — митапы и новости вперемешку по дате; узкие — только свой раздел', () => {
+    expect(scopeItemsOf('ru', 'all', catalog).map((item) => item.link)).toEqual(['/news/new/', '/news/old/', '/events/15/', '/events/10/']);
+    expect(scopeItemsOf('ru', 'events', catalog).map((item) => item.categories)).toEqual([['Митапы'], ['Митапы']]);
+    expect(scopeItemsOf('ru', 'news', catalog)).toHaveLength(2);
   });
 
-  it('лента новостей объявлена только в разделе новостей', () => {
-    expect(isNewsPath('ru', '/news/')).toBe(true);
-    expect(isNewsPath('en', '/en/news/new-site/')).toBe(true);
-    expect(isNewsPath('ru', '/events/')).toBe(false);
+  it('дата сборки канала — свежайшая запись, но не позже сборки', () => {
+    const items = scopeItemsOf('ru', 'all', catalog);
+    expect(lastBuildDateOf(items, new Date('2027-01-01T00:00:00Z'))?.toISOString()).toBe('2026-11-08T00:00:00.000Z');
+    expect(lastBuildDateOf(items, new Date('2026-01-01T00:00:00Z'))?.toISOString()).toBe('2026-01-01T00:00:00.000Z');
+    expect(lastBuildDateOf([], new Date())).toBeUndefined();
+  });
+
+  it('страница объявляет узкую ленту своего раздела, названия из словаря', () => {
+    expect(sectionFeedsOf('ru', '/news/new-site/')).toEqual([{ title: 'MoscowCSS Meetup — новости', href: '/news/rss.xml' }]);
+    expect(sectionFeedsOf('en', '/en/events/31/')).toEqual([{ title: 'MoscowCSS Meetup — meetups', href: '/en/events/rss.xml' }]);
+    expect(sectionFeedsOf('ru', '/about/')).toEqual([]);
+    expect(feedTextOf('ru', 'all').title).toBe('MoscowCSS Meetup');
   });
 });

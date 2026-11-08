@@ -15,7 +15,7 @@ import { eventDateParts, fillTemplate } from '../content/format';
 import { newsDateText, newsPlaceholder } from '../content/news';
 import { speakerImage } from '../content/speaker-image';
 import { localizePath, useTranslations } from '../i18n';
-import { feedPath, newsFeedPath } from '../rss/feed';
+import { eventsFeedPath, newsFeedPath } from '../rss/feed';
 import type { PublicPage } from '../seo/pages';
 import { main, inner, head, empty, resetButton, feedLink } from './ArchivePage.css';
 
@@ -94,7 +94,7 @@ const data = JSON.stringify({ events: [], talks: [], speakers: [], news: [], [ki
           kind === 'events' && (
             <Paragraph>
               {t('rss.invite')}{' '}
-              <a class={feedLink} href={feedPath(locale)} type="application/rss+xml">
+              <a class={feedLink} href={eventsFeedPath(locale)} type="application/rss+xml">
                 {t('rss.subscribe')}
               </a>
             </Paragraph>

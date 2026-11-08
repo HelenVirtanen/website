@@ -2,14 +2,25 @@ import type { RSSFeedItem } from '@astrojs/rss';
 import { newsNewestFirst } from '../content/archive';
 import { localeOf, slugOf, talksOfEvent, type EventEntry, type NewsEntry, type TalkEntry } from '../content/catalog';
 import { eventWhen, venueLine } from '../content/format';
-import { defaultLocale, locales, localizePath, useTranslations, type Locale } from '../i18n';
+import { defaultLocale, locales, localizePath, useTranslations, type Locale, type UiKey } from '../i18n';
 
-// Ленты языка: митапы (одна запись — один опубликованный митап) и новости, новые сверху. Отдельная
-// лента на каждый язык, как в блоге: читатель подписывается на свой язык и не получает дублей.
+// Ленты языка, как в блоге: общая (`/rss.xml`: митапы и новости вместе) и узкие по разделам —
+// митапы (`/events/rss.xml`) и новости (`/news/rss.xml`). Отдельная лента на каждый язык: читатель
+// подписывается на свой язык и не получает дублей.
+
+export const FEED_SCOPES = ['all', 'events', 'news'] as const;
+export type FeedScope = (typeof FEED_SCOPES)[number];
 
 /** Адрес ленты от корня сайта, без слэша на конце: `rss.xml/` статик-хостинг искал бы как папку. */
-export const feedPath = (locale: Locale): string =>
-  locale === defaultLocale ? '/rss.xml' : `/${locale}/rss.xml`;
+export function feedPathOf(locale: Locale, scope: FeedScope): string {
+  const prefix = locale === defaultLocale ? '' : `/${locale}`;
+  return scope === 'all' ? `${prefix}/rss.xml` : `${prefix}/${scope}/rss.xml`;
+}
+
+/** Общая лента языка: её объявляет каждая страница. */
+export const feedPath = (locale: Locale): string => feedPathOf(locale, 'all');
+export const eventsFeedPath = (locale: Locale): string => feedPathOf(locale, 'events');
+export const newsFeedPath = (locale: Locale): string => feedPathOf(locale, 'news');
 
 /** Язык ленты по её адресу: `/en/rss.xml` → `en`, `/rss.xml` → язык по умолчанию. */
 export const localeOfFeed = (pathname: string): Locale =>
@@ -18,8 +29,25 @@ export const localeOfFeed = (pathname: string): Locale =>
 /** Тег `<language>` канала: BCP-47 для читалок. */
 export const LANGUAGE_TAG: Record<Locale, string> = { ru: 'ru-RU', en: 'en-US' };
 
+/** Название и описание ленты в читалке. */
+export const feedTextOf = (locale: Locale, scope: FeedScope): { title: string; description: string } => {
+  const t = useTranslations(locale);
+  const key = (part: 'title' | 'description'): UiKey => `rss.${scope}.${part}`;
+  return { title: t(key('title')), description: t(key('description')) };
+};
+
 /**
- * Записи ленты. `pubDate` — начало митапа: даты публикации у контента нет, а для ленты событий
+ * Узкие ленты, которые объявляет страница: в разделе митапов — лента митапов, в разделе новостей —
+ * лента новостей. Общую ленту объявляет каждая страница отдельно.
+ */
+export function sectionFeedsOf(locale: Locale, pathname: string): { title: string; href: string }[] {
+  return (['events', 'news'] as const)
+    .filter((scope) => pathname.startsWith(localizePath(locale, scope)))
+    .map((scope) => ({ title: feedTextOf(locale, scope).title, href: feedPathOf(locale, scope) }));
+}
+
+/**
+ * Записи митапов. `pubDate` — начало митапа: даты публикации у контента нет, а для ленты событий
  * читатель сортирует именно по дню встречи. Анонс будущего митапа поэтому датирован будущим.
  */
 export function feedItemsOf(
@@ -41,34 +69,43 @@ export function feedItemsOf(
         link: localizePath(locale, `events/${slugOf(event)}`),
         pubDate: date,
         description: `${when}, ${venueLine(venue)}.${program}`,
+        categories: [t('rss.category.events')],
       };
     });
 }
 
-/** Адрес ленты новостей языка, без слэша на конце: `/news/rss.xml`, `/en/news/rss.xml`. */
-export const newsFeedPath = (locale: Locale): string =>
-  locale === defaultLocale ? '/news/rss.xml' : `/${locale}/news/rss.xml`;
-
-/** Раздел новостей — страница списка или новость: там в `<head>` есть и лента новостей. */
-export const isNewsPath = (locale: Locale, pathname: string): boolean =>
-  pathname.startsWith(localizePath(locale, 'news'));
-
 /**
- * Записи ленты новостей: опубликованные новости языка, свежие сверху. Описание — подзаголовок,
- * полный текст — в `content`, темы — `<category>`, как в ленте блога.
+ * Записи новостей: опубликованные новости языка, свежие сверху. Описание — подзаголовок, полный
+ * текст — в `content`; категории — «Новости» и темы новости, как рубрики в ленте блога.
  */
 export function newsFeedItemsOf(locale: Locale, news: readonly NewsEntry[]): RSSFeedItem[] {
+  const t = useTranslations(locale);
   return newsNewestFirst(news.filter((entry) => localeOf(entry) === locale)).map((entry) => ({
     title: entry.data.title,
     link: localizePath(locale, `news/${slugOf(entry)}`),
     pubDate: entry.data.date,
     description: entry.data.description,
     ...(entry.rendered?.html && { content: entry.rendered.html }),
-    ...(entry.data.tags.length > 0 && { categories: entry.data.tags }),
+    categories: [t('rss.category.news'), ...entry.data.tags],
   }));
 }
 
-/** Самая свежая новость языка — `<lastBuildDate>` канала; новостей нет — undefined. */
-export function newestNewsDate(locale: Locale, news: readonly NewsEntry[]): Date | undefined {
-  return newsNewestFirst(news.filter((entry) => localeOf(entry) === locale))[0]?.data.date;
+/** Записи ленты области, свежие сверху; в общей ленте митапы и новости перемешаны по дате. */
+export function scopeItemsOf(
+  locale: Locale,
+  scope: FeedScope,
+  catalog: { events: readonly EventEntry[]; talks: readonly TalkEntry[]; news: readonly NewsEntry[] },
+): RSSFeedItem[] {
+  const events = scope === 'news' ? [] : feedItemsOf(locale, catalog.events, catalog.talks);
+  const news = scope === 'events' ? [] : newsFeedItemsOf(locale, catalog.news);
+  return [...events, ...news].sort((a, b) => (b.pubDate?.getTime() ?? 0) - (a.pubDate?.getTime() ?? 0));
+}
+
+/**
+ * `<lastBuildDate>` канала: самая свежая запись, но не позже момента сборки — анонс будущего митапа
+ * не делает ленту «собранной в будущем». Записей нет — undefined.
+ */
+export function lastBuildDateOf(items: readonly RSSFeedItem[], now: Date): Date | undefined {
+  const times = items.flatMap((item) => (item.pubDate ? [item.pubDate.getTime()] : []));
+  return times.length > 0 ? new Date(Math.min(Math.max(...times), now.getTime())) : undefined;
 }

@@ -25,8 +25,9 @@ already tabs of History.
 - **Agents and SEO.** `NewsArticle` JSON-LD, an OG card per news item, the Markdown twin, `news` rows in
   `archive.json`, WebMCP `list_news` and `get_news`, and `kind: news` in `list_archive`. llms.txt lists news in the
   index.
-- **RSS.** One news feed per language, like the blog: `/news/rss.xml` and `/en/news/rss.xml`, full text, topics as
-  categories, linked from the `<head>` of the news pages and from the list.
+- **RSS.** Like the blog: `/rss.xml` per language is the combined feed (meetups and news by date), with narrow
+  feeds `/events/rss.xml` (meetups only) and `/news/rss.xml` (news only, full text, topics as categories). Section
+  pages declare their narrow feed next to the combined one; `/events/` and `/news/` invite to subscribe.
 - **Header.** About, History, Reviews, News, Help the meetup, Search. Talks and Speakers stay in the burger menu
   only, after Help; History is current on talk and speaker pages too.
 
