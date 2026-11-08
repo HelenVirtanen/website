@@ -1,17 +1,22 @@
 import {
-  ARCHIVE_KINDS,
   filterArchive,
+  matchesRelation,
+  normalize,
+  RELATION_KINDS,
   type Archive,
   type ArchiveEvent,
-  type ArchiveKind,
+  type ArchiveNext,
+  type ArchiveReview,
   type ArchiveSpeaker,
   type ArchiveTalk,
+  type RelationKind,
 } from '../content/archive-filter';
 import { search, type PagefindModule } from '../search/pagefind';
 import { markdownPathOf } from './paths';
 
 // WebMCP: инструменты, которые страница отдаёт агенту браузера (webmachinelearning.github.io/webmcp).
-// Только чтение того, что и так публично: поиск по сайту, Markdown-версия страницы и списки архива.
+// Только чтение того, что и так публично: поиск, Markdown-версия страницы, списки архива и отзывов,
+// ближайший митап и контакты. Данные списков, митапа и контактов — `archive.json` языка страницы.
 
 export interface ToolResult {
   content: { type: 'text'; text: string }[];
@@ -36,6 +41,8 @@ export interface ToolEnvironment {
   loadPagefind: () => Promise<PagefindModule>;
   /** Адрес `archive.json` языка страницы (из `<link rel="alternate" type="application/json">`) */
   archiveUrl?: string | undefined;
+  /** Текущее время: в тесте фиксированное */
+  now: () => Date;
 }
 
 export const SEARCH_LIMIT_MAX = 20;
@@ -49,12 +56,13 @@ const flags = (items: readonly (string | false)[]): string => {
 };
 
 // Строка ответа: адрес страницы абсолютный, у её языка — тот же префикс, что у `archive.json`.
-function archiveLine(kind: ArchiveKind, item: Archive[ArchiveKind][number], base: URL): string {
+function archiveLine(kind: RelationKind, item: Archive[RelationKind][number], base: URL): string {
   const url = (path: string): string => new URL(`${path}/`, base).href;
   switch (kind) {
     case 'events': {
       const event = item as ArchiveEvent;
-      return `- ${event.title}: ${url(`events/${event.slug}`)} — ${event.date}, ${event.venue}, talks: ${String(event.talks)}${flags([event.recording && 'recording', event.photos && 'photos'])}`;
+      const topics = event.tags.length > 0 ? `; topics: ${event.tags.join(', ')}` : '';
+      return `- ${event.title}: ${url(`events/${event.slug}`)} — ${event.date}, ${event.venue}, talks: ${String(event.talks)}${topics}${flags([event.recording && 'recording', event.photos && 'photos'])}`;
     }
     case 'talks': {
       const talk = item as ArchiveTalk;
@@ -64,8 +72,59 @@ function archiveLine(kind: ArchiveKind, item: Archive[ArchiveKind][number], base
       const speaker = item as ArchiveSpeaker;
       return `- ${speaker.name}: ${url(`speakers/${speaker.slug}`)}${speaker.role ? ` — ${speaker.role}` : ''}; meetups: ${speaker.events.map((event) => event.label).join(', ') || 'none'}`;
     }
+    case 'reviews': {
+      const review = item as ArchiveReview;
+      const who = [review.role, review.category].filter(Boolean).join(', ');
+      const speaker = review.speaker ? `; speaker page: ${url(`speakers/${review.speaker}`)}` : '';
+      return `- ${review.name} (${who}): ${url('reviews')}?review=${encodeURIComponent(review.slug)} — ${review.preview}${speaker}`;
+    }
   }
 }
+
+/** Ближайший митап текстом: когда, где, как попасть и программа. */
+export function nextMeetupText(next: ArchiveNext, base: URL): string {
+  const url = (path: string): string => new URL(`${path}/`, base).href;
+  const lines = [
+    `${next.title}: ${url(`events/${next.slug}`)}`,
+    `Starts: ${next.start} (Moscow time).`,
+    `Venue: ${[next.venue.name, next.venue.address].filter(Boolean).join(', ')}.`,
+    `Format: ${next.modes.join(', ')}.`,
+    next.registrationUrl
+      ? `Registration: ${next.registrationUrl}`
+      : 'Registration is not open yet: it is announced in the Telegram channel https://t.me/moscowcss.',
+    next.streamUrl && `Stream: ${next.streamUrl}`,
+    next.tags.length > 0 && `Topics: ${next.tags.join(', ')}.`,
+    next.programme.length > 0 && 'Programme:',
+    ...next.programme.map((item) => {
+      const time = item.time ? `${item.time} ` : '';
+      const who = item.speakers.length > 0 ? ` — ${item.speakers.join(', ')}` : '';
+      const link = item.talk ? ` (${url(`talks/${item.talk}`)})` : '';
+      return `- ${time}${item.title}${who}${link}`;
+    }),
+  ];
+  return lines.filter((line): line is string => Boolean(line)).join('\n');
+}
+
+// Как на главной: митап остаётся ближайшим ещё 4 часа после начала.
+const MEETUP_LENGTH_MS = 4 * 60 * 60 * 1000;
+
+async function loadArchive(env: ToolEnvironment): Promise<{ archive: Archive; base: URL } | ToolResult> {
+  if (!env.archiveUrl) return text('Archive data is unavailable on this page.', true);
+  const source = new URL(env.archiveUrl, env.location);
+  const response = await env.fetch(source.pathname);
+  if (!response.ok) return text(`Archive data is unavailable (HTTP ${String(response.status)}).`, true);
+  // Префикс языка — из адреса данных: `/en/archive.json` → страницы под `/en/`.
+  return { archive: JSON.parse(await response.text()) as Archive, base: new URL('./', source) };
+}
+
+const allWordsIn = (haystack: string, query: string): boolean => {
+  const words = normalize(query).split(' ').filter(Boolean);
+  const normalized = normalize(haystack);
+  return words.every((word) => normalized.includes(word));
+};
+
+const optionalText = (value: unknown): string | undefined =>
+  typeof value === 'string' && value.trim() !== '' ? value.trim() : undefined;
 
 /** Инструменты сайта. Окружение приходит аргументом: в тесте — фейки, на странице — браузер. */
 export function siteTools(env: ToolEnvironment): WebMcpTool[] {
@@ -124,43 +183,106 @@ export function siteTools(env: ToolEnvironment): WebMcpTool[] {
     {
       name: 'list_archive',
       description:
-        'List MoscowCSS meetups, talks or speakers, newest first, in the language of the current page, filtered like the /events/, /talks/ and /speakers/ pages: by words, year and whether a recording exists.',
+        'List MoscowCSS meetups, talks, speakers or community reviews in the language of the current page, newest first. Filters: words, year and recording, like the /events/, /talks/ and /speakers/ pages, and exact relations: all talks of a speaker, the programme of a meetup, meetups on a topic, reviews of a category.',
       inputSchema: {
         type: 'object',
         properties: {
-          kind: { type: 'string', enum: [...ARCHIVE_KINDS], description: 'What to list: events (meetups), talks or speakers.' },
+          kind: { type: 'string', enum: [...RELATION_KINDS], description: 'What to list: events (meetups), talks, speakers or reviews.' },
           query: { type: 'string', description: 'Words that must all match: a title, a speaker name, a venue or a meetup number.' },
           year: { type: 'integer', minimum: 2017, description: 'Only this year (for speakers: spoke that year).' },
           media: { type: 'boolean', description: 'Only talks with a video or meetups with a recording.' },
+          speaker: {
+            type: 'string',
+            description: 'A speaker: the file name from a speaker URL (anastasiya-maltseva) or the full name. Gives their talks, the meetups they spoke at, their row or their reviews.',
+          },
+          event: { type: 'string', description: 'A meetup number or file name (32): its talks, its speakers or the meetup itself.' },
+          tag: { type: 'string', description: 'A word from the meetup topics, e.g. accessibility or AI. Meetups only.' },
+          category: {
+            type: 'string',
+            enum: ['speaker', 'organizer', 'past-organizer', 'guest', 'partner'],
+            description: 'Who wrote the review. Reviews only.',
+          },
           limit: { type: 'integer', minimum: 1, maximum: ARCHIVE_LIMIT_MAX, description: `How many rows to return (default ${String(ARCHIVE_LIMIT_DEFAULT)}).` },
           offset: { type: 'integer', minimum: 0, description: 'How many matching rows to skip, for the next page.' },
         },
         required: ['kind'],
       },
       async execute(input) {
-        const kind = ARCHIVE_KINDS.find((item) => item === input.kind);
-        if (!kind) return text(`kind must be one of: ${ARCHIVE_KINDS.join(', ')}.`, true);
-        if (!env.archiveUrl) return text('Archive data is unavailable on this page.', true);
-        const source = new URL(env.archiveUrl, env.location);
-        const response = await env.fetch(source.pathname);
-        if (!response.ok) return text(`Archive data is unavailable (HTTP ${String(response.status)}).`, true);
-        const archive = JSON.parse(await response.text()) as Archive;
+        const kind = RELATION_KINDS.find((item) => item === input.kind);
+        if (!kind) return text(`kind must be one of: ${RELATION_KINDS.join(', ')}.`, true);
+        const loaded = await loadArchive(env);
+        if ('content' in loaded) return loaded;
+        const { archive, base } = loaded;
         const year = Number(input.year);
-        const matched = filterArchive(kind, archive[kind], {
-          query: typeof input.query === 'string' ? input.query : '',
-          year: Number.isInteger(year) && year > 0 ? year : undefined,
-          media: input.media === true,
-        });
+        const query = typeof input.query === 'string' ? input.query : '';
+        const rows: readonly Archive[RelationKind][number][] =
+          kind === 'reviews'
+            ? archive.reviews.filter((review) => allWordsIn(`${review.name} ${review.role ?? ''} ${review.preview}`, query))
+            : filterArchive(kind, archive[kind], {
+                query,
+                year: Number.isInteger(year) && year > 0 ? year : undefined,
+                media: input.media === true,
+              });
+        const relation = {
+          speaker: optionalText(input.speaker),
+          event: optionalText(input.event),
+          tag: optionalText(input.tag),
+          category: optionalText(input.category),
+        };
+        const matched = rows.filter((item) => matchesRelation(kind, item, relation));
         const limit = Math.min(Math.max(Number(input.limit) || ARCHIVE_LIMIT_DEFAULT, 1), ARCHIVE_LIMIT_MAX);
         const offset = Math.max(Number(input.offset) || 0, 0);
         const page = matched.slice(offset, offset + limit);
         if (page.length === 0) return text(`No ${kind} match (${String(matched.length)} found in total).`);
-        // Префикс языка — из адреса данных: `/en/archive.json` → страницы под `/en/`.
-        const base = new URL('./', source);
         return text(
           [
             `${String(matched.length)} ${kind} match; showing ${String(offset + 1)}–${String(offset + page.length)}.`,
             ...page.map((item) => archiveLine(kind, item, base)),
+          ].join('\n'),
+        );
+      },
+    },
+    {
+      name: 'get_next_meetup',
+      description:
+        'The next MoscowCSS meetup: date and time in Moscow, venue and address, format (in person, online), registration and stream links, topics and the programme with speakers. Says so when no meetup is announced.',
+      inputSchema: { type: 'object', properties: {}, required: [] },
+      async execute() {
+        const loaded = await loadArchive(env);
+        if ('content' in loaded) return loaded;
+        const { archive, base } = loaded;
+        const { next } = archive;
+        // Данные собраны ночью: митап, который уже закончился сегодня, ближайшим не считаем.
+        if (!next || Date.parse(next.start) + MEETUP_LENGTH_MS < env.now().getTime()) {
+          const last = archive.events.find((event) => Date.parse(event.date) <= env.now().getTime());
+          return text(
+            [
+              'No upcoming meetup is announced yet. Announcements come to the Telegram channel https://t.me/moscowcss.',
+              last && `The latest meetup: ${archiveLine('events', last, base).slice(2)}`,
+            ]
+              .filter(Boolean)
+              .join('\n'),
+          );
+        }
+        return text(nextMeetupText(next, base));
+      },
+    },
+    {
+      name: 'get_contacts',
+      description:
+        'How to reach MoscowCSS: the Telegram channel and chat, meetup registration (Timepad, Networkly), the organisers and how to apply to give a talk, with the speaker guide.',
+      inputSchema: { type: 'object', properties: {}, required: [] },
+      async execute() {
+        const loaded = await loadArchive(env);
+        if ('content' in loaded) return loaded;
+        const { contacts } = loaded.archive;
+        if (!contacts) return text('Contacts are unavailable.', true);
+        return text(
+          [
+            contacts.lead,
+            ...contacts.items.map(
+              (item) => `- ${item.title}: ${item.text} ${item.links.map((link) => `${link.label} ${link.url}`).join(', ')}`,
+            ),
           ].join('\n'),
         );
       },

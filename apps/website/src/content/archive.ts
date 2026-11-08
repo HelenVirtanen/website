@@ -1,6 +1,7 @@
-import type { Archive, EventRef } from './archive-filter';
+import type { Archive, ArchiveContacts, ArchiveNext, ArchiveReview, EventRef } from './archive-filter';
 import {
   localeOf,
+  scheduleOf,
   slugOf,
   talksOfEvent,
   talksOfSpeaker,
@@ -8,7 +9,9 @@ import {
   type EventEntry,
   type SpeakerEntry,
   type TalkEntry,
+  upcomingEvent,
 } from './catalog';
+import { previewOf, publishedReviews } from './reviews';
 
 // Строки списков митапов, докладов и спикеров (спека 007) из каталога. Одни и те же данные рисует
 // страница, пишет Markdown-версия, отдаёт `archive.json` и фильтрует WebMCP, поэтому они не расходятся.
@@ -79,10 +82,72 @@ export function speakersByLatestTalk<S extends SpeakerEntry>(
 
 const unique = <T>(items: readonly T[]): T[] => [...new Set(items)];
 
-/** Строки трёх списков одного языка. */
-export function archiveOf(
+// Начало в московском времени со смещением: агенту не нужно знать, что даты сайта — по Москве.
+const moscowClock = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Moscow', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+const startOf = (event: EventEntry): string =>
+  event.data.time === undefined ? dayOf(event) : `${dayOf(event)}T${moscowClock.format(event.data.date)}:00+03:00`;
+
+/** Ближайший митап на `now`, с программой; прошедший или его нет — null. */
+export function nextMeetupOf(
   catalog: Pick<Catalog, 'events' | 'talks' | 'speakers'>,
   locale: string,
+  now: Date,
+): ArchiveNext | null {
+  const inLocale = <T extends { id: string }>(entries: readonly T[]): T[] => entries.filter((entry) => localeOf(entry) === locale);
+  const found = upcomingEvent(inLocale(catalog.events), now);
+  if (!found || found.past) return null;
+  const { event } = found;
+  const nameOf = new Map(inLocale(catalog.speakers).filter(isPublished).map((speaker) => [slugOf(speaker), speaker.data.name]));
+  return {
+    slug: slugOf(event),
+    label: eventLabel(event),
+    title: event.data.tagline,
+    start: startOf(event),
+    venue: { name: event.data.venue.name, address: event.data.venue.address },
+    modes: event.data.modes,
+    tags: event.data.tags,
+    registrationUrl: event.data.registrationUrl,
+    streamUrl: event.data.streamUrl,
+    programme: scheduleOf(event, inLocale(catalog.talks)).map((item) =>
+      item.kind === 'talk'
+        ? {
+            kind: 'talk',
+            time: item.time,
+            title: item.title,
+            talk: slugOf(item.talk),
+            speakers: item.talk.data.speakers.flatMap((slug) => nameOf.get(slug) ?? []),
+          }
+        : { kind: item.kind, time: item.time, title: item.title, talk: undefined, speakers: [] },
+    ),
+  };
+}
+
+/** Карточки контактов из документа, у которого они есть (страница «О сообществе»). */
+export function contactsOf(documents: readonly Catalog['documents'][number][], locale: string): ArchiveContacts | null {
+  const about = documents.find((entry) => localeOf(entry) === locale && !entry.data.draft && entry.data.contacts);
+  return about?.data.contacts ?? null;
+}
+
+/** Отзывы языка для WebMCP: кто, в какой роли и начало текста. */
+export function reviewRowsOf(reviews: readonly Catalog['reviews'][number][], locale: string): ArchiveReview[] {
+  return publishedReviews(reviews, locale).map((entry) => ({
+    slug: slugOf(entry),
+    name: entry.data.name,
+    role: entry.data.role,
+    category: entry.data.category,
+    speaker: entry.data.speaker,
+    preview: previewOf(entry.rendered?.html ?? ''),
+  }));
+}
+
+/**
+ * Строки списков одного языка. Отзывы, контакты и ближайший митап — только для `archive.json`:
+ * без `reviews`, `documents` и `now` они пустые.
+ */
+export function archiveOf(
+  catalog: Pick<Catalog, 'events' | 'talks' | 'speakers'> & Partial<Pick<Catalog, 'reviews' | 'documents'>>,
+  locale: string,
+  { now }: { now?: Date } = {},
 ): Archive {
   const inLocale = <T extends { id: string }>(entries: readonly T[]): T[] =>
     entries.filter((entry) => localeOf(entry) === locale);
@@ -102,6 +167,8 @@ export function archiveOf(
         year: yearOf(event),
         venue: event.data.venue.name,
         talks: own.length,
+        speakers: unique(own.flatMap((talk) => talk.data.speakers)),
+        tags: event.data.tags,
         recording: event.data.recordingUrl !== undefined || own.some((talk) => talk.data.videoUrl !== undefined),
         photos: event.data.photosUrl !== undefined,
       };
@@ -129,6 +196,9 @@ export function archiveOf(
         events: [...new Map(appearances.map(({ event }) => [slugOf(event), refOf(event)])).values()],
       };
     }),
+    reviews: reviewRowsOf(catalog.reviews ?? [], locale),
+    next: now ? nextMeetupOf(catalog, locale, now) : null,
+    contacts: contactsOf(catalog.documents ?? [], locale),
   };
 }
 

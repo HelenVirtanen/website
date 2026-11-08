@@ -1,7 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
-import { event, speaker, talk } from '../test/fixtures';
+import { document, event, review, speaker, talk } from '../test/fixtures';
 import {
   archiveOf,
+  contactsOf,
+  nextMeetupOf,
+  reviewRowsOf,
   EMPTY_FILTER,
   eventLabel,
   filterArchive,
@@ -147,5 +150,38 @@ describe('состояние в адресе', () => {
     expect(filterFromSearch(new URLSearchParams(searchOfFilter(filter)))).toEqual(filter);
     expect(searchOfFilter(EMPTY_FILTER)).toBe('');
     expect(searchOfFilter({ ...EMPTY_FILTER, query: '   ' })).toBe('');
+  });
+});
+
+describe('nextMeetupOf', () => {
+  it('ближайший опубликованный митап с программой по времени и московским началом', () => {
+    const next = nextMeetupOf(catalog, 'ru', new Date('2026-07-01T12:00:00+03:00'));
+    expect(next).toMatchObject({ slug: '31', start: '2026-07-09T18:00:00+03:00', registrationUrl: undefined });
+    expect(next?.programme).toEqual([{ kind: 'talk', time: '19:00', title: 'Якоря', talk: 'anchor', speakers: ['Пётр Ёлкин'] }]);
+  });
+
+  it('после последнего митапа ближайшего нет: прошедший не выдаётся за будущий', () => {
+    expect(nextMeetupOf(catalog, 'ru', new Date('2026-07-10T12:00:00+03:00'))).toBeNull();
+  });
+
+  it('archiveOf без now ближайший митап не считает', () => {
+    expect(archive.next).toBeNull();
+    expect(archiveOf(catalog, 'ru', { now: new Date('2026-07-01T12:00:00+03:00') }).next?.slug).toBe('31');
+  });
+});
+
+describe('reviewRowsOf и contactsOf', () => {
+  it('отзывы языка без черновиков, с началом текста и спикером', () => {
+    const rows = reviewRowsOf(
+      [review('ru/anna', { name: 'Анна', category: 'speaker', speaker: 'anna' }), review('ru/draft', { draft: true }), review('en/anna')],
+      'ru',
+    );
+    expect(rows).toEqual([{ slug: 'anna', name: 'Анна', role: undefined, category: 'speaker', speaker: 'anna', preview: 'Первый абзац.' }]);
+  });
+
+  it('контакты — из документа языка, у которого они есть', () => {
+    const contacts = { lead: 'Пишите в Telegram.', items: [{ title: 'Канал', text: 'Анонсы.', links: [{ label: '@moscowcss', url: 'https://t.me/moscowcss' }] }] };
+    expect(contactsOf([document('ru/privacy'), document('ru/about', { contacts }), document('en/about')], 'ru')).toEqual(contacts);
+    expect(contactsOf([document('ru/privacy')], 'ru')).toBeNull();
   });
 });

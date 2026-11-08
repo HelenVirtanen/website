@@ -198,6 +198,7 @@ const localeOptions = locales.map((code) => ({
     fetch: (url) => fetch(url),
     loadPagefind: () => import(/* @vite-ignore */ PAGEFIND),
     archiveUrl: document.querySelector<HTMLLinkElement>('link[data-archive-json]')?.href,
+    now: () => new Date(),
   }).catch((error: unknown) => {
     console.error('WebMCP: инструменты не зарегистрированы', error);
   });

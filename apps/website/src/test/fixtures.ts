@@ -30,6 +30,8 @@ export function event(id: string, data: Partial<EventData> = {}): EventEntry {
       modes: ['оффлайн'],
       passportRequired: false,
       schedule: [],
+      tags: [],
+      gallery: [],
       draft: false,
       ...data,
     },

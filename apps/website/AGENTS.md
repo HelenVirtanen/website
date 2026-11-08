@@ -162,8 +162,11 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   (`/.well-known/agent-skills/`), the ARD catalog (`ai-catalog.json`, `ard.json`)
   and `robots.txt` (`Content-Signal`, `Agentmap`) come from `src/agents/discovery.ts`
   and `src/seo/sitemap.ts`. Every page registers WebMCP tools `search_site`,
-  `get_page_markdown` and `list_archive` (`src/agents/webmcp.ts`; the last reads `archive.json`); the search form is the
-  declarative tool `search_page`. GitHub Pages cannot set headers, so there is no
+  `get_page_markdown`, `list_archive`, `get_next_meetup` and `get_contacts` (`src/agents/webmcp.ts`). The last three
+  read `archive.json`: the list rows, plus `reviews`, `contacts` (from the about page) and `next`, the upcoming meetup at
+  build time (`nextMeetupOf` in `src/content/archive.ts`; the tool re-checks the start against the clock).
+  `list_archive` filters exactly by speaker, meetup, topic and review category through `matchesRelation`
+  (`src/content/archive-filter.ts`). The search form is the declarative tool `search_page`. GitHub Pages cannot set headers, so there is no
   `Accept: text/markdown` negotiation, no `Vary`/`Link` headers and no Markdown
   404. The Pages upload keeps `/.well-known/` only with `include-hidden-files: true`
   in `deploy.yml`. `check:seo` checks the Markdown links, the `llms.txt` and catalog

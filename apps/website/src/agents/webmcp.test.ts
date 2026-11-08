@@ -14,6 +14,7 @@ const env = (overrides: Partial<ToolEnvironment> = {}): ToolEnvironment => ({
   location: new URL('https://css.moscow/events/31/'),
   fetch: vi.fn(async (url: string) => ({ ok: url === '/events/31/index.md', status: url === '/events/31/index.md' ? 200 : 404, text: async () => '# 31 митап\n' })),
   loadPagefind: async () => pagefind,
+  now: () => new Date('2026-11-20T12:00:00+03:00'),
   ...overrides,
 });
 
@@ -70,31 +71,57 @@ describe('registerSiteTools', () => {
     const registerTool = vi.fn();
     const signal = new AbortController().signal;
     expect(await registerSiteTools({ registerTool }, env(), signal)).toBe(true);
-    expect(registerTool.mock.calls.map(([item]) => (item as WebMcpTool).name)).toEqual(['search_site', 'get_page_markdown', 'list_archive']);
+    expect(registerTool.mock.calls.map(([item]) => (item as WebMcpTool).name)).toEqual(['search_site', 'get_page_markdown', 'list_archive', 'get_next_meetup', 'get_contacts']);
     expect(registerTool.mock.calls[0]?.[1]).toEqual({ signal });
   });
 });
 
-describe('list_archive', () => {
-  const archive = {
-    events: [
-      { slug: '31', label: '31', title: '31 митап', date: '2026-07-09', year: 2026, venue: 'Звук', talks: 2, recording: false, photos: true },
-      { slug: '10', label: '10', title: '10 митап', date: '2023-03-14', year: 2023, venue: 'Авито', talks: 3, recording: true, photos: false },
+const archive = {
+  events: [
+    { slug: '31', label: '31', title: '31 митап', date: '2026-07-09', year: 2026, venue: 'Звук', talks: 2, speakers: ['elkin'], tags: ['Доступность', 'AI'], recording: false, photos: true },
+    { slug: '10', label: '10', title: '10 митап', date: '2023-03-14', year: 2023, venue: 'Авито', talks: 3, speakers: ['elkin', 'gridova'], tags: [], recording: true, photos: false },
+  ],
+  talks: [
+    { slug: 'anchor', title: 'Якоря', year: 2026, event: { slug: '31', label: '31', title: '31 митап' }, speakers: [{ slug: 'elkin', name: 'Пётр Ёлкин' }], video: false, slides: true },
+    { slug: 'grid', title: 'Гриды', year: 2023, event: { slug: '10', label: '10', title: '10 митап' }, speakers: [{ slug: 'elkin', name: 'Пётр Ёлкин' }], video: true, slides: false },
+  ],
+  speakers: [
+    { slug: 'elkin', name: 'Пётр Ёлкин', role: 'Яндекс', years: [2026, 2023], events: [{ slug: '31', label: '31' }, { slug: '10', label: '10' }] },
+    { slug: 'gridova', name: 'Анна Гридова', role: undefined, years: [2023], events: [{ slug: '10', label: '10' }] },
+  ],
+  reviews: [
+    { slug: 'elkin', name: 'Пётр Ёлкин', role: 'Яндекс', category: 'speaker', speaker: 'elkin', preview: 'Первый доклад был у вас.' },
+    { slug: 'guest', name: 'Гость', role: undefined, category: 'guest', speaker: undefined, preview: 'Хожу на каждый митап.' },
+  ],
+  next: {
+    slug: '32',
+    label: '32',
+    title: '32 митап',
+    start: '2026-11-26T19:00:00+03:00',
+    venue: { name: 'Школа 21', address: 'Москва, Вятская ул., 27' },
+    modes: ['оффлайн', 'онлайн'],
+    tags: ['AI'],
+    registrationUrl: undefined,
+    streamUrl: undefined,
+    programme: [
+      { kind: 'talk', time: '19:00', title: 'Якоря', talk: 'anchor', speakers: ['Пётр Ёлкин'] },
+      { kind: 'break', time: '19:40', title: 'Перерыв', talk: undefined, speakers: [] },
     ],
-    talks: [
-      { slug: 'anchor', title: 'Якоря', year: 2026, event: { slug: '31', label: '31', title: '31 митап' }, speakers: [{ slug: 'elkin', name: 'Пётр Ёлкин' }], video: false, slides: true },
-      { slug: 'grid', title: 'Гриды', year: 2023, event: { slug: '10', label: '10', title: '10 митап' }, speakers: [{ slug: 'elkin', name: 'Пётр Ёлкин' }], video: true, slides: false },
-    ],
-    speakers: [{ slug: 'elkin', name: 'Пётр Ёлкин', role: 'Яндекс', years: [2026, 2023], events: [{ slug: '31', label: '31' }, { slug: '10', label: '10' }] }],
-  };
-  const archiveEnv = (overrides: Partial<ToolEnvironment> = {}) =>
-    env({
-      location: new URL('https://css.moscow/en/talks/'),
-      archiveUrl: 'https://css.moscow/en/archive.json',
-      fetch: vi.fn(async (url: string) => ({ ok: url === '/en/archive.json', status: url === '/en/archive.json' ? 200 : 404, text: async () => JSON.stringify(archive) })),
-      ...overrides,
-    });
+  },
+  contacts: {
+    lead: 'Сообщество живёт в Telegram.',
+    items: [{ title: 'Регистрация', text: 'Здесь открывается регистрация.', links: [{ label: 'Timepad', url: 'https://moscowcss.timepad.ru/' }] }],
+  },
+};
+const archiveEnv = (overrides: Partial<ToolEnvironment> = {}) =>
+  env({
+    location: new URL('https://css.moscow/en/talks/'),
+    archiveUrl: 'https://css.moscow/en/archive.json',
+    fetch: vi.fn(async (url: string) => ({ ok: url === '/en/archive.json', status: url === '/en/archive.json' ? 200 : 404, text: async () => JSON.stringify(archive) })),
+    ...overrides,
+  });
 
+describe('list_archive', () => {
   it('фильтрует той же функцией, что страница: ё, год, видео; адреса — языка данных', async () => {
     const environment = archiveEnv();
     const result = await tool('list_archive', environment).execute({ kind: 'talks', query: 'ёлкин', media: true });
@@ -118,5 +145,66 @@ describe('list_archive', () => {
     expect((await tool('list_archive', archiveEnv({ archiveUrl: undefined })).execute({ kind: 'talks' })).isError).toBe(true);
     expect((await tool('list_archive', archiveEnv({ archiveUrl: '/missing.json' })).execute({ kind: 'talks' })).isError).toBe(true);
     expect((await tool('list_archive', archiveEnv()).execute({ kind: 'events', year: 2019 })).content[0]?.text).toBe('No events match (0 found in total).');
+  });
+});
+
+describe('list_archive: точные связи и отзывы', () => {
+  const run = async (input: Record<string, unknown>) =>
+    (await tool('list_archive', archiveEnv()).execute(input)).content[0]?.text ?? '';
+
+  it('доклады спикера по имени файла или имени, программа митапа по номеру', async () => {
+    expect(await run({ kind: 'talks', speaker: 'elkin' })).toMatch(/^2 talks match/);
+    expect(await run({ kind: 'talks', speaker: 'Петр Елкин', event: '31' })).toMatch(/^1 talks match;.*\n- Якоря:/);
+    expect(await run({ kind: 'speakers', event: '10' })).toMatch(/^2 speakers match/);
+  });
+
+  it('митапы спикера и митапы по теме', async () => {
+    expect(await run({ kind: 'events', speaker: 'gridova' })).toContain('- 10 митап:');
+    expect(await run({ kind: 'events', tag: 'доступ' })).toBe(
+      '1 events match; showing 1–1.\n- 31 митап: https://css.moscow/en/events/31/ — 2026-07-09, Звук, talks: 2; topics: Доступность, AI [photos]',
+    );
+  });
+
+  it('поле, которого у вида строк нет, ничего не находит', async () => {
+    expect(await run({ kind: 'talks', tag: 'AI' })).toBe('No talks match (0 found in total).');
+  });
+
+  it('отзывы: категория, автор-спикер и адрес окна отзыва', async () => {
+    expect(await run({ kind: 'reviews', category: 'speaker' })).toBe(
+      '1 reviews match; showing 1–1.\n- Пётр Ёлкин (Яндекс, speaker): https://css.moscow/en/reviews/?review=elkin — Первый доклад был у вас.; speaker page: https://css.moscow/en/speakers/elkin/',
+    );
+    expect(await run({ kind: 'reviews', query: 'каждый' })).toContain('- Гость (guest)');
+  });
+});
+
+describe('get_next_meetup', () => {
+  it('когда, где, регистрация и программа со ссылками', async () => {
+    const result = (await tool('get_next_meetup', archiveEnv()).execute({})).content[0]?.text ?? '';
+    expect(result.split('\n')).toEqual([
+      '32 митап: https://css.moscow/en/events/32/',
+      'Starts: 2026-11-26T19:00:00+03:00 (Moscow time).',
+      'Venue: Школа 21, Москва, Вятская ул., 27.',
+      'Format: оффлайн, онлайн.',
+      'Registration is not open yet: it is announced in the Telegram channel https://t.me/moscowcss.',
+      'Topics: AI.',
+      'Programme:',
+      '- 19:00 Якоря — Пётр Ёлкин (https://css.moscow/en/talks/anchor/)',
+      '- 19:40 Перерыв',
+    ]);
+  });
+
+  it('митап уже прошёл, а сайт ещё не пересобран — ближайшего нет, есть последний', async () => {
+    const late = archiveEnv({ now: () => new Date('2026-11-27T12:00:00+03:00') });
+    const result = (await tool('get_next_meetup', late).execute({})).content[0]?.text ?? '';
+    expect(result).toContain('No upcoming meetup is announced yet');
+    expect(result).toContain('The latest meetup: 31 митап: https://css.moscow/en/events/31/');
+  });
+});
+
+describe('get_contacts', () => {
+  it('вступление и карточки со ссылками', async () => {
+    expect((await tool('get_contacts', archiveEnv()).execute({})).content[0]?.text).toBe(
+      'Сообщество живёт в Telegram.\n- Регистрация: Здесь открывается регистрация. Timepad https://moscowcss.timepad.ru/',
+    );
   });
 });
