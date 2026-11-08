@@ -11,6 +11,7 @@ import {
 } from '../content/catalog';
 import { archiveOf, SPEAKER_EVENT_LABELS } from '../content/archive';
 import { eventLinksOf } from '../content/event-links';
+import { talkLinksOf } from '../content/talk-links';
 import { eventDateParts, eventWhen, fillTemplate, venueLine } from '../content/format';
 import { localizePath, useTranslations } from '../i18n';
 import { feedPath } from '../rss/feed';
@@ -119,10 +120,13 @@ export function markdownOf(page: PublicPage, catalog: MarkdownCatalog, context: 
     case 'talk': {
       const talk = page.entry;
       const event = inLocale(catalog.events).find((item) => slugOf(item) === talk.data.event);
-      const materials = [
-        talk.data.slidesUrl && `- ${link(t('talk.slides'), talk.data.slidesUrl)}`,
-        talk.data.videoUrl && `- ${link(t('talk.video'), talk.data.videoUrl)}`,
-      ].filter((line): line is string => Boolean(line));
+      const materials = event
+        ? talkLinksOf(talk, event, {
+            slides: t('talk.slides'),
+            video: t('talk.video'),
+            recording: t('event.recording'),
+          }).map((item) => `- ${link(item.label, item.href)}`)
+        : [];
       return document([
         `# ${talk.data.title}`,
         '',

@@ -10,6 +10,7 @@ import { eventLabel } from '../../../content/archive';
 import { loadCatalog, localeOf, slugOf, talksOfEvent } from '../../../content/catalog';
 import { eventDateParts, fillTemplate } from '../../../content/format';
 import { speakerImage } from '../../../content/speaker-image';
+import { talkLinksOf } from '../../../content/talk-links';
 import { talkCoverImage } from '../../../content/talk-cover-image';
 import { localizePath, useTranslations } from '../../../i18n';
 import { localeParam, pagesOfKind, publicPagesOf, type PublicPage } from '../../../seo/pages';
@@ -60,16 +61,17 @@ const speakers = entry.data.speakers.map((slug) => {
 const { Content } = await render(entry as any);
 const hasBody = Boolean(entry.body?.trim());
 
-const { title, slidesUrl, videoUrl } = entry.data;
+const { title } = entry.data;
 // Карточка анонса и сгенерированная обложка повторяют заголовок и имя спикера: в превью alt пустой,
 // а в окне просмотра подписью идёт название доклада.
 const coverImage = talkCoverImage(entry);
 const eventDate = fillTemplate(t('date.long'), eventDateParts(event.data.date, locale));
 const number = /^\d+$/.test(slugOf(event)) ? slugOf(event) : undefined;
-const materials = [
-  slidesUrl && { href: slidesUrl, label: t('talk.slides') },
-  videoUrl && { href: videoUrl, label: t('talk.video') },
-].filter((item): item is { href: string; label: string } => Boolean(item));
+const materials = talkLinksOf(entry, event, {
+  slides: t('talk.slides'),
+  video: t('talk.video'),
+  recording: t('event.recording'),
+});
 
 const persons = await Promise.all(
   speakers.map(async (speaker) => ({
