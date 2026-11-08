@@ -68,8 +68,8 @@ Decision record: `adr/001-content-model-md-relations.md`.
   optional; `url`, `logo` and the link URLs must match `ru`. No order field: the cards shuffle on every load.
 - **News** (`news/<lang>/<name>.md`, photos in `news/assets/`): `title`, `date` (a day), `description` (50–160, the
   card text and meta description) and the body are required; `tags` (translated, drive the topic filter), `cover`
-  (`image` + `alt`), `gallery` and `links` are optional. `date` and the image files must match `ru`; `links` may
-  differ, because links to the site point to the page of their own language. Write news only from real sources.
+  (`image` + `alt`), `gallery` and `links` are optional. `date` and the gallery files must match `ru`; `cover` and
+  `links` may differ (a cover can carry text in its language, links point to pages of their own language). Write news only from real sources.
 - **New entries:** `pnpm new:event | new:talk | new:speaker | new:partner | new:faq | new:organizer | new:review | new:community | new:news | new:document`
   writes drafts in both languages from `templates/` (outside `src/`, so they are
   not content). Hand-made files are fine if they pass the same schema.

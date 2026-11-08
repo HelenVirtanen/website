@@ -4,8 +4,8 @@ date: 2026-05-17
 description: "Elena Virtanen is now a MoscowCSS organizer: a front-end developer at Yandex and an ISTQB-certified software tester."
 tags: ["Team"]
 cover:
-  image: ../assets/organizer-elena-virtanen.jpg
-  alt: "Portrait of Elena Virtanen on a pink background"
+  image: ../assets/organizer-elena-virtanen-en.jpg
+  alt: "News cover with a photo of Elena Virtanen"
 links:
   - label: "Telegram"
     url: "https://t.me/helenvirtanen"

@@ -93,7 +93,7 @@ const INVARIANTS = {
   speakers: ['photo', 'links', 'founder'],
   partners: ['url', 'handle', 'logo', 'qrUrl', 'look'],
   communities: ['url', 'logo', 'links[].url'],
-  news: ['date', 'cover.image', 'gallery[].image'],
+  news: ['date', 'gallery[].image'],
   organizers: ['status', 'photo', 'contacts'],
   reviews: ['category', 'speaker', 'photo', 'gallery[].image'],
   faq: ['order'],

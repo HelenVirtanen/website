@@ -4,8 +4,8 @@ date: 2026-05-17
 description: "Елена Виртанен стала организатором MoscowCSS: разработчица интерфейсов в Яндексе и тестировщица с сертификатом ISTQB."
 tags: ["Команда"]
 cover:
-  image: ../assets/organizer-elena-virtanen.jpg
-  alt: "Портрет Елены Виртанен на розовом фоне"
+  image: ../assets/organizer-elena-virtanen-ru.jpg
+  alt: "Обложка новости с фотографией Елены Виртанен"
 links:
   - label: "Telegram"
     url: "https://t.me/helenvirtanen"

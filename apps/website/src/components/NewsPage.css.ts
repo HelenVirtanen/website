@@ -7,7 +7,7 @@ export const heroCover = style({
   width: '100%',
   minWidth: 0,
   '@media': {
-    [media.laptop]: { flexBasis: '45%', maxWidth: '45%' },
+    [media.laptop]: { flex: '0 0 45%', maxWidth: '45%' },
   },
 });
 

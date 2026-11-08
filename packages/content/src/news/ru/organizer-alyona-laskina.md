@@ -4,8 +4,8 @@ date: 2026-05-17
 description: "Алёна Ласкина стала организатором MoscowCSS: fullstack-разработчица в IToolabs, впервые с нами на стенде HolyJS."
 tags: ["Команда"]
 cover:
-  image: ../assets/organizer-alyona-laskina.jpg
-  alt: "Портрет Алёны Ласкиной на розовом фоне"
+  image: ../assets/organizer-alyona-laskina-ru.jpg
+  alt: "Обложка новости с фотографией Алёны Ласкиной"
 links:
   - label: "Telegram"
     url: "https://t.me/rebirth8"

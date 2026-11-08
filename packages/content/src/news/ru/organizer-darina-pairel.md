@@ -4,8 +4,8 @@ date: 2026-05-17
 description: "Дарина Паирель стала организатором MoscowCSS: Senior Frontend разработчица, ПК Merge Conf и организатор PiterJS."
 tags: ["Команда"]
 cover:
-  image: ../assets/organizer-darina-pairel.jpg
-  alt: "Портрет Дарины Паирель на розовом фоне"
+  image: ../assets/organizer-darina-pairel-ru.jpg
+  alt: "Обложка новости с фотографией Дарины Паирель"
 links:
   - label: "Telegram"
     url: "https://t.me/RinaPa"

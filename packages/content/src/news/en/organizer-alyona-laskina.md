@@ -4,8 +4,8 @@ date: 2026-05-17
 description: "Alyona Laskina is now a MoscowCSS organizer: a fullstack developer at IToolabs, first with us at the HolyJS stand."
 tags: ["Team"]
 cover:
-  image: ../assets/organizer-alyona-laskina.jpg
-  alt: "Portrait of Alyona Laskina on a pink background"
+  image: ../assets/organizer-alyona-laskina-en.jpg
+  alt: "News cover with a photo of Alyona Laskina"
 links:
   - label: "Telegram"
     url: "https://t.me/rebirth8"

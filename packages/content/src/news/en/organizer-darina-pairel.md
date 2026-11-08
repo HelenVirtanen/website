@@ -4,8 +4,8 @@ date: 2026-05-17
 description: "Darina Pairel is now a MoscowCSS organizer: a Senior Frontend Developer, Merge Conf programme committee and PiterJS organizer."
 tags: ["Team"]
 cover:
-  image: ../assets/organizer-darina-pairel.jpg
-  alt: "Portrait of Darina Pairel on a pink background"
+  image: ../assets/organizer-darina-pairel-en.jpg
+  alt: "News cover with a photo of Darina Pairel"
 links:
   - label: "Telegram"
     url: "https://t.me/RinaPa"
