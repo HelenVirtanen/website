@@ -1,4 +1,5 @@
 import { communitiesOf } from '../content/about';
+import { newsDateText } from '../content/news';
 import { publishedReviews } from '../content/reviews';
 import {
   localeOf,
@@ -9,6 +10,7 @@ import {
   pastEvents,
   type Catalog,
   type CommunityEntry,
+  type NewsEntry,
   type EventEntry, type ReviewEntry,
 } from '../content/catalog';
 import { archiveOf, SPEAKER_EVENT_LABELS } from '../content/archive';
@@ -31,7 +33,7 @@ export interface MarkdownContext {
   now: Date;
 }
 
-type MarkdownCatalog = Pick<Catalog, 'events' | 'talks' | 'speakers'> & { reviews?: ReviewEntry[]; communities?: CommunityEntry[] };
+type MarkdownCatalog = Pick<Catalog, 'events' | 'talks' | 'speakers'> & { reviews?: ReviewEntry[]; communities?: CommunityEntry[]; news?: NewsEntry[] };
 
 // Квадратные скобки в тексте ссылки закрыли бы её раньше времени.
 const linkText = (text: string): string => text.replace(/[[\]]/g, '\\$&');
@@ -202,6 +204,23 @@ export function markdownOf(page: PublicPage, catalog: MarkdownCatalog, context: 
       return document([`# ${title}`, '', description, '', ...entries]);
     }
 
+    case 'news': {
+      const { title, description, tags, links, cover, gallery } = page.entry.data;
+      const photos = [cover, ...gallery].filter((item) => item !== undefined).map((item) => `- ${item.alt}`);
+      return document([
+        `# ${title}`,
+        '',
+        `${newsDateText(page.entry, locale, t('date.long'))}. ${description}`,
+        ...(tags.length > 0 ? ['', `${t('news.tags')}: ${tags.join(', ')}`] : []),
+        '',
+        page.entry.body?.trim(),
+        '',
+        ...section(t('news.links'), links.map((item) => `- ${link(item.label, item.url)}`)),
+        ...section(t('news.gallery'), photos),
+        `[${t('news.all')}](${abs(localizePath(locale, 'news'))})`,
+      ]);
+    }
+
     case 'list': {
       const { list, title, description } = page.entry.data;
       const archive = archiveOf(catalog, locale);
@@ -221,6 +240,11 @@ export function markdownOf(page: PublicPage, catalog: MarkdownCatalog, context: 
                 const people = speakerLinks(item.speakers.map((speaker) => speaker.slug));
                 return `- ${link(item.title, url(`talks/${item.slug}`))}${people ? `, ${people}` : ''}; ${link(item.event.title, url(`events/${item.event.slug}`))}${badges([item.video && t('badge.video'), item.slides && t('badge.slides')])}`;
               })
+            : list === 'news'
+              ? archive.news.map((item) => {
+                  const entry = inLocale(catalog.news ?? []).find((news) => slugOf(news) === item.slug);
+                  return `- ${link(item.title, url(`news/${item.slug}`))}, ${entry ? newsDateText(entry, locale, t('date.long')) : item.date}: ${item.description}${item.tags.length > 0 ? ` (${item.tags.join(', ')})` : ''}`;
+                })
             : archive.speakers.map((item) => {
                 const labels = item.events.slice(0, SPEAKER_EVENT_LABELS).map((event) => event.label);
                 return `- ${link(item.name, url(`speakers/${item.slug}`))}${item.role ? `: ${item.role}` : ''}${labels.length > 0 ? `; ${t('speaker.events')}: ${labels.join(', ')}` : ''}`;

@@ -8,6 +8,8 @@
 //   pnpm new:organizer <имя>     → organizers/{ru,en}/<имя>.md
 //   pnpm new:review <имя>        → reviews/{ru,en}/<имя>.md
 //   pnpm new:community <имя>     → communities/{ru,en}/<имя>.md
+//   pnpm new:news <имя>          → news/{ru,en}/<имя>.md, дата — сегодня
+//   pnpm new:document <имя>      → documents/{ru,en}/<имя>.md, страница /<имя>/
 //
 // Шаблоны лежат вне src/, поэтому на сайт не попадают. Существующие файлы скрипт не перезаписывает:
 // при любом конфликте он ничего не создаёт.
@@ -30,6 +32,8 @@ export const KINDS = {
   organizer: { collection: 'organizers', name: SLUG, hint: 'например pnpm new:organizer roman-troitsky' },
   review: { collection: 'reviews', name: SLUG, hint: 'например pnpm new:review anna-ivanova' },
   community: { collection: 'communities', name: SLUG, hint: 'например pnpm new:community moscowjs' },
+  news: { collection: 'news', name: SLUG, hint: 'например pnpm new:news holyjs-2027-spring' },
+  document: { collection: 'documents', name: SLUG, hint: 'например pnpm new:document code-of-conduct' },
 };
 
 const root = fileURLToPath(new URL('../../../packages/content/', import.meta.url));

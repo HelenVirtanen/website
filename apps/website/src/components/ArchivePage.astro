@@ -5,18 +5,21 @@ import SectionTabs from '@moscowcss/ui/components/SectionTabs';
 import ArchiveFilter from '@moscowcss/ui/components/ArchiveFilter';
 import CardGrid from '@moscowcss/ui/components/CardGrid';
 import ArchiveRow from '@moscowcss/ui/components/ArchiveRow';
+import NewsCard from '@moscowcss/ui/components/NewsCard';
 import SpeakerCard from '@moscowcss/ui/components/SpeakerCard';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { archiveOf, SPEAKER_EVENT_LABELS, yearsInArchive, ARCHIVE_KINDS } from '../content/archive';
+import { getImage } from 'astro:assets';
+import { archiveOf, SPEAKER_EVENT_LABELS, topicsInArchive, yearsInArchive, ARCHIVE_KINDS, type ArchiveKind } from '../content/archive';
 import { loadCatalog, localeOf, slugOf } from '../content/catalog';
 import { eventDateParts, fillTemplate } from '../content/format';
+import { newsDateText, newsPlaceholder } from '../content/news';
 import { speakerImage } from '../content/speaker-image';
 import { localizePath, useTranslations } from '../i18n';
 import { feedPath } from '../rss/feed';
 import type { PublicPage } from '../seo/pages';
 import { main, inner, head, empty, resetButton, feedLink } from './ArchivePage.css';
 
-// Страница списка: митапы, доклады или спикеры. Строки — из archiveOf, их же фильтрует скрипт.
+// Страница списка: митапы, доклады, спикеры или новости. Строки — из archiveOf, их же фильтрует скрипт.
 interface Props {
   page: Extract<PublicPage, { kind: 'list' }>;
 }
@@ -49,15 +52,37 @@ const images = new Map(
     : [],
 );
 
+const newsBySlug = new Map(
+  catalog.news.filter((entry) => localeOf(entry) === locale).map((entry) => [slugOf(entry), entry]),
+);
+const newsCards =
+  kind === 'news'
+    ? await Promise.all(
+        archive.news.map(async (item) => {
+          const entry = newsBySlug.get(item.slug);
+          const cover = entry?.data.cover?.image;
+          const image = cover && (await getImage({ src: cover, width: Math.min(800, cover.width), format: 'webp' }));
+          return {
+            item,
+            date: entry ? newsDateText(entry, locale, t('date.long')) : item.date,
+            placeholder: entry ? newsPlaceholder(entry) : '',
+            image: image ? { src: image.src, width: Number(image.attributes['width']), height: Number(image.attributes['height']) } : undefined,
+          };
+        }),
+      )
+    : [];
+
 const items = archive[kind];
 const years = kind === 'speakers' ? [] : yearsInArchive(kind, items);
+const topics = kind === 'news' ? topicsInArchive(kind, items, locale) : [];
+const isHistory = (ARCHIVE_KINDS as readonly string[]).includes(kind);
 const tabs = ARCHIVE_KINDS.map((list) => ({
   href: localizePath(locale, list),
   label: t(`list.tab.${list}`),
-  current: list === kind,
+  current: list === (kind as ArchiveKind),
 }));
 // Только строки своего вида: остальное странице не нужно.
-const data = JSON.stringify({ events: [], talks: [], speakers: [], [kind]: items }).replaceAll('<', '\\u003c');
+const data = JSON.stringify({ events: [], talks: [], speakers: [], news: [], [kind]: items }).replaceAll('<', '\\u003c');
 ---
 
 <BaseLayout title={`${title} — ${t('site.name')}`} description={description} lang={locale} alternates={alternates}>
@@ -75,7 +100,7 @@ const data = JSON.stringify({ events: [], talks: [], speakers: [], [kind]: items
             </Paragraph>
           )
         }
-        <SectionTabs aria-label={t('list.tabs')} items={tabs} />
+        {isHistory ? <SectionTabs aria-label={t('list.tabs')} items={tabs} /> : <Paragraph>{description}</Paragraph>}
       </div>
       <ArchiveFilter
         queryLabel={t(`filter.query.${kind}`)}
@@ -83,6 +108,9 @@ const data = JSON.stringify({ events: [], talks: [], speakers: [], [kind]: items
         yearLabel={kind === 'speakers' ? undefined : t('filter.year')}
         anyYearLabel={t('filter.anyYear')}
         years={years}
+        topicLabel={kind === 'news' ? t('filter.topic') : undefined}
+        anyTopicLabel={t('filter.anyTopic')}
+        topics={topics}
         mediaLabel={kind === 'speakers' ? undefined : t(`filter.media.${kind}`)}
         resetLabel={t('filter.reset')}
         toolParamDescription={t('filter.toolParam')}
@@ -92,7 +120,25 @@ const data = JSON.stringify({ events: [], talks: [], speakers: [], [kind]: items
         <button class={resetButton} type="button" data-archive-reset>{t('filter.reset')}</button>
       </div>
       {
-        kind === 'speakers' ? (
+        kind === 'news' ? (
+          <CardGrid data-archive-list>
+            {newsCards.map(({ item, date, placeholder, image }, index) => (
+              <li data-archive-index={index}>
+                <NewsCard
+                  href={localizePath(locale, `news/${item.slug}`)}
+                  title={item.title}
+                  date={date}
+                  datetime={item.date}
+                  description={item.description}
+                  topics={item.tags}
+                  image={image}
+                  placeholder={placeholder}
+                  headingLevel={2}
+                />
+              </li>
+            ))}
+          </CardGrid>
+        ) : kind === 'speakers' ? (
           <CardGrid data-archive-list>
             {archive.speakers.map((item, index) => {
               const image = images.get(item.slug);

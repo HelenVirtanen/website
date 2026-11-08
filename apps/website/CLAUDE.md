@@ -115,9 +115,19 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   a red-to-brown gradient, the speakers and the meetup label on white, the first speaker's photo in colour (TBD
   without one) with the grey-and-red stars. It shows on the talk page and the cards and is the talk's OG and Twitter
   card. The talks' `cover` files (old announcement cards) stay in content but are no longer displayed.
-- **Header** links go across the site, not to home sections: History (`/events/`), Talks,
-  Speakers, Reviews (only with a published review), About (`/about/`, which also holds the Contacts section), Search (`src/layouts/nav.ts`); the current section gets
-  `aria-current`. Registration is the floating button.
+- **Header** links go across the site, not to home sections (`src/layouts/nav.ts`, spec 009): About (`/about/`, which also
+  holds the Contacts section), History (`/events/`, also current on talk and speaker pages), Reviews (only with a
+  published review), News, Help the meetup, Search. Talks and Speakers are `mobileOnly`: the burger menu lists them after
+  Help, the wide header does not (they are tabs of History). The current section gets `aria-current`. Registration is the
+  floating button.
+- **News** (spec 009): `news` collection, `/news/` is a `list` page of kind `news` (`LIST_KINDS` in
+  `archive-filter.ts`; the History tabs stay `ARCHIVE_KINDS`) rendered by `ArchivePage` with `NewsCard`s and the filter
+  by words, year, topic (`?topic=`, `topicsInArchive`) and photos. `/news/<name>/` is `pages/[...locale]/news/[news].astro`:
+  chip back to the list, date, big title, description as lead, coloured topic pills linking to the filtered list,
+  link pills, the cover in a frame on the right (one `Lightbox` with the gallery), the body panel, the gallery, a
+  «Раньше/Позже» pager and «Другие новости» (`relatedNews`: shared topics first, then nearest by date). JSON-LD is
+  `NewsArticle`; the Markdown twin, `archive.json` (`news` rows) and the WebMCP tools `list_news` and `get_news` (plus
+  `kind: news` in `list_archive`) read the same rows.
 - **Footer** (`@moscowcss/ui` `Footer`, wired in `BaseLayout`): the star links home, then the speaker guide (new tab),
   the policy page and the Telegram channel (`src/layouts/footer.ts`), and `© 2015–<build year>`. 2015 is the year the community began; the
   end year is Moscow time at build, so the nightly rebuild turns it over. The body is a flex column, so the footer

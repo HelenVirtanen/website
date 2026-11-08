@@ -71,7 +71,7 @@ describe('registerSiteTools', () => {
     const registerTool = vi.fn();
     const signal = new AbortController().signal;
     expect(await registerSiteTools({ registerTool }, env(), signal)).toBe(true);
-    expect(registerTool.mock.calls.map(([item]) => (item as WebMcpTool).name)).toEqual(['search_site', 'get_page_markdown', 'list_archive', 'get_next_meetup', 'get_contacts']);
+    expect(registerTool.mock.calls.map(([item]) => (item as WebMcpTool).name)).toEqual(['search_site', 'get_page_markdown', 'list_archive', 'list_news', 'get_news', 'get_next_meetup', 'get_contacts']);
     expect(registerTool.mock.calls[0]?.[1]).toEqual({ signal });
   });
 });
@@ -88,6 +88,11 @@ const archive = {
   speakers: [
     { slug: 'elkin', name: 'Пётр Ёлкин', role: 'Яндекс', years: [2026, 2023], events: [{ slug: '31', label: '31' }, { slug: '10', label: '10' }] },
     { slug: 'gridova', name: 'Анна Гридова', role: undefined, years: [2023], events: [{ slug: '10', label: '10' }] },
+  ],
+  news: [
+    { slug: 't1-impulse', title: 'Стенд на Импульсе', date: '2026-11-08', year: 2026, description: 'Будем на стенде Импульса Т1.', tags: ['Конференции'], photos: true },
+    { slug: 'it-hr-awards', title: 'IT HR Awards', date: '2026-11-08', year: 2026, description: 'Участвуем в конкурсе.', tags: ['Конкурсы'], photos: false },
+    { slug: 'holyjs-2025', title: 'Стенд на HolyJS', date: '2025-04-09', year: 2025, description: 'Первый стенд.', tags: ['Конференции'], photos: true },
   ],
   reviews: [
     { slug: 'elkin', name: 'Пётр Ёлкин', role: 'Яндекс', category: 'speaker', speaker: 'elkin', preview: 'Первый доклад был у вас.' },
@@ -120,6 +125,44 @@ const archiveEnv = (overrides: Partial<ToolEnvironment> = {}) =>
     fetch: vi.fn(async (url: string) => ({ ok: url === '/en/archive.json', status: url === '/en/archive.json' ? 200 : 404, text: async () => JSON.stringify(archive) })),
     ...overrides,
   });
+
+describe('list_news', () => {
+  it('фильтрует по теме и году, отдаёт список тем и абсолютные адреса языка', async () => {
+    const result = await tool('list_news', archiveEnv()).execute({ topic: 'конференции', year: 2026 });
+    expect(result.content[0]?.text).toBe(
+      '1 news match; showing 1–1. Topics: Конференции, Конкурсы.\n- Стенд на Импульсе: https://css.moscow/en/news/t1-impulse/ — 2026-11-08, Будем на стенде Импульса Т1.; topics: Конференции [photos]',
+    );
+  });
+
+  it('только с фото и пустой результат с подсказкой тем', async () => {
+    expect((await tool('list_news', archiveEnv()).execute({ photos: true })).content[0]?.text).toMatch(/^2 news match/);
+    expect((await tool('list_news', archiveEnv()).execute({ query: 'нет такого' })).content[0]?.text).toContain('No news match (0 found in total). Topics:');
+  });
+});
+
+describe('get_news', () => {
+  const newsEnv = () =>
+    archiveEnv({
+      fetch: vi.fn(async (url: string) =>
+        url === '/en/archive.json'
+          ? { ok: true, status: 200, text: async () => JSON.stringify(archive) }
+          : { ok: url === '/en/news/holyjs-2025/index.md', status: url === '/en/news/holyjs-2025/index.md' ? 200 : 404, text: async () => '# Стенд на HolyJS\n' },
+      ),
+    });
+
+  it('по имени файла или адресу отдаёт Markdown новости своего языка', async () => {
+    expect((await tool('get_news', newsEnv()).execute({ news: 'holyjs-2025' })).content[0]?.text).toBe('# Стенд на HolyJS\n');
+    expect((await tool('get_news', newsEnv()).execute({ news: 'https://css.moscow/en/news/holyjs-2025/' })).isError).toBeUndefined();
+  });
+
+  it('неизвестная новость — ошибка с подсказкой, без запроса страницы', async () => {
+    const environment = newsEnv();
+    const result = await tool('get_news', environment).execute({ news: 'nope' });
+    expect(result.isError).toBe(true);
+    expect(result.content[0]?.text).toContain('list_news');
+    expect(environment.fetch).not.toHaveBeenCalledWith('/en/news/nope/index.md');
+  });
+});
 
 describe('list_archive', () => {
   it('фильтрует той же функцией, что страница: ё, год, видео; адреса — языка данных', async () => {

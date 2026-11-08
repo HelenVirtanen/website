@@ -93,12 +93,12 @@ async function discoverPages() {
   const speaker = await firstLink('/speakers/');
   await context.close();
   // Списки (спека 007) — с фильтром, раскрытым скриптом страницы.
-  const lists = ['/events/', '/talks/', '/speakers/', '/en/speakers/'];
+  const lists = ['/events/', '/talks/', '/speakers/', '/en/speakers/', '/news/', '/en/news/'];
   // Стены языка нет, пока на нём нет опубликованных отзывов (спека 008).
   const walls = ['/reviews/', '/en/reviews/'];
   const found = await Promise.all(walls.map(async (path) => (await fetch(origin + path)).ok));
   const reviews = walls.filter((_, index) => found[index]);
-  return ['/', '/en/', '/events/31/', talk, speaker, ...lists, ...reviews, '/search/', '/privacy/', '/about/', '/help/', '/en/help/', '/en/events/31/', '/404.html'].filter(Boolean);
+  return ['/', '/en/', '/events/31/', talk, speaker, ...lists, ...reviews, '/search/', '/privacy/', '/about/', '/help/', '/en/help/', '/en/events/31/', '/news/holyjs-2026-spring/', '/en/news/new-site/', '/404.html'].filter(Boolean);
 }
 
 async function checkAxe(page, where) {

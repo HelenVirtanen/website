@@ -10,6 +10,7 @@ import type {
   createOrganizerSchema,
   createPartnerSchema,
   createCommunitySchema,
+  createNewsSchema,
   createReviewSchema,
   createTalkSchema,
   createSpeakerSchema,
@@ -34,6 +35,7 @@ export type TalkData = z.output<ReturnType<typeof createTalkSchema>>;
 export type SpeakerData = z.output<ReturnType<typeof createSpeakerSchema>>;
 export type PartnerData = z.output<ReturnType<typeof createPartnerSchema>>;
 export type CommunityData = z.output<ReturnType<typeof createCommunitySchema>>;
+export type NewsData = z.output<ReturnType<typeof createNewsSchema>>;
 export type OrganizerData = z.output<ReturnType<typeof createOrganizerSchema>>;
 export type ReviewData = z.output<ReturnType<typeof createReviewSchema>>;
 export type PageData = z.output<typeof PageSchema>;
@@ -45,6 +47,7 @@ export type TalkEntry = CatalogEntry<TalkData>;
 export type SpeakerEntry = CatalogEntry<SpeakerData>;
 export type PartnerEntry = CatalogEntry<PartnerData>;
 export type CommunityEntry = CatalogEntry<CommunityData>;
+export type NewsEntry = CatalogEntry<NewsData>;
 export type OrganizerEntry = CatalogEntry<OrganizerData>;
 export type ReviewEntry = CatalogEntry<ReviewData>;
 export type PageEntry = CatalogEntry<PageData>;
@@ -57,6 +60,7 @@ export interface Catalog {
   speakers: SpeakerEntry[];
   partners: PartnerEntry[];
   communities: CommunityEntry[];
+  news: NewsEntry[];
   organizers: OrganizerEntry[];
   reviews: ReviewEntry[];
   pages: PageEntry[];
@@ -89,6 +93,7 @@ const INVARIANTS = {
   speakers: ['photo', 'links', 'founder'],
   partners: ['url', 'handle', 'logo', 'qrUrl', 'look'],
   communities: ['url', 'logo', 'links[].url'],
+  news: ['date', 'cover.image', 'gallery[].image'],
   organizers: ['status', 'photo', 'contacts'],
   reviews: ['category', 'speaker', 'photo', 'gallery[].image'],
   faq: ['order'],
@@ -97,7 +102,7 @@ const INVARIANTS = {
 } as const;
 
 // Тело обязательно там, где оно и есть содержание страницы или карточки.
-const BODY_REQUIRED = ['pages', 'talks', 'faq', 'documents', 'reviews', 'communities'] as const;
+const BODY_REQUIRED = ['pages', 'talks', 'faq', 'documents', 'reviews', 'communities', 'news'] as const;
 
 
 /** Язык записи: первый сегмент id. */
@@ -229,12 +234,13 @@ export function validateCatalog(
     }
   }
 
-  if (readSource) checkEventDays(catalog.events, readSource, problems);
+  if (readSource) checkEventDays([...catalog.events, ...catalog.news], readSource, problems);
   checkTranslations('events', catalog.events, problems);
   checkTranslations('talks', catalog.talks, problems);
   checkTranslations('speakers', catalog.speakers, problems);
   checkTranslations('partners', catalog.partners, problems);
   checkTranslations('communities', catalog.communities, problems);
+  checkTranslations('news', catalog.news, problems);
   checkTranslations('organizers', catalog.organizers, problems);
   checkTranslations('reviews', catalog.reviews, problems);
   checkTranslations('faq', catalog.faq, problems);
@@ -248,6 +254,7 @@ export function validateCatalog(
     ['speakers', catalog.speakers],
     ['partners', catalog.partners],
     ['communities', catalog.communities],
+    ['news', catalog.news],
     ['organizers', catalog.organizers],
     ['reviews', catalog.reviews],
     ['faq', catalog.faq],
@@ -314,7 +321,7 @@ const DATE_LINE = /^date:\s*["']?(\d{4}-\d{2}-\d{2})/m;
  * день из исходного текста сверяется с днём, который получился: разошлись — даты не существует.
  */
 export function checkEventDays(
-  events: readonly EventEntry[],
+  events: readonly { id: string; filePath?: string | undefined; data: { date: Date } }[],
   readSource: (filePath: string) => string,
   problems: string[],
 ): void {
@@ -332,19 +339,20 @@ export function checkEventDays(
  * приходит от Astro (с путём файла), ошибка связей и переводов — от `validateCatalog`.
  */
 export async function loadCatalog(): Promise<Catalog> {
-  const [pages, events, talks, speakers, partners, communities, organizers, reviews, faq, documents] = await Promise.all([
+  const [pages, events, talks, speakers, partners, communities, news, organizers, reviews, faq, documents] = await Promise.all([
     getCollection('pages'),
     getCollection('events'),
     getCollection('talks'),
     getCollection('speakers'),
     getCollection('partners'),
     getCollection('communities'),
+    getCollection('news'),
     getCollection('organizers'),
     getCollection('reviews'),
     getCollection('faq'),
     getCollection('documents'),
   ]);
-  const catalog = { events, talks, speakers, partners, communities, organizers, reviews, pages, faq, documents };
+  const catalog = { events, talks, speakers, partners, communities, news, organizers, reviews, pages, faq, documents };
   validateCatalog(catalog, {
     requireRendered: true,
     // filePath у записей Astro — относительно корня проекта, а сборка идёт из него же.

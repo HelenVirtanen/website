@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { community, document, event, page, speaker, talk, twoMeetupsCatalog } from '../test/fixtures';
+import { community, document, event, news, page, speaker, talk, twoMeetupsCatalog } from '../test/fixtures';
 import { publicPagesOf } from '../seo/pages';
 import { markdownOf, markdownPathOf } from './markdown';
 
@@ -95,6 +95,26 @@ describe('markdownOf', () => {
     expect(text.startsWith('# ')).toBe(true);
     expect(text.endsWith('\n')).toBe(true);
     expect(text.endsWith('\n\n')).toBe(false);
+  });
+
+  it('новость: заголовок, дата с подзаголовком, темы, текст, ссылки и подписи фото; список новостей', () => {
+    const data = {
+      ...catalog(),
+      news: [
+        news('ru/stand', {
+          date: new Date('2026-05-17T00:00:00Z'),
+          links: [{ label: 'Игра', url: 'https://gitgame.vzhyx.io/' }],
+          gallery: [{ image: { src: '/a.jpg', width: 1, height: 1, format: 'jpg' }, alt: 'Команда у стенда' }],
+        }),
+      ],
+    };
+    const text = markdownAt('/news/stand/', data);
+    expect(text).toMatch(/^# Мы на HolyJS\n\n17 мая 2026\. Стенд сообщества/);
+    expect(text).toContain('Темы новости: Конференции');
+    expect(text).toContain('Текст новости.');
+    expect(text).toContain('- [Игра](https://gitgame.vzhyx.io/)');
+    expect(text).toContain('- Команда у стенда');
+    expect(markdownAt('/news/', data)).toContain('- [Мы на HolyJS](https://css.moscow/news/stand/), 17 мая 2026: ');
   });
 
   it('о сообществе: дружественные сообщества со ссылками после контактов', () => {

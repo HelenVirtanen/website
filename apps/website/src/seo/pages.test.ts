@@ -16,7 +16,7 @@ const home = (locale: string) => ({
 const catalog = () => ({ ...twoMeetupsCatalog(), pages: [home('ru'), home('en')] });
 
 describe('publicPagesOf', () => {
-  it('даёт главную, списки, митапы, доклады и спикеров каждого языка', () => {
+  it('даёт главную, списки (с новостями), митапы, доклады и спикеров каждого языка', () => {
     const pages = publicPagesOf(catalog());
     expect(pages.map((page) => page.path).sort()).toEqual(
       [
@@ -38,6 +38,8 @@ describe('publicPagesOf', () => {
         '/en/events/',
         '/en/talks/',
         '/en/speakers/',
+        '/news/',
+        '/en/news/',
       ].sort(),
     );
   });

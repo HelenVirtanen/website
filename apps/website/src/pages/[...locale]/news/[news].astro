@@ -1,0 +1,232 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import BlockTitle from '@moscowcss/ui/components/BlockTitle';
+import CardGrid from '@moscowcss/ui/components/CardGrid';
+import Lightbox from '@moscowcss/ui/components/Lightbox';
+import NewsCard from '@moscowcss/ui/components/NewsCard';
+import Prose from '@moscowcss/ui/components/Prose';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { newsDayOf, newsNewestFirst, relatedNews } from '../../../content/archive';
+import { loadCatalog, localeOf, slugOf, type NewsEntry } from '../../../content/catalog';
+import { fillTemplate } from '../../../content/format';
+import { newsDateText, newsPlaceholder } from '../../../content/news';
+import { localizePath, useTranslations } from '../../../i18n';
+import { localeParam, pagesOfKind, publicPagesOf, type PublicPage } from '../../../seo/pages';
+import {
+  action,
+  actions,
+  block,
+  chip,
+  coverFrame,
+  coverImage,
+  date as dateClass,
+  gallery,
+  galleryImage,
+  galleryItem,
+  galleryLink,
+  hero,
+  heroText,
+  inner,
+  lead,
+  main,
+  panel,
+  prose,
+  tag,
+  tagTones,
+  tags,
+  title as titleClass,
+  topRow,
+} from '../../../components/DetailPage.css';
+import { heroCover, moreHead, pager, pagerLabel, pagerLink, pagerNext, pagerTitle, stack } from '../../../components/NewsPage.css';
+
+export const getStaticPaths = (async () => {
+  const catalog = await loadCatalog();
+  return pagesOfKind(publicPagesOf(catalog), 'news').map((page) => ({
+    params: { locale: localeParam(page.locale), news: page.slugParam },
+    props: { page },
+  }));
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props as { page: Extract<PublicPage, { kind: 'news' }> };
+const { locale, entry, alternates } = page;
+const t = useTranslations(locale);
+const catalog = await loadCatalog();
+
+const { title, description, tags: topics, cover, gallery: photos, links } = entry.data;
+const newsPath = localizePath(locale, 'news');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const { Content } = await render(entry as any);
+
+const coverPicture = cover && {
+  alt: cover.alt,
+  thumb: await getImage({ src: cover.image, width: Math.min(1200, cover.image.width), format: 'webp' }),
+  full: await getImage({ src: cover.image, width: Math.min(1600, cover.image.width), format: 'webp' }),
+};
+
+const pictures = await Promise.all(
+  photos.map(async (item, index) => {
+    const thumb = await getImage({ src: item.image, width: Math.min(index === 0 ? 1000 : 600, item.image.width), format: 'webp' });
+    const full = await getImage({ src: item.image, width: Math.min(1600, item.image.width), format: 'webp' });
+    return { alt: item.alt, thumb: thumb.src, full: full.src, width: thumb.attributes['width'], height: thumb.attributes['height'] };
+  }),
+);
+
+// Соседи по ленте: «Раньше» — следующая более старая новость, «Позже» — более свежая.
+const feed = newsNewestFirst(catalog.news.filter((item) => localeOf(item) === locale));
+const position = feed.findIndex((item) => item.id === entry.id);
+const older = feed[position + 1];
+const newer = position > 0 ? feed[position - 1] : undefined;
+const neighbours = new Set([older?.id, newer?.id]);
+
+const cardOf = async (item: NewsEntry) => {
+  const image = item.data.cover && (await getImage({ src: item.data.cover.image, width: Math.min(800, item.data.cover.image.width), format: 'webp' }));
+  return {
+    href: localizePath(locale, `news/${slugOf(item)}`),
+    title: item.data.title,
+    date: newsDateText(item, locale, t('date.long')),
+    datetime: newsDayOf(item),
+    description: item.data.description,
+    topics: item.data.tags,
+    placeholder: newsPlaceholder(item),
+    image: image ? { src: image.src, width: Number(image.attributes['width']), height: Number(image.attributes['height']) } : undefined,
+  };
+};
+// Соседи уже есть в листалке, поэтому в «Других новостях» они идут последними.
+const related = relatedNews(entry, catalog.news, 6);
+const more = await Promise.all(
+  [...related.filter((item) => !neighbours.has(item.id)), ...related.filter((item) => neighbours.has(item.id))].slice(0, 3).map(cardOf),
+);
+---
+
+<BaseLayout title={`${title} — ${t('site.name')}`} description={description} lang={locale} alternates={alternates}>
+  <main id="main" tabindex="-1" class={main} data-pagefind-body>
+    <article class={inner}>
+      <Lightbox class={stack} dialogLabel={title} closeLabel={t('lightbox.close')} prevLabel={t('lightbox.prev')} nextLabel={t('lightbox.next')}>
+        <div class={hero}>
+          <div class={heroText}>
+            <div class={topRow}>
+              <a class={chip} href={newsPath}>{t('news.label')}</a>
+              <p class={dateClass}><time datetime={newsDayOf(entry)}>{newsDateText(entry, locale, t('date.long'))}</time></p>
+            </div>
+            <h1 class={titleClass}>{title}</h1>
+            <p class={lead}>{description}</p>
+            {
+              topics.length > 0 && (
+                <ul class={tags} aria-label={t('news.tags')}>
+                  {topics.map((topic, index) => (
+                    <li>
+                      <a class:list={[tag, tagTones[index % tagTones.length]]} href={`${newsPath}?topic=${encodeURIComponent(topic)}`}>
+                        {topic}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )
+            }
+            {
+              links.length > 0 && (
+                <ul class={actions} aria-label={t('news.links')}>
+                  {links.map((link) => (
+                    <li>
+                      <a class={action} href={link.url} target="_blank" rel="noopener noreferrer">
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )
+            }
+          </div>
+          {
+            coverPicture && (
+              <div class={heroCover}>
+                <a
+                  class={coverFrame}
+                  href={coverPicture.full.src}
+                  data-lightbox-item
+                  data-caption={coverPicture.alt}
+                  aria-label={fillTemplate(t('lightbox.open'), { name: coverPicture.alt })}
+                >
+                  <img
+                    class={coverImage}
+                    src={coverPicture.thumb.src}
+                    width={coverPicture.thumb.attributes['width']}
+                    height={coverPicture.thumb.attributes['height']}
+                    alt={coverPicture.alt}
+                    decoding="async"
+                  />
+                </a>
+              </div>
+            )
+          }
+        </div>
+
+        <Prose class:list={[prose, panel]}>
+          <Content />
+        </Prose>
+
+        {
+          pictures.length > 0 && (
+            <section class={block}>
+              <BlockTitle>{t('news.gallery')}</BlockTitle>
+              <ul class={gallery}>
+                {pictures.map((picture) => (
+                  <li class={galleryItem}>
+                    <a class={galleryLink} href={picture.full} data-lightbox-item data-caption={picture.alt}>
+                      <img class={galleryImage} src={picture.thumb} width={picture.width} height={picture.height} alt={picture.alt} loading="lazy" decoding="async" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+      </Lightbox>
+
+      {
+        (older || newer) && (
+          <nav aria-label={t('news.pager')}>
+            <ul class={pager}>
+              {older && (
+                <li>
+                  <a class={pagerLink} href={localizePath(locale, `news/${slugOf(older)}`)} rel="prev">
+                    <span class={pagerLabel}>{t('news.prev')}</span>
+                    <span class={pagerTitle}>{older.data.title}</span>
+                  </a>
+                </li>
+              )}
+              {newer && (
+                <li class={pagerNext}>
+                  <a class={pagerLink} href={localizePath(locale, `news/${slugOf(newer)}`)} rel="next">
+                    <span class={pagerLabel}>{t('news.next')}</span>
+                    <span class={pagerTitle}>{newer.data.title}</span>
+                  </a>
+                </li>
+              )}
+            </ul>
+          </nav>
+        )
+      }
+
+      {
+        more.length > 0 && (
+          <section class={block}>
+            <div class={moreHead}>
+              <BlockTitle>{t('news.more')}</BlockTitle>
+              <a class={action} href={newsPath}>{t('news.all')}</a>
+            </div>
+            <CardGrid>
+              {more.map((card) => (
+                <li>
+                  <NewsCard {...card} />
+                </li>
+              ))}
+            </CardGrid>
+          </section>
+        )
+      }
+    </article>
+  </main>
+</BaseLayout>

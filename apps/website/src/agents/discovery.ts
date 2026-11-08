@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { localeOf, slugOf, upcomingEvent, type Catalog } from '../content/catalog';
+import { newsDayOf } from '../content/archive';
 import { eventWhen, venueLine } from '../content/format';
 import { defaultLocale, localeNames, locales, localizePath, useTranslations, type Locale } from '../i18n';
 import { feedPath } from '../rss/feed';
@@ -73,9 +74,11 @@ export function skillMarkdown(site: URL): string {
     '',
     `- ${abs(LLMS_PATH)} lists every meetup and page in both languages; ${abs(LLMS_FULL_PATH)} adds every talk and speaker.`,
     `- Lists, newest first, as Markdown: ${abs(markdownPathOf('/events/'))}, ${abs(markdownPathOf('/talks/'))},`,
-    `  ${abs(markdownPathOf('/speakers/'))} (speakers by their latest talk); \`/en/\` in front for English.`,
+    `  ${abs(markdownPathOf('/speakers/'))} (speakers by their latest talk), ${abs(markdownPathOf('/news/'))} (community news);`,
+    '  `/en/` in front for English.',
     `- The same rows as JSON with years, recording flags and meetup topics: ${abs('/archive.json')}, ${abs('/en/archive.json')}.`,
-    '  The file also holds the community reviews, the contacts and `next`: the upcoming meetup with its programme',
+    '  The file also holds the community news (title, date, description, topics), the community reviews,',
+    '  the contacts and `next`: the upcoming meetup with its programme',
     '  (`null` when none is announced). It is rebuilt every night.',
     `- ${abs('/sitemap.xml')} lists every indexable URL.`,
     '- RSS feeds of meetups, newest first:',
@@ -83,13 +86,14 @@ export function skillMarkdown(site: URL): string {
     '',
     '## Search',
     '',
-    '- Full-text search over meetups, talks and speakers, one page per language:',
+    '- Full-text search over meetups, talks, speakers and news, one page per language:',
     ...perLocale('search').map((line) => `${line}?q=`),
     '- Results are rendered in the browser by Pagefind JavaScript: a client without JavaScript gets',
     `  none. Without a browser, pick pages from ${abs(LLMS_PATH)} and fetch their \`index.md\`.`,
     '- In a browser with WebMCP the site registers the tools `search_site`, `get_page_markdown`, `list_archive`',
-    '  (meetups, talks, speakers or reviews by words, year and recording, and exactly by speaker, meetup, topic or',
-    '  review category), `get_next_meetup` (date, venue, registration and programme) and `get_contacts`.',
+    '  (meetups, talks, speakers, news or reviews by words, year and recording, and exactly by speaker, meetup, topic or',
+    '  review category), `list_news` (community news by words, year and topic), `get_news` (one news item as',
+    '  Markdown), `get_next_meetup` (date, venue, registration and programme) and `get_contacts`.',
     '',
     '## Using the content',
     '',
@@ -197,11 +201,11 @@ export function aiCatalog(site: URL): AiCatalog {
 
 // Одна строка: перевод строки в тексте сломал бы markdown-список.
 const line = (text: string): string => text.replace(/\s+/g, ' ').trim();
-const KIND_ORDER: Record<PublicPage['kind'], number> = { home: 0, list: 1, reviews: 2, document: 3, event: 4, talk: 5, speaker: 6 };
+const KIND_ORDER: Record<PublicPage['kind'], number> = { home: 0, list: 1, reviews: 2, document: 3, event: 4, news: 5, talk: 6, speaker: 7 };
 
 // В оглавлении — главная, списки, документы и митапы; доклады и спикеры только в полном списке: вместе с ними
 // llms.txt выходит за 30 000 знаков, которые сканеры считают пределом для оглавления.
-const INDEX_KINDS: ReadonlySet<PublicPage['kind']> = new Set(['home', 'list', 'reviews', 'document', 'event']);
+const INDEX_KINDS: ReadonlySet<PublicPage['kind']> = new Set(['home', 'list', 'reviews', 'document', 'event', 'news']);
 
 /**
  * llms.txt (llmstxt.org): H1, цитата-резюме, раздел «When to use», затем страницы по языкам — каждая
@@ -231,6 +235,7 @@ export function llmsTxt(
       case 'event':
         return page.entry.data.tagline;
       case 'talk':
+      case 'news':
         return page.entry.data.title;
       case 'speaker':
         return page.entry.data.name;
@@ -246,6 +251,8 @@ export function llmsTxt(
         return page.entry.data.description;
       case 'event':
         return `${eventWhen(page.entry.data, page.locale, { withTime: tl('hero.dateTime'), dateOnly: tl('date.long') })}, ${venueLine(page.entry.data.venue)}`;
+      case 'news':
+        return `${newsDayOf(page.entry)}: ${page.entry.data.description}`;
       case 'talk':
         return undefined;
       case 'speaker':
@@ -262,8 +269,8 @@ export function llmsTxt(
       .toSorted(
         (a, b) =>
           KIND_ORDER[a.kind] - KIND_ORDER[b.kind] ||
-          (a.kind === 'event' && b.kind === 'event'
-            ? b.entry.data.date.getTime() - a.entry.data.date.getTime()
+          (a.kind === b.kind && (a.kind === 'event' || a.kind === 'news')
+            ? (b.entry as { data: { date: Date } }).data.date.getTime() - (a.entry as { data: { date: Date } }).data.date.getTime()
             : slugOf(a.entry).localeCompare(slugOf(b.entry))),
       );
 

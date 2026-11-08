@@ -10,6 +10,7 @@ import type {
   PageEntry,
   PartnerEntry,
   CommunityEntry,
+  NewsEntry,
   SpeakerData,
   SpeakerEntry,
   TalkData,
@@ -78,6 +79,24 @@ export function community(id: string, data: Partial<CommunityEntry['data']> = {}
       name: 'MoscowJS',
       url: 'https://moscowjs.org/',
       logo: { src: '/moscowjs.svg', width: 1, height: 1, format: 'svg' },
+      links: [],
+      draft: false,
+      ...data,
+    },
+  };
+}
+
+export function news(id: string, data: Partial<NewsEntry['data']> = {}): NewsEntry {
+  return {
+    id,
+    filePath: filePathOf('news', id),
+    body: 'Текст новости.',
+    data: {
+      title: 'Мы на HolyJS',
+      date: new Date('2026-05-17T00:00:00Z'),
+      description: 'Стенд сообщества на конференции: игры, мерч и новые организаторы, всё в одном посте.',
+      tags: ['Конференции'],
+      gallery: [],
       links: [],
       draft: false,
       ...data,
@@ -174,6 +193,7 @@ export function twoMeetupsCatalog() {
     speakers: [speaker('ru/daria-egorova'), speaker('en/daria-egorova')],
     partners: [] as PartnerEntry[],
     communities: [] as CommunityEntry[],
+    news: [] as NewsEntry[],
     organizers: [] as OrganizerEntry[],
     reviews: [] as ReviewEntry[],
     pages: [] as PageEntry[],

@@ -1,6 +1,6 @@
 import { MOSCOW_UTC_OFFSET_HOURS } from '@moscowcss/content/schema';
 import { localeOf, slugOf, talksOfEvent, type Catalog } from '../content/catalog';
-import { archiveOf } from '../content/archive';
+import { archiveOf, newsDayOf } from '../content/archive';
 import { localizePath } from '../i18n';
 import type { PublicPage } from './pages';
 
@@ -60,7 +60,7 @@ function organization(context: JsonLdContext): Thing {
 /** Граф JSON-LD страницы или `undefined`, если для её вида разметки нет (доклад). */
 export function jsonLdOf(
   page: PublicPage,
-  catalog: Pick<Catalog, 'events' | 'talks' | 'speakers'>,
+  catalog: Pick<Catalog, 'events' | 'talks' | 'speakers'> & Partial<Pick<Catalog, 'news'>>,
   context: JsonLdContext,
 ): Thing | undefined {
   const url = new URL(page.path, context.site).href;
@@ -144,7 +144,9 @@ export function jsonLdOf(
           ? archive.events.map((item) => ({ path: `events/${item.slug}`, name: item.title }))
           : list === 'talks'
             ? archive.talks.map((item) => ({ path: `talks/${item.slug}`, name: item.title }))
-            : archive.speakers.map((item) => ({ path: `speakers/${item.slug}`, name: item.name }));
+            : list === 'news'
+              ? archive.news.map((item) => ({ path: `news/${item.slug}`, name: item.title }))
+              : archive.speakers.map((item) => ({ path: `speakers/${item.slug}`, name: item.name }));
       return {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
@@ -162,6 +164,22 @@ export function jsonLdOf(
             url: new URL(localizePath(page.locale, item.path), context.site).href,
           })),
         },
+      };
+    }
+
+    case 'news': {
+      const { title, description } = page.entry.data;
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'NewsArticle',
+        ...base,
+        mainEntityOfPage: url,
+        headline: title,
+        description,
+        datePublished: newsDayOf(page.entry),
+        author: { '@id': organizationId(context.site) },
+        publisher: organization(context),
+        ...(context.image && { image: context.image }),
       };
     }
 

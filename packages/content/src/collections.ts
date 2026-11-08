@@ -8,6 +8,7 @@ import {
   createOrganizerSchema,
   createPartnerSchema,
   createCommunitySchema,
+  createNewsSchema,
   createReviewSchema,
   createTalkSchema,
   createSpeakerSchema,
@@ -46,6 +47,10 @@ export const collections = {
   communities: defineCollection({
     loader: localized('communities'),
     schema: ({ image }) => createCommunitySchema(image),
+  }),
+  news: defineCollection({
+    loader: localized('news'),
+    schema: ({ image }) => createNewsSchema(image),
   }),
   faq: defineCollection({ loader: localized('faq'), schema: FaqSchema }),
   documents: defineCollection({ loader: localized('documents'), schema: DocumentSchema }),

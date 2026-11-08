@@ -1,6 +1,7 @@
 import { CARD_SIZES, type CardInput, type CardSize } from '@moscowcss/og';
 import { localeOf, slugOf, type Catalog } from '../content/catalog';
 import { eventWhen, fillTemplate } from '../content/format';
+import { newsDateText } from '../content/news';
 import { useTranslations } from '../i18n';
 import { trimTrailingSlashes, type PublicPage } from './pages';
 
@@ -95,7 +96,9 @@ export function cardInputOf(
     case 'document':
       return { title: page.entry.data.title, kicker: t('og.kind.document'), meta: page.entry.data.description };
     case 'list':
-      return { title: page.entry.data.title, kicker: t('og.kind.list'), meta: t('og.home.meta') };
+      return { title: page.entry.data.title, kicker: t(page.entry.data.list === 'news' ? 'og.kind.news' : 'og.kind.list'), meta: t('og.home.meta') };
+    case 'news':
+      return { title: page.entry.data.title, kicker: t('og.kind.news'), meta: newsDateText(page.entry, locale, t('date.long')) };
     case 'reviews':
       return { title: page.entry.data.title, kicker: t('og.kind.reviews'), meta: t('og.home.meta') };
   }

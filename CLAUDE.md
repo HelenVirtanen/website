@@ -171,6 +171,8 @@ Node & pnpm:
 | `pnpm new:organizer <name>` | Draft organizer files, `ru` and `en`; the editor fills `status` and `contacts`. |
 | `pnpm new:review <name>` | Draft community review files, `ru` and `en`; photo and gallery are optional. |
 | `pnpm new:community <name>` | Draft friendly-community files, `ru` and `en`; the logo goes to `communities/assets/`. |
+| `pnpm new:news <name>` | Draft news files, `ru` and `en`, dated today; photos go to `news/assets/`. |
+| `pnpm new:document <name>` | Draft standalone page files (`/<name>/`), `ru` and `en`. |
 | `pnpm report:content` | Rebuilds `docs/todo/meetups.md` and `docs/todo/talks.md` from the content: photos, albums, recordings, YouTube/VK video and slides. Issue numbers come from `docs/todo/issues.json`, hand-written notes live in `docs/todo/sources.md`. |
 | `pnpm --filter @moscowcss/ui test` | The UI package's own vitest suite (pure logic, e.g. the `TagPile` layout in `pile.ts`). |
 | `node tools/visual/check-targets.mjs [url]` | Hit-area gate over the built site at 375 and 1440 (needs `astro preview` and `CHROMIUM_PATH`). |
@@ -415,7 +417,7 @@ src/
   with text passed as props: `Button`, `CallToAction` (floating registration
   button), `CardSlider`, `Card`, `BlockTitle`, `NavBar`, `TagPile` (falling topic
   tags; the layout is the pure `pile.ts`, tested by `pnpm --filter @moscowcss/ui
-  test`) and `OrganizerCard`. Keep the story in step when the props change.
+  test`), `OrganizerCard`, `NewsCard` and `ShuffledList`. Keep the story in step when the props change.
 - Interactive elements follow `vars.size.hitTarget` and the focus ring rule
   (§5); transitions use `vars.motion.*`.
 
@@ -573,7 +575,7 @@ regenerate rather than edit).
 - **Content is a package.** All text is `.md` (frontmatter + Markdown body) in
   `@moscowcss/content`, one folder per language: `src/<collection>/<lang>/<name>.md`.
   Collections: `pages`, `events`, `talks`, `speakers`, `partners`, `faq`,
-  `organizers`, `reviews`, `communities`, `documents`.
+  `organizers`, `reviews`, `communities`, `news`, `documents`.
   Relations live only in the talk (`event`, `speakers`); reverse lists and the
   event schedule are built at build time in `apps/website/src/content/catalog.ts`.
   Language-independent fields are duplicated in the translation and checked
@@ -607,7 +609,8 @@ regenerate rather than edit).
 - **Pages.** Home (`/`, `/en/`: nearest future meetup, or the last past one
   without registration; past meetups live on `/events/`, which links the RSS feed under its heading), `/events/<n>/`, `/talks/<name>/`,
   `/speakers/<name>/`, the lists `/events/`, `/talks/`, `/speakers/` (newest first,
-  with a client-side filter; spec 007), `/search/` (Pagefind, `noindex`). The
+  with a client-side filter; spec 007), `/news/` and `/news/<name>/` (community news with
+  search and filters by year, topic and photos; spec 009), `/search/` (Pagefind, `noindex`). The
   list of public pages for SEO is `src/seo/pages.ts`.
 - **SEO and OG.** `BaseLayout` writes `description`, `canonical`, `hreflang`,
   16 `og:*`/`twitter:*` tags. Cards come from `@moscowcss/og`

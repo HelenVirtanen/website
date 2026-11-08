@@ -66,14 +66,18 @@ Decision record: `adr/001-content-model-md-relations.md`.
 - **Communities** (`communities/<lang>/<name>.md`, logos in `communities/assets/`): friendly communities at the
   end of the about page. `name`, `url`, `logo` and the body (the card text) are required, `links` (`label` + `url`)
   optional; `url`, `logo` and the link URLs must match `ru`. No order field: the cards shuffle on every load.
-- **New entries:** `pnpm new:event | new:talk | new:speaker | new:partner | new:faq | new:organizer | new:review | new:community`
+- **News** (`news/<lang>/<name>.md`, photos in `news/assets/`): `title`, `date` (a day), `description` (50–160, the
+  card text and meta description) and the body are required; `tags` (translated, drive the topic filter), `cover`
+  (`image` + `alt`), `gallery` and `links` are optional. `date` and the image files must match `ru`; `links` may
+  differ, because links to the site point to the page of their own language. Write news only from real sources.
+- **New entries:** `pnpm new:event | new:talk | new:speaker | new:partner | new:faq | new:organizer | new:review | new:community | new:news | new:document`
   writes drafts in both languages from `templates/` (outside `src/`, so they are
   not content). Hand-made files are fine if they pass the same schema.
 - **Russian text is the source of truth.** Do not edit Russian wording while
   moving content; the English text is a translation of the Russian meaning,
   names are transliterated.
 - Collections: `pages`, `events`, `talks`, `speakers`, `partners`, `faq`,
-  `organizers`, `reviews`, `communities`, `documents`.
+  `organizers`, `reviews`, `communities`, `news`, `documents`.
 - **Archive gaps:** talk `time` and speaker `role` are optional because old meetups
   did not keep them — never fill them in from guesswork. Meetup `vkPhotosUrl` (vk.com/vk.ru) and
   `diskPhotosUrl` (Yandex Disk) link external photo albums, one or both, each checked by host; the registration link is hidden on past meetups.

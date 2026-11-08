@@ -4,6 +4,10 @@
 export const ARCHIVE_KINDS = ['events', 'talks', 'speakers'] as const;
 export type ArchiveKind = (typeof ARCHIVE_KINDS)[number];
 
+// Списки с фильтром: вкладки «Истории» и новости. У новостей своя страница без вкладок.
+export const LIST_KINDS = [...ARCHIVE_KINDS, 'news'] as const;
+export type ListKind = (typeof LIST_KINDS)[number];
+
 /** Сколько меток митапов показывает карточка спикера. */
 export const SPEAKER_EVENT_LABELS = 3;
 
@@ -51,6 +55,18 @@ export interface ArchiveSpeaker {
   events: EventRef[];
 }
 
+export interface ArchiveNews {
+  slug: string;
+  title: string;
+  /** День публикации, `YYYY-MM-DD` */
+  date: string;
+  year: number;
+  description: string;
+  tags: string[];
+  /** Есть обложка или галерея */
+  photos: boolean;
+}
+
 export interface ArchiveReview {
   slug: string;
   name: string;
@@ -95,6 +111,7 @@ export interface Archive {
   events: ArchiveEvent[];
   talks: ArchiveTalk[];
   speakers: ArchiveSpeaker[];
+  news: ArchiveNews[];
   reviews: ArchiveReview[];
   /** Ближайший митап на момент сборки; сайт пересобирается каждую ночь */
   next: ArchiveNext | null;
@@ -107,20 +124,22 @@ export interface ArchiveFilter {
   /** Слова запроса: найдены должны быть все */
   query: string;
   year: number | undefined;
-  /** Только с видео (доклады) или записью (митапы) */
+  /** Только с видео (доклады), записью (митапы) или фото (новости) */
   media: boolean;
+  /** Тема новости или митапа, целиком */
+  topic: string | undefined;
 }
 
-export const EMPTY_FILTER: ArchiveFilter = { query: '', year: undefined, media: false };
+export const EMPTY_FILTER: ArchiveFilter = { query: '', year: undefined, media: false, topic: undefined };
 
 /** Для сравнения без регистра и разницы `ё`/`е`, с одинарными пробелами. */
 export function normalize(text: string): string {
   return text.toLocaleLowerCase('ru').replaceAll('ё', 'е').replace(/\s+/g, ' ').trim();
 }
 
-type Item<K extends ArchiveKind> = Archive[K][number];
+type Item<K extends ListKind> = Archive[K][number];
 
-const haystackOf = (kind: ArchiveKind, item: Item<ArchiveKind>): string => {
+const haystackOf = (kind: ListKind, item: Item<ListKind>): string => {
   switch (kind) {
     case 'events': {
       const event = item as ArchiveEvent;
@@ -134,19 +153,37 @@ const haystackOf = (kind: ArchiveKind, item: Item<ArchiveKind>): string => {
       const speaker = item as ArchiveSpeaker;
       return [speaker.name, speaker.role ?? '', ...speaker.events.map((event) => event.label)].join(' ');
     }
+    case 'news': {
+      const news = item as ArchiveNews;
+      return [news.title, news.description, news.date, ...news.tags].join(' ');
+    }
   }
 };
 
-const yearsOf = (kind: ArchiveKind, item: Item<ArchiveKind>): number[] =>
-  kind === 'speakers' ? (item as ArchiveSpeaker).years : [(item as ArchiveEvent | ArchiveTalk).year];
+const yearsOf = (kind: ListKind, item: Item<ListKind>): number[] =>
+  kind === 'speakers' ? (item as ArchiveSpeaker).years : [(item as ArchiveEvent | ArchiveTalk | ArchiveNews).year];
 
-const hasMedia = (kind: ArchiveKind, item: Item<ArchiveKind>): boolean =>
-  kind === 'events' ? (item as ArchiveEvent).recording : kind === 'talks' ? (item as ArchiveTalk).video : true;
+const hasMedia = (kind: ListKind, item: Item<ListKind>): boolean => {
+  switch (kind) {
+    case 'events':
+      return (item as ArchiveEvent).recording;
+    case 'talks':
+      return (item as ArchiveTalk).video;
+    case 'news':
+      return (item as ArchiveNews).photos;
+    case 'speakers':
+      return true;
+  }
+};
+
+const topicsOf = (kind: ListKind, item: Item<ListKind>): string[] =>
+  kind === 'news' || kind === 'events' ? (item as ArchiveNews | ArchiveEvent).tags : [];
 
 /** Подходит ли строка под фильтр. Пустой фильтр пропускает всё. */
-export function matchesFilter<K extends ArchiveKind>(kind: K, item: Item<K>, filter: ArchiveFilter): boolean {
+export function matchesFilter<K extends ListKind>(kind: K, item: Item<K>, filter: ArchiveFilter): boolean {
   if (filter.year !== undefined && !yearsOf(kind, item).includes(filter.year)) return false;
   if (filter.media && !hasMedia(kind, item)) return false;
+  if (filter.topic !== undefined && !topicsOf(kind, item).some((topic) => normalize(topic) === normalize(filter.topic ?? ''))) return false;
   const words = normalize(filter.query).split(' ').filter(Boolean);
   if (words.length === 0) return true;
   const haystack = normalize(haystackOf(kind, item));
@@ -154,24 +191,34 @@ export function matchesFilter<K extends ArchiveKind>(kind: K, item: Item<K>, fil
 }
 
 /** Строки, прошедшие фильтр, в исходном порядке. */
-export function filterArchive<K extends ArchiveKind>(kind: K, items: readonly Item<K>[], filter: ArchiveFilter): Item<K>[] {
+export function filterArchive<K extends ListKind>(kind: K, items: readonly Item<K>[], filter: ArchiveFilter): Item<K>[] {
   return items.filter((item) => matchesFilter(kind, item, filter));
 }
 
 /** Годы, за которые в списке есть строки, новые первыми: варианты фильтра по году. */
-export function yearsInArchive<K extends ArchiveKind>(kind: K, items: readonly Item<K>[]): number[] {
+export function yearsInArchive<K extends ListKind>(kind: K, items: readonly Item<K>[]): number[] {
   return unique(items.flatMap((item) => yearsOf(kind, item))).sort((a, b) => b - a);
+}
+
+/** Темы списка: сначала самые частые, при равенстве — по алфавиту языка. Варианты фильтра по теме. */
+export function topicsInArchive<K extends ListKind>(kind: K, items: readonly Item<K>[], locale: string): string[] {
+  const counts = new Map<string, number>();
+  for (const topic of items.flatMap((item) => topicsOf(kind, item))) counts.set(topic, (counts.get(topic) ?? 0) + 1);
+  const compare = new Intl.Collator(locale, { sensitivity: 'base' }).compare;
+  return [...counts].sort(([a, x], [b, y]) => y - x || compare(a, b)).map(([topic]) => topic);
 }
 
 const YEAR = /^\d{4}$/;
 
-/** Фильтр из адреса страницы: `?q=grid&year=2023&media=1`. Мусор в параметрах игнорируется. */
+/** Фильтр из адреса страницы: `?q=grid&year=2023&media=1&topic=Стенд`. Мусор в параметрах игнорируется. */
 export function filterFromSearch(params: URLSearchParams): ArchiveFilter {
   const year = params.get('year') ?? '';
+  const topic = (params.get('topic') ?? '').trim().slice(0, 100);
   return {
     query: (params.get('q') ?? '').slice(0, 200),
     year: YEAR.test(year) ? Number(year) : undefined,
     media: params.get('media') === '1',
+    topic: topic === '' ? undefined : topic,
   };
 }
 
@@ -181,6 +228,7 @@ export function searchOfFilter(filter: ArchiveFilter): string {
   if (filter.query.trim() !== '') params.set('q', filter.query.trim());
   if (filter.year !== undefined) params.set('year', String(filter.year));
   if (filter.media) params.set('media', '1');
+  if (filter.topic !== undefined) params.set('topic', filter.topic);
   const search = params.toString();
   return search === '' ? '' : `?${search}`;
 }
@@ -191,15 +239,15 @@ export interface RelationFilter {
   speaker?: string | undefined;
   /** Номер или имя файла митапа */
   event?: string | undefined;
-  /** Слово из темы митапа */
+  /** Слово из темы митапа или новости */
   tag?: string | undefined;
   /** Категория отзыва */
   category?: string | undefined;
 }
 
-export const RELATION_KINDS = [...ARCHIVE_KINDS, 'reviews'] as const;
+export const RELATION_KINDS = [...LIST_KINDS, 'reviews'] as const;
 export type RelationKind = (typeof RELATION_KINDS)[number];
-type RelationItem = ArchiveEvent | ArchiveTalk | ArchiveSpeaker | ArchiveReview;
+type RelationItem = ArchiveEvent | ArchiveTalk | ArchiveSpeaker | ArchiveNews | ArchiveReview;
 
 const same = (a: string, b: string): boolean => normalize(a) === normalize(b);
 
@@ -227,6 +275,12 @@ export function matchesRelation(kind: RelationKind, item: RelationItem, filter: 
       if (tag || category) return false;
       if (speaker && !same(row.slug, speaker) && !same(row.name, speaker)) return false;
       if (event && !row.events.some((ref) => same(ref.slug, event) || same(ref.label, event))) return false;
+      return true;
+    }
+    case 'news': {
+      const row = item as ArchiveNews;
+      if (speaker || event || category) return false;
+      if (tag && !row.tags.some((name) => normalize(name).includes(normalize(tag)))) return false;
       return true;
     }
     case 'reviews': {

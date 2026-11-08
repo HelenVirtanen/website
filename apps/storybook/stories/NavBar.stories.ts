@@ -12,11 +12,13 @@ export default {
 
 const args = {
   links: [
-    { href: '#registration', label: 'Регистрация' },
-    { href: '#program', label: 'Программа' },
-    { href: '#partners', label: 'Партнеры' },
-    { href: '#address', label: 'Адрес' },
+    { href: '#about', label: 'О митапе' },
     { href: '#events', label: 'История' },
+    { href: '#reviews', label: 'Отзывы' },
+    { href: '#news', label: 'Новости' },
+    { href: '#help', label: 'Помочь митапу' },
+    { href: '#talks', label: 'Доклады', mobileOnly: true },
+    { href: '#speakers', label: 'Спикеры', mobileOnly: true },
     { href: '#search', label: 'Поиск' },
   ],
   telegramHref: 'https://t.me/moscowcss',

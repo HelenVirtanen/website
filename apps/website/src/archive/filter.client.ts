@@ -4,7 +4,7 @@ import {
   searchOfFilter,
   type Archive,
   type ArchiveFilter,
-  type ArchiveKind,
+  type ListKind,
 } from '../content/archive-filter';
 
 // Фильтр страницы списка. Разметку отдаёт ArchivePage.astro: строки — `li[data-archive-index]`,
@@ -20,24 +20,27 @@ function filterOfForm(form: HTMLFormElement): ArchiveFilter {
     new URLSearchParams({
       q: String(data.get('q') ?? ''),
       year: String(data.get('year') ?? ''),
+      topic: String(data.get('topic') ?? ''),
       media: data.get('media') === null ? '' : '1',
     }),
   );
 }
 
 function writeForm(form: HTMLFormElement, filter: ArchiveFilter): void {
-  const { q, year, media } = form.elements as unknown as {
+  const { q, year, topic, media } = form.elements as unknown as {
     q?: HTMLInputElement;
     year?: HTMLSelectElement;
+    topic?: HTMLSelectElement;
     media?: HTMLInputElement;
   };
   if (q) q.value = filter.query;
   if (year) year.value = filter.year === undefined ? '' : String(filter.year);
+  if (topic) topic.value = filter.topic ?? '';
   if (media) media.checked = filter.media;
 }
 
 function init(root: HTMLElement): void {
-  const kind = root.dataset.archiveKind as ArchiveKind | undefined;
+  const kind = root.dataset.archiveKind as ListKind | undefined;
   const form = root.querySelector<HTMLFormElement>('[data-archive-filter]');
   const data = root.querySelector('[data-archive-data]');
   const list = root.querySelector<HTMLElement>('[data-archive-list]');

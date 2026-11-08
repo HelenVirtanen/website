@@ -1,0 +1,63 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import {
+  body,
+  cover,
+  date as dateClass,
+  description as descriptionClass,
+  image as imageClass,
+  placeholder as placeholderClass,
+  root,
+  title as titleClass,
+  topic,
+  topics as topicsClass,
+} from './NewsCard.css';
+
+const Tag = 'a';
+
+// Вся карточка — одна ссылка на новость: обложка или крупная дата, дата, заголовок, подзаголовок, темы.
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Заголовок новости */
+  title: string;
+  /** Дата словами, как её читают: «17 мая 2026» */
+  date: string;
+  /** Та же дата машиночитаемо, `ГГГГ-ММ-ДД`, для `<time datetime>` */
+  datetime: string;
+  /** Подзаголовок: одно-два предложения */
+  description: string;
+  /** Темы новости; карточка показывает их мелкими метками */
+  topics?: string[];
+  /** Обложка; подпись не нужна — рядом заголовок. Без обложки рисуется `placeholder` */
+  image?: { src: string; width: number; height: number } | undefined;
+  /** Крупный текст на месте обложки, например день и месяц: «17.05» */
+  placeholder?: string;
+  /** Уровень заголовка карточки: h2 в списке, h3 в блоке на странице новости */
+  headingLevel?: 2 | 3;
+}
+
+const { title, date, datetime, description, topics = [], image, placeholder = '', headingLevel = 3, class: className, ...attrs } = Astro.props;
+const Heading = headingLevel === 2 ? 'h2' : 'h3';
+---
+<Tag class:list={[root, className]} {...attrs}>
+  <span class={cover}>
+    {
+      image ? (
+        <img class={imageClass} src={image.src} width={image.width} height={image.height} alt="" loading="lazy" decoding="async" />
+      ) : (
+        <span class={placeholderClass} aria-hidden="true">{placeholder}</span>
+      )
+    }
+  </span>
+  <span class={body}>
+    <time class={dateClass} datetime={datetime}>{date}</time>
+    <Heading class={titleClass}>{title}</Heading>
+    <span class={descriptionClass}>{description}</span>
+    {
+      topics.length > 0 && (
+        <span class={topicsClass}>
+          {topics.map((item) => <span class={topic}>{item}</span>)}
+        </span>
+      )
+    }
+  </span>
+</Tag>

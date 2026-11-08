@@ -2,9 +2,11 @@ import {
   filterArchive,
   matchesRelation,
   normalize,
+  topicsInArchive,
   RELATION_KINDS,
   type Archive,
   type ArchiveEvent,
+  type ArchiveNews,
   type ArchiveNext,
   type ArchiveReview,
   type ArchiveSpeaker,
@@ -15,7 +17,7 @@ import { search, type PagefindModule } from '../search/pagefind';
 import { markdownPathOf } from './paths';
 
 // WebMCP: инструменты, которые страница отдаёт агенту браузера (webmachinelearning.github.io/webmcp).
-// Только чтение того, что и так публично: поиск, Markdown-версия страницы, списки архива и отзывов,
+// Только чтение того, что и так публично: поиск, Markdown-версия страницы, списки архива, новостей и отзывов,
 // ближайший митап и контакты. Данные списков, митапа и контактов — `archive.json` языка страницы.
 
 export interface ToolResult {
@@ -71,6 +73,11 @@ function archiveLine(kind: RelationKind, item: Archive[RelationKind][number], ba
     case 'speakers': {
       const speaker = item as ArchiveSpeaker;
       return `- ${speaker.name}: ${url(`speakers/${speaker.slug}`)}${speaker.role ? ` — ${speaker.role}` : ''}; meetups: ${speaker.events.map((event) => event.label).join(', ') || 'none'}`;
+    }
+    case 'news': {
+      const news = item as ArchiveNews;
+      const topics = news.tags.length > 0 ? `; topics: ${news.tags.join(', ')}` : '';
+      return `- ${news.title}: ${url(`news/${news.slug}`)} — ${news.date}, ${news.description}${topics}${flags([news.photos && 'photos'])}`;
     }
     case 'reviews': {
       const review = item as ArchiveReview;
@@ -132,7 +139,7 @@ export function siteTools(env: ToolEnvironment): WebMcpTool[] {
     {
       name: 'search_site',
       description:
-        'Full-text search over MoscowCSS meetups, talks and speakers in the language of the current page. Returns titles, URLs and short descriptions.',
+        'Full-text search over MoscowCSS meetups, talks, speakers and news in the language of the current page. Returns titles, URLs and short descriptions.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -158,7 +165,7 @@ export function siteTools(env: ToolEnvironment): WebMcpTool[] {
     {
       name: 'get_page_markdown',
       description:
-        'Get a css.moscow page as Markdown: the meetup with its date, venue and programme, a talk, a speaker or the home page. Pass a path or a URL of this site.',
+        'Get a css.moscow page as Markdown: the meetup with its date, venue and programme, a talk, a speaker, a news item or the home page. Pass a path or a URL of this site.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -183,20 +190,20 @@ export function siteTools(env: ToolEnvironment): WebMcpTool[] {
     {
       name: 'list_archive',
       description:
-        'List MoscowCSS meetups, talks, speakers or community reviews in the language of the current page, newest first. Filters: words, year and recording, like the /events/, /talks/ and /speakers/ pages, and exact relations: all talks of a speaker, the programme of a meetup, meetups on a topic, reviews of a category.',
+        'List MoscowCSS meetups, talks, speakers, news or community reviews in the language of the current page, newest first. Filters: words, year and recording, like the /events/, /talks/ and /speakers/ pages, and exact relations: all talks of a speaker, the programme of a meetup, meetups on a topic, reviews of a category.',
       inputSchema: {
         type: 'object',
         properties: {
-          kind: { type: 'string', enum: [...RELATION_KINDS], description: 'What to list: events (meetups), talks, speakers or reviews.' },
+          kind: { type: 'string', enum: [...RELATION_KINDS], description: 'What to list: events (meetups), talks, speakers, news or reviews.' },
           query: { type: 'string', description: 'Words that must all match: a title, a speaker name, a venue or a meetup number.' },
           year: { type: 'integer', minimum: 2017, description: 'Only this year (for speakers: spoke that year).' },
-          media: { type: 'boolean', description: 'Only talks with a video or meetups with a recording.' },
+          media: { type: 'boolean', description: 'Only talks with a video, meetups with a recording or news with photos.' },
           speaker: {
             type: 'string',
             description: 'A speaker: the file name from a speaker URL (anastasiya-maltseva) or the full name. Gives their talks, the meetups they spoke at, their row or their reviews.',
           },
           event: { type: 'string', description: 'A meetup number or file name (32): its talks, its speakers or the meetup itself.' },
-          tag: { type: 'string', description: 'A word from the meetup topics, e.g. accessibility or AI. Meetups only.' },
+          tag: { type: 'string', description: 'A word from the meetup or news topics, e.g. accessibility or conferences. Meetups and news.' },
           category: {
             type: 'string',
             enum: ['speaker', 'organizer', 'past-organizer', 'guest', 'partner'],
@@ -222,6 +229,7 @@ export function siteTools(env: ToolEnvironment): WebMcpTool[] {
                 query,
                 year: Number.isInteger(year) && year > 0 ? year : undefined,
                 media: input.media === true,
+                topic: undefined,
               });
         const relation = {
           speaker: optionalText(input.speaker),
@@ -240,6 +248,74 @@ export function siteTools(env: ToolEnvironment): WebMcpTool[] {
             ...page.map((item) => archiveLine(kind, item, base)),
           ].join('\n'),
         );
+      },
+    },
+    {
+      name: 'list_news',
+      description:
+        'List MoscowCSS community news in the language of the current page, newest first: conference stands, new organizers, contests, site updates. Filters like the /news/ page: words, year, topic and photos. Also returns the list of topics.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          query: { type: 'string', description: 'Words that must all match the title, the description, the date or a topic.' },
+          year: { type: 'integer', minimum: 2015, description: 'Only news of this year.' },
+          topic: { type: 'string', description: 'A whole topic as listed in the answer, e.g. Конференции or Conferences.' },
+          photos: { type: 'boolean', description: 'Only news with a cover or a gallery.' },
+          limit: { type: 'integer', minimum: 1, maximum: ARCHIVE_LIMIT_MAX, description: `How many rows to return (default ${String(ARCHIVE_LIMIT_DEFAULT)}).` },
+          offset: { type: 'integer', minimum: 0, description: 'How many matching rows to skip, for the next page.' },
+        },
+        required: [],
+      },
+      async execute(input) {
+        const loaded = await loadArchive(env);
+        if ('content' in loaded) return loaded;
+        const { archive, base } = loaded;
+        const year = Number(input.year);
+        const matched = filterArchive('news', archive.news, {
+          query: typeof input.query === 'string' ? input.query : '',
+          year: Number.isInteger(year) && year > 0 ? year : undefined,
+          media: input.photos === true,
+          topic: optionalText(input.topic),
+        });
+        const topics = topicsInArchive('news', archive.news, base.pathname.startsWith('/en/') ? 'en' : 'ru');
+        const limit = Math.min(Math.max(Number(input.limit) || ARCHIVE_LIMIT_DEFAULT, 1), ARCHIVE_LIMIT_MAX);
+        const offset = Math.max(Number(input.offset) || 0, 0);
+        const page = matched.slice(offset, offset + limit);
+        const head = topics.length > 0 ? `Topics: ${topics.join(', ')}.` : 'No topics yet.';
+        if (page.length === 0) return text(`No news match (${String(matched.length)} found in total). ${head}`);
+        return text(
+          [
+            `${String(matched.length)} news match; showing ${String(offset + 1)}–${String(offset + page.length)}. ${head}`,
+            ...page.map((item) => archiveLine('news', item, base)),
+          ].join('\n'),
+        );
+      },
+    },
+    {
+      name: 'get_news',
+      description:
+        'One MoscowCSS news item as Markdown: title, date, description, the full text, links and photo descriptions. Pass the file name from list_news (holyjs-2026-spring) or the news URL.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          news: { type: 'string', description: 'The news file name, e.g. new-site, or a /news/... path or URL of this site.' },
+        },
+        required: ['news'],
+      },
+      async execute(input) {
+        const value = optionalText(input.news);
+        if (!value) return text('news is required.', true);
+        const loaded = await loadArchive(env);
+        if ('content' in loaded) return loaded;
+        const { archive, base } = loaded;
+        // Имя файла или адрес: из адреса берётся последний сегмент пути после /news/.
+        const slug = /\/news\/([^/?#]+)/.exec(value)?.[1] ?? value;
+        const found = archive.news.find((item) => item.slug === slug);
+        if (!found) return text(`No news "${slug}". Use list_news to see the available ones.`, true);
+        const path = new URL(`news/${found.slug}/`, base).pathname;
+        const response = await env.fetch(markdownPathOf(path));
+        if (!response.ok) return text(`No Markdown version of ${path} (HTTP ${String(response.status)}).`, true);
+        return text(await response.text());
       },
     },
     {

@@ -6,11 +6,12 @@ import {
   type CatalogEntry,
   type DocumentEntry,
   type EventEntry,
+  type NewsEntry,
   type ReviewEntry,
   type SpeakerEntry,
   type TalkEntry,
 } from '../content/catalog';
-import { ARCHIVE_KINDS, type ArchiveKind } from '../content/archive';
+import { LIST_KINDS, type ListKind } from '../content/archive';
 import { publishedReviews } from '../content/reviews';
 import { defaultLocale, localizePath, locales, useTranslations, type Locale } from '../i18n';
 
@@ -19,8 +20,8 @@ import { defaultLocale, localizePath, locales, useTranslations, type Locale } fr
 
 type PageEntry = CatalogEntry<{ title: string; description: string }>;
 
-/** Страница списка (спека 007): записи в контенте у неё нет, заголовок и описание — из словаря. */
-export type ListEntry = CatalogEntry<{ title: string; description: string; list: ArchiveKind; draft: false }>;
+/** Страница списка (спеки 007 и 009): записи в контенте у неё нет, заголовок и описание — из словаря. */
+export type ListEntry = CatalogEntry<{ title: string; description: string; list: ListKind; draft: false }>;
 
 /** Стена отзывов (спека 008): записи в контенте у неё нет, заголовок и описание — из словаря. */
 export type ReviewsEntry = CatalogEntry<{ title: string; description: string; draft: false }>;
@@ -35,7 +36,7 @@ interface Base {
   locale: Locale;
   /** Путь от корня сайта со слэшем на конце */
   path: string;
-  /** Параметр маршрута `[event]`/`[talk]`/`[speaker]`; у главной нет */
+  /** Параметр маршрута `[event]`/`[talk]`/`[speaker]`/`[news]`; у главной нет */
   slugParam: string | undefined;
   /** Версии этой страницы на всех языках, включая её саму: hreflang и переключатель */
   alternates: Alternate[];
@@ -46,6 +47,7 @@ export type PublicPage =
   | (Base & { kind: 'event'; entry: EventEntry })
   | (Base & { kind: 'talk'; entry: TalkEntry })
   | (Base & { kind: 'speaker'; entry: SpeakerEntry })
+  | (Base & { kind: 'news'; entry: NewsEntry })
   | (Base & { kind: 'document'; entry: DocumentEntry })
   | (Base & { kind: 'list'; entry: ListEntry })
   | (Base & { kind: 'reviews'; entry: ReviewsEntry });
@@ -57,6 +59,7 @@ const SECTION: Record<Exclude<Kind, 'home' | 'document' | 'list' | 'reviews'>, s
   event: 'events',
   talk: 'talks',
   speaker: 'speakers',
+  news: 'news',
 };
 
 const enabled = new Set<string>(locales);
@@ -77,7 +80,7 @@ const pathOf = (kind: Kind, locale: Locale, slug: string): string =>
 
 const listEntriesOf = (locale: Locale): ListEntry[] => {
   const t = useTranslations(locale);
-  return ARCHIVE_KINDS.map((list) => ({
+  return LIST_KINDS.map((list) => ({
     id: `${locale}/${list}`,
     data: { title: t(`list.${list}.title`), description: t(`list.${list}.description`), list, draft: false },
   }));
@@ -95,15 +98,16 @@ const reviewsEntriesOf = (reviews: readonly ReviewEntry[]) => (locale: Locale): 
  * включённого языка, без черновиков. Чистая функция — тестируется без `astro:content`.
  */
 export function publicPagesOf(
-  catalog: Pick<Catalog, 'events' | 'talks' | 'speakers'> & { pages: PageEntry[]; documents?: DocumentEntry[]; reviews?: ReviewEntry[] },
+  catalog: Pick<Catalog, 'events' | 'talks' | 'speakers'> & { pages: PageEntry[]; documents?: DocumentEntry[]; reviews?: ReviewEntry[]; news?: NewsEntry[] },
 ): PublicPage[] {
-  const raw: { kind: Kind; entry: PageEntry | EventEntry | TalkEntry | SpeakerEntry | DocumentEntry | ListEntry | ReviewsEntry }[] = [
+  const raw: { kind: Kind; entry: PageEntry | EventEntry | TalkEntry | SpeakerEntry | NewsEntry | DocumentEntry | ListEntry | ReviewsEntry }[] = [
     ...catalog.pages
       .filter((entry) => slugOf(entry) === 'index')
       .map((entry) => ({ kind: 'home' as const, entry })),
     ...catalog.events.filter(isPublished).map((entry) => ({ kind: 'event' as const, entry })),
     ...catalog.talks.filter(isPublished).map((entry) => ({ kind: 'talk' as const, entry })),
     ...catalog.speakers.filter(isPublished).map((entry) => ({ kind: 'speaker' as const, entry })),
+    ...(catalog.news ?? []).filter(isPublished).map((entry) => ({ kind: 'news' as const, entry })),
     ...(catalog.documents ?? []).filter(isPublished).map((entry) => ({ kind: 'document' as const, entry })),
     ...locales.flatMap(listEntriesOf).map((entry) => ({ kind: 'list' as const, entry })),
     ...locales.flatMap(reviewsEntriesOf(catalog.reviews ?? [])).map((entry) => ({ kind: 'reviews' as const, entry })),

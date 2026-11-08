@@ -5,7 +5,7 @@ import { root, field, label as labelClass, input, select, check, checkbox, reset
 const Tag = 'form';
 
 // Без скрипта фильтр не работает, поэтому форма скрыта атрибутом `hidden`, а скрипт страницы его
-// снимает. Поля — `q`, `year`, `media`: те же имена, что в адресе страницы.
+// снимает. Поля — `q`, `year`, `topic`, `media`: те же имена, что в адресе страницы.
 interface Props extends HTMLAttributes<typeof Tag> {
   /** Подпись текстового поля */
   queryLabel: string;
@@ -17,7 +17,13 @@ interface Props extends HTMLAttributes<typeof Tag> {
   anyYearLabel?: string;
   /** Годы для выбора, новые первыми */
   years?: number[];
-  /** Подпись флажка «есть видео» или «есть запись»; без неё флажка нет */
+  /** Подпись выбора темы; без неё выбора темы нет */
+  topicLabel?: string;
+  /** Первый вариант выбора темы: «Все темы» */
+  anyTopicLabel?: string;
+  /** Темы для выбора, частые первыми */
+  topics?: string[];
+  /** Подпись флажка «есть видео», «есть запись» или «есть фото»; без неё флажка нет */
   mediaLabel?: string;
   /** Подпись кнопки сброса */
   resetLabel: string;
@@ -31,6 +37,9 @@ const {
   yearLabel,
   anyYearLabel = '',
   years = [],
+  topicLabel,
+  anyTopicLabel = '',
+  topics = [],
   mediaLabel,
   resetLabel,
   toolParamDescription,
@@ -50,6 +59,17 @@ const {
         <select class:list={[input, select]} name="year">
           <option value="">{anyYearLabel}</option>
           {years.map((year) => <option value={String(year)}>{year}</option>)}
+        </select>
+      </label>
+    )
+  }
+  {
+    topicLabel && topics.length > 0 && (
+      <label class={field}>
+        <span class={labelClass}>{topicLabel}</span>
+        <select class:list={[input, select]} name="topic">
+          <option value="">{anyTopicLabel}</option>
+          {topics.map((topic) => <option value={topic}>{topic}</option>)}
         </select>
       </label>
     )

@@ -262,6 +262,23 @@ export const createCommunitySchema = (image: ImageFunction) =>
     draft: z.boolean().default(false),
   });
 
+// Новость сообщества: стенд на конференции, новый организатор, запуск сайта. Текст — тело файла.
+export const createNewsSchema = (image: ImageFunction) =>
+  z.object({
+    title: z.string().min(1).max(90),
+    // День публикации; время не нужно — новости идут по дням.
+    date: day,
+    // Подзаголовок: на карточке в списке и в meta description.
+    description: z.string().min(50).max(160),
+    // Темы для фильтра списка; переводятся, поэтому с ru не сверяются.
+    tags: z.array(z.string().min(1)).default([]),
+    // Обложка карточки и страницы; без неё карточка рисует дату крупно.
+    cover: z.object({ image: image(), alt: z.string().min(1) }).optional(),
+    gallery: z.array(z.object({ image: image(), alt: z.string().min(1) })).default([]),
+    links: z.array(z.object({ label: z.string().min(1), url })).default([]),
+    draft: z.boolean().default(false),
+  });
+
 export const FaqSchema = z.object({
   title: z.string().min(1),
   // Порядок карточек: меньше — левее.

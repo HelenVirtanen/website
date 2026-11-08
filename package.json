@@ -23,6 +23,8 @@
     "new:organizer": "node apps/website/scripts/new-entry.mjs organizer",
     "new:review": "node apps/website/scripts/new-entry.mjs review",
     "new:community": "node apps/website/scripts/new-entry.mjs community",
+    "new:news": "node apps/website/scripts/new-entry.mjs news",
+    "new:document": "node apps/website/scripts/new-entry.mjs document",
     "report:content": "node apps/website/scripts/content-report.mjs",
     "prepare": "husky",
     "test": "turbo run test"

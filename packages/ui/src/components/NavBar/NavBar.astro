@@ -28,8 +28,8 @@ const Tag = 'nav';
 const MENU_ID = 'nav-menu';
 
 interface Props extends HTMLAttributes<typeof Tag> {
-  /** Пункты навигации: адрес, подпись и `aria-current` у раздела текущей страницы */
-  links: { href: string; label: string; current?: 'page' | 'true' }[];
+  /** Пункты навигации: адрес, подпись, `aria-current` у раздела текущей страницы и `mobileOnly` у пунктов только для меню телефона */
+  links: { href: string; label: string; current?: 'page' | 'true'; mobileOnly?: boolean }[];
   /** URL канала или чата в Telegram */
   telegramHref: string;
   /** Подпись кнопки со ссылкой на Telegram */
@@ -82,7 +82,7 @@ const external = { target: '_blank', rel: 'noopener noreferrer' } as const;
     }
     <ul class={links}>
       {
-        navLinks.map((item) => (
+        navLinks.filter((item) => !item.mobileOnly).map((item) => (
           <li>
             <a class={link} href={item.href} aria-current={item.current}>
               {item.label}

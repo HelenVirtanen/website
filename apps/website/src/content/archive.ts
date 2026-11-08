@@ -1,4 +1,4 @@
-import type { Archive, ArchiveContacts, ArchiveNext, ArchiveReview, EventRef } from './archive-filter';
+import type { Archive, ArchiveContacts, ArchiveNews, ArchiveNext, ArchiveReview, EventRef } from './archive-filter';
 import {
   localeOf,
   scheduleOf,
@@ -7,6 +7,7 @@ import {
   talksOfSpeaker,
   type Catalog,
   type EventEntry,
+  type NewsEntry,
   type SpeakerEntry,
   type TalkEntry,
   upcomingEvent,
@@ -122,6 +123,46 @@ export function nextMeetupOf(
   };
 }
 
+// День новости хранится полуночью UTC: формат в UTC, иначе пояс читателя сдвинул бы дату.
+const utcDay = new Intl.DateTimeFormat('en-CA', { timeZone: 'UTC', year: 'numeric', month: '2-digit', day: '2-digit' });
+
+/** День новости `YYYY-MM-DD`. */
+export const newsDayOf = (entry: NewsEntry): string => utcDay.format(entry.data.date);
+
+/** Опубликованные новости языка, свежие первыми; в один день — по заголовку. */
+export function newsNewestFirst<N extends NewsEntry>(news: readonly N[]): N[] {
+  return news
+    .filter(isPublished)
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime() || a.data.title.localeCompare(b.data.title));
+}
+
+/** Строка списка новостей. */
+export function newsRowOf(entry: NewsEntry): ArchiveNews {
+  const day = newsDayOf(entry);
+  return {
+    slug: slugOf(entry),
+    title: entry.data.title,
+    date: day,
+    year: Number(day.slice(0, 4)),
+    description: entry.data.description,
+    tags: entry.data.tags,
+    photos: entry.data.cover !== undefined || entry.data.gallery.length > 0,
+  };
+}
+
+/**
+ * Другие новости для конца страницы новости: сначала с общей темой, затем ближайшие по дате.
+ * Сама новость в список не входит.
+ */
+export function relatedNews<N extends NewsEntry>(entry: N, news: readonly N[], limit: number): N[] {
+  const topics = new Set(entry.data.tags);
+  const distance = (other: N): number => Math.abs(other.data.date.getTime() - entry.data.date.getTime());
+  const shared = (other: N): number => other.data.tags.filter((tag) => topics.has(tag)).length;
+  return newsNewestFirst(news.filter((other) => other.id !== entry.id && localeOf(other) === localeOf(entry)))
+    .sort((a, b) => shared(b) - shared(a) || distance(a) - distance(b))
+    .slice(0, limit);
+}
+
 /** Карточки контактов из документа, у которого они есть (страница «О сообществе»). */
 export function contactsOf(documents: readonly Catalog['documents'][number][], locale: string): ArchiveContacts | null {
   const about = documents.find((entry) => localeOf(entry) === locale && !entry.data.draft && entry.data.contacts);
@@ -145,7 +186,7 @@ export function reviewRowsOf(reviews: readonly Catalog['reviews'][number][], loc
  * без `reviews`, `documents` и `now` они пустые.
  */
 export function archiveOf(
-  catalog: Pick<Catalog, 'events' | 'talks' | 'speakers'> & Partial<Pick<Catalog, 'reviews' | 'documents'>>,
+  catalog: Pick<Catalog, 'events' | 'talks' | 'speakers'> & Partial<Pick<Catalog, 'reviews' | 'documents' | 'news'>>,
   locale: string,
   { now }: { now?: Date } = {},
 ): Archive {
@@ -196,6 +237,7 @@ export function archiveOf(
         events: [...new Map(appearances.map(({ event }) => [slugOf(event), refOf(event)])).values()],
       };
     }),
+    news: newsNewestFirst(inLocale(catalog.news ?? [])).map(newsRowOf),
     reviews: reviewRowsOf(catalog.reviews ?? [], locale),
     next: now ? nextMeetupOf(catalog, locale, now) : null,
     contacts: contactsOf(catalog.documents ?? [], locale),
