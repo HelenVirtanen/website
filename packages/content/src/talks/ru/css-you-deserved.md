@@ -5,6 +5,7 @@ speakers:
 title: "CSS, который вы ~забыли~ заслужили"
 cover: ../assets/css-you-deserved.jpg
 time: "19:30"
+videoUrl: "https://www.youtube.com/watch?v=VKzK1VkD-LU&t=2210s"
 ---
 
 Фронтенд разработчики все реже верстают проекты «с нуля» и начинают забывать многие встроенные фичи такого родного языка. Время напомнить, что CSS — сила!

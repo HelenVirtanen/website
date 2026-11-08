@@ -5,6 +5,7 @@ speakers:
 time: "20:35"
 title: "Вспоминаем про Houdini"
 cover: ../assets/remembering-houdini.jpg
+videoUrl: "https://www.youtube.com/watch?v=jrcQ5puY8ew&t=5557s"
 ---
 
 Несколько лет назад миру представили Houdini — набор новых API для расширения возможностей CSS. Сегодня работа над Houdini всё ещё не прекращается, но давайте всё же посмотрим, на что он способен, что обещают нам спецификации и можно ли пользоваться Houdini уже сегодня.

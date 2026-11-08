@@ -5,6 +5,7 @@ speakers:
 title: "The 5 stages of accepting analytics"
 cover: ../assets/five-stages-of-accepting-analytics.jpg
 time: "20:00"
+videoUrl: "https://www.youtube.com/watch?v=cVDcrZHdbKo&t=3416s"
 ---
 
 What to do when the team is in turmoil and developers feud with analysts like the Montagues and Capulets, when nobody remembers how the conflict began or who started it? I will share my experience of taking the first steps toward a cohesive team in which people hear each other.

@@ -5,6 +5,7 @@ speakers:
 time: "19:05"
 title: "Как настроить код, который правит сам себя?"
 cover: ../assets/self-fixing-code-setup.jpg
+videoUrl: "https://www.youtube.com/watch?v=jrcQ5puY8ew&t=175s"
 ---
 
 Бывает начинаем работу в новом проекте, а в нем код, как-будто разные люди писали. Работать с таким кодом становится сложнее.

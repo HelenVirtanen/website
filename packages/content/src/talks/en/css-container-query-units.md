@@ -5,6 +5,7 @@ speakers:
 title: "Will the new CSS units make you cry? Or not?"
 cover: ../assets/css-container-query-units.jpg
 time: "19:10"
+videoUrl: "https://www.youtube.com/watch?v=KCDraR68_bA&t=1530s"
 ---
 
 Websites can be made responsive not only by relying on the viewport but also on the size of the parent container. This is made possible by a new approach to layout, CSS Container. In the talk I will explain in detail how to use the new units (cqw, cqh, cqi, cqb, cqmax, cqmin) and the @container rule, and demonstrate how this simplifies building responsive design.

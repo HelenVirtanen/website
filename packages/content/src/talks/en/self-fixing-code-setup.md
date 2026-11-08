@@ -5,6 +5,7 @@ speakers:
 time: "19:05"
 title: "How to set up code that fixes itself?"
 cover: ../assets/self-fixing-code-setup.jpg
+videoUrl: "https://www.youtube.com/watch?v=jrcQ5puY8ew&t=175s"
 ---
 
 Sometimes you start work on a new project and the code looks as if different people wrote it. Working with such code gets harder.

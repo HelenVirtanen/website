@@ -4,6 +4,7 @@ speakers:
   - "alexander-ermolov"
 title: "Frontend, что я понял за 2 года или 55 заповедей разработчика"
 cover: ../assets/frontend-55-commandments.jpg
+videoUrl: "https://www.youtube.com/watch?v=cYgw9LGvb7k&t=5579s"
 ---
 
 С технической точки зрения поговорим о чистоте кода, как верстать, какие есть инструменты.
