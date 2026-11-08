@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { RESULTS_LIMIT, search, searchPages, type PagefindFragment, type PagefindModule } from './pagefind';
+import { RESULTS_LIMIT, search, searchPages, type PagefindFragment, type PagefindModule, hitsOfFragment } from './pagefind';
 
 const fragment = (n: number, meta: PagefindFragment['meta'] = { title: `Доклад ${String(n)}`, description: `Описание ${String(n)}` }) => ({
   url: `/talks/talk-${String(n)}/`,
@@ -38,6 +38,32 @@ describe('searchPages', () => {
   it('подставляет адрес вместо заголовка и пустое описание, если меты нет', async () => {
     const [hit] = await searchPages(fakeModule([fragment(2, {})]), 'слово');
     expect(hit).toEqual({ url: '/talks/talk-2/', title: '/talks/talk-2/', description: '' });
+  });
+});
+
+describe('hitsOfFragment', () => {
+  it('каждый найденный отзыв ведёт в своё окно на стене, с именем автора и отрывком', () => {
+    const hits = hitsOfFragment({
+      url: '/en/reviews/',
+      meta: { title: 'Community reviews', description: 'Стена отзывов' },
+      sub_results: [
+        { url: '/en/reviews/#review-anastasiya-maltseva-title', title: 'Anastasiya Maltseva', excerpt: 'like after a <mark>parachute</mark> jump' },
+        { url: '/en/reviews/#some-heading', title: 'Другое', excerpt: 'не отзыв' },
+      ],
+    });
+    expect(hits).toEqual([
+      {
+        url: '/en/reviews/?review=anastasiya-maltseva',
+        title: 'Anastasiya Maltseva — Community reviews',
+        description: 'like after a parachute jump',
+      },
+    ]);
+  });
+
+  it('обычная страница остаётся одним результатом', () => {
+    expect(hitsOfFragment({ url: '/talks/x/', meta: { title: 'Доклад' }, sub_results: [{ url: '/talks/x/#plan', title: 'План', excerpt: '…' }] })).toEqual([
+      { url: '/talks/x/', title: 'Доклад', description: '' },
+    ]);
   });
 });
 
