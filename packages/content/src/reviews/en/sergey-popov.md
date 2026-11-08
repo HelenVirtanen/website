@@ -1,5 +1,6 @@
 ---
 name: "Sergey Popov"
+speaker: sergey-popov
 category: past-organizer
 photo: ../assets/sergey-popov.jpg
 ---

@@ -1,5 +1,6 @@
 ---
 name: "Анастасия Ярош"
+speaker: anastasiya-yarosh
 category: speaker
 photo: ../assets/anastasiya-yarosh.jpg
 ---

@@ -1,5 +1,6 @@
 ---
 name: "Anna Lapa"
+speaker: anna-lapa
 category: speaker
 photo: ../assets/anna-lapa.jpg
 gallery:

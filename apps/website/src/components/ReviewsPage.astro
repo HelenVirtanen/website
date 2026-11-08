@@ -10,7 +10,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { loadCatalog, slugOf } from '../content/catalog';
 import { previewOf, publishedReviews, reviewCategories } from '../content/reviews';
 import { optimizedPhoto, reviewImage } from '../content/speaker-image';
-import { useTranslations } from '../i18n';
+import { localizePath, useTranslations } from '../i18n';
 import type { PublicPage } from '../seo/pages';
 import { main, inner, head } from './ReviewsPage.css';
 
@@ -83,6 +83,7 @@ const reviews = await Promise.all(
               name={entry.data.name}
               category={t(`reviews.category.${entry.data.category}`)}
               role={entry.data.role}
+              profileHref={entry.data.speaker ? localizePath(locale, `speakers/${entry.data.speaker}`) : undefined}
               image={image}
               gallery={gallery}
               closeHref={path}

@@ -1,5 +1,6 @@
 ---
 name: "Анна Расторгуева"
+speaker: anna-rastorgueva
 category: speaker
 photo: ../../speakers/assets/anna-rastorgueva.jpg
 ---

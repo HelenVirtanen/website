@@ -1,17 +1,15 @@
 ---
-import H1 from '@moscowcss/ui/components/H1';
-import H2 from '@moscowcss/ui/components/H2';
-import Paragraph from '@moscowcss/ui/components/Paragraph';
-import LinkList from '@moscowcss/ui/components/LinkList';
+import TagPile from '@moscowcss/ui/components/TagPile';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { main, inner, block, blocks as blockList } from '../components/NotFoundPage.css';
+import { action, actions } from '../components/DetailPage.css';
+import { main, inner, stage, pile, code, digits, codeLine, codeComment, codeProperty, blocks, block, heading, text } from '../components/NotFoundPage.css';
 import { defaultLocale, locales, localizePath, useTranslations } from '../i18n';
 
 // GitHub Pages отдаёт один 404.html на любой несуществующий адрес, язык по адресу не угадать:
 // текст и ссылки — на всех языках, первым — язык по умолчанию.
 const ordered = [defaultLocale, ...locales.filter((locale) => locale !== defaultLocale)];
 const t = useTranslations(defaultLocale);
-const blocks = ordered.map((locale) => {
+const blockList = ordered.map((locale) => {
   const tl = useTranslations(locale);
   return {
     locale,
@@ -20,28 +18,42 @@ const blocks = ordered.map((locale) => {
     links: tl('notFound.links'),
     items: [
       { href: localizePath(locale), label: tl('notFound.home') },
+      { href: localizePath(locale, 'events'), label: tl('notFound.events') },
       { href: localizePath(locale, 'search'), label: tl('notFound.search') },
     ],
   };
 });
+// Свойства, от которых элемент пропадает со страницы: они и падают кучей, как темы в Hero главной.
+const lost = t('notFound.tags').split('|');
 ---
 
-<BaseLayout
-  title={`${t('notFound.title')} — ${t('site.name')}`}
-  description={t('notFound.text')}
-  lang={defaultLocale}
-  alternates={[]}
-  noindex
->
+<BaseLayout title={`${t('notFound.title')} — ${t('site.name')}`} description={t('notFound.text')} lang={defaultLocale} alternates={[]} noindex>
   <main id="main" tabindex="-1" class={main}>
     <div class={inner}>
-      <div class={blockList}>
+      <div class={stage}>
+        <TagPile class={pile} tags={lost} label={t('notFound.tagsLabel')} />
+        <p class={digits} aria-hidden="true">404</p>
+      </div>
+
+      <pre class={code} aria-hidden="true"><span class={codeLine}>{t('notFound.selector')} {'{'}</span>
+<span class={codeLine}>  <span class={codeProperty}>display</span>: none; <span class={codeComment}>/* 404 */</span></span>
+<span class={codeLine}>{'}'}</span></pre>
+
+      <div class={blocks}>
         {
-          blocks.map((item, index) => (
+          blockList.map((item, index) => (
             <section class={block} lang={item.locale}>
-              {index === 0 ? <H1>{item.title}</H1> : <H2>{item.title}</H2>}
-              <Paragraph>{item.text}</Paragraph>
-              <LinkList title={item.links} items={item.items} headingLevel={index === 0 ? 2 : 3} />
+              {index === 0 ? <h1 class={heading}>{item.title}</h1> : <h2 class={heading}>{item.title}</h2>}
+              <p class={text}>{item.text}</p>
+              <ul class={actions} aria-label={item.links}>
+                {item.items.map((link) => (
+                  <li>
+                    <a class={action} href={link.href}>
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </section>
           ))
         }

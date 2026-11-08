@@ -1,4 +1,4 @@
-import { style } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 import { dimensions, vars } from '@moscowcss/design-system';
 
 export const root = style({
@@ -28,6 +28,18 @@ export const head = style({
   vars: { [vars.color.focus]: 'currentColor' },
 });
 
+export const profile = style({
+  flexGrow: 1,
+  display: vars.display.flex,
+  alignItems: vars.alignItems.center,
+  gap: vars.spacing.m,
+  minWidth: 0,
+  color: 'inherit',
+  textDecoration: 'none',
+});
+
+globalStyle(`a${profile}:hover h2`, { textDecorationLine: 'underline' });
+
 export const photo = style({
   flexShrink: 0,
   display: vars.display.block,
@@ -39,7 +51,6 @@ export const photo = style({
 
 export const who = style({
   flexGrow: 1,
-  alignSelf: 'center',
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,
   gap: vars.spacing.xs,

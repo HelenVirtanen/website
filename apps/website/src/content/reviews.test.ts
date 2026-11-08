@@ -69,6 +69,10 @@ describe('проверка каталога', () => {
     expect(problemsOf([review('ru/anna', { photo }), review('en/anna')])).toContain('reviews/en/anna.md: поле photo');
   });
 
+  it('роняет сборку на ссылке на несуществующего спикера', () => {
+    expect(problemsOf([review('ru/anna', { speaker: 'nobody' })])).toContain('reviews/ru/anna.md: speaker → нет записи «nobody»');
+  });
+
   it('роняет сборку на другой категории в переводе', () => {
     expect(problemsOf([review('ru/anna', { category: 'speaker' }), review('en/anna', { category: 'guest' })])).toContain(
       'reviews/en/anna.md: поле category',

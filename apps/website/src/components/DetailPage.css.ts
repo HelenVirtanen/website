@@ -50,11 +50,12 @@ export const topRow = style({
 
 // Пунктирный чип, как «31 МИТАП» в Hero главной.
 export const chip = style({
+  color: 'inherit',
+  textDecoration: 'none',
   boxSizing: 'border-box',
   paddingBlock: vars.adaptive.heroChipPaddingBlock,
   paddingInline: vars.adaptive.heroChipPaddingInline,
   border: `${vars.border.width.thin} ${vars.border.style.dashed} ${vars.color.border}`,
-  borderRadius: vars.adaptive.heroChipRadius,
   font: vars.font.shorthand.heroChip,
   textTransform: 'uppercase',
 });
@@ -114,9 +115,24 @@ export const tag = style({
   alignItems: vars.alignItems.center,
   minHeight: vars.size.hitTarget,
   paddingInline: vars.adaptive.heroTagPaddingInline,
-  borderRadius: vars.radius.pill,
   font: vars.font.shorthand.heroTag,
   textDecoration: 'none',
+});
+
+// Митап спикера — короткая метка «32 митап», как переключатель списков на «Истории», только цветная.
+export const meetupChip = style({
+  boxSizing: 'border-box',
+  display: vars.display.inlineFlex,
+  alignItems: vars.alignItems.center,
+  minWidth: vars.size.hitTarget,
+  minHeight: vars.size.hitTarget,
+  paddingInline: vars.padding.l,
+  border: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.border}`,
+  font: vars.font.shorthand.ui,
+  textDecoration: 'none',
+  selectors: {
+    '&:hover': { textDecorationLine: 'underline' },
+  },
 });
 
 const tone = (background: string, color: string) => style({ background, color });
@@ -146,7 +162,6 @@ export const action = style({
   minHeight: vars.size.hitTarget,
   paddingInline: vars.padding.xl,
   border: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.border}`,
-  borderRadius: vars.radius.pill,
   color: vars.color.text,
   font: vars.font.shorthand.buttonLabel,
   textDecoration: 'none',
@@ -263,4 +278,67 @@ export const galleryImage = style({
   selectors: {
     [`${galleryLink}:hover &`]: { scale: '1.04' },
   },
+});
+
+// Спикеры доклада: восьмиугольный аватар, имя и подпись — одна ссылка на страницу спикера.
+export const people = style({
+  display: vars.display.flex,
+  flexWrap: 'wrap',
+  gap: vars.spacing.l,
+  margin: 0,
+  padding: 0,
+  listStyle: 'none',
+});
+
+export const person = style({
+  display: vars.display.flex,
+  alignItems: vars.alignItems.center,
+  gap: vars.spacing.m,
+  paddingBlock: vars.spacing.s,
+  paddingInline: vars.padding.m,
+  border: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.border}`,
+  color: vars.color.text,
+  textDecoration: 'none',
+  transitionProperty: 'background-color',
+  transitionDuration: vars.motion.duration.fast,
+  transitionTimingFunction: vars.motion.easing.standard,
+  selectors: {
+    '&:hover': { background: vars.color.dividerSoft },
+  },
+});
+
+export const personAvatar = style({
+  flexShrink: 0,
+  display: vars.display.block,
+  width: vars.size.reviewPhoto,
+  height: vars.size.reviewPhoto,
+  objectFit: 'cover',
+  clipPath: dimensions.octagon,
+  background: vars.color.speakerAccent,
+});
+
+export const personName = style({
+  display: vars.display.block,
+  font: vars.font.shorthand.h4,
+  letterSpacing: vars.font.letterSpacing.heading,
+});
+
+export const personRole = style({
+  display: vars.display.block,
+  maxWidth: vars.size.reviewDialogWidth,
+  font: vars.font.shorthand.caption,
+});
+
+// Обложка доклада во всю ширину текста, по клику открывается крупно.
+export const coverFrame = style({
+  display: vars.display.block,
+  maxWidth: vars.size.reviewDialogWidth,
+  border: `${vars.border.width.thin} ${vars.border.style.solid} ${vars.color.border}`,
+  boxShadow: `${vars.spacing.s} ${vars.spacing.s} 0 ${vars.color.speakerAccent}`,
+});
+
+export const coverImage = style({
+  display: vars.display.block,
+  width: '100%',
+  height: 'auto',
 });

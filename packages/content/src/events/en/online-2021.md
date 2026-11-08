@@ -7,6 +7,11 @@ venue:
   address: "YouTube stream"
 modes:
   - "online"
+tags:
+  - "colour"
+  - "online"
+  - "design"
+  - "css"
 passportRequired: false
 recordingUrl: "https://www.youtube.com/watch?v=NTFZtJXIVIQ"
 schedule:

@@ -7,6 +7,11 @@ venue:
   address: "YouTube stream"
 modes:
   - "online"
+tags:
+  - "units"
+  - "lengthland"
+  - "layout"
+  - "stream"
 passportRequired: false
 registrationUrl: "https://moscowcss.timepad.ru/event/2274133/"
 recordingUrl: "https://www.youtube.com/watch?v=Ptlv_HZ8UFc"

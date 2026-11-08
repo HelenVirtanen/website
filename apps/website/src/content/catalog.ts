@@ -84,7 +84,7 @@ const INVARIANTS = {
   speakers: ['photo', 'links'],
   partners: ['url', 'handle', 'logo', 'qrUrl', 'look'],
   organizers: ['status', 'photo', 'contacts'],
-  reviews: ['category', 'photo', 'gallery[].image'],
+  reviews: ['category', 'speaker', 'photo', 'gallery[].image'],
   faq: ['order'],
   documents: [],
   pages: ['telegramUrl', 'questionTag', 'decor'],
@@ -213,6 +213,13 @@ export function validateCatalog(
           `${whereOf(talk)}: speakers → спикер «${name}» — черновик, а доклад опубликован`,
         );
       }
+    }
+  }
+
+  for (const review of catalog.reviews) {
+    const { speaker } = review.data;
+    if (speaker && !speakers.has(`${localeOf(review)}/${speaker}`)) {
+      problems.push(`${whereOf(review)}: speaker → нет записи «${speaker}» в speakers/${localeOf(review)}`);
     }
   }
 

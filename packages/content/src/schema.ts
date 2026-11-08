@@ -200,6 +200,8 @@ export const createReviewSchema = (image: ImageFunction) =>
   z.object({
     name: z.string().min(1),
     category: z.enum(REVIEW_CATEGORIES),
+    // Имя файла спикера: шапка окна отзыва ведёт на его страницу.
+    speaker: slug.optional(),
     role: z.string().min(1).optional(),
     // Без фото сайт рисует аватар с инициалами.
     photo: image().optional(),

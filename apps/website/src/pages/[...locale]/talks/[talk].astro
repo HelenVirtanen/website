@@ -1,17 +1,40 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import { render } from 'astro:content';
-import H1 from '@moscowcss/ui/components/H1';
+import BlockTitle from '@moscowcss/ui/components/BlockTitle';
+import Lightbox from '@moscowcss/ui/components/Lightbox';
 import Prose from '@moscowcss/ui/components/Prose';
-import LinkList from '@moscowcss/ui/components/LinkList';
+import TalkCard from '@moscowcss/ui/components/TalkCard';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import EntityPage from '../../../components/EntityPage.astro';
-import { body, cover as coverClass, header } from '../../../components/EntityPage.css';
-import { loadCatalog, localeOf, slugOf } from '../../../content/catalog';
+import { eventLabel } from '../../../content/archive';
+import { loadCatalog, localeOf, slugOf, talksOfEvent } from '../../../content/catalog';
 import { eventDateParts, fillTemplate } from '../../../content/format';
+import { speakerImage } from '../../../content/speaker-image';
 import { talkCoverImage } from '../../../content/talk-cover-image';
 import { localizePath, useTranslations } from '../../../i18n';
 import { localeParam, pagesOfKind, publicPagesOf, type PublicPage } from '../../../seo/pages';
+import {
+  action,
+  actions,
+  block,
+  cards,
+  chip,
+  coverFrame,
+  coverImage as coverImageClass,
+  date,
+  heroText,
+  inner,
+  main,
+  panel,
+  person,
+  personAvatar,
+  personName,
+  personRole,
+  people,
+  prose,
+  title as titleClass,
+  topRow,
+} from '../../../components/DetailPage.css';
 
 export const getStaticPaths = (async () => {
   const catalog = await loadCatalog();
@@ -26,9 +49,7 @@ const { locale, entry, alternates } = page;
 const t = useTranslations(locale);
 
 const catalog = await loadCatalog();
-const event = catalog.events.find(
-  (item) => localeOf(item) === locale && slugOf(item) === entry.data.event,
-);
+const event = catalog.events.find((item) => localeOf(item) === locale && slugOf(item) === entry.data.event);
 if (!event) throw new Error(`${entry.id}: нет митапа «${entry.data.event}»`);
 const speakers = entry.data.speakers.map((slug) => {
   const speaker = catalog.speakers.find((item) => localeOf(item) === locale && slugOf(item) === slug);
@@ -37,15 +58,42 @@ const speakers = entry.data.speakers.map((slug) => {
 });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const { Content } = await render(entry as any);
+const hasBody = Boolean(entry.body?.trim());
 
 const { title, slidesUrl, videoUrl } = entry.data;
-// Карточка анонса и сгенерированная обложка повторяют заголовок и имя спикера: alt пустой.
+// Карточка анонса и сгенерированная обложка повторяют заголовок и имя спикера: в превью alt пустой,
+// а в окне просмотра подписью идёт название доклада.
 const coverImage = await talkCoverImage(entry);
 const eventDate = fillTemplate(t('date.long'), eventDateParts(event.data.date, locale));
+const number = /^\d+$/.test(slugOf(event)) ? slugOf(event) : undefined;
 const materials = [
   slidesUrl && { href: slidesUrl, label: t('talk.slides') },
   videoUrl && { href: videoUrl, label: t('talk.video') },
 ].filter((item): item is { href: string; label: string } => Boolean(item));
+
+const persons = await Promise.all(
+  speakers.map(async (speaker) => ({
+    href: localizePath(locale, `speakers/${slugOf(speaker)}`),
+    name: speaker.data.name,
+    role: speaker.data.role,
+    image: await speakerImage(speaker),
+  })),
+);
+
+const others = await Promise.all(
+  talksOfEvent(event, catalog.talks)
+    .filter((talk) => talk.id !== entry.id)
+    .map(async (talk) => ({
+      href: localizePath(locale, `talks/${slugOf(talk)}`),
+      title: talk.data.title,
+      label: eventLabel(event),
+      meta: talk.data.speakers
+        .map((slug) => catalog.speakers.find((item) => localeOf(item) === locale && slugOf(item) === slug)?.data.name)
+        .filter(Boolean)
+        .join(', '),
+      image: await talkCoverImage(talk),
+    })),
+);
 ---
 
 <BaseLayout
@@ -57,32 +105,74 @@ const materials = [
   lang={locale}
   alternates={alternates}
 >
-  <EntityPage>
-    <div class={header}>
-      <H1>{title}</H1>
-      <img class={coverClass} src={coverImage.src} width={coverImage.width} height={coverImage.height} alt="" decoding="async" />
-    </div>
-    <Prose class={body}>
-      <Content />
-    </Prose>
-    <LinkList
-      title={t('talk.speakers')}
-      items={speakers.map((speaker) => ({
-        href: localizePath(locale, `speakers/${slugOf(speaker)}`),
-        label: speaker.data.name,
-        ...(speaker.data.role && { caption: speaker.data.role }),
-      }))}
-    />
-    <LinkList
-      title={t('talk.event')}
-      items={[
+  <main id="main" tabindex="-1" class={main} data-pagefind-body>
+    <div class={inner}>
+      <div class={heroText}>
+        <div class={topRow}>
+          <a class={chip} href={localizePath(locale, `events/${slugOf(event)}`)}>
+            {number ? fillTemplate(t('hero.meetupNumber'), { number }) : event.data.tagline}
+          </a>
+          <p class={date}>{eventDate}</p>
+        </div>
+        <h1 class={titleClass}>{title}</h1>
+        <ul class={people} aria-label={t('talk.speakers')}>
+          {
+            persons.map((item) => (
+              <li>
+                <a class={person} href={item.href}>
+                  <img class={personAvatar} src={item.image.src} width={item.image.width} height={item.image.height} alt="" decoding="async" />
+                  <span>
+                    <span class={personName}>{item.name}</span>
+                    {item.role && <span class={personRole}>{item.role}</span>}
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
         {
-          href: localizePath(locale, `events/${slugOf(event)}`),
-          label: event.data.tagline,
-          caption: eventDate,
-        },
-      ]}
-    />
-    {materials.length > 0 && <LinkList title={t('talk.materials')} items={materials} />}
-  </EntityPage>
+          materials.length > 0 && (
+            <ul class={actions} aria-label={t('talk.materials')}>
+              {materials.map((item) => (
+                <li>
+                  <a class={action} href={item.href} target="_blank" rel="noopener noreferrer">
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+
+      <Lightbox dialogLabel={title} closeLabel={t('lightbox.close')} prevLabel={t('lightbox.prev')} nextLabel={t('lightbox.next')}>
+        <a class={coverFrame} href={coverImage.src} data-lightbox-item data-caption={title} aria-label={fillTemplate(t('lightbox.open'), { name: title })}>
+          <img class={coverImageClass} src={coverImage.src} width={coverImage.width} height={coverImage.height} alt="" decoding="async" />
+        </a>
+      </Lightbox>
+
+      {
+        hasBody && (
+          <Prose class:list={[prose, panel]}>
+            <Content />
+          </Prose>
+        )
+      }
+
+      {
+        others.length > 0 && (
+          <section class={block}>
+            <BlockTitle>{t('talk.more')}</BlockTitle>
+            <ul class={cards}>
+              {others.map((item) => (
+                <li>
+                  <TalkCard href={item.href} title={item.title} label={item.label} meta={item.meta} image={item.image} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+    </div>
+  </main>
 </BaseLayout>

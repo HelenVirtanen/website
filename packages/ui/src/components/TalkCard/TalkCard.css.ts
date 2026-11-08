@@ -47,7 +47,6 @@ export const chip = style({
   paddingBlock: vars.spacing.xs,
   paddingInline: vars.padding.m,
   border: `${vars.border.width.thin} ${vars.border.style.dashed} ${vars.color.border}`,
-  borderRadius: vars.radius.large,
   font: vars.font.shorthand.ui,
 });
 

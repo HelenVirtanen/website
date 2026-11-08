@@ -1,5 +1,6 @@
 ---
 name: "Александр Ермолов"
+speaker: alexander-ermolov
 category: speaker
 photo: ../assets/alexander-ermolov.jpg
 ---

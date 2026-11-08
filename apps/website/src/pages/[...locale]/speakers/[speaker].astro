@@ -28,7 +28,7 @@ import {
   portrait,
   portraitImage,
   prose,
-  tag,
+  meetupChip,
   tagTones,
   tags,
   title,
@@ -100,8 +100,8 @@ const events = [...new Map(appearances.map(({ event }) => [slugOf(event), event]
               <ul class={tags} aria-label={t('speaker.events')}>
                 {events.map((event, index) => (
                   <li>
-                    <a class:list={[tag, tagTones[index % tagTones.length]]} href={localizePath(locale, `events/${slugOf(event)}`)}>
-                      {event.data.tagline}
+                    <a class:list={[meetupChip, tagTones[index % tagTones.length]]} href={localizePath(locale, `events/${slugOf(event)}`)} title={event.data.tagline}>
+                      {fillTemplate(t('speaker.meetup'), { label: eventLabel(event) })}
                     </a>
                   </li>
                 ))}

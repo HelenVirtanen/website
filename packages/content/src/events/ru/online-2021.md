@@ -7,6 +7,11 @@ venue:
   address: "YouTube-трансляция"
 modes:
   - "онлайн"
+tags:
+  - "цвет"
+  - "онлайн"
+  - "дизайн"
+  - "css"
 passportRequired: false
 recordingUrl: "https://www.youtube.com/watch?v=NTFZtJXIVIQ"
 schedule:

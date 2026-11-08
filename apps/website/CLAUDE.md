@@ -91,6 +91,13 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   big title, blue date, slash list, coloured topic pills, pill links), the programme via `ProgramList`, talk cards
   (`TalkCard`) on the speaker page and a meetup `gallery` opened in `Lightbox` (`@moscowcss/ui`). A speaker portrait is
   an octagon over a shifted pink one; only a real photo opens large.
+- **Talk page** shares the same language: meetup chip, big title, speakers as rectangle links with octagon avatars,
+  the cover opening in `Lightbox`, the description panel and the other talks of the meetup as `TalkCard`s.
+- **404** (`pages/404.astro`): one bilingual page; CSS properties that hide an element fall in a `TagPile` over a
+  huge 404, with a broken `display: none` rule and pill-free rectangle links.
+- **Build images in dev**: `/og`, `/covers` and `/avatars` routes find their data by URL, not by props (the Astro 7
+  dev server passes no props to endpoints with an extension in the param), and `src/middleware.ts` adds the trailing
+  slash the dev server needs. Both are no-ops in the static build.
 - **Partner block** on the home page: `sections/PartnerSection.astro` by default; a partner with `look: school21`
   gets `sections/SchoolPartnerSection.astro` instead (dark plate, green pill buttons, rounded stat cards, pixel motif of
   their logo). Its colours are the `color.school*` tokens and stay the same in both site themes.

@@ -15,6 +15,7 @@ export const WithGallery = {
     slug: 'example',
     name: 'Имя Фамилия',
     category: 'Спикер',
+    profileHref: '#',
     role: 'Должность и компания',
     image,
     gallery: [
