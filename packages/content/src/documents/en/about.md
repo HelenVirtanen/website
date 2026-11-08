@@ -13,6 +13,13 @@ contacts:
       links:
         - label: "@moscowcss"
           url: "https://t.me/moscowcss"
+    - title: "VK"
+      text: "The community group: meetup announcements and photo albums from every meetup."
+      links:
+        - label: "Group"
+          url: "https://vk.ru/css_moscow"
+        - label: "Photo albums"
+          url: "https://vk.ru/albums-139668978"
     - title: "Meetup registration"
       text: "Registration for every meetup opens here. Follow the organiser to get an email about the next meetup."
       links:

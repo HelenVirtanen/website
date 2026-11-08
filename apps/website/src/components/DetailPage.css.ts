@@ -60,6 +60,23 @@ export const chip = style({
   textTransform: 'uppercase',
 });
 
+export const chips = style({
+  display: vars.display.flex,
+  flexWrap: 'wrap',
+  gap: vars.spacing.s,
+});
+
+// Основатель: залитая плашка своего цвета рядом с пунктирной.
+export const founderChip = style([
+  chip,
+  {
+    borderStyle: vars.border.style.solid,
+    borderColor: vars.color.founder,
+    background: vars.color.founder,
+    color: vars.color.onFounder,
+  },
+]);
+
 export const date = style({
   display: vars.display.flex,
   flexDirection: vars.flexDirection.column,

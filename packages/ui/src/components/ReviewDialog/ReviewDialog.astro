@@ -4,7 +4,8 @@ import { Close } from '@moscowcss/icons';
 import Prose from '../Prose';
 import { stickerLook } from '../ReviewSticker';
 import { tilts, tones } from '../ReviewSticker/ReviewSticker.css';
-import { caption, profile, close, closeIcon, content, copy, footer, gallery as galleryClass, galleryImage, head, name as nameClass, photo, root, status, who } from './ReviewDialog.css';
+import { badge as badgeClass, caption, close, closeIcon, content, copy, footer, gallery as galleryClass, galleryImage, head, name as nameClass, photo, profile, root, status, who } from './ReviewDialog.css';
+import { founderTone } from '../ReviewSticker/ReviewSticker.css';
 
 const Tag = 'dialog';
 
@@ -28,6 +29,8 @@ interface Props extends HTMLAttributes<typeof Tag> {
   category: string;
   /** Должность и компания */
   role?: string | undefined;
+  /** Особая плашка над именем, например «Основатель»: шапка тогда в своём цвете */
+  badge?: string | undefined;
   /** Страница автора на сайте: шапка окна становится ссылкой на неё */
   profileHref?: string | undefined;
   /** Фото или аватар с инициалами */
@@ -48,17 +51,18 @@ interface Props extends HTMLAttributes<typeof Tag> {
   copyFailedLabel: string;
 }
 
-const { slug, name, category, role, profileHref, image, gallery = [], closeHref, closeLabel, shareHref, copyLabel, copiedLabel, copyFailedLabel, class: className, ...attrs } = Astro.props;
+const { slug, name, category, role, badge, profileHref, image, gallery = [], closeHref, closeLabel, shareHref, copyLabel, copiedLabel, copyFailedLabel, class: className, ...attrs } = Astro.props;
 const look = stickerLook(slug, tones.length, tilts.length);
 const titleId = `review-${slug}-title`;
 const ProfileTag = profileHref ? 'a' : 'div';
 ---
 <Tag class:list={[root, className]} id={`review-${slug}`} aria-labelledby={titleId} data-review-dialog={slug} {...attrs}>
-  <div class:list={[head, tones[look.tone]]}>
+  <div class:list={[head, badge ? founderTone : tones[look.tone]]}>
     {/* Есть страница спикера — фото, имя и подпись ведут на неё одной ссылкой */}
     <ProfileTag class={profile} {...(profileHref ? { href: profileHref } : {})}>
       <img class={photo} src={image.src} width={image.width} height={image.height} alt="" loading="lazy" decoding="async" />
       <div class={who}>
+        {badge && <span class={badgeClass}>{badge}</span>}
         <h2 class={nameClass} id={titleId}>{name}</h2>
         <p class={caption}>{[category, role].filter(Boolean).join(' · ')}</p>
       </div>

@@ -108,6 +108,8 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   the page and the header and footer links only with a published review. `src/content/reviews.ts`
   holds `publishedReviews`, `reviewCategories` (buttons of the filter, state in `?category=`) and `previewOf` (first paragraph cut at a word boundary, not a CSS clamp:
   that hides text under increased spacing, WCAG 1.4.12). No `Review` schema.org markup on purpose.
+  A review whose `speaker` has `founder: true` gets the badge `speaker.founder` in the `color.founder` violet (sticker
+  and window, `badge` prop); the speaker page shows the same filled chip. The flag lives on the speaker only.
 - **Talk covers.** Every talk gets one generated cover in a single style, `/covers/<lang>/<talk>.png`
   (`pages/covers/[...path].ts`, `renderTalkCover` from `@moscowcss/og`, inputs from `talkCoverSourceOf`): the title in
   a red-to-brown gradient, the speakers and the meetup label on white, the first speaker's photo in colour (TBD

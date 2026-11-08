@@ -140,3 +140,5 @@ export const copy = style({
 export const status = style({
   font: vars.font.shorthand.caption,
 });
+
+export { badge } from '../ReviewSticker/ReviewSticker.css';

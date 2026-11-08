@@ -44,4 +44,5 @@ export const palette = {
   blueSoft: '#5563E8',
   magenta: '#C75FB8',
   pink: '#FF4E8D',
+  violet: '#7A2BFF', // электрический фиолетовый — только плашка основателя
 } as const;

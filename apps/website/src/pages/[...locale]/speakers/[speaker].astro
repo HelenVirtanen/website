@@ -20,6 +20,8 @@ import {
   block,
   cards,
   chip,
+  chips,
+  founderChip,
   hero,
   heroText,
   inner,
@@ -93,7 +95,10 @@ const events = [...new Map(appearances.map(({ event }) => [slugOf(event), event]
           )
         }
         <div class={heroText}>
-          <span class={chip}>{t('speaker.kicker')}</span>
+          <div class={chips}>
+            <span class={chip}>{t('speaker.kicker')}</span>
+            {entry.data.founder && <span class={founderChip}>{t('speaker.founder')}</span>}
+          </div>
           <h1 class={title}>{name}</h1>
           {role && <p class={lead}>{role}</p>}
           {

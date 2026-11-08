@@ -31,3 +31,7 @@ export const WithGallery = {
     slots: { default: '<p>Пример текста для вёрстки.</p><p>Второй абзац.</p>' },
   },
 };
+
+export const Founder = {
+  args: { ...WithGallery.args, slug: 'founder', category: 'Бывший организатор', role: undefined, badge: 'Основатель', gallery: [] },
+};

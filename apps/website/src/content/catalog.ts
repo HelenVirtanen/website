@@ -81,7 +81,7 @@ const INVARIANTS = {
     'gallery[].image',
   ],
   talks: ['event', 'speakers', 'time', 'slidesUrl', 'videoUrl', 'cover'],
-  speakers: ['photo', 'links'],
+  speakers: ['photo', 'links', 'founder'],
   partners: ['url', 'handle', 'logo', 'qrUrl', 'look'],
   organizers: ['status', 'photo', 'contacts'],
   reviews: ['category', 'speaker', 'photo', 'gallery[].image'],

@@ -17,3 +17,7 @@ export const Default = {
 export const WithoutRole = {
   args: { href: '#', name: 'Имя Фамилия', category: 'Гость', text: 'Короткий отзыв.', image, seed: 'other-example' },
 };
+
+export const Founder = {
+  args: { href: '#', name: 'Имя Фамилия', category: 'Бывший организатор', text: 'Отзыв основателя сообщества.', image, seed: 'founder', badge: 'Основатель' },
+};

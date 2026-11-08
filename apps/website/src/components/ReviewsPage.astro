@@ -29,6 +29,9 @@ const t = useTranslations(locale);
 const catalog = await loadCatalog();
 const published = publishedReviews(catalog.reviews, locale);
 const categories = reviewCategories(published);
+// Плашка основателя — по странице спикера, на которую ведёт отзыв: флаг хранится в одном месте.
+const founders = new Set(catalog.speakers.filter((speaker) => speaker.data.founder).map((speaker) => slugOf(speaker)));
+const badgeOf = (speaker: string | undefined) => (speaker && founders.has(speaker) ? t('speaker.founder') : undefined);
 const reviews = await Promise.all(
   published.map(async (entry) => ({
     entry,
@@ -72,6 +75,7 @@ const reviews = await Promise.all(
               text={preview}
               image={image}
               seed={slug}
+              badge={badgeOf(entry.data.speaker)}
               data-review-sticker={slug}
             />
           </li>
@@ -83,6 +87,7 @@ const reviews = await Promise.all(
               name={entry.data.name}
               category={t(`reviews.category.${entry.data.category}`)}
               role={entry.data.role}
+              badge={badgeOf(entry.data.speaker)}
               profileHref={entry.data.speaker ? localizePath(locale, `speakers/${entry.data.speaker}`) : undefined}
               image={image}
               gallery={gallery}

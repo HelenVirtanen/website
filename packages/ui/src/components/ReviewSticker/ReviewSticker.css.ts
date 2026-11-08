@@ -57,6 +57,20 @@ export const tones = [
   tone(vars.color.tagBlue, vars.color.onTagBlue),
 ];
 
+// Листок основателя: свой цвет вне случайного набора, плашка над именем — вывернутая.
+export const founderTone = tone(vars.color.founder, vars.color.onFounder);
+
+export const badge = style({
+  alignSelf: 'flex-start',
+  paddingBlock: vars.spacing.xs,
+  paddingInline: vars.spacing.s,
+  background: vars.color.onFounder,
+  color: vars.color.founder,
+  font: vars.font.shorthand.heroChip,
+  textTransform: 'uppercase',
+  letterSpacing: vars.font.letterSpacing.heading,
+});
+
 const flat = { [angle]: dimensions.reviewSticker.flat, [shift]: vars.inset.zero };
 const shifts = [vars.inset.zero, vars.spacing.s, vars.spacing.xs, vars.inset.zero];
 

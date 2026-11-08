@@ -36,6 +36,7 @@ describe.each([
     ['текст на кнопке при наведении', color.onButtonHover, color.buttonHover],
     ['пометка «митап прошёл»', color.pastNote, color.background],
     ['голубая плашка', color.onTagSky, color.tagSky],
+    ['плашка основателя', color.onFounder, color.founder],
     ['синяя плашка', color.onTagBlue, color.tagBlue],
     ['жёлтая плашка', color.onTagYellow, color.tagYellow],
     ['красная плашка', color.onTagRed, color.tagRed],

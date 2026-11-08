@@ -50,6 +50,8 @@ const contract = {
     backdrop: null, // затемнение под модальным окном
     tagSky: null,
     onTagSky: null,
+    founder: null, // основатель сообщества: свой цвет, больше нигде не встречается
+    onFounder: null,
     tagBlue: null,
     onTagBlue: null,
     tagYellow: null,
@@ -105,6 +107,8 @@ const light = {
     backdrop: palette.blackA50,
     tagSky: palette.sky,
     onTagSky: palette.ink,
+    founder: palette.violet,
+    onFounder: palette.white,
     tagBlue: palette.blue,
     onTagBlue: palette.white,
     tagYellow: palette.yellow,

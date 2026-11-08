@@ -1,7 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 import { stickerLook } from './look';
-import { head, name as nameClass, photo, role as roleClass, root, text as textClass, tilts, tones, who } from './ReviewSticker.css';
+import { badge as badgeClass, founderTone, head, name as nameClass, photo, role as roleClass, root, text as textClass, tilts, tones, who } from './ReviewSticker.css';
 
 const Tag = 'a';
 
@@ -18,15 +18,18 @@ interface Props extends HTMLAttributes<typeof Tag> {
   image: { src: string; width: number; height: number };
   /** Имя файла отзыва: от него зависят цвет и наклон листка */
   seed: string;
+  /** Особая плашка над именем, например «Основатель»: листок тогда в своём цвете */
+  badge?: string | undefined;
 }
 
-const { name, category, role, text, image, seed, class: className, ...attrs } = Astro.props;
+const { name, category, role, text, image, seed, badge, class: className, ...attrs } = Astro.props;
 const look = stickerLook(seed, tones.length, tilts.length);
 ---
-<Tag class:list={[root, tones[look.tone], tilts[look.tilt], className]} {...attrs}>
+<Tag class:list={[root, badge ? founderTone : tones[look.tone], tilts[look.tilt], className]} {...attrs}>
   <div class={head}>
     <img class={photo} src={image.src} width={image.width} height={image.height} alt="" loading="lazy" decoding="async" />
     <div class={who}>
+      {badge && <span class={badgeClass}>{badge}</span>}
       <h2 class={nameClass}>{name}</h2>
       <p class={roleClass}>{[category, role].filter(Boolean).join(' · ')}</p>
     </div>

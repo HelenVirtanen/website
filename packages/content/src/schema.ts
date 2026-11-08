@@ -157,6 +157,8 @@ export const createSpeakerSchema = (image: ImageFunction) =>
       // Фото необязательно: без него сайт рисует аватар с инициалами на сборке.
       photo: image().optional(),
       links: z.array(z.object({ label: z.string().min(1), url })).optional(),
+      // Основатель сообщества: плашка «Основатель» и свой цвет на странице спикера и у его отзыва.
+      founder: z.boolean().default(false),
       draft: z.boolean().default(false),
     });
 
