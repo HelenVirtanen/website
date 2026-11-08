@@ -1,10 +1,11 @@
 import type { RSSFeedItem } from '@astrojs/rss';
-import { localeOf, slugOf, talksOfEvent, type EventEntry, type TalkEntry } from '../content/catalog';
+import { newsNewestFirst } from '../content/archive';
+import { localeOf, slugOf, talksOfEvent, type EventEntry, type NewsEntry, type TalkEntry } from '../content/catalog';
 import { eventWhen, venueLine } from '../content/format';
 import { defaultLocale, locales, localizePath, useTranslations, type Locale } from '../i18n';
 
-// Лента митапов языка: одна запись — один опубликованный митап, новые сверху. Отдельная лента на
-// каждый язык, как в блоге: читатель подписывается на свой язык и не получает дублей.
+// Ленты языка: митапы (одна запись — один опубликованный митап) и новости, новые сверху. Отдельная
+// лента на каждый язык, как в блоге: читатель подписывается на свой язык и не получает дублей.
 
 /** Адрес ленты от корня сайта, без слэша на конце: `rss.xml/` статик-хостинг искал бы как папку. */
 export const feedPath = (locale: Locale): string =>
@@ -42,4 +43,32 @@ export function feedItemsOf(
         description: `${when}, ${venueLine(venue)}.${program}`,
       };
     });
+}
+
+/** Адрес ленты новостей языка, без слэша на конце: `/news/rss.xml`, `/en/news/rss.xml`. */
+export const newsFeedPath = (locale: Locale): string =>
+  locale === defaultLocale ? '/news/rss.xml' : `/${locale}/news/rss.xml`;
+
+/** Раздел новостей — страница списка или новость: там в `<head>` есть и лента новостей. */
+export const isNewsPath = (locale: Locale, pathname: string): boolean =>
+  pathname.startsWith(localizePath(locale, 'news'));
+
+/**
+ * Записи ленты новостей: опубликованные новости языка, свежие сверху. Описание — подзаголовок,
+ * полный текст — в `content`, темы — `<category>`, как в ленте блога.
+ */
+export function newsFeedItemsOf(locale: Locale, news: readonly NewsEntry[]): RSSFeedItem[] {
+  return newsNewestFirst(news.filter((entry) => localeOf(entry) === locale)).map((entry) => ({
+    title: entry.data.title,
+    link: localizePath(locale, `news/${slugOf(entry)}`),
+    pubDate: entry.data.date,
+    description: entry.data.description,
+    ...(entry.rendered?.html && { content: entry.rendered.html }),
+    ...(entry.data.tags.length > 0 && { categories: entry.data.tags }),
+  }));
+}
+
+/** Самая свежая новость языка — `<lastBuildDate>` канала; новостей нет — undefined. */
+export function newestNewsDate(locale: Locale, news: readonly NewsEntry[]): Date | undefined {
+  return newsNewestFirst(news.filter((entry) => localeOf(entry) === locale))[0]?.data.date;
 }

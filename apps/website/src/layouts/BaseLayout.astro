@@ -22,7 +22,7 @@ import { CARD_TYPE, OG_SIZE, OG_TYPE, cardMetaOf } from '../seo/og';
 import { AI_CATALOG_PATH, ARD_PATH } from '../agents/discovery';
 import { markdownPathOf } from '../agents/paths';
 import { archiveDataPath } from '../agents/archive-data';
-import { feedPath } from '../rss/feed';
+import { feedPath, isNewsPath, newsFeedPath } from '../rss/feed';
 import { copyrightOf, footerLinksOf } from './footer';
 import { navLinksOf } from './nav';
 import SkipLink from '../components/SkipLink.astro';
@@ -145,6 +145,7 @@ const localeOptions = locales.map((code) => ({
     }
     {xDefault && <link rel="alternate" hreflang="x-default" href={absolute(xDefault.path)} />}
     <link rel="alternate" type="application/rss+xml" title={t('rss.title')} href={absolute(feedPath(lang))} />
+    {isNewsPath(lang, Astro.url.pathname) && <link rel="alternate" type="application/rss+xml" title={t('rss.news.title')} href={absolute(newsFeedPath(lang))} />}
     {publicPage && <link rel="alternate" type="text/markdown" href={absolute(markdownPathOf(publicPage.path))} />}
     {/* Данные списков архива языка: их читает WebMCP-инструмент list_archive */}
     <link rel="alternate" type="application/json" href={archiveDataPath(lang)} data-archive-json />

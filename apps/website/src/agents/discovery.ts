@@ -3,7 +3,7 @@ import { localeOf, slugOf, upcomingEvent, type Catalog } from '../content/catalo
 import { newsDayOf } from '../content/archive';
 import { eventWhen, venueLine } from '../content/format';
 import { defaultLocale, localeNames, locales, localizePath, useTranslations, type Locale } from '../i18n';
-import { feedPath } from '../rss/feed';
+import { feedPath, newsFeedPath } from '../rss/feed';
 import type { PublicPage } from '../seo/pages';
 import { markdownPathOf } from './paths';
 
@@ -83,6 +83,8 @@ export function skillMarkdown(site: URL): string {
     `- ${abs('/sitemap.xml')} lists every indexable URL.`,
     '- RSS feeds of meetups, newest first:',
     ...locales.map((locale) => `  - ${localeNames[locale]}: ${abs(feedPath(locale))}`),
+    '- RSS feeds of community news, newest first, with the full text:',
+    ...locales.map((locale) => `  - ${localeNames[locale]}: ${abs(newsFeedPath(locale))}`),
     '',
     '## Search',
     '',

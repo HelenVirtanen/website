@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { event, talk } from '../test/fixtures';
-import { feedItemsOf, feedPath, localeOfFeed } from './feed';
+import { event, news, talk } from '../test/fixtures';
+import { feedItemsOf, feedPath, isNewsPath, localeOfFeed, newestNewsDate, newsFeedItemsOf, newsFeedPath } from './feed';
 
 vi.mock('astro:content', () => ({ getCollection: vi.fn() }));
 vi.mock('astro:i18n', () => ({
@@ -57,5 +57,39 @@ describe('feedItemsOf', () => {
 
   it('английская лента — свои записи и адреса под /en/', () => {
     expect(feedItemsOf('en', events, talks)).toMatchObject([{ title: 'Meetup 10', link: '/en/events/10/' }]);
+  });
+});
+
+describe('лента новостей', () => {
+  const entries = [
+    news('ru/old', { date: new Date('2025-04-09T00:00:00Z'), title: 'Старая', tags: [] }),
+    news('ru/new', { date: new Date('2026-11-08T00:00:00Z'), title: 'Свежая', tags: ['Сайт'] }),
+    news('ru/draft', { date: new Date('2026-12-01T00:00:00Z'), draft: true }),
+    news('en/new', { date: new Date('2026-11-08T00:00:00Z'), title: 'Fresh' }),
+  ];
+
+  it('адрес под разделом новостей языка, без слэша', () => {
+    expect(newsFeedPath('ru')).toBe('/news/rss.xml');
+    expect(newsFeedPath('en')).toBe('/en/news/rss.xml');
+    expect(localeOfFeed('/en/news/rss.xml/')).toBe('en');
+  });
+
+  it('опубликованные новости языка, свежие сверху, с темами и полным текстом', () => {
+    const items = newsFeedItemsOf('ru', entries);
+    expect(items.map((item) => item.title)).toEqual(['Свежая', 'Старая']);
+    expect(items[0]).toMatchObject({ link: '/news/new/', categories: ['Сайт'], description: expect.any(String) });
+    expect(items[1]?.categories).toBeUndefined();
+    expect(newsFeedItemsOf('en', entries).map((item) => item.link)).toEqual(['/en/news/new/']);
+  });
+
+  it('дата сборки канала — самая свежая новость языка', () => {
+    expect(newestNewsDate('ru', entries)?.toISOString()).toBe('2026-11-08T00:00:00.000Z');
+    expect(newestNewsDate('ru', [])).toBeUndefined();
+  });
+
+  it('лента новостей объявлена только в разделе новостей', () => {
+    expect(isNewsPath('ru', '/news/')).toBe(true);
+    expect(isNewsPath('en', '/en/news/new-site/')).toBe(true);
+    expect(isNewsPath('ru', '/events/')).toBe(false);
   });
 });

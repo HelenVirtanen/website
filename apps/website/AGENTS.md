@@ -171,6 +171,10 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   feed route takes its language from the URL, not from `props` (Astro gives an
   extension endpoint under `[...locale]` the first path's props). `check:seo`
   checks the head links, the feed language and that every item link is a page.
+- **News RSS** is one more feed per language (`/news/rss.xml`, `/en/news/rss.xml`, `pages/[...locale]/news/rss.xml.ts`):
+  published news newest first, `pubDate` = news date, the full text in `content`, topics as `<category>`,
+  `lastBuildDate` = the newest news. Pages of the news section link it in `<head>` (`isNewsPath`) next to the meetup feed,
+  and `/news/` invites to subscribe under the heading.
 - **Icons** (`favicon.ico`/`.svg`, `apple-touch-icon.png`, manifest + 192/512) are
   drawn at build time from the MoscowCSS star in the brand red (`color.brand`,
   as the Hero star): `src/seo/icons.ts` lists them, `@moscowcss/og` renders them.

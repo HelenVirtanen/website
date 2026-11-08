@@ -12,7 +12,8 @@ already tabs of History.
   calls «История»; the posts are short announcements and reports, not articles, so not a blog.
 - **Content.** Collection `news/<lang>/<name>.md`: `title` (≤ 90), `date` (a day), `description` (50–160: card text,
   lead and meta description), translated `tags`, optional `cover` and `gallery` (`image` + `alt`), `links`, body
-  required. `date` and image files must match `ru`; `links` may differ (site links point to their own language).
+  required. `date` and gallery files must match `ru`; `cover` and `links` may differ (a cover can carry text, site links
+  point to their own language). Organizer news use covers drawn by `renderTalkCover` from the unedited photo.
   New entries: `pnpm new:news <name>` (dated today).
 - **List.** A `list` page of kind `news` (`LIST_KINDS`), rendered by `ArchivePage` without the History tabs:
   `NewsCard`s newest first, filter by words, year, topic (`?topic=`) and photos, the same pure filter as the other
@@ -24,12 +25,13 @@ already tabs of History.
 - **Agents and SEO.** `NewsArticle` JSON-LD, an OG card per news item, the Markdown twin, `news` rows in
   `archive.json`, WebMCP `list_news` and `get_news`, and `kind: news` in `list_archive`. llms.txt lists news in the
   index.
+- **RSS.** One news feed per language, like the blog: `/news/rss.xml` and `/en/news/rss.xml`, full text, topics as
+  categories, linked from the `<head>` of the news pages and from the list.
 - **Header.** About, History, Reviews, News, Help the meetup, Search. Talks and Speakers stay in the burger menu
   only, after Help; History is current on talk and speaker pages too.
 
 ## Out of scope
 
-- An RSS feed of news: the existing feed is for meetups; add a separate one when someone asks for it.
 - News on the home page.
 
 ## Acceptance
