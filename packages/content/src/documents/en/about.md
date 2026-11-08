@@ -35,4 +35,6 @@ The [chat @moscowcss_chat](https://t.me/moscowcss_chat) is where you ask the spe
 
 ### Speak at a meetup
 
-Read the [speaker guide](https://gist.github.com/LenaVladi/5f196be72b5a2bca9a4c5869cf2b2088) and write to the organisers in Telegram: [@RinaPa](https://t.me/RinaPa), [@DreamShaded](https://t.me/DreamShaded), [@Ppppst](https://t.me/Ppppst). Tell them the topic and a few words about the talk: they will help with the programme and the preparation. Speakers' data is processed under the [personal data policy](https://css.moscow/en/privacy/).
+We look above all for frontend developers, markup developers and interface designers, and welcome managers and developer advocates. We are about development after all, so technical talks come first, and a meetup usually has one talk on management or soft skills.
+
+Read the [speaker guide](https://css.moscow/en/speaker-guide/) and write to the organisers in Telegram: [@RinaPa](https://t.me/RinaPa), [@DreamShaded](https://t.me/DreamShaded), [@Ppppst](https://t.me/Ppppst). Tell them the topic and a few words about the talk: they will help with the programme and the preparation. Speakers' data is processed under the [personal data policy](https://css.moscow/en/privacy/).

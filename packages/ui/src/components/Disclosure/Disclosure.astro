@@ -1,0 +1,21 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { body, root, summary as summaryClass } from './Disclosure.css';
+
+// Нативный details раскрывается без JavaScript и сам сообщает экранным читалкам, открыт ли он.
+const Tag = 'details';
+
+interface Props extends HTMLAttributes<typeof Tag> {
+  /** Заголовок, по нажатию на который блок раскрывается */
+  summary: string;
+}
+
+const { summary, class: className, ...attrs } = Astro.props;
+---
+
+<Tag class:list={[root, className]} {...attrs}>
+  <summary class={summaryClass}>{summary}</summary>
+  <div class={body}>
+    <slot />
+  </div>
+</Tag>

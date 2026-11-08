@@ -114,10 +114,13 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
 - **Header** links go across the site, not to home sections: History (`/events/`), Talks,
   Speakers, Reviews (only with a published review), About (`/about/`, which also holds the Contacts section), Search (`src/layouts/nav.ts`); the current section gets
   `aria-current`. Registration is the floating button.
-- **Footer** (`@moscowcss/ui` `Footer`, wired in `BaseLayout`): the star links home, then the policy page and the
-  Telegram channel (`src/layouts/footer.ts`), and `© 2015–<build year>`. 2015 is the year the community began; the
+- **Footer** (`@moscowcss/ui` `Footer`, wired in `BaseLayout`): the star links home, then the speaker guide (new tab),
+  the policy page and the Telegram channel (`src/layouts/footer.ts`), and `© 2015–<build year>`. 2015 is the year the community began; the
   end year is Moscow time at build, so the nightly rebuild turns it over. The body is a flex column, so the footer
   stays at the bottom of a short page. `data-floating-cta` on the floating button makes the footer leave room for it.
+- **Speaker guide** (`/speaker-guide/`, a document with `topics` as a `Disclosure`) opens in a new tab from the
+  footer and from any content link: `NEW_TAB_PATHS` in `src/content/markdown-safety.ts`, so a reader returns to the
+  form or the FAQ.
 - **Documents** (`documents` collection) render at `/<name>/` via
   `pages/[...locale]/[document].astro` and are public pages in `src/seo/pages.ts`
   (kind `document`, no JSON-LD). The meetup page hides the registration link once

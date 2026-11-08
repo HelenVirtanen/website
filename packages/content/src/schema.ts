@@ -245,5 +245,12 @@ export const FaqSchema = z.object({
 export const DocumentSchema = z.object({
   title: z.string().min(1).max(70),
   description: z.string().min(50).max(160),
+  // Раскрывающийся список в конце документа, например примеры тем в памятке спикеру.
+  topics: z
+    .object({
+      summary: z.string().min(1),
+      items: z.array(z.string().min(1)).min(1),
+    })
+    .optional(),
   draft: z.boolean().default(false),
 });

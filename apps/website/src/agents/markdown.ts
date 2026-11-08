@@ -155,7 +155,12 @@ export function markdownOf(page: PublicPage, catalog: MarkdownCatalog, context: 
     }
 
     case 'document':
-      return document([`# ${page.entry.data.title}`, '', page.entry.body?.trim()]);
+      return document([
+        `# ${page.entry.data.title}`,
+        '',
+        page.entry.body?.trim(),
+        ...(page.entry.data.topics ? ['', `## ${page.entry.data.topics.summary}`, '', ...page.entry.data.topics.items.map((item) => `- ${item}`)] : []),
+      ]);
 
     case 'reviews': {
       const { title, description } = page.entry.data;

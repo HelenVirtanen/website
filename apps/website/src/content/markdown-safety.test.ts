@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { isExternalUrl, isSafeUrl, markdownSafetyPlugin, MarkdownSafetyError } from './markdown-safety';
+import { isExternalUrl, isSafeUrl, opensInNewTab, markdownSafetyPlugin, MarkdownSafetyError } from './markdown-safety';
 
 // resolve: на Windows путь файла без диска не считается абсолютным.
 const filePath = resolve('/repo/packages/content/src/talks/ru/x.md');
@@ -32,6 +32,20 @@ describe('isExternalUrl', () => {
     expect(isExternalUrl('https://t.me/moscowcss')).toBe(true);
     for (const url of ['https://css.moscow/events/31/', '/talks/x/', '#faq', 'mailto:hi@css.moscow']) {
       expect(isExternalUrl(url), url).toBe(false);
+    }
+  });
+});
+
+describe('opensInNewTab', () => {
+  it('чужой сайт и памятка спикеру — в новой вкладке', () => {
+    for (const url of ['https://t.me/moscowcss', 'https://css.moscow/speaker-guide/', '/en/speaker-guide/', 'https://css.moscow/speaker-guide/#slides']) {
+      expect(opensInNewTab(url), url).toBe(true);
+    }
+  });
+
+  it('остальные страницы сайта — в той же вкладке', () => {
+    for (const url of ['https://css.moscow/privacy/', '/events/', '#organizers', '/speakers/']) {
+      expect(opensInNewTab(url), url).toBe(false);
     }
   });
 });

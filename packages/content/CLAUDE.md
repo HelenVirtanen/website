@@ -75,7 +75,8 @@ Decision record: `adr/001-content-model-md-relations.md`.
   did not keep them — never fill them in from guesswork. Meetup `photosUrl` links
   an external photo album; the registration link is hidden on past meetups.
 - **`documents`** are standalone pages without a section prefix
-  (`documents/ru/privacy.md` → `/privacy/`; also `about`, which ends with the Contacts section).
+  (`documents/ru/privacy.md` → `/privacy/`; also `about`, which ends with the Contacts section, and
+  `speaker-guide`). Optional `topics` (`summary` + plain-text `items`) renders as a closed `Disclosure` after the body.
 - `README.md` here is for editors and is written in Russian; keep its field
   table in sync with `src/schema.ts`.
 

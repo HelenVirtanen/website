@@ -20,6 +20,20 @@ export function isExternalUrl(value: string): boolean {
   }
 }
 
+// Страницы сайта, которые читают по ходу дела: памятку открывают из FAQ и возвращаются к форме заявки.
+export const NEW_TAB_PATHS: ReadonlySet<string> = new Set(['/speaker-guide/', '/en/speaker-guide/']);
+
+/** Ссылка открывается в новой вкладке: чужой сайт или страница из NEW_TAB_PATHS. */
+export function opensInNewTab(value: string): boolean {
+  if (isExternalUrl(value)) return true;
+  try {
+    const url = new URL(value, BASE);
+    return url.host === SITE_HOST && NEW_TAB_PATHS.has(url.pathname);
+  } catch {
+    return false;
+  }
+}
+
 /** Адрес безопасен в href/src: после разрешения от сайта схема https или mailto. */
 export function isSafeUrl(value: string): boolean {
   try {
@@ -59,7 +73,7 @@ interface ElementNode {
   readonly properties?: Readonly<Record<string, unknown>>;
 }
 
-/** hast-плагин процессора satteri: сырой HTML и опасные ссылки роняют сборку, внешние ссылки — в новой вкладке. */
+/** hast-плагин процессора satteri: сырой HTML и опасные ссылки роняют сборку, внешние ссылки и памятка — в новой вкладке. */
 export const markdownSafetyPlugin = {
   name: 'moscowcss-markdown-safety',
   raw(_node: unknown, ctx: VisitorContext): void {
@@ -74,8 +88,8 @@ export const markdownSafetyPlugin = {
       if (!isSafeUrl(value)) {
         reject(ctx.fileURL, `адрес «${value}» в ${attribute} — разрешены только https://, mailto: и адреса сайта`);
       }
-      // Внешняя ссылка открывается в новой вкладке; noopener не даёт чужой странице управлять нашей.
-      if (node.tagName === 'a' && isExternalUrl(value)) {
+      // noopener не даёт открытой странице управлять нашей.
+      if (node.tagName === 'a' && opensInNewTab(value)) {
         ctx.setProperty(node, 'target', '_blank');
         ctx.setProperty(node, 'rel', 'noopener noreferrer');
       }
