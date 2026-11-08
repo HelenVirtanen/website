@@ -4,7 +4,7 @@ role: "Frontend developer"
 links:
   - label: "Telegram"
     url: "https://t.me/CosyFrontendNastia"
-photo: ../assets/anastasiya-maltseva.png
+photo: ../assets/anastasiya-maltseva.jpg
 ---
 
 A frontend developer and a speaker at HolyJS, FrontendConf, MoscowJS, PiterJS, ErevanJS and Dump Piter.
