@@ -57,6 +57,8 @@ help:
       - "A projector, TV screens or monitors to show the slides"
       - "Sound and a microphone strong enough for a voice in a room that size"
       - "A stream and a recording of the talks in decent quality"
+      - "Pizza and water: the meetup is an evening after work, and fed guests think about the talks, not about being tired"
+      - "A photographer: yours, or ours if you let them in"
   venues:
     title: "We have been hosted by"
     text: "Every meetup takes place at a company's venue. Want to host us again or become a new partner? Write to us."
