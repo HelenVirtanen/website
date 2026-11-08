@@ -21,13 +21,10 @@ contacts:
         - label: "Photo albums"
           url: "https://vk.ru/albums-139668978"
     - title: "Meetup registration"
-      text: "Registration for every meetup opens here. Follow the organiser to get an email about the next meetup."
+      text: "We announce meetups on the site and in Telegram, and guests register here, whichever is more convenient. On Timepad, follow the organiser to get an email about the next meetup. On Networkly you can join the community, add meetups to your calendar and apply to give a talk."
       links:
         - label: "Timepad"
           url: "https://moscowcss.timepad.ru/"
-    - title: "The community on Networkly"
-      text: "An alternative way to register for meetups. You can also join the community, add meetups to your calendar and apply to give a talk."
-      links:
         - label: "Networkly"
           url: "https://networkly.app/community/moscowcss"
     - title: "Discussions and questions"
