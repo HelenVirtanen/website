@@ -1,311 +1,305 @@
-# Видео докладов
+# Доклады: видео и слайды
 
-Сводка по докладам из `packages/content/src/talks/ru` на 2026-11-08, поле `videoUrl`. Источники: канал [@Moscowcss](https://www.youtube.com/@Moscowcss) (49 видео, 21 плейлист по митапам) и таймкоды в описаниях полных записей.
+Что есть у каждого доклада прошедших митапов на 2026-11-08. Цель: у каждого доклада отдельный ролик на YouTube, отдельный ролик в VK Видео и ссылка на слайды. Отчёт собран из `packages/content/src/talks`; живой список дел — в задачах по митапам.
 
 ## Итого
 
-Докладов на прошедших митапах: 106.
+Докладов: 106.
 
-- Нарезка на канале @Moscowcss: 45 (митапы 1–5, 10–17, 20).
-- Таймкод в полной записи: 21 (митапы 18, 19, 21–24; ссылка открывает запись с начала доклада).
-- Нарезка на канале спикера: 1 (Лиза Галковская, митап 25).
-- Онлайн-встреча с одним докладом, запись целиком: 2.
-- Нет нарезки, есть полная запись митапа: 17.
-- Нет видео совсем: 20.
+- YouTube, отдельный ролик: 48 (нарезки на канале [@Moscowcss](https://www.youtube.com/@Moscowcss) — 45, на канале спикера — 1, онлайн-встречи с одним докладом — 2).
+- Ссылка с таймкодом на запись митапа: 21 (митапы 18, 19, 21–24). Нужно нарезать отдельные ролики.
+- Только запись всего митапа, без таймкода: 17. На странице доклада стоит ссылка «Запись митапа»; нужны таймкоды и нарезка.
+- Записи нет совсем: 20.
+- VK Видео: 0. Поле для ссылки появится в [#15](https://github.com/moscowcss-meetup/website/issues/15).
+- Слайды: 0.
+- Без описания в одном из языков: 0. Спикеров без фото: 21.
 
-Все нарезки с канала @Moscowcss уже привязаны к докладам. Для митапов 6–9, 18, 19, 21–30 нарезок на канале нет.
+## Где искать записи
 
-## Что осталось без видео
+- Канал [@Moscowcss](https://www.youtube.com/@Moscowcss): нарезки митапов 1–5, 10–17, 20 и полные записи 18, 19, 21–24, всё уже на сайте.
+- Описания полных записей 18, 19, 21–24 содержат таймкоды. У «Фигурок в css» (23) таймкода нет.
+- Митап 26 записан на канале Yandex for Frontend без таймкодов. Митапы 25, 27, 29, 30 записаны только в VK Видео.
 
-- **«Фигурки в css», Александр Литвин (23).** В описании записи у доклада нет таймкода, начало нужно найти вручную в [записи](https://www.youtube.com/watch?v=cYgw9LGvb7k).
-- **«Видимо-невидимо», Людмила Мжачих (10).** В плейлисте moscowcss_10 три нарезки из четырёх, этой нет.
-- **Митап 26 (Яндекс).** Запись на канале Yandex for Frontend без таймкодов, время докладов нужно отметить вручную.
-- **Митапы 25, 27, 29, 30.** Полные записи в VK Видео, на YouTube их нет. Таймкоды для VK не собирались.
-- **Митапы 6–9, 28, 31.** Записи нет ни целиком, ни нарезками.
-
-## Те же доклады на других мероприятиях
-
-Это не записи MoscowCSS, поэтому на страницы докладов они не добавлены. Пригодятся, если записи с митапа нет.
+Те же доклады с других мероприятий. Это не записи MoscowCSS, на сайт они не идут, но помогут, если записи с митапа нет:
 
 | Доклад (митап) | Где ещё рассказан |
 | --- | --- |
 | «Про HTML», Сергей Попов (9) | [Yandex for Frontend](https://www.youtube.com/watch?v=m-8PBkQQD7g), [pitercss_meetup](https://www.youtube.com/watch?v=ZFbIcMkw8bs) |
 | «Через тернии к АТМ», Дима Королёв (8) | [RSCONF 2019](https://www.youtube.com/watch?v=o2exQHyRZdA) |
-| «Трудности перевода», Саша Ермоленко (6) | [Rambler&Co, «Проектирование дизайн-системы Рамблера: трудности перевода»](https://www.youtube.com/watch?v=KSCkKxjgwLo) |
+| «Трудности перевода», Саша Ермоленко (6) | [Rambler&Co](https://www.youtube.com/watch?v=KSCkKxjgwLo) |
 | «Браузерные инструменты на страже перформанса», Алексей Иванов (23) | [Moscow QA](https://www.youtube.com/watch?v=oBKbUoFtAEw), [Heisenbug](https://www.youtube.com/watch?v=WroJikjigpg) |
 | «Менторы-Дементоры», Антон Волков (28) | [SPbTech Talks #14](https://www.youtube.com/watch?v=RGPIfAWY-h4) |
 | «Вы не знаете БЭМ», Роман Ганин (30) | [BEMup](https://www.youtube.com/watch?v=d4dcGj8abv0) |
-| «CSS-анимации в корпоративных проектах», Роман Троицкий (19) | близкий по теме доклад на [HolyJS](https://www.youtube.com/watch?v=NWUNmE39aSM) |
 
 ## По митапам
 
-### MoscowCSS 1 (2017-03-02)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Несколько фишек CSS, о которых вы могли не знать | Людмила Мжачих | [смотреть](https://www.youtube.com/watch?v=1BS4V5r_HQQ) | нарезка на канале @Moscowcss |
-| CSS-методологии от О до Б | Алексей Охрименко | [смотреть](https://www.youtube.com/watch?v=1VM-vEItVeA) | нарезка на канале @Moscowcss |
-| Векторная графика в вебе | Арсений Попов | [смотреть](https://www.youtube.com/watch?v=RdwdaHiBxxY) | нарезка на канале @Moscowcss |
-
-### MoscowCSS 2 (2017-04-06)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Пора начинать фыркать – Grid Layout уже здесь | Сергей Попов | [смотреть](https://www.youtube.com/watch?v=GdG6Mv-HDLs) | нарезка на канале @Moscowcss |
-| Недокументированные приемы CSS | Дмитрий Григоров | [смотреть](https://www.youtube.com/watch?v=fIAokeTWgGU) | нарезка на канале @Moscowcss |
-| Следим за CSS | Дарья Пушкарская | [смотреть](https://www.youtube.com/watch?v=67ZnhTpsH-Y) | нарезка на канале @Moscowcss |
-
-### MoscowCSS 3 (2017-05-18)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Atomic CSS в дикой природе | Савва Михалевский | [смотреть](https://www.youtube.com/watch?v=MyPU8bqvDzY) | нарезка на канале @Moscowcss |
-| FONTend Optimization | Андрей Смирнов | [смотреть](https://www.youtube.com/watch?v=o39tg3BgABw) | нарезка на канале @Moscowcss |
-| Топ-15 ваших ошибок CSS | Елена Семёнова | [смотреть](https://www.youtube.com/watch?v=Y63XbOM6Kzw) | нарезка на канале @Moscowcss |
-
-### MoscowCSS 4 (2017-09-07)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| CSS и HTML — это язык программирования | Алексей Охрименко | [смотреть](https://www.youtube.com/watch?v=KmMWxnqVYYM) | нарезка на канале @Moscowcss |
-| Пишем игры без JavaScript | Леонид Лебедев | [смотреть](https://www.youtube.com/watch?v=Lj68Ite2DOc) | нарезка на канале @Moscowcss |
-| Обратная сторона UI Kit. О проблеме кастомизации UI в платформе или как стать цербером на пути к нерациональной красоте | Максим Панов | [смотреть](https://www.youtube.com/watch?v=Z1v9IWKh7aU) | нарезка на канале @Moscowcss |
-
-### MoscowCSS 5 (2017-10-31)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Верстальщик: Наследие | Сергей Попов | [смотреть](https://www.youtube.com/watch?v=y7Aba5Nppio) | нарезка на канале @Moscowcss |
-| Адаптивный SVG | Артём Нечунаев | [смотреть](https://www.youtube.com/watch?v=M3BKdrBgmYU) | нарезка на канале @Moscowcss |
-| WebP: что это и как нам это использовать | Игорь Лесневский | [смотреть](https://www.youtube.com/watch?v=R3FbcemvoEo) | нарезка на канале @Moscowcss |
-
-### MoscowCSS 6 (2017-12-07)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| 10 простых правил дизайна для фронтенда | Миша Розов | — | нет видео |
-| Трудности перевода: процессы дизайн-разработка | Саша Ермоленко | — | нет видео |
-| Яндекс.Красота – дизайн для миллионов | Антон Виноградов | — | нет видео |
-
-### MoscowCSS 7 (2018-03-06)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| В мире компонентов. СSSinJS | Александр Шаталов | — | нет видео |
-| Рендеринг шрифтов в веб | Андрей Яманов | — | нет видео |
-| Производительность верстки | Алексей Охрименко | — | нет видео |
-
-### MoscowCSS 8 (2018-05-15)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Использование CSS Grid Layout с поддержкой IE | Евгений Петухов | — | нет видео |
-| Типизация в CSS — способ усложнить себе жизнь? | Людмила Мжачих | — | нет видео |
-| Дизайн-система Mail.Ru Paradigm | Юрий Ветров | — | нет видео |
-| Через тернии к АТМ | Дима Королев | — | нет видео |
-
-### MoscowCSS 9 (2018-10-02)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Про HTML | Сергей Попов | — | нет видео |
-| Компоненты для быстрой разработки | Алекс Редер | — | нет видео |
-| Жизнь после cssnext | Евгений Петухов | — | нет видео |
+### MoscowCSS 1 (2017-03-02) · задача [#18](https://github.com/moscowcss-meetup/website/issues/18)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Несколько фишек CSS, о которых вы могли не знать](https://css.moscow/talks/css-features-you-might-not-know/) | Людмила Мжачих | [✅ нарезка](https://www.youtube.com/watch?v=1BS4V5r_HQQ) | ❌ | ❌ |
+| [CSS-методологии от О до Б](https://css.moscow/talks/css-methodologies-a-to-b/) | Алексей Охрименко | [✅ нарезка](https://www.youtube.com/watch?v=1VM-vEItVeA) | ❌ | ❌ |
+| [Векторная графика в вебе](https://css.moscow/talks/vector-graphics-on-the-web/) | Арсений Попов | [✅ нарезка](https://www.youtube.com/watch?v=RdwdaHiBxxY) | ❌ | ❌ |
+
+### MoscowCSS 2 (2017-04-06) · задача [#19](https://github.com/moscowcss-meetup/website/issues/19)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Пора начинать фыркать – Grid Layout уже здесь](https://css.moscow/talks/time-to-snort-grid-layout/) | Сергей Попов | [✅ нарезка](https://www.youtube.com/watch?v=GdG6Mv-HDLs) | ❌ | ❌ |
+| [Недокументированные приемы CSS](https://css.moscow/talks/undocumented-css-tricks/) | Дмитрий Григоров | [✅ нарезка](https://www.youtube.com/watch?v=fIAokeTWgGU) | ❌ | ❌ |
+| [Следим за CSS](https://css.moscow/talks/watching-over-css/) | Дарья Пушкарская | [✅ нарезка](https://www.youtube.com/watch?v=67ZnhTpsH-Y) | ❌ | ❌ |
+
+### MoscowCSS 3 (2017-05-18) · задача [#20](https://github.com/moscowcss-meetup/website/issues/20)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Atomic CSS в дикой природе](https://css.moscow/talks/atomic-css-in-the-wild/) | Савва Михалевский | [✅ нарезка](https://www.youtube.com/watch?v=MyPU8bqvDzY) | ❌ | ❌ |
+| [FONTend Optimization](https://css.moscow/talks/fontend-optimization/) | Андрей Смирнов | [✅ нарезка](https://www.youtube.com/watch?v=o39tg3BgABw) | ❌ | ❌ |
+| [Топ-15 ваших ошибок CSS](https://css.moscow/talks/top-15-css-mistakes/) | Елена Семёнова | [✅ нарезка](https://www.youtube.com/watch?v=Y63XbOM6Kzw) | ❌ | ❌ |
+
+### MoscowCSS 4 (2017-09-07) · задача [#21](https://github.com/moscowcss-meetup/website/issues/21)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [CSS и HTML — это язык программирования](https://css.moscow/talks/css-and-html-are-a-programming-language/) | Алексей Охрименко | [✅ нарезка](https://www.youtube.com/watch?v=KmMWxnqVYYM) | ❌ | ❌ |
+| [Пишем игры без JavaScript](https://css.moscow/talks/games-without-javascript/) | Леонид Лебедев | [✅ нарезка](https://www.youtube.com/watch?v=Lj68Ite2DOc) | ❌ | ❌ |
+| [Обратная сторона UI Kit. О проблеме кастомизации UI в платформе или как стать цербером на пути к нерациональной красоте](https://css.moscow/talks/ui-kit-downside/) | Максим Панов | [✅ нарезка](https://www.youtube.com/watch?v=Z1v9IWKh7aU) | ❌ | ❌ |
+
+### MoscowCSS 5 (2017-10-31) · задача [#22](https://github.com/moscowcss-meetup/website/issues/22)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Верстальщик: Наследие](https://css.moscow/talks/markup-developer-legacy/) | Сергей Попов | [✅ нарезка](https://www.youtube.com/watch?v=y7Aba5Nppio) | ❌ | ❌ |
+| [Адаптивный SVG](https://css.moscow/talks/responsive-svg/) | Артём Нечунаев | [✅ нарезка](https://www.youtube.com/watch?v=M3BKdrBgmYU) | ❌ | ❌ |
+| [WebP: что это и как нам это использовать](https://css.moscow/talks/webp-what-it-is-and-how-to-use-it/) | Игорь Лесневский | [✅ нарезка](https://www.youtube.com/watch?v=R3FbcemvoEo) | ❌ | ❌ |
+
+### MoscowCSS 6 (2017-12-07) · задача [#23](https://github.com/moscowcss-meetup/website/issues/23)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [10 простых правил дизайна для фронтенда](https://css.moscow/talks/10-simple-design-rules-for-frontend/) | Миша Розов | ❌ нет | ❌ | ❌ |
+| [Трудности перевода: процессы дизайн-разработка](https://css.moscow/talks/lost-in-translation-design-development/) | Саша Ермоленко | ❌ нет | ❌ | ❌ |
+| [Яндекс.Красота – дизайн для миллионов](https://css.moscow/talks/yandex-beauty-design-for-millions/) | Антон Виноградов | ❌ нет | ❌ | ❌ |
+
+### MoscowCSS 7 (2018-03-06) · задача [#24](https://github.com/moscowcss-meetup/website/issues/24)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [В мире компонентов. СSSinJS](https://css.moscow/talks/css-in-js-components/) | Александр Шаталов | ❌ нет | ❌ | ❌ |
+| [Рендеринг шрифтов в веб](https://css.moscow/talks/font-rendering-on-the-web/) | Андрей Яманов | ❌ нет | ❌ | ❌ |
+| [Производительность верстки](https://css.moscow/talks/layout-performance/) | Алексей Охрименко | ❌ нет | ❌ | ❌ |
+
+### MoscowCSS 8 (2018-05-15) · задача [#25](https://github.com/moscowcss-meetup/website/issues/25)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Использование CSS Grid Layout с поддержкой IE](https://css.moscow/talks/css-grid-layout-with-ie-support/) | Евгений Петухов | ❌ нет | ❌ | ❌ |
+| [Типизация в CSS — способ усложнить себе жизнь?](https://css.moscow/talks/css-typed-object-model/) | Людмила Мжачих | ❌ нет | ❌ | ❌ |
+| [Дизайн-система Mail.Ru Paradigm](https://css.moscow/talks/mail-ru-paradigm-design-system/) | Юрий Ветров | ❌ нет | ❌ | ❌ |
+| [Через тернии к АТМ](https://css.moscow/talks/through-thorns-to-atm/) | Дима Королев | ❌ нет | ❌ | ❌ |
+
+### MoscowCSS 9 (2018-10-02) · задача [#26](https://github.com/moscowcss-meetup/website/issues/26)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Про HTML](https://css.moscow/talks/about-html/) | Сергей Попов | ❌ нет | ❌ | ❌ |
+| [Компоненты для быстрой разработки](https://css.moscow/talks/components-for-fast-development/) | Алекс Редер | ❌ нет | ❌ | ❌ |
+| [Жизнь после cssnext](https://css.moscow/talks/life-after-cssnext/) | Евгений Петухов | ❌ нет | ❌ | ❌ |
 
-### MoscowCSS 10 (2018-12-04)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Производительность анимаций. Как не застрять в кадрах | Дмитрий Долженко | [смотреть](https://www.youtube.com/watch?v=PVWQHZOuAnw) | нарезка на канале @Moscowcss |
-| Видимо-невидимо. Охотимся на визуальные регрессии | Людмила Мжачих | — | нет видео |
-| Стилизация переиспользуемых UI компонентов | Олег Лыкасов | [смотреть](https://www.youtube.com/watch?v=zyITxD-z7qQ) | нарезка на канале @Moscowcss |
-| Дизайн-система Tinkoff.ru | Никита Прилепский | [смотреть](https://www.youtube.com/watch?v=qGNwQULq9co) | нарезка на канале @Moscowcss |
-
-### MoscowCSS 11 (2019-03-25) · [полная запись](https://www.youtube.com/watch?v=ijZTu7aVJtg)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Тестирование фронтенда для разработчиков | Александра Шинкевич | [смотреть](https://www.youtube.com/watch?v=mSWMSmaGrEo) | нарезка на канале @Moscowcss |
-| Давайте не будем ждать? | Алексей Попков | [смотреть](https://www.youtube.com/watch?v=h3Do8UZAAWU) | нарезка на канале @Moscowcss |
-| MacOS Driven Development | Никита Дубко | [смотреть](https://www.youtube.com/watch?v=w39AWcIMbZ4) | нарезка на канале @Moscowcss |
-| Как приручить токены | Виктория Дубровская, Георгий Бузин | [смотреть](https://www.youtube.com/watch?v=dNie86pSw24) | нарезка на канале @Moscowcss |
-
-### MoscowCSS 12 (2019-05-14) · [полная запись](https://www.youtube.com/watch?v=LHOJybXuMdc)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Великие художники воруют | Алексей Охрименко | [смотреть](https://www.youtube.com/watch?v=yyUpfhR5ScE) | нарезка на канале @Moscowcss |
-| Про SVG простым и понятным языком | Никита Борисов | [смотреть](https://www.youtube.com/watch?v=Bf8bTOS0sNI) | нарезка на канале @Moscowcss |
-| Рабочая эффективность: как я пытался обуздать свой день | Игорь Лесневский | [смотреть](https://www.youtube.com/watch?v=0RykI_wj4mU) | нарезка на канале @Moscowcss |
-
-### MoscowCSS 13 (2019-06-18)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Старт дизайн-системы в небольшом продукте / стартапе | Алиса Смелкова | [смотреть](https://www.youtube.com/watch?v=G6oPs4Fn3L4) | нарезка на канале @Moscowcss |
-| Скрываем фокус правильно | Александр Плесовчких | [смотреть](https://www.youtube.com/watch?v=O4B5N92hQSg) | нарезка на канале @Moscowcss |
-| Как понять, что пора уволиться? | Анастасия Калашникова | [смотреть](https://www.youtube.com/watch?v=_e5Rbl1i_js) | нарезка на канале @Moscowcss |
-| «Почему именно я?», или Junior Frontend-разработчик глазами окружающих | Ирина Фролова | [смотреть](https://www.youtube.com/watch?v=lrv_skRkmts) | нарезка на канале @Moscowcss |
+### MoscowCSS 10 (2018-12-04) · задача [#27](https://github.com/moscowcss-meetup/website/issues/27)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Производительность анимаций. Как не застрять в кадрах](https://css.moscow/talks/animation-performance/) | Дмитрий Долженко | [✅ нарезка](https://www.youtube.com/watch?v=PVWQHZOuAnw) | ❌ | ❌ |
+| [Видимо-невидимо. Охотимся на визуальные регрессии](https://css.moscow/talks/hunting-visual-regressions/) | Людмила Мжачих | ❌ нет | ❌ | ❌ |
+| [Стилизация переиспользуемых UI компонентов](https://css.moscow/talks/styling-reusable-ui-components/) | Олег Лыкасов | [✅ нарезка](https://www.youtube.com/watch?v=zyITxD-z7qQ) | ❌ | ❌ |
+| [Дизайн-система Tinkoff.ru](https://css.moscow/talks/tinkoff-design-system/) | Никита Прилепский | [✅ нарезка](https://www.youtube.com/watch?v=qGNwQULq9co) | ❌ | ❌ |
+
+### MoscowCSS 11 (2019-03-25) · [полная запись](https://www.youtube.com/watch?v=ijZTu7aVJtg) · задача [#28](https://github.com/moscowcss-meetup/website/issues/28)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Тестирование фронтенда для разработчиков](https://css.moscow/talks/frontend-testing-for-developers/) | Александра Шинкевич | [✅ нарезка](https://www.youtube.com/watch?v=mSWMSmaGrEo) | ❌ | ❌ |
+| [Давайте не будем ждать?](https://css.moscow/talks/lets-not-wait/) | Алексей Попков | [✅ нарезка](https://www.youtube.com/watch?v=h3Do8UZAAWU) | ❌ | ❌ |
+| [MacOS Driven Development](https://css.moscow/talks/macos-driven-development/) | Никита Дубко | [✅ нарезка](https://www.youtube.com/watch?v=w39AWcIMbZ4) | ❌ | ❌ |
+| [Как приручить токены](https://css.moscow/talks/taming-design-tokens/) | Виктория Дубровская, Георгий Бузин | [✅ нарезка](https://www.youtube.com/watch?v=dNie86pSw24) | ❌ | ❌ |
+
+### MoscowCSS 12 (2019-05-14) · [полная запись](https://www.youtube.com/watch?v=LHOJybXuMdc) · задача [#29](https://github.com/moscowcss-meetup/website/issues/29)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Великие художники воруют](https://css.moscow/talks/great-artists-steal/) | Алексей Охрименко | [✅ нарезка](https://www.youtube.com/watch?v=yyUpfhR5ScE) | ❌ | ❌ |
+| [Про SVG простым и понятным языком](https://css.moscow/talks/svg-in-plain-language/) | Никита Борисов | [✅ нарезка](https://www.youtube.com/watch?v=Bf8bTOS0sNI) | ❌ | ❌ |
+| [Рабочая эффективность: как я пытался обуздать свой день](https://css.moscow/talks/work-efficiency-taming-my-day/) | Игорь Лесневский | [✅ нарезка](https://www.youtube.com/watch?v=0RykI_wj4mU) | ❌ | ❌ |
+
+### MoscowCSS 13 (2019-06-18) · задача [#30](https://github.com/moscowcss-meetup/website/issues/30)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Старт дизайн-системы в небольшом продукте / стартапе](https://css.moscow/talks/design-system-for-a-startup/) | Алиса Смелкова | [✅ нарезка](https://www.youtube.com/watch?v=G6oPs4Fn3L4) | ❌ | ❌ |
+| [Скрываем фокус правильно](https://css.moscow/talks/hiding-focus-properly/) | Александр Плесовчких | [✅ нарезка](https://www.youtube.com/watch?v=O4B5N92hQSg) | ❌ | ❌ |
+| [Как понять, что пора уволиться?](https://css.moscow/talks/when-to-quit/) | Анастасия Калашникова | [✅ нарезка](https://www.youtube.com/watch?v=_e5Rbl1i_js) | ❌ | ❌ |
+| [«Почему именно я?», или Junior Frontend-разработчик глазами окружающих](https://css.moscow/talks/why-me-junior-frontend/) | Ирина Фролова | [✅ нарезка](https://www.youtube.com/watch?v=lrv_skRkmts) | ❌ | ❌ |
 
-### MoscowCSS 14 (2019-07-25) · [полная запись](https://www.youtube.com/watch?v=F2orkQYKOI8)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| CSS: время прощаться… | Андрей Яманов | [смотреть](https://www.youtube.com/watch?v=CeDdgCDq86s) | нарезка на канале @Moscowcss |
-| Жизненный цикл презентации и основные принципы её создания | Мария Кутузова | [смотреть](https://www.youtube.com/watch?v=meEUD3v4Hq8) | нарезка на канале @Moscowcss |
-| Зачем учить учиться и учиться учить? | Алексей Попков | [смотреть](https://www.youtube.com/watch?v=_XczxtpLxQ0) | нарезка на канале @Moscowcss |
+### MoscowCSS 14 (2019-07-25) · [полная запись](https://www.youtube.com/watch?v=F2orkQYKOI8) · задача [#31](https://github.com/moscowcss-meetup/website/issues/31)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [CSS: время прощаться…](https://css.moscow/talks/css-time-to-say-goodbye/) | Андрей Яманов | [✅ нарезка](https://www.youtube.com/watch?v=CeDdgCDq86s) | ❌ | ❌ |
+| [Жизненный цикл презентации и основные принципы её создания](https://css.moscow/talks/presentation-life-cycle/) | Мария Кутузова | [✅ нарезка](https://www.youtube.com/watch?v=meEUD3v4Hq8) | ❌ | ❌ |
+| [Зачем учить учиться и учиться учить?](https://css.moscow/talks/why-teach-to-learn/) | Алексей Попков | [✅ нарезка](https://www.youtube.com/watch?v=_XczxtpLxQ0) | ❌ | ❌ |
 
-### MoscowCSS 15 (2019-10-29) · [полная запись](https://www.youtube.com/watch?v=0QaeK_E8Ptc)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Система именования переменных в css | Мария Нагорных | [смотреть](https://www.youtube.com/watch?v=5QVnY8lJ6d8) | нарезка на канале @Moscowcss |
-| Расширение возможностей CSS с Houdini | Маша Стогова | [смотреть](https://www.youtube.com/watch?v=x0nD8VUScmc) | нарезка на канале @Moscowcss |
-| SPA на чистом CSS | Иван Бабков | [смотреть](https://www.youtube.com/watch?v=o5nOs4n18xY) | нарезка на канале @Moscowcss |
-
-### MoscowCSS 16 (2019-12-03) · [полная запись](https://www.youtube.com/watch?v=TGbNBoFJ66s)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| BRAND х UI | Никита Морозов, Николай Коробов | [смотреть](https://www.youtube.com/watch?v=nXMAMXzNb2c) | нарезка на канале @Moscowcss |
-| В погоне за перфомансом | Даниил Крохмаль | [смотреть](https://www.youtube.com/watch?v=wbTEDA8A4xY) | нарезка на канале @Moscowcss |
-| Рецепт востребованного верстальщика: дизайн + код | Анна Блок | [смотреть](https://www.youtube.com/watch?v=0T9NIqp4W9o) | нарезка на канале @Moscowcss |
-| Разработка универсальных библиотек компонентов для платформы по созданию сайтов | Игорь Лесневский | [смотреть](https://www.youtube.com/watch?v=5gfcWaKJEUY) | нарезка на канале @Moscowcss |
+### MoscowCSS 15 (2019-10-29) · [полная запись](https://www.youtube.com/watch?v=0QaeK_E8Ptc) · задача [#32](https://github.com/moscowcss-meetup/website/issues/32)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Система именования переменных в css](https://css.moscow/talks/css-variable-naming/) | Мария Нагорных | [✅ нарезка](https://www.youtube.com/watch?v=5QVnY8lJ6d8) | ❌ | ❌ |
+| [Расширение возможностей CSS с Houdini](https://css.moscow/talks/extending-css-with-houdini/) | Маша Стогова | [✅ нарезка](https://www.youtube.com/watch?v=x0nD8VUScmc) | ❌ | ❌ |
+| [SPA на чистом CSS](https://css.moscow/talks/spa-in-pure-css/) | Иван Бабков | [✅ нарезка](https://www.youtube.com/watch?v=o5nOs4n18xY) | ❌ | ❌ |
+
+### MoscowCSS 16 (2019-12-03) · [полная запись](https://www.youtube.com/watch?v=TGbNBoFJ66s) · задача [#33](https://github.com/moscowcss-meetup/website/issues/33)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [BRAND х UI](https://css.moscow/talks/brand-x-ui/) | Никита Морозов, Николай Коробов | [✅ нарезка](https://www.youtube.com/watch?v=nXMAMXzNb2c) | ❌ | ❌ |
+| [В погоне за перфомансом](https://css.moscow/talks/chasing-performance/) | Даниил Крохмаль | [✅ нарезка](https://www.youtube.com/watch?v=wbTEDA8A4xY) | ❌ | ❌ |
+| [Рецепт востребованного верстальщика: дизайн + код](https://css.moscow/talks/designer-plus-code-recipe/) | Анна Блок | [✅ нарезка](https://www.youtube.com/watch?v=0T9NIqp4W9o) | ❌ | ❌ |
+| [Разработка универсальных библиотек компонентов для платформы по созданию сайтов](https://css.moscow/talks/universal-component-libraries/) | Игорь Лесневский | [✅ нарезка](https://www.youtube.com/watch?v=5gfcWaKJEUY) | ❌ | ❌ |
 
-### MoscowCSS 17 (2020-02-06)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Особенности CSS в веб-компонентах | Артём Гусев | [смотреть](https://www.youtube.com/watch?v=XgciQKPyMqU) | нарезка на канале @Moscowcss |
-| Custom properties: переменные или свойства? | Мария Нагорных | [смотреть](https://www.youtube.com/watch?v=rBrsm4_Dk0Y) | нарезка на канале @Moscowcss |
-| Как понять дизайнера и больше погрузиться в продукт? | Ксения Майорова | [смотреть](https://www.youtube.com/watch?v=dif07leiGI4) | нарезка на канале @Moscowcss |
+### MoscowCSS 17 (2020-02-06) · задача [#34](https://github.com/moscowcss-meetup/website/issues/34)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Особенности CSS в веб-компонентах](https://css.moscow/talks/css-in-web-components/) | Артём Гусев | [✅ нарезка](https://www.youtube.com/watch?v=XgciQKPyMqU) | ❌ | ❌ |
+| [Custom properties: переменные или свойства?](https://css.moscow/talks/custom-properties-variables-or-properties/) | Мария Нагорных | [✅ нарезка](https://www.youtube.com/watch?v=rBrsm4_Dk0Y) | ❌ | ❌ |
+| [Как понять дизайнера и больше погрузиться в продукт?](https://css.moscow/talks/understanding-the-designer/) | Ксения Майорова | [✅ нарезка](https://www.youtube.com/watch?v=dif07leiGI4) | ❌ | ❌ |
 
-### Онлайн-встреча (2021-12-21) · [полная запись](https://www.youtube.com/watch?v=NTFZtJXIVIQ)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Магия цвета | Андрей Яманов | [смотреть](https://www.youtube.com/watch?v=NTFZtJXIVIQ) | онлайн-встреча с одним докладом |
-
-### MoscowCSS 18 (2022-09-22) · [полная запись](https://www.youtube.com/watch?v=VKzK1VkD-LU)
+### Онлайн-встреча 2021 (2021-12-21) · [полная запись](https://www.youtube.com/watch?v=NTFZtJXIVIQ) · задача [#35](https://github.com/moscowcss-meetup/website/issues/35)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Магия цвета](https://css.moscow/talks/magic-of-color/) | Андрей Яманов | [✅ запись онлайн-встречи](https://www.youtube.com/watch?v=NTFZtJXIVIQ) | ❌ | ❌ |
+
+### MoscowCSS 18 (2022-09-22) · [полная запись](https://www.youtube.com/watch?v=VKzK1VkD-LU) · задача [#36](https://github.com/moscowcss-meetup/website/issues/36)
 
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Значения в CSS: от декларации до отображения | София Валитова | [смотреть](https://www.youtube.com/watch?v=VKzK1VkD-LU&t=4709s) | таймкод в полной записи |
-| CSS, который вы ~забыли~ заслужили | Илья Оловянников | [смотреть](https://www.youtube.com/watch?v=VKzK1VkD-LU&t=2210s) | таймкод в полной записи |
-| Там, где заканчивается макет и начинается верстка | Дмитрий Шкульник | [смотреть](https://www.youtube.com/watch?v=VKzK1VkD-LU&t=1000s) | таймкод в полной записи |
-
-### MoscowCSS 19 (2022-12-20) · [полная запись](https://www.youtube.com/watch?v=joo2SXJXW6Q)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| CSS-анимации в корпоративных проектах | Роман Троицкий | [смотреть](https://www.youtube.com/watch?v=joo2SXJXW6Q&t=1463s) | таймкод в полной записи |
-| Какие навыки действительно нужны фронтендеру для начала работы? | Сергей Соломка | [смотреть](https://www.youtube.com/watch?v=joo2SXJXW6Q&t=3080s) | таймкод в полной записи |
-| Неизведанный LengthLand | Павел Коршиков | [смотреть](https://www.youtube.com/watch?v=joo2SXJXW6Q&t=4797s) | таймкод в полной записи |
-
-### 19+ (онлайн) (2023-01-26) · [полная запись](https://www.youtube.com/watch?v=Ptlv_HZ8UFc)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Неизведанный LengthLand (расширенная версия): стань Length Lord'ом своих макетов | Павел Коршиков | [смотреть](https://www.youtube.com/watch?v=Ptlv_HZ8UFc) | онлайн-встреча с одним докладом |
-
-### MoscowCSS 20 (2023-03-22) · [полная запись](https://www.youtube.com/live/dhjDOhQHnuA)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Как подружить дизайнера с фронтенд-разработчиком | Алексей Авдеев | [смотреть](https://www.youtube.com/watch?v=PFLTSfIt_G4) | нарезка на канале @Moscowcss |
-| Эксперименты - просто о сложном | Алина Ваниева | [смотреть](https://www.youtube.com/watch?v=_TYXe3hVMvM) | нарезка на канале @Moscowcss |
-| Tailwind-css: Поздравляю, у вас стартап! Или нет? | Александр Водолазских | [смотреть](https://www.youtube.com/watch?v=WliFSy9kXr8) | нарезка на канале @Moscowcss |
-
-### MoscowCSS 22 (2023-07-06) · [полная запись](https://www.youtube.com/watch?v=KCDraR68_bA)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Новые единицы измерения в CSS заставят плакать. Или нет? | Анна Блок | [смотреть](https://www.youtube.com/watch?v=KCDraR68_bA&t=1530s) | таймкод в полной записи |
-| IndieWeb, или Ваш контент принадлежит вам | Никита Дубко | [смотреть](https://www.youtube.com/watch?v=KCDraR68_bA&t=7900s) | таймкод в полной записи |
-| Как выжить junior разработчику в 2023 году: взгляд с двух сторон | Александр Ермолов | [смотреть](https://www.youtube.com/watch?v=KCDraR68_bA&t=5440s) | таймкод в полной записи |
-| SVG анимация | Антон Чередниченко | [смотреть](https://www.youtube.com/watch?v=KCDraR68_bA&t=3275s) | таймкод в полной записи |
-
-### MoscowCSS 21 (2023-09-28) · [полная запись](https://www.youtube.com/watch?v=cVDcrZHdbKo)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| CSS-раскладки — что такое и как их готовить | Лев Солнцев | [смотреть](https://www.youtube.com/watch?v=cVDcrZHdbKo&t=480s) | таймкод в полной записи |
-| 5 стадий принятия аналитики | Дарья Корчуганова | [смотреть](https://www.youtube.com/watch?v=cVDcrZHdbKo&t=3416s) | таймкод в полной записи |
-| Зачем компании развивают IT-бренд? | Ионна Авагян | [смотреть](https://www.youtube.com/watch?v=cVDcrZHdbKo&t=4966s) | таймкод в полной записи |
-
-### MoscowCSS 23 (2023-12-14) · [полная запись](https://www.youtube.com/watch?v=cYgw9LGvb7k)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Браузерные инструменты на страже перформанса | Алексей Иванов | [смотреть](https://www.youtube.com/watch?v=cYgw9LGvb7k&t=3999s) | таймкод в полной записи |
-| Синергия дизайнера и разработчика: как эффективно работать вместе | Наталья Сережникова | [смотреть](https://www.youtube.com/watch?v=cYgw9LGvb7k&t=639s) | таймкод в полной записи |
-| Frontend, что я понял за 2 года или 55 заповедей разработчика | Александр Ермолов | [смотреть](https://www.youtube.com/watch?v=cYgw9LGvb7k&t=5579s) | таймкод в полной записи |
-| Фигурки в css | Александр Литвин | — | нет нарезки, есть полная запись митапа |
-
-### MoscowCSS 24 (2024-02-15) · [полная запись](https://www.youtube.com/watch?v=jrcQ5puY8ew)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| От кода до пикселей: Как браузер рендерит веб страницу | Олег Соловьев | [смотреть](https://www.youtube.com/watch?v=jrcQ5puY8ew&t=6971s) | таймкод в полной записи |
-| Легаси технология, о которой полезно знать | Анастасия Ярош | [смотреть](https://www.youtube.com/watch?v=jrcQ5puY8ew&t=1244s) | таймкод в полной записи |
-| Вспоминаем про Houdini | Антон Непша | [смотреть](https://www.youtube.com/watch?v=jrcQ5puY8ew&t=5557s) | таймкод в полной записи |
-| Как настроить код, который правит сам себя? | Владимир Морозов | [смотреть](https://www.youtube.com/watch?v=jrcQ5puY8ew&t=175s) | таймкод в полной записи |
-| Storybook как средство тестирования | Алексей Николаев | [смотреть](https://www.youtube.com/watch?v=jrcQ5puY8ew&t=3987s) | таймкод в полной записи |
-
-### MoscowCSS 25 (2024-04-22) · [полная запись](https://vk.com/video-225485687_456239017)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| CSS-анимации с точки зрения браузера | Анна Расторгуева | — | нет нарезки, есть полная запись митапа |
-| Не бросайте джунов в яму! Мы не Спарта! | Сергей Шалыгин | — | нет нарезки, есть полная запись митапа |
-| Войти в ИТ как по маслу | Лиза Галковская | [смотреть](https://www.youtube.com/watch?v=05dwdTA-X08) | нарезка на канале спикера |
-| Библиотека стилей, или как не скачать слона | Егор Левченко | — | нет нарезки, есть полная запись митапа |
-
-### MoscowCSS 26 (2024-06-19) · [полная запись](https://www.youtube.com/watch?v=bPgiOkMyxJQ)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Редактор CSS на CSS | Никита Дубко | — | нет нарезки, есть полная запись митапа |
-| Миксуй палитру как настоящий художник | Анна Ширяева | — | нет нарезки, есть полная запись митапа |
-| Способы реализации от простых до управляемых timeline анимаций | Владислав Худяков | — | нет нарезки, есть полная запись митапа |
-
-### MoscowCSS 27 (2024-08-22) · [полная запись](https://vk.com/video-13392530_456239339)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Shadcn — Чужой в матроске | Анастасия Ярош | — | нет нарезки, есть полная запись митапа |
-| View Transitions API: анимируем переходы по ссылкам в википедии | Николай Константинов | — | нет нарезки, есть полная запись митапа |
-| Вам (почти) не нужны медиазапросы | Илья Крупнов | — | нет нарезки, есть полная запись митапа |
-
-### MoscowCSS 28 (2025-06-26)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Анимации без js | Анна Расторгуева | — | нет видео |
-| Дизайн-система как генератор времени. Как перестать делать одно и тоже и, наконец, заняться важным. | Александр Никулин | — | нет видео |
-| Менторы-Дементоры. Или как правильно расти о внешнюю экспертизу, и зачем делиться знаниями в эту GPT 🤪 | Антон Волков | — | нет видео |
-
-### MoscowCSS 29 (2025-11-06) · [полная запись](https://vkvideo.ru/video-167479002_456239487)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| Как пойти на авторское право, а не на авторское лево? | Анна Лапа | — | нет нарезки, есть полная запись митапа |
-| CSS без брейкпоинтов: адаптивные интерфейсы на container queries, :has() и каскад‑слоях | Александра Фомакина | — | нет нарезки, есть полная запись митапа |
-| Данные по ссылке + 4 нюанса | Роман Троицкий | — | нет нарезки, есть полная запись митапа |
-| Сила псевдоселекторов в современном CSS | Дмитрий Борисенко | — | нет нарезки, есть полная запись митапа |
-
-### MoscowCSS 30 (2026-05-28) · [полная запись](https://vkvideo.ru/video-167479002_456239521)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| CSS как API: токенизация дизайн-системы в 2026 | Анастасия Мальцева | — | нет нарезки, есть полная запись митапа |
-| Дизайн без дизайнера: базовые принципы, которые помогут разработчику собрать сайт, не убивающий конверсию | Анастасия Шек | — | нет нарезки, есть полная запись митапа |
-| Вы не знаете БЭМ, или почему БЭМ — пережиток прошлого | Роман Ганин | — | нет нарезки, есть полная запись митапа |
-
-### MoscowCSS 31 (2026-07-09)
-
-| Доклад | Спикер | Видео | Что это |
-| --- | --- | --- | --- |
-| БРОСАЕМ ЯКОРЬ. НОВАЯ ЭРА НАТИВНЫХ ТУЛТИПОВ И ПОПОВЕРОВ | Анна Расторгуева | — | нет видео |
-| CSS КОТОРЫЙ ВЫ ПРОПУСТИЛ — А ЗРЯ. 8 НАТИВНЫХ ФИЧ, КОТОРЫЕ ЗАМЕНЯТ КОСТЫЛИ | Денис Макушин | — | нет видео |
-| ЕСЛИ БИЗНЕС НЕ ИГРАЕТ — ЕМУ КАПЕЦ | Дарья Егорова | — | нет видео |
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Там, где заканчивается макет и начинается верстка](https://css.moscow/talks/where-the-mockup-ends-and-markup-begins/) | Дмитрий Шкульник | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=VKzK1VkD-LU&t=1000s) | ❌ | ❌ |
+| [CSS, который вы ~забыли~ заслужили](https://css.moscow/talks/css-you-deserved/) | Илья Оловянников | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=VKzK1VkD-LU&t=2210s) | ❌ | ❌ |
+| [Значения в CSS: от декларации до отображения](https://css.moscow/talks/css-values-from-declaration-to-display/) | София Валитова | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=VKzK1VkD-LU&t=4709s) | ❌ | ❌ |
+
+### MoscowCSS 19 (2022-12-20) · [полная запись](https://www.youtube.com/watch?v=joo2SXJXW6Q) · задача [#37](https://github.com/moscowcss-meetup/website/issues/37)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [CSS-анимации в корпоративных проектах](https://css.moscow/talks/css-animations-in-enterprise-projects/) | Роман Троицкий | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=joo2SXJXW6Q&t=1463s) | ❌ | ❌ |
+| [Какие навыки действительно нужны фронтендеру для начала работы?](https://css.moscow/talks/skills-a-frontend-beginner-needs/) | Сергей Соломка | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=joo2SXJXW6Q&t=3080s) | ❌ | ❌ |
+| [Неизведанный LengthLand](https://css.moscow/talks/unexplored-lengthland/) | Павел Коршиков | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=joo2SXJXW6Q&t=4797s) | ❌ | ❌ |
+
+### MoscowCSS 19+ (онлайн) (2023-01-26) · [полная запись](https://www.youtube.com/watch?v=Ptlv_HZ8UFc) · задача [#38](https://github.com/moscowcss-meetup/website/issues/38)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Неизведанный LengthLand (расширенная версия): стань Length Lord'ом своих макетов](https://css.moscow/talks/unexplored-lengthland-extended/) | Павел Коршиков | [✅ запись онлайн-встречи](https://www.youtube.com/watch?v=Ptlv_HZ8UFc) | ❌ | ❌ |
+
+### MoscowCSS 20 (2023-03-22) · [полная запись](https://www.youtube.com/live/dhjDOhQHnuA) · задача [#39](https://github.com/moscowcss-meetup/website/issues/39)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Tailwind-css: Поздравляю, у вас стартап! Или нет?](https://css.moscow/talks/tailwind-css-startup-or-not/) | Александр Водолазских | [✅ нарезка](https://www.youtube.com/watch?v=WliFSy9kXr8) | ❌ | ❌ |
+| [Эксперименты - просто о сложном](https://css.moscow/talks/experiments-simply-about-complex/) | Алина Ваниева | [✅ нарезка](https://www.youtube.com/watch?v=_TYXe3hVMvM) | ❌ | ❌ |
+| [Как подружить дизайнера с фронтенд-разработчиком](https://css.moscow/talks/befriending-designer-and-frontend-developer/) | Алексей Авдеев | [✅ нарезка](https://www.youtube.com/watch?v=PFLTSfIt_G4) | ❌ | ❌ |
+
+### MoscowCSS 22 (2023-07-06) · [полная запись](https://www.youtube.com/watch?v=KCDraR68_bA) · задача [#40](https://github.com/moscowcss-meetup/website/issues/40)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Новые единицы измерения в CSS заставят плакать. Или нет?](https://css.moscow/talks/css-container-query-units/) | Анна Блок | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=KCDraR68_bA&t=1530s) | ❌ | ❌ |
+| [SVG анимация](https://css.moscow/talks/svg-animation/) | Антон Чередниченко | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=KCDraR68_bA&t=3275s) | ❌ | ❌ |
+| [Как выжить junior разработчику в 2023 году: взгляд с двух сторон](https://css.moscow/talks/surviving-as-a-junior-in-2023/) | Александр Ермолов | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=KCDraR68_bA&t=5440s) | ❌ | ❌ |
+| [IndieWeb, или Ваш контент принадлежит вам](https://css.moscow/talks/indieweb/) | Никита Дубко | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=KCDraR68_bA&t=7900s) | ❌ | ❌ |
+
+### MoscowCSS 21 (2023-09-28) · [полная запись](https://www.youtube.com/watch?v=cVDcrZHdbKo) · задача [#41](https://github.com/moscowcss-meetup/website/issues/41)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [CSS-раскладки — что такое и как их готовить](https://css.moscow/talks/css-layouts-and-how-to-cook-them/) | Лев Солнцев | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=cVDcrZHdbKo&t=480s) | ❌ | ❌ |
+| [5 стадий принятия аналитики](https://css.moscow/talks/five-stages-of-accepting-analytics/) | Дарья Корчуганова | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=cVDcrZHdbKo&t=3416s) | ❌ | ❌ |
+| [Зачем компании развивают IT-бренд?](https://css.moscow/talks/why-companies-build-it-brand/) | Ионна Авагян | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=cVDcrZHdbKo&t=4966s) | ❌ | ❌ |
+
+### MoscowCSS 23 (2023-12-14) · [полная запись](https://www.youtube.com/watch?v=cYgw9LGvb7k) · задача [#42](https://github.com/moscowcss-meetup/website/issues/42)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Браузерные инструменты на страже перформанса](https://css.moscow/talks/browser-tools-guarding-performance/) | Алексей Иванов | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=cYgw9LGvb7k&t=3999s) | ❌ | ❌ |
+| [Синергия дизайнера и разработчика: как эффективно работать вместе](https://css.moscow/talks/designer-developer-synergy/) | Наталья Сережникова | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=cYgw9LGvb7k&t=639s) | ❌ | ❌ |
+| [Frontend, что я понял за 2 года или 55 заповедей разработчика](https://css.moscow/talks/frontend-55-commandments/) | Александр Ермолов | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=cYgw9LGvb7k&t=5579s) | ❌ | ❌ |
+| [Фигурки в css](https://css.moscow/talks/shapes-in-css/) | Александр Литвин | 🟡 только запись митапа | ❌ | ❌ |
+
+### MoscowCSS 24 (2024-02-15) · [полная запись](https://www.youtube.com/watch?v=jrcQ5puY8ew) · задача [#43](https://github.com/moscowcss-meetup/website/issues/43)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Как настроить код, который правит сам себя?](https://css.moscow/talks/self-fixing-code-setup/) | Владимир Морозов | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=jrcQ5puY8ew&t=175s) | ❌ | ❌ |
+| [Легаси технология, о которой полезно знать](https://css.moscow/talks/legacy-technology-worth-knowing/) | Анастасия Ярош | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=jrcQ5puY8ew&t=1244s) | ❌ | ❌ |
+| [Storybook как средство тестирования](https://css.moscow/talks/storybook-as-a-testing-tool/) | Алексей Николаев | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=jrcQ5puY8ew&t=3987s) | ❌ | ❌ |
+| [Вспоминаем про Houdini](https://css.moscow/talks/remembering-houdini/) | Антон Непша | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=jrcQ5puY8ew&t=5557s) | ❌ | ❌ |
+| [От кода до пикселей: Как браузер рендерит веб страницу](https://css.moscow/talks/from-code-to-pixels/) | Олег Соловьев | [🟡 таймкод в записи митапа](https://www.youtube.com/watch?v=jrcQ5puY8ew&t=6971s) | ❌ | ❌ |
+
+### MoscowCSS 25 (2024-04-22) · [полная запись](https://vk.com/video-225485687_456239017) · задача [#44](https://github.com/moscowcss-meetup/website/issues/44)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [CSS-анимации с точки зрения браузера](https://css.moscow/talks/css-animations-browser-view/) | Анна Расторгуева | 🟡 запись митапа только в VK | ❌ | ❌ |
+| [Библиотека стилей, или как не скачать слона](https://css.moscow/talks/style-library-not-downloading-an-elephant/) | Егор Левченко | 🟡 запись митапа только в VK | ❌ | ❌ |
+| [Не бросайте джунов в яму! Мы не Спарта!](https://css.moscow/talks/dont-throw-juniors-in-the-pit/) | Сергей Шалыгин | 🟡 запись митапа только в VK | ❌ | ❌ |
+| [Войти в ИТ как по маслу](https://css.moscow/talks/getting-into-it-smoothly/) | Лиза Галковская | [✅ нарезка (канал спикера)](https://www.youtube.com/watch?v=05dwdTA-X08) | ❌ | ❌ |
+
+### MoscowCSS 26 (2024-06-19) · [полная запись](https://www.youtube.com/watch?v=bPgiOkMyxJQ) · задача [#45](https://github.com/moscowcss-meetup/website/issues/45)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Редактор CSS на CSS](https://css.moscow/talks/css-editor-in-css/) | Никита Дубко | 🟡 только запись митапа | ❌ | ❌ |
+| [Способы реализации от простых до управляемых timeline анимаций](https://css.moscow/talks/timeline-animation-approaches/) | Владислав Худяков | 🟡 только запись митапа | ❌ | ❌ |
+| [Миксуй палитру как настоящий художник](https://css.moscow/talks/mixing-palette-like-an-artist/) | Анна Ширяева | 🟡 только запись митапа | ❌ | ❌ |
+
+### MoscowCSS 27 (2024-08-22) · [полная запись](https://vk.com/video-13392530_456239339) · задача [#46](https://github.com/moscowcss-meetup/website/issues/46)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Shadcn — Чужой в матроске](https://css.moscow/talks/shadcn-alien-in-a-matryoshka/) | Анастасия Ярош | 🟡 запись митапа только в VK | ❌ | ❌ |
+| [View Transitions API: анимируем переходы по ссылкам в википедии](https://css.moscow/talks/view-transitions-wikipedia/) | Николай Константинов | 🟡 запись митапа только в VK | ❌ | ❌ |
+| [Вам (почти) не нужны медиазапросы](https://css.moscow/talks/you-dont-need-media-queries/) | Илья Крупнов | 🟡 запись митапа только в VK | ❌ | ❌ |
+
+### MoscowCSS 28 (2025-06-26) · задача [#47](https://github.com/moscowcss-meetup/website/issues/47)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Анимации без js](https://css.moscow/talks/animations-without-js/) | Анна Расторгуева | ❌ нет | ❌ | ❌ |
+| [Дизайн-система как генератор времени. Как перестать делать одно и тоже и, наконец, заняться важным.](https://css.moscow/talks/design-system-as-time-generator/) | Александр Никулин | ❌ нет | ❌ | ❌ |
+| [Менторы-Дементоры. Или как правильно расти о внешнюю экспертизу, и зачем делиться знаниями в эту GPT 🤪](https://css.moscow/talks/mentors-dementors/) | Антон Волков | ❌ нет | ❌ | ❌ |
+
+### MoscowCSS 29 (2025-11-06) · [полная запись](https://vkvideo.ru/video-167479002_456239487) · задача [#48](https://github.com/moscowcss-meetup/website/issues/48)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [Как пойти на авторское право, а не на авторское лево?](https://css.moscow/talks/copyright-for-developers/) | Анна Лапа | 🟡 запись митапа только в VK | ❌ | ❌ |
+| [CSS без брейкпоинтов: адаптивные интерфейсы на container queries, :has() и каскад‑слоях](https://css.moscow/talks/css-without-breakpoints/) | Александра Фомакина | 🟡 запись митапа только в VK | ❌ | ❌ |
+| [Данные по ссылке + 4 нюанса](https://css.moscow/talks/data-by-link-and-4-nuances/) | Роман Троицкий | 🟡 запись митапа только в VK | ❌ | ❌ |
+| [Сила псевдоселекторов в современном CSS](https://css.moscow/talks/power-of-pseudo-selectors/) | Дмитрий Борисенко | 🟡 запись митапа только в VK | ❌ | ❌ |
+
+### MoscowCSS 30 (2026-05-28) · [полная запись](https://vkvideo.ru/video-167479002_456239521) · задача [#49](https://github.com/moscowcss-meetup/website/issues/49)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [CSS как API: токенизация дизайн-системы в 2026](https://css.moscow/talks/css-as-api-design-tokens/) | Анастасия Мальцева | 🟡 запись митапа только в VK | ❌ | ❌ |
+| [Дизайн без дизайнера: базовые принципы, которые помогут разработчику собрать сайт, не убивающий конверсию](https://css.moscow/talks/design-without-designer/) | Анастасия Шек | 🟡 запись митапа только в VK | ❌ | ❌ |
+| [Вы не знаете БЭМ, или почему БЭМ — пережиток прошлого](https://css.moscow/talks/you-dont-know-bem/) | Роман Ганин | 🟡 запись митапа только в VK | ❌ | ❌ |
+
+### MoscowCSS 31 (2026-07-09) · задача [#50](https://github.com/moscowcss-meetup/website/issues/50)
+
+| Доклад | Спикер | YouTube | VK Видео | Слайды |
+| --- | --- | --- | --- | --- |
+| [ЕСЛИ БИЗНЕС НЕ ИГРАЕТ — ЕМУ КАПЕЦ](https://css.moscow/talks/gamification-in-business/) | Дарья Егорова | ❌ нет | ❌ | ❌ |
+| [CSS КОТОРЫЙ ВЫ ПРОПУСТИЛ — А ЗРЯ. 8 НАТИВНЫХ ФИЧ, КОТОРЫЕ ЗАМЕНЯТ КОСТЫЛИ](https://css.moscow/talks/css-features-you-missed/) | Денис Макушин | ❌ нет | ❌ | ❌ |
+| [БРОСАЕМ ЯКОРЬ. НОВАЯ ЭРА НАТИВНЫХ ТУЛТИПОВ И ПОПОВЕРОВ](https://css.moscow/talks/anchor-and-popover/) | Анна Расторгуева | ❌ нет | ❌ | ❌ |
