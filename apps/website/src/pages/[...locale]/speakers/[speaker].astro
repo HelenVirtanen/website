@@ -3,6 +3,7 @@ import type { GetStaticPaths } from 'astro';
 import { getImage } from 'astro:assets';
 import { render } from 'astro:content';
 import BlockTitle from '@moscowcss/ui/components/BlockTitle';
+import { stickerHref } from '@moscowcss/ui/components/ReviewWall';
 import Lightbox from '@moscowcss/ui/components/Lightbox';
 import Prose from '@moscowcss/ui/components/Prose';
 import TalkCard from '@moscowcss/ui/components/TalkCard';
@@ -11,11 +12,13 @@ import { eventLabel } from '../../../content/archive';
 import { loadCatalog, localeOf, slugOf, talksOfSpeaker, type SpeakerEntry } from '../../../content/catalog';
 import { eventDateParts, fillTemplate } from '../../../content/format';
 import { speakerImage } from '../../../content/speaker-image';
+import { publishedReviews } from '../../../content/reviews';
 import { talkCoverImage } from '../../../content/talk-cover-image';
 import { localizePath, useTranslations } from '../../../i18n';
 import { localeParam, pagesOfKind, publicPagesOf, type PublicPage } from '../../../seo/pages';
 import {
   action,
+  actionPrimary,
   actions,
   block,
   cards,
@@ -75,6 +78,9 @@ const talks = await Promise.all(
   })),
 );
 const events = [...new Map(appearances.map(({ event }) => [slugOf(event), event])).values()];
+// Отзыв спикера о сообществе: ссылка сразу открывает его окно на стене.
+const review = publishedReviews(catalog.reviews, locale).find((item) => item.data.speaker === slugOf(entry));
+const reviewLink = review && stickerHref(localizePath(locale, 'reviews'), slugOf(review));
 ---
 
 <BaseLayout title={`${name} — ${t('site.name')}`} description={role ?? name} lang={locale} alternates={alternates}>
@@ -115,8 +121,15 @@ const events = [...new Map(appearances.map(({ event }) => [slugOf(event), event]
             )
           }
           {
-            links.length > 0 && (
+            (links.length > 0 || reviewLink) && (
               <ul class={actions} aria-label={t('speaker.links')}>
+                {reviewLink && (
+                  <li>
+                    <a class:list={[action, actionPrimary]} href={reviewLink}>
+                      {t('speaker.review')}
+                    </a>
+                  </li>
+                )}
                 {links.map((link) => (
                   <li>
                     <a class={action} href={link.url} target="_blank" rel="noopener noreferrer">
