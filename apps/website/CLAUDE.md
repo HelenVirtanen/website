@@ -140,7 +140,7 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   links, shuffled on every load by `ShuffledList` (`@moscowcss/ui`). The Markdown twin lists them after the contacts.
 - **Help page** (`/help/`): a document with `help` renders through `components/HelpPage.astro` in the about page's
   language: numbered need cards with outlined `01…`, reach numbers from content next to the archive counts
-  (`aboutStatsOf`), an offer list, the venues of past meetups falling in a `TagPile` (`venuesOf` in
+  (`aboutStatsOf`), an offer list, what a venue needs to provide (`expect`, same square markers), the venues of past meetups falling in a `TagPile` (`venuesOf` in
   `src/content/help.ts`, tested: newest first, once each, online-only meetups skipped) and a black contact block. The
   footer links it on every page; the FAQ and the about page have a card for it.
 - **Speaker guide** (`/speaker-guide/`, a document with `topics` as a `Disclosure`) opens in a new tab from the

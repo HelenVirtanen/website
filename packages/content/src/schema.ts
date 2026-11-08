@@ -326,6 +326,8 @@ export const DocumentSchema = z.object({
           .min(1),
       }),
       offer: z.object({ title: z.string().min(1), items: z.array(z.string().min(1)).min(1) }),
+      // Чего ждём от площадки: тот же список, что «Что мы даём», с подводкой.
+      expect: z.object({ title: z.string().min(1), lead: z.string().min(1), items: z.array(z.string().min(1)).min(1) }),
       venues: z.object({ title: z.string().min(1), text: z.string().min(1) }),
       contact: LinkCardSchema,
     })

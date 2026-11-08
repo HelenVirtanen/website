@@ -106,7 +106,7 @@ export const numberNote = style({
   font: vars.font.shorthand.caption,
 });
 
-// Что даём — список со стрелкой-кавычкой, как пункты в карточке организатора.
+// Что даём и чего ждём — списки с маркером-квадратом.
 export const offer = style({
   margin: 0,
   padding: 0,
@@ -121,13 +121,22 @@ export const offerItem = style({
   borderBottom: `${vars.border.width.thin} ${vars.border.style.dashed} ${vars.color.border}`,
   font: vars.font.shorthand.heroLead,
   selectors: {
+    // Квадрат по центру первой строки: `1lh` — высота строки пункта, перенос текста его не сдвигает.
     '&::before': {
-      content: '">"',
-      color: vars.color.info,
-      font: vars.font.shorthand.ui,
-      lineHeight: 'inherit',
+      content: '""',
+      flexShrink: 0,
+      width: vars.spacing.s,
+      height: vars.spacing.s,
+      marginBlockStart: `calc((1lh - ${vars.spacing.s}) / 2)`,
+      background: vars.color.info,
     },
   },
+});
+
+export const expectLead = style({
+  margin: 0,
+  maxWidth: vars.size.reviewDialogWidth,
+  font: vars.font.shorthand.body,
 });
 
 export const venues = style({

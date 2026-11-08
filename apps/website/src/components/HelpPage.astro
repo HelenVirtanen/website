@@ -27,6 +27,7 @@ import {
   numbers,
   offer,
   offerItem,
+  expectLead,
   pile,
   sectionLead,
   venues,
@@ -136,6 +137,14 @@ const order = (index: number) => String(index + 1).padStart(2, '0');
       <BlockTitle id="help-offer">{help.offer.title}</BlockTitle>
       <ul class={offer}>
         {help.offer.items.map((item) => <li class={offerItem}>{item}</li>)}
+      </ul>
+    </section>
+
+    <section class={block} aria-labelledby="help-expect">
+      <BlockTitle id="help-expect">{help.expect.title}</BlockTitle>
+      <p class={expectLead}>{help.expect.lead}</p>
+      <ul class={offer}>
+        {help.expect.items.map((item) => <li class={offerItem}>{item}</li>)}
       </ul>
     </section>
 

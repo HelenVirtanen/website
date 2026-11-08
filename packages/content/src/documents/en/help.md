@@ -49,6 +49,14 @@ help:
       - "We come with an audience: frontend developers, layout developers, interface designers"
       - "A meetup announcement and a thank-you to the partner in the community's Telegram channel"
       - "Talk recordings and photos from the evening in the archive at css.moscow"
+  expect:
+    title: "What we need from a venue"
+    lead: "A meetup is an evening of three or four talks, questions to the speakers and chatting afterwards. To make it work, a partner provides:"
+    items:
+      - "A room for 50 people or more"
+      - "A projector, TV screens or monitors to show the slides"
+      - "Sound and a microphone strong enough for a voice in a room that size"
+      - "A stream and a recording of the talks in decent quality"
   venues:
     title: "We have been hosted by"
     text: "Every meetup takes place at a company's venue. Want to host us again or become a new partner? Write to us."
