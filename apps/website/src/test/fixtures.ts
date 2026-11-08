@@ -9,6 +9,7 @@ import type {
   ReviewEntry,
   PageEntry,
   PartnerEntry,
+  CommunityEntry,
   SpeakerData,
   SpeakerEntry,
   TalkData,
@@ -62,6 +63,22 @@ export function speaker(id: string, data: Partial<SpeakerData> = {}): SpeakerEnt
       name: 'Дарья Егорова',
       role: 'Дизайнер',
       photo: { src: '/daria.jpg', width: 1, height: 1, format: 'jpg' },
+      draft: false,
+      ...data,
+    },
+  };
+}
+
+export function community(id: string, data: Partial<CommunityEntry['data']> = {}): CommunityEntry {
+  return {
+    id,
+    filePath: filePathOf('communities', id),
+    body: 'Сообщество разработчиков.',
+    data: {
+      name: 'MoscowJS',
+      url: 'https://moscowjs.org/',
+      logo: { src: '/moscowjs.svg', width: 1, height: 1, format: 'svg' },
+      links: [],
       draft: false,
       ...data,
     },
@@ -156,6 +173,7 @@ export function twoMeetupsCatalog() {
     ],
     speakers: [speaker('ru/daria-egorova'), speaker('en/daria-egorova')],
     partners: [] as PartnerEntry[],
+    communities: [] as CommunityEntry[],
     organizers: [] as OrganizerEntry[],
     reviews: [] as ReviewEntry[],
     pages: [] as PageEntry[],

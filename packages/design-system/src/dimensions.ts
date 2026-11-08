@@ -13,6 +13,10 @@ export const dimensions = {
   mapFrame: {
     aspectRatio: '1280 / 583',
   },
+  // Плашка логотипа дружественного сообщества: логотипы разной формы вписываются в одну полосу.
+  communityLogo: {
+    aspectRatio: '5 / 2',
+  },
   mediaTile: {
     aspectRatio: '413.3333435058594 / 309.1412658691406',
   },

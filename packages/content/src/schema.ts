@@ -251,6 +251,17 @@ export const createPartnerSchema = (image: ImageFunction) =>
     draft: z.boolean().default(false),
   });
 
+// Дружественное сообщество на странице «О сообществе»: логотип на светлой плашке, описание — тело файла.
+export const createCommunitySchema = (image: ImageFunction) =>
+  z.object({
+    name: z.string().min(1),
+    url,
+    logo: image(),
+    // Кнопки под описанием; без них карточка ведёт только по ссылке на логотипе и названии.
+    links: z.array(z.object({ label: z.string().min(1), url })).default([]),
+    draft: z.boolean().default(false),
+  });
+
 export const FaqSchema = z.object({
   title: z.string().min(1),
   // Порядок карточек: меньше — левее.

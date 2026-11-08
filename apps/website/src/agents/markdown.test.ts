@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { document, event, page, speaker, talk, twoMeetupsCatalog } from '../test/fixtures';
+import { community, document, event, page, speaker, talk, twoMeetupsCatalog } from '../test/fixtures';
 import { publicPagesOf } from '../seo/pages';
 import { markdownOf, markdownPathOf } from './markdown';
 
@@ -95,5 +95,21 @@ describe('markdownOf', () => {
     expect(text.startsWith('# ')).toBe(true);
     expect(text.endsWith('\n')).toBe(true);
     expect(text.endsWith('\n\n')).toBe(false);
+  });
+
+  it('о сообществе: дружественные сообщества со ссылками после контактов', () => {
+    const data = {
+      ...catalog(),
+      documents: [document('ru/about', { contacts: { lead: 'Пишите нам.', items: [] } })],
+      communities: [
+        community('ru/moscowjs', { links: [{ label: 'Telegram', url: 'https://t.me/moscowjs' }] }),
+        community('ru/hidden', { name: 'Черновик', draft: true }),
+      ],
+    };
+    const text = markdownAt('/about/', data);
+    expect(text).toContain(
+      '## Дружественные сообщества\n\n### [MoscowJS](https://moscowjs.org/)\n\nСообщество разработчиков.\n\n- [Telegram](https://t.me/moscowjs)',
+    );
+    expect(text).not.toContain('Черновик');
   });
 });

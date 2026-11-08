@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { aboutPhotosOf, aboutStatsOf, pluralFormOf } from './about';
-import { event, speaker, talk } from '../test/fixtures';
+import { aboutPhotosOf, aboutStatsOf, communitiesOf, pluralFormOf } from './about';
+import { community, event, speaker, talk } from '../test/fixtures';
 
 type Gallery = ReturnType<typeof aboutPhotosOf>;
 const shots = (prefix: string, count: number): Gallery =>
@@ -42,5 +42,18 @@ describe('pluralFormOf', () => {
 
   it('английский: one и всё остальное', () => {
     expect([1, 2, 35].map((n) => pluralFormOf(n, 'en'))).toEqual(['one', 'many', 'many']);
+  });
+});
+
+describe('communitiesOf', () => {
+  it('берёт опубликованные сообщества языка страницы по названию', () => {
+    const entries = [
+      community('ru/reworked', { name: 'reWorked' }),
+      community('ru/moscowqa', { name: 'Moscow QA' }),
+      community('ru/draft', { name: 'Черновик', draft: true }),
+      community('en/moscowqa', { name: 'Moscow QA' }),
+      community('ru/it-hozyaeva', { name: 'IT-ХОЗЯЕВА' }),
+    ];
+    expect(communitiesOf(entries, 'ru').map((entry) => entry.id)).toEqual(['ru/it-hozyaeva', 'ru/moscowqa', 'ru/reworked']);
   });
 });

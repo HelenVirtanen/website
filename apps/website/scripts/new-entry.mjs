@@ -7,6 +7,7 @@
 //   pnpm new:faq <имя>           → faq/{ru,en}/<имя>.md
 //   pnpm new:organizer <имя>     → organizers/{ru,en}/<имя>.md
 //   pnpm new:review <имя>        → reviews/{ru,en}/<имя>.md
+//   pnpm new:community <имя>     → communities/{ru,en}/<имя>.md
 //
 // Шаблоны лежат вне src/, поэтому на сайт не попадают. Существующие файлы скрипт не перезаписывает:
 // при любом конфликте он ничего не создаёт.
@@ -28,6 +29,7 @@ export const KINDS = {
   faq: { collection: 'faq', name: SLUG, hint: 'например pnpm new:faq afterparty' },
   organizer: { collection: 'organizers', name: SLUG, hint: 'например pnpm new:organizer roman-troitsky' },
   review: { collection: 'reviews', name: SLUG, hint: 'например pnpm new:review anna-ivanova' },
+  community: { collection: 'communities', name: SLUG, hint: 'например pnpm new:community moscowjs' },
 };
 
 const root = fileURLToPath(new URL('../../../packages/content/', import.meta.url));

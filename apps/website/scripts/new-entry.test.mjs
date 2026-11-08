@@ -13,6 +13,7 @@ import {
   createReviewSchema,
   createTalkSchema,
   createSpeakerSchema,
+  createCommunitySchema,
 } from '@moscowcss/content/schema';
 import { DEFAULT_DIRS, isoDate, KINDS, LOCALES, planEntry, runNewEntry } from './new-entry.mjs';
 
@@ -25,6 +26,7 @@ const SCHEMAS = {
   faq: FaqSchema,
   organizer: createOrganizerSchema(() => z.string()),
   review: createReviewSchema(() => z.string()),
+  community: createCommunitySchema(() => z.string()),
 };
 
 // Шаблоны настоящие (packages/content/templates), контент во временной папке: тест ловит и поломку

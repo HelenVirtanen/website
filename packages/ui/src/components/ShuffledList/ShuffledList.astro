@@ -1,0 +1,21 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { root } from './ShuffledList.css';
+
+const Tag = 'ul';
+
+// Порядок без JavaScript — как в разметке; скрипт перемешивает пункты при каждой загрузке.
+interface Props extends HTMLAttributes<typeof Tag> {}
+
+const { class: className, ...attrs } = Astro.props;
+---
+
+<Tag class:list={[root, className]} data-shuffled-list {...attrs}>
+  <slot />
+</Tag>
+
+<script>
+  import { setupShuffledList } from './ShuffledList.client';
+
+  document.querySelectorAll<HTMLElement>('[data-shuffled-list]').forEach(setupShuffledList);
+</script>

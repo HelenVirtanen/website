@@ -33,3 +33,10 @@ export function pluralFormOf(count: number, locale: string): PluralForm {
   const rule = new Intl.PluralRules(locale).select(count);
   return rule === 'one' || rule === 'few' ? rule : 'many';
 }
+
+/** Дружественные сообщества языка страницы по названию: порядок без JavaScript и в Markdown-двойнике, на странице их перемешивает скрипт. */
+export function communitiesOf(communities: Catalog['communities'], locale: string): Catalog['communities'] {
+  return communities
+    .filter((entry) => localeOf(entry) === locale && !entry.data.draft)
+    .sort((a, b) => a.data.name.localeCompare(b.data.name, locale));
+}

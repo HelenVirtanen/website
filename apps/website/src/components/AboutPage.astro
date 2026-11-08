@@ -4,7 +4,8 @@ import { render } from 'astro:content';
 import BlockTitle from '@moscowcss/ui/components/BlockTitle';
 import Lightbox from '@moscowcss/ui/components/Lightbox';
 import Prose from '@moscowcss/ui/components/Prose';
-import { aboutPhotosOf, aboutStatsOf, pluralFormOf } from '../content/about';
+import ShuffledList from '@moscowcss/ui/components/ShuffledList';
+import { aboutPhotosOf, aboutStatsOf, communitiesOf, pluralFormOf } from '../content/about';
 import { loadCatalog, type DocumentEntry } from '../content/catalog';
 import { opensInNewTab } from '../content/markdown-safety';
 import { useTranslations, type Locale } from '../i18n';
@@ -27,7 +28,7 @@ import {
   title as titleClass,
   topRow,
 } from './DetailPage.css';
-import { card, cardText, cardTitle, contactsLead, stat, statLabel, statValue, stats } from './AboutPage.css';
+import { card, cardBody, cardText, cardTitle, contactsLead, logo, logoPlate, stat, statLabel, statValue, stats } from './AboutPage.css';
 
 interface Props {
   entry: DocumentEntry;
@@ -52,6 +53,21 @@ const pictures = await Promise.all(
     const thumb = await getImage({ src: item.image, width: Math.min(index === 0 ? 1000 : 600, item.image.width), format: 'webp' });
     const full = await getImage({ src: item.image, width: Math.min(1600, item.image.width), format: 'webp' });
     return { alt: item.alt, thumb: thumb.src, full: full.src, width: thumb.attributes['width'], height: thumb.attributes['height'] };
+  }),
+);
+
+const communities = await Promise.all(
+  communitiesOf(catalog.communities, locale).map(async (entry) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { Content: Description } = await render(entry as any);
+    const { logo: source } = entry.data;
+    const image = source.format === 'svg' ? undefined : await getImage({ src: source, width: Math.min(600, source.width), format: 'webp' });
+    return {
+      id: entry.id,
+      data: entry.data,
+      Description,
+      logo: { src: image?.src ?? source.src, width: image?.attributes['width'] ?? source.width, height: image?.attributes['height'] ?? source.height },
+    };
   }),
 );
 
@@ -131,6 +147,38 @@ const newTab = (url: string) => (opensInNewTab(url) ? { target: '_blank', rel: '
               </li>
             ))}
           </ul>
+        </section>
+      )
+    }
+
+    {
+      communities.length > 0 && (
+        <section class={block} id="communities">
+          <BlockTitle>{t('about.communities')}</BlockTitle>
+          <ShuffledList class={cards}>
+            {communities.map((community) => (
+              <li>
+                <article class={card}>
+                  <div class={logoPlate}>
+                    <img class={logo} src={community.logo.src} width={community.logo.width} height={community.logo.height} alt="" loading="lazy" decoding="async" />
+                  </div>
+                  <h3 class={cardTitle}>{community.data.name}</h3>
+                  <div class={cardBody}>
+                    <community.Description />
+                  </div>
+                  <ul class={actions}>
+                    {community.data.links.map((link) => (
+                      <li>
+                        <a class={action} href={link.url} {...newTab(link.url)}>
+                          {link.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              </li>
+            ))}
+          </ShuffledList>
         </section>
       )
     }

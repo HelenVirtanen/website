@@ -9,6 +9,7 @@ import type {
   PageSchema,
   createOrganizerSchema,
   createPartnerSchema,
+  createCommunitySchema,
   createReviewSchema,
   createTalkSchema,
   createSpeakerSchema,
@@ -32,6 +33,7 @@ export type EventData = z.output<ReturnType<typeof createEventSchema>>;
 export type TalkData = z.output<ReturnType<typeof createTalkSchema>>;
 export type SpeakerData = z.output<ReturnType<typeof createSpeakerSchema>>;
 export type PartnerData = z.output<ReturnType<typeof createPartnerSchema>>;
+export type CommunityData = z.output<ReturnType<typeof createCommunitySchema>>;
 export type OrganizerData = z.output<ReturnType<typeof createOrganizerSchema>>;
 export type ReviewData = z.output<ReturnType<typeof createReviewSchema>>;
 export type PageData = z.output<typeof PageSchema>;
@@ -42,6 +44,7 @@ export type EventEntry = CatalogEntry<EventData>;
 export type TalkEntry = CatalogEntry<TalkData>;
 export type SpeakerEntry = CatalogEntry<SpeakerData>;
 export type PartnerEntry = CatalogEntry<PartnerData>;
+export type CommunityEntry = CatalogEntry<CommunityData>;
 export type OrganizerEntry = CatalogEntry<OrganizerData>;
 export type ReviewEntry = CatalogEntry<ReviewData>;
 export type PageEntry = CatalogEntry<PageData>;
@@ -53,6 +56,7 @@ export interface Catalog {
   talks: TalkEntry[];
   speakers: SpeakerEntry[];
   partners: PartnerEntry[];
+  communities: CommunityEntry[];
   organizers: OrganizerEntry[];
   reviews: ReviewEntry[];
   pages: PageEntry[];
@@ -84,6 +88,7 @@ const INVARIANTS = {
   talks: ['event', 'speakers', 'time', 'slidesUrl', 'videoUrl', 'vkVideoUrl', 'cover'],
   speakers: ['photo', 'links', 'founder'],
   partners: ['url', 'handle', 'logo', 'qrUrl', 'look'],
+  communities: ['url', 'logo', 'links[].url'],
   organizers: ['status', 'photo', 'contacts'],
   reviews: ['category', 'speaker', 'photo', 'gallery[].image'],
   faq: ['order'],
@@ -92,7 +97,7 @@ const INVARIANTS = {
 } as const;
 
 // Тело обязательно там, где оно и есть содержание страницы или карточки.
-const BODY_REQUIRED = ['pages', 'talks', 'faq', 'documents', 'reviews'] as const;
+const BODY_REQUIRED = ['pages', 'talks', 'faq', 'documents', 'reviews', 'communities'] as const;
 
 
 /** Язык записи: первый сегмент id. */
@@ -229,6 +234,7 @@ export function validateCatalog(
   checkTranslations('talks', catalog.talks, problems);
   checkTranslations('speakers', catalog.speakers, problems);
   checkTranslations('partners', catalog.partners, problems);
+  checkTranslations('communities', catalog.communities, problems);
   checkTranslations('organizers', catalog.organizers, problems);
   checkTranslations('reviews', catalog.reviews, problems);
   checkTranslations('faq', catalog.faq, problems);
@@ -241,6 +247,7 @@ export function validateCatalog(
     ['talks', catalog.talks],
     ['speakers', catalog.speakers],
     ['partners', catalog.partners],
+    ['communities', catalog.communities],
     ['organizers', catalog.organizers],
     ['reviews', catalog.reviews],
     ['faq', catalog.faq],
@@ -325,18 +332,19 @@ export function checkEventDays(
  * приходит от Astro (с путём файла), ошибка связей и переводов — от `validateCatalog`.
  */
 export async function loadCatalog(): Promise<Catalog> {
-  const [pages, events, talks, speakers, partners, organizers, reviews, faq, documents] = await Promise.all([
+  const [pages, events, talks, speakers, partners, communities, organizers, reviews, faq, documents] = await Promise.all([
     getCollection('pages'),
     getCollection('events'),
     getCollection('talks'),
     getCollection('speakers'),
     getCollection('partners'),
+    getCollection('communities'),
     getCollection('organizers'),
     getCollection('reviews'),
     getCollection('faq'),
     getCollection('documents'),
   ]);
-  const catalog = { events, talks, speakers, partners, organizers, reviews, pages, faq, documents };
+  const catalog = { events, talks, speakers, partners, communities, organizers, reviews, pages, faq, documents };
   validateCatalog(catalog, {
     requireRendered: true,
     // filePath у записей Astro — относительно корня проекта, а сборка идёт из него же.

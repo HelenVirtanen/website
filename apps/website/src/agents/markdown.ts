@@ -1,3 +1,4 @@
+import { communitiesOf } from '../content/about';
 import { publishedReviews } from '../content/reviews';
 import {
   localeOf,
@@ -7,6 +8,7 @@ import {
   upcomingEvent,
   pastEvents,
   type Catalog,
+  type CommunityEntry,
   type EventEntry, type ReviewEntry,
 } from '../content/catalog';
 import { archiveOf, SPEAKER_EVENT_LABELS } from '../content/archive';
@@ -29,7 +31,7 @@ export interface MarkdownContext {
   now: Date;
 }
 
-type MarkdownCatalog = Pick<Catalog, 'events' | 'talks' | 'speakers'> & { reviews?: ReviewEntry[] };
+type MarkdownCatalog = Pick<Catalog, 'events' | 'talks' | 'speakers'> & { reviews?: ReviewEntry[]; communities?: CommunityEntry[] };
 
 // Квадратные скобки в тексте ссылки закрыли бы её раньше времени.
 const linkText = (text: string): string => text.replace(/[[\]]/g, '\\$&');
@@ -174,6 +176,16 @@ export function markdownOf(page: PublicPage, catalog: MarkdownCatalog, context: 
               page.entry.data.contacts.lead,
               ...page.entry.data.contacts.items.flatMap((item) => ['', `### ${item.title}`, '', item.text, '', ...item.links.map((entry) => `- ${link(entry.label, entry.url)}`)]),
             ]
+          : []),
+        ...(page.entry.data.contacts
+          ? ['', ...section(t('about.communities'), communitiesOf(catalog.communities ?? [], locale).flatMap((entry) => [
+              `### ${link(entry.data.name, entry.data.url)}`,
+              '',
+              entry.body?.trim() ?? '',
+              '',
+              ...entry.data.links.map((item) => `- ${link(item.label, item.url)}`),
+              '',
+            ]))]
           : []),
       ]);
 

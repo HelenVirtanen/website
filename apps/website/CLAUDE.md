@@ -60,7 +60,7 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
 - `site` is `https://css.moscow`, `trailingSlash: 'always'`: canonical, hreflang
   and internal links are absolute/with a trailing slash.
 - **Content entries** are created with `pnpm new:event | new:talk | new:speaker |
-  new:partner | new:faq | new:organizer | new:review` (drafts, `ru` + `en`, never overwrite); hand-made
+  new:partner | new:faq | new:organizer | new:review | new:community` (drafts, `ru` + `en`, never overwrite); hand-made
   entries are fine if they pass the schema. Content lives in `@moscowcss/content`; the page code only
   reads it through `src/content/catalog.ts`.
 - **Organizers** are read through `src/content/organizers.ts`
@@ -125,7 +125,9 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
 - **About page** (`/about/`): a document with `contacts` renders through `components/AboutPage.astro` in the meetup
   page's language: chip, big title, `facts` after slashes, counts of meetups, talks and speakers with plural labels and a
   strip of recent meetup photos (`aboutStatsOf`, `aboutPhotosOf`, `pluralFormOf` in `src/content/about.ts`, tested), the
-  body in a dashed panel and contact cards in `#contacts` with pill links.
+  body in a dashed panel, contact cards in `#contacts` with pill links and, last, the friendly communities in
+  `#communities` (`communitiesOf` in `src/content/about.ts`): logo on a white plate in both themes, name, body, pill
+  links, shuffled on every load by `ShuffledList` (`@moscowcss/ui`). The Markdown twin lists them after the contacts.
 - **Help page** (`/help/`): a document with `help` renders through `components/HelpPage.astro` in the about page's
   language: numbered need cards with outlined `01…`, reach numbers from content next to the archive counts
   (`aboutStatsOf`), an offer list, the venues of past meetups falling in a `TagPile` (`venuesOf` in

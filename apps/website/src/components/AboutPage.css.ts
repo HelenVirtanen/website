@@ -1,5 +1,5 @@
-import { style } from '@vanilla-extract/css';
-import { vars, media } from '@moscowcss/design-system';
+import { globalStyle, style } from '@vanilla-extract/css';
+import { dimensions, vars, media } from '@moscowcss/design-system';
 
 // Цифры сообщества: три клетки с пунктирной рамкой, как плашка митапа в Hero.
 export const stats = style({
@@ -64,3 +64,33 @@ export const cardText = style({
   flexGrow: 1,
   font: vars.font.shorthand.body,
 });
+
+// Логотипы рисуют под светлый фон, поэтому плашка белая и в тёмной теме.
+// min-height: 0 — иначе высокий логотип раздвигает плашку вопреки aspect-ratio.
+export const logoPlate = style({
+  display: vars.display.block,
+  width: '100%',
+  minHeight: 0,
+  aspectRatio: dimensions.communityLogo.aspectRatio,
+  boxSizing: 'border-box',
+  padding: vars.padding.l,
+  overflow: 'hidden',
+  background: vars.color.white,
+});
+
+export const logo = style({
+  display: vars.display.block,
+  width: '100%',
+  height: '100%',
+  objectFit: 'contain',
+});
+
+export const cardBody = style({
+  display: vars.display.flex,
+  flexDirection: vars.flexDirection.column,
+  gap: vars.spacing.s,
+  flexGrow: 1,
+  font: vars.font.shorthand.body,
+});
+
+globalStyle(`${cardBody} > p`, { margin: 0 });
