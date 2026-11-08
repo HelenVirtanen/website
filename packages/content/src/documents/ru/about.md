@@ -40,12 +40,19 @@ contacts:
       links:
         - label: "Памятка спикеру"
           url: "https://css.moscow/speaker-guide/"
-        - label: "@RinaPa"
-          url: "https://t.me/RinaPa"
         - label: "@DreamShaded"
           url: "https://t.me/DreamShaded"
+        - label: "@RinaPa"
+          url: "https://t.me/RinaPa"
         - label: "@Ppppst"
           url: "https://t.me/Ppppst"
+    - title: "Помочь митапу"
+      text: "Донатов нет: мы некоммерческое сообщество. Помогают докладом, контентом для сайта, площадкой или совместным митапом. Там же цифры охвата для деврелов."
+      links:
+        - label: "Как помочь"
+          url: "https://css.moscow/help/"
+        - label: "Задачи на GitHub"
+          url: "https://github.com/moscowcss-meetup/website/issues"
 ---
 
 Moscow CSS — сообщество разработчиков и дизайнеров интерфейсов, которые любят CSS, браузерные технологии и дизайн. Сообщество живёт с 2015 года. С 2 марта 2017 года мы провели больше тридцати митапов: доклады о нативных возможностях CSS, дизайн-системах, анимациях, доступности, типографике и инструментах фронтендера, а ещё о том, как разработчику расти и договариваться с дизайнерами.
