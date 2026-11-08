@@ -118,6 +118,10 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   the policy page and the Telegram channel (`src/layouts/footer.ts`), and `© 2015–<build year>`. 2015 is the year the community began; the
   end year is Moscow time at build, so the nightly rebuild turns it over. The body is a flex column, so the footer
   stays at the bottom of a short page. `data-floating-cta` on the floating button makes the footer leave room for it.
+- **About page** (`/about/`): a document with `contacts` renders through `components/AboutPage.astro` in the meetup
+  page's language: chip, big title, `facts` after slashes, counts of meetups, talks and speakers with plural labels and a
+  strip of recent meetup photos (`aboutStatsOf`, `aboutPhotosOf`, `pluralFormOf` in `src/content/about.ts`, tested), the
+  body in a dashed panel and contact cards in `#contacts` with pill links.
 - **Speaker guide** (`/speaker-guide/`, a document with `topics` as a `Disclosure`) opens in a new tab from the
   footer and from any content link: `NEW_TAB_PATHS` in `src/content/markdown-safety.ts`, so a reader returns to the
   form or the FAQ.

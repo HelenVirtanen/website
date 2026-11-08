@@ -252,5 +252,21 @@ export const DocumentSchema = z.object({
       items: z.array(z.string().min(1)).min(1),
     })
     .optional(),
+  // Факты через слеш под заголовком и карточки контактов: с ними документ свёрстан как страница «О сообществе».
+  facts: z.array(z.string().min(1)).optional(),
+  contacts: z
+    .object({
+      lead: z.string().min(1),
+      items: z
+        .array(
+          z.object({
+            title: z.string().min(1),
+            text: z.string().min(1),
+            links: z.array(z.object({ label: z.string().min(1), url })).min(1),
+          }),
+        )
+        .min(1),
+    })
+    .optional(),
   draft: z.boolean().default(false),
 });

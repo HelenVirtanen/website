@@ -160,6 +160,15 @@ export function markdownOf(page: PublicPage, catalog: MarkdownCatalog, context: 
         '',
         page.entry.body?.trim(),
         ...(page.entry.data.topics ? ['', `## ${page.entry.data.topics.summary}`, '', ...page.entry.data.topics.items.map((item) => `- ${item}`)] : []),
+        ...(page.entry.data.contacts
+          ? [
+              '',
+              `## ${t('about.contacts')}`,
+              '',
+              page.entry.data.contacts.lead,
+              ...page.entry.data.contacts.items.flatMap((item) => ['', `### ${item.title}`, '', item.text, '', ...item.links.map((entry) => `- ${link(entry.label, entry.url)}`)]),
+            ]
+          : []),
       ]);
 
     case 'reviews': {

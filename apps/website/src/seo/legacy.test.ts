@@ -34,7 +34,7 @@ describe('LEGACY_REDIRECTS', () => {
       'personal-data.html': '/privacy/',
       'personal-data/index.html': '/privacy/',
       'en/personal-data/index.html': '/en/privacy/',
-      'contact/index.html': '/about/#%D0%BA%D0%BE%D0%BD%D1%82%D0%B0%D0%BA%D1%82%D1%8B',
+      'contact/index.html': '/about/#contacts',
       'en/contact/index.html': '/en/about/#contacts',
     });
   });

@@ -1,0 +1,138 @@
+---
+import { getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import BlockTitle from '@moscowcss/ui/components/BlockTitle';
+import Lightbox from '@moscowcss/ui/components/Lightbox';
+import Prose from '@moscowcss/ui/components/Prose';
+import { aboutPhotosOf, aboutStatsOf, pluralFormOf } from '../content/about';
+import { loadCatalog, type DocumentEntry } from '../content/catalog';
+import { opensInNewTab } from '../content/markdown-safety';
+import { useTranslations, type Locale } from '../i18n';
+import {
+  action,
+  actions,
+  block,
+  cards,
+  chip,
+  gallery,
+  galleryImage,
+  galleryItem,
+  galleryLink,
+  heroText,
+  inner,
+  main,
+  panel,
+  prose,
+  slashes,
+  title as titleClass,
+  topRow,
+} from './DetailPage.css';
+import { card, cardText, cardTitle, contactsLead, stat, statLabel, statValue, stats } from './AboutPage.css';
+
+interface Props {
+  entry: DocumentEntry;
+  locale: Locale;
+}
+
+const { entry, locale } = Astro.props;
+const t = useTranslations(locale);
+const catalog = await loadCatalog();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const { Content } = await render(entry as any);
+const { title, facts = [], contacts } = entry.data;
+
+const numbers = aboutStatsOf(catalog, locale);
+const statItems = (['meetups', 'talks', 'speakers'] as const).map((kind) => ({
+  value: numbers[kind],
+  label: t(`about.${kind}.${pluralFormOf(numbers[kind], locale)}`),
+}));
+
+const pictures = await Promise.all(
+  aboutPhotosOf(catalog.events, locale, 6).map(async (item, index) => {
+    const thumb = await getImage({ src: item.image, width: Math.min(index === 0 ? 1000 : 600, item.image.width), format: 'webp' });
+    const full = await getImage({ src: item.image, width: Math.min(1600, item.image.width), format: 'webp' });
+    return { alt: item.alt, thumb: thumb.src, full: full.src, width: thumb.attributes['width'], height: thumb.attributes['height'] };
+  }),
+);
+
+// Ссылки карточек открываются по тем же правилам, что и ссылки в тексте: чужие сайты и памятка — в новой вкладке.
+const newTab = (url: string) => (opensInNewTab(url) ? { target: '_blank', rel: 'noopener noreferrer' } : {});
+---
+
+<main id="main" tabindex="-1" class={main} data-pagefind-body>
+  <div class={inner}>
+    <div class={heroText}>
+      <div class={topRow}>
+        <span class={chip}>{t('site.name')}</span>
+      </div>
+      <h1 class={titleClass}>{title}</h1>
+      {
+        facts.length > 0 && (
+          <ul class={slashes}>
+            {facts.map((fact) => (
+              <li>{fact}</li>
+            ))}
+          </ul>
+        )
+      }
+      <ul class={stats} aria-label={t('about.stats')}>
+        {
+          statItems.map((item) => (
+            <li class={stat}>
+              <span class={statValue}>{item.value}</span>
+              <span class={statLabel}>{item.label}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    {
+      pictures.length > 0 && (
+        <Lightbox dialogLabel={t('about.photos')} closeLabel={t('lightbox.close')} prevLabel={t('lightbox.prev')} nextLabel={t('lightbox.next')}>
+          <ul class={gallery} aria-label={t('about.photos')}>
+            {pictures.map((picture) => (
+              <li class={galleryItem}>
+                <a class={galleryLink} href={picture.full} data-lightbox-item>
+                  <img class={galleryImage} src={picture.thumb} width={picture.width} height={picture.height} alt={picture.alt} loading="lazy" decoding="async" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </Lightbox>
+      )
+    }
+
+    <Prose class:list={[prose, panel]}>
+      <Content />
+    </Prose>
+
+    {
+      contacts && (
+        <section class={block} id="contacts">
+          <BlockTitle>{t('about.contacts')}</BlockTitle>
+          <p class={contactsLead}>{contacts.lead}</p>
+          <ul class={cards}>
+            {contacts.items.map((item) => (
+              <li>
+                <article class={card}>
+                  <h3 class={cardTitle}>{item.title}</h3>
+                  <p class={cardText}>{item.text}</p>
+                  <ul class={actions}>
+                    {item.links.map((link) => (
+                      <li>
+                        <a class={action} href={link.url} {...newTab(link.url)}>
+                          {link.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </div>
+</main>
