@@ -1,5 +1,5 @@
 ---
-name: "reWorked"
+name: "Rework"
 url: "https://t.me/reworkedconf"
 logo: ../assets/reworked.svg
 links:
