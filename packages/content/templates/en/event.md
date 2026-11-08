@@ -1,7 +1,7 @@
 ---
 date: {{date}}
 time: "18:00"
-tagline: "Meetup #{{name}} of the frontend community"
+tagline: "Meetup #{{name}} of the interface developers community"
 venue:
   name: "Venue name"
   address: "City, street, building"

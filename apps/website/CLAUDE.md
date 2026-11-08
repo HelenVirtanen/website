@@ -106,12 +106,11 @@ scripts/        # check-seo, seo-checks (SEO gate over dist), new-entry (new:* g
   the page and the header and footer links only with a published review. `src/content/reviews.ts`
   holds `publishedReviews`, `reviewCategories` (buttons of the filter, state in `?category=`) and `previewOf` (first paragraph cut at a word boundary, not a CSS clamp:
   that hides text under increased spacing, WCAG 1.4.12). No `Review` schema.org markup on purpose.
-- **Talk covers.** A talk's optional `cover` (announcement card in
-  `packages/content/src/talks/assets/`) shows under the title of the talk page; a talk without
-  one gets a generated cover `/covers/<lang>/<talk>.png` (`pages/covers/[...path].ts`, `renderTalkCover` from
-  `@moscowcss/og`, inputs from `talkCoverSourceOf`), also used as its OG and Twitter card. A wide cover (`isWide` in `src/content/talk-cover.ts`, ratio ≥ 1.6) also
-  replaces the generated OG and Twitter cards: the `og/` route crops it to size with sharp. The
-  file path comes from the frontmatter (`coverFileOf`), because the parsed field has no path.
+- **Talk covers.** Every talk gets one generated cover in a single style, `/covers/<lang>/<talk>.png`
+  (`pages/covers/[...path].ts`, `renderTalkCover` from `@moscowcss/og`, inputs from `talkCoverSourceOf`): the title in
+  a red-to-brown gradient, the speakers and the meetup label on white, the first speaker's photo in colour (TBD
+  without one) with the grey-and-red stars. It shows on the talk page and the cards and is the talk's OG and Twitter
+  card. The talks' `cover` files (old announcement cards) stay in content but are no longer displayed.
 - **Header** links go across the site, not to home sections: History (`/events/`), Talks,
   Speakers, Reviews (only with a published review), About (`/about/`, which also holds the Contacts section), Search (`src/layouts/nav.ts`); the current section gets
   `aria-current`. Registration is the floating button.

@@ -68,7 +68,7 @@ const talks = await Promise.all(
     title: talk.data.title,
     label: eventLabel(event),
     meta: `${event.data.tagline}, ${fillTemplate(t('date.long'), eventDateParts(event.data.date, locale))}`,
-    image: await talkCoverImage(talk),
+    image: talkCoverImage(talk),
   })),
 );
 const events = [...new Map(appearances.map(({ event }) => [slugOf(event), event])).values()];

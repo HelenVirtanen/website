@@ -63,7 +63,7 @@ const hasBody = Boolean(entry.body?.trim());
 const { title, slidesUrl, videoUrl } = entry.data;
 // Карточка анонса и сгенерированная обложка повторяют заголовок и имя спикера: в превью alt пустой,
 // а в окне просмотра подписью идёт название доклада.
-const coverImage = await talkCoverImage(entry);
+const coverImage = talkCoverImage(entry);
 const eventDate = fillTemplate(t('date.long'), eventDateParts(event.data.date, locale));
 const number = /^\d+$/.test(slugOf(event)) ? slugOf(event) : undefined;
 const materials = [
@@ -91,7 +91,7 @@ const others = await Promise.all(
         .map((slug) => catalog.speakers.find((item) => localeOf(item) === locale && slugOf(item) === slug)?.data.name)
         .filter(Boolean)
         .join(', '),
-      image: await talkCoverImage(talk),
+      image: talkCoverImage(talk),
     })),
 );
 ---

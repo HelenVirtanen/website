@@ -10,9 +10,9 @@ conflict.
 Build-time generator of the OpenGraph (1200×630) and Twitter (1200×600) PNG cards:
 `renderCard({ title, kicker, meta, size })` → `Buffer`. Cards are always in the dark theme. satori draws the SVG from a
 plain `{type, props}` tree (no React), sharp rasterises it. The same package draws
-the initials avatar of a speaker without a photo (`renderAvatar`), the cover of a talk without an
-announcement card (`renderTalkCover`: `MOSCOWCSS_<n>` with the red star, title and speakers on white, the
-first speaker's photo in greyscale with the grey-and-red star, like the channel's cards) and the site icons
+the initials avatar of a speaker without a photo (`renderAvatar`), the cover of every talk
+(`renderTalkCover`: the red star and the title in a red-to-brown gradient, the speakers and `MOSCOWCSS_<n>` on
+white, the first speaker's photo in colour or TBD, the grey-and-red stars) and the site icons
 (`iconSvg`, `renderIcon`, `toIco`: the star in the brand red, `favicon.ico` holds PNGs).
 Source-only package (exports `./src/index.ts`), no build step.
 

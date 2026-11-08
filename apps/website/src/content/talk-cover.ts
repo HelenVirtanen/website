@@ -2,17 +2,11 @@ import { dirname, resolve } from 'node:path';
 import { eventLabel } from './archive';
 import { localeOf, slugOf, type Catalog, type TalkEntry } from './catalog';
 
-// Обложка доклада — карточка анонса из Telegram (спека 007, продолжение). На странице доклада
-// она стоит под заголовком; широкая обложка заменяет и сгенерированную OG-карточку. У доклада без
-// карточки обложку в том же стиле рисует `@moscowcss/og` на сборке: `/covers/<язык>/<доклад>.png`.
+// Обложку каждого доклада рисует `@moscowcss/og` на сборке, в одном стиле для всех: `/covers/<язык>/<доклад>.png`.
+// Карточки анонсов из Telegram (поле `cover`) были вразнобой и больше не показываются.
 
-/** Адрес сгенерированной обложки доклада без своей карточки анонса. */
+/** Адрес сгенерированной обложки доклада. */
 export const talkCoverPath = (talk: { id: string }): string => `/covers/${localeOf(talk)}/${slugOf(talk)}.png`;
-
-/** Не уже этого обложка годится в OG 1200×630: обрезка по центру съест не больше нескольких процентов. */
-export const MIN_OG_ASPECT = 1.6;
-
-export const isWide = (size: { width: number; height: number }): boolean => size.width / size.height >= MIN_OG_ASPECT;
 
 /**
  * Путь файла из поля frontmatter (`cover`, `photo`) на диске. После схемы поле — метаданные картинки без
@@ -28,10 +22,6 @@ export function frontmatterFileOf(
   const written = line.exec(readSource(entry.filePath))?.[1];
   return written === undefined ? undefined : resolve(dirname(resolve(entry.filePath)), written);
 }
-
-/** Файл обложки доклада на диске. */
-export const coverFileOf = (talk: Pick<TalkEntry, 'filePath'>, readSource: (path: string) => string): string | undefined =>
-  frontmatterFileOf(talk, 'cover', readSource);
 
 export interface TalkCoverSource {
   label: string;
