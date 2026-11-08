@@ -41,8 +41,8 @@ contacts:
           url: "https://t.me/DreamShaded"
         - label: "@RinaPa"
           url: "https://t.me/RinaPa"
-        - label: "@Ppppst"
-          url: "https://t.me/Ppppst"
+        - label: "@antytoto"
+          url: "https://t.me/antytoto"
     - title: "Help the meetup"
       text: "No donations: we are a non-profit community. People help with a talk, content for the site, a venue or a joint meetup. Reach numbers for devrels are there too."
       links:

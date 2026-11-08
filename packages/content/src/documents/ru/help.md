@@ -60,8 +60,8 @@ help:
         url: "https://t.me/DreamShaded"
       - label: "@RinaPa"
         url: "https://t.me/RinaPa"
-      - label: "@Ppppst"
-        url: "https://t.me/Ppppst"
+      - label: "@antytoto"
+        url: "https://t.me/antytoto"
       - label: "Чат сообщества"
         url: "https://t.me/moscowcss_chat"
 ---

@@ -41,8 +41,8 @@ contacts:
           url: "https://t.me/DreamShaded"
         - label: "@RinaPa"
           url: "https://t.me/RinaPa"
-        - label: "@Ppppst"
-          url: "https://t.me/Ppppst"
+        - label: "@antytoto"
+          url: "https://t.me/antytoto"
     - title: "Помочь митапу"
       text: "Донатов нет: мы некоммерческое сообщество. Помогают докладом, контентом для сайта, площадкой или совместным митапом. Там же цифры охвата для деврелов."
       links:
