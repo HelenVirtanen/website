@@ -91,3 +91,9 @@ export const Narrow = {
   args: { tags: topics },
   play: drop('21.4375rem'),
 };
+
+// Как площадки на странице «Помочь митапу»: падает, когда попадёт на экран, медленнее и по кругу.
+export const LoopOnVisible = {
+  args: { tags: topics, trigger: 'visible', pace: 1.8, restMs: 3000 },
+  play: drop('60rem'),
+};

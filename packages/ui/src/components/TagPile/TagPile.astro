@@ -9,9 +9,15 @@ interface Props extends HTMLAttributes<typeof Tag> {
   tags: string[];
   /** Доступное имя списка тем */
   label: string;
+  /** Когда куча начинает падать: сразу после загрузки или когда попадёт на экран */
+  trigger?: 'load' | 'visible';
+  /** Во сколько раз медленнее обычного падают плашки, от 1 до 4 */
+  pace?: number;
+  /** Через сколько мс лежащая плашка проваливается вниз и падает заново сверху; без значения куча лежит */
+  restMs?: number;
 }
 
-const { tags, label, class: className, ...attrs } = Astro.props;
+const { tags, label, trigger = 'load', pace = 1, restMs, class: className, ...attrs } = Astro.props;
 ---
 
 <Tag
@@ -19,6 +25,9 @@ const { tags, label, class: className, ...attrs } = Astro.props;
   aria-label={label}
   data-tag-pile
   data-tones={JSON.stringify(tones)}
+  data-trigger={trigger}
+  data-pace={String(pace)}
+  data-rest-ms={restMs === undefined ? undefined : String(restMs)}
   {...attrs}
 >
   {

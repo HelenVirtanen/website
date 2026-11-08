@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   colorsFor,
+  cycleTiming,
+  paceOf,
+  restMsOf,
   createRandom,
   layoutPile,
   pileDurationMs,
@@ -208,5 +211,30 @@ describe('layoutPile', () => {
     const bottom = placements.filter((placement) => placement.rotation === 0);
     const left = Math.min(...bottom.map((placement) => placement.x));
     expect(left).toBeGreaterThan(200);
+  });
+});
+
+describe('настройки петли', () => {
+  it('paceOf: от 1 до 4, мусор — обычная скорость', () => {
+    expect(paceOf('1.8')).toBe(1.8);
+    expect(paceOf('10')).toBe(4);
+    expect(paceOf('0.5')).toBe(1);
+    expect(paceOf(undefined)).toBe(1);
+    expect(paceOf('быстро')).toBe(1);
+  });
+
+  it('restMsOf: петля только при паузе от секунды', () => {
+    expect(restMsOf('10000')).toBe(10000);
+    expect(restMsOf('500')).toBeUndefined();
+    expect(restMsOf('')).toBeUndefined();
+    expect(restMsOf(undefined)).toBeUndefined();
+  });
+
+  it('cycleTiming: падение медленнее в pace раз, провал быстрее падения, пауза в пределах', () => {
+    const timing = cycleTiming(900, 2, () => 0.5);
+    expect(timing.fallMs).toBe(1800);
+    expect(timing.dropMs).toBeLessThan(timing.fallMs);
+    expect(timing.gapMs).toBeCloseTo(1800 * 0.8);
+    expect(cycleTiming(900, 1, () => 0).gapMs).toBeCloseTo(360);
   });
 });

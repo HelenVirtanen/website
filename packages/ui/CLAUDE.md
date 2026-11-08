@@ -55,7 +55,9 @@ demoed in `apps/storybook`.
   (`pnpm --filter @moscowcss/ui test`, also run by `pnpm test`). Client scripts are
   `*.client.ts` and are initialised from the component's `<script>`.
 - **Notable components:** `FallingDecor` (the falling springs or snowflakes beneath all content at `z-index: -1`: only `body` paints the page background, opaque blocks cover them; grey and nearly transparent while behind text, so they never hurt reading), `IconToggle` (icon button with `aria-pressed`), `DecorToggle` and `ThemeToggle` built on it (in the header from `tablet`, in the menu on phones; the choice lives in `localStorage`), `TagPile` (topic tags that fall into a pile; static and
-  fully visible without JS or under reduced motion), `OrganizerCard` (portrait slot
+  fully visible without JS or under reduced motion; opt-in `trigger="visible"` starts the fall when the pile scrolls into view,
+  `pace` slows it, `restMs` loops it: a tag that has rested that long drops out with `motion.easing.drop` and falls again;
+  the help page venues use all three, the Hero none), `OrganizerCard` (portrait slot
   in an octagon, name, text from Markdown in the default slot, contacts; the contacts list may be empty),
   `CallToAction` (floating registration button, `position: fixed`,
   `mix-blend-mode: difference`), `Button` (link or button, `default` and `nav`

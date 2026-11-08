@@ -204,3 +204,30 @@ export function layoutPile(input: PileInput): PilePlacement[] {
 
   return placements;
 }
+
+/** Во сколько раз медленнее падает куча: из атрибута `data-pace`, от 1 до 4; мусор — обычная скорость. */
+export function paceOf(raw: string | undefined): number {
+  const value = Number(raw);
+  return Number.isFinite(value) && value >= 1 ? Math.min(value, 4) : 1;
+}
+
+/** Сколько мс плашка лежит, прежде чем провалиться и упасть заново: из `data-rest-ms`, не меньше секунды; нет — без петли. */
+export function restMsOf(raw: string | undefined): number | undefined {
+  const value = Number(raw);
+  return raw !== undefined && raw !== '' && Number.isFinite(value) && value >= 1000 ? value : undefined;
+}
+
+export interface CycleTiming {
+  /** Падение сверху на место, мс */
+  fallMs: number;
+  /** Провал вниз с исчезновением, мс */
+  dropMs: number;
+  /** Пауза между исчезновением и новым падением, мс */
+  gapMs: number;
+}
+
+/** Длительности одного круга плашки: падение медленнее в `pace` раз, провал быстрее падения, пауза случайная. */
+export function cycleTiming(fallMs: number, pace: number, random: Random): CycleTiming {
+  const slowFall = fallMs * pace;
+  return { fallMs: slowFall, dropMs: slowFall * 0.6, gapMs: slowFall * (0.4 + random() * 0.8) };
+}

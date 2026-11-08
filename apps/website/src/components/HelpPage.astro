@@ -158,7 +158,7 @@ const order = (index: number) => String(index + 1).padStart(2, '0');
               {help.contact.title}
             </a>
           </div>
-          <TagPile class={pile} tags={venueNames} label={help.venues.title} />
+          <TagPile class={pile} tags={venueNames} label={help.venues.title} trigger="visible" pace={1.8} restMs={10000} />
         </section>
       )
     }
