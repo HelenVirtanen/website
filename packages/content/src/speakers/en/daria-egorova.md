@@ -6,3 +6,7 @@ links:
     url: "https://t.me/dsgnlove"
 photo: ../assets/daria-egorova.jpg
 ---
+
+UI/UX design director at TSEKH, the first attention agency, partner at RDMI and head of the "Design and Engineering of Digital Services (UI/UX)" programme at B&D.
+
+Her hobby is drawing: "one day, when AI replaces us all, I will simply become an artist".

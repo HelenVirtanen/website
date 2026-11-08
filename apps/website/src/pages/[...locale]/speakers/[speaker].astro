@@ -25,6 +25,7 @@ import {
   inner,
   lead,
   main,
+  panel,
   portrait,
   portraitImage,
   prose,
@@ -126,9 +127,12 @@ const events = [...new Map(appearances.map(({ event }) => [slugOf(event), event]
 
       {
         hasBio && (
-          <Prose class={prose}>
-            <Content />
-          </Prose>
+          <section class={block}>
+            <BlockTitle>{t('speaker.about')}</BlockTitle>
+            <Prose class:list={[prose, panel]}>
+              <Content />
+            </Prose>
+          </section>
         )
       }
 

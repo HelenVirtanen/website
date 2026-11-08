@@ -21,6 +21,14 @@ Moscow CSS has no office and no phone: the community lives in Telegram, and meet
 
 The [Telegram channel @moscowcss](https://t.me/moscowcss) is the main channel of the community. It publishes meetup announcements, registration and stream links, and recordings and photos after each meetup.
 
+### Meetup registration
+
+[Moscow CSS on Timepad](https://moscowcss.timepad.ru/) is where registration for every meetup opens. Follow the organiser to get an email about the next meetup.
+
+### The community on Networkly
+
+[Moscow CSS on Networkly](https://networkly.app/community/moscowcss): join the community, add the meetups to your calendar and apply to give a talk.
+
 ### Discussions and questions
 
 The [chat @moscowcss_chat](https://t.me/moscowcss_chat) is where you ask the speakers questions during a stream and talk about CSS between meetups.
